@@ -109,13 +109,13 @@ void berserk_walk (edict_t *self)
 }
 
 mframe_t berserk_frames_run1 [] =
-{
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL
+{ // from 35 to 27
+	drone_ai_run, 27, NULL,
+	drone_ai_run, 27, NULL,
+	drone_ai_run, 27, NULL,
+	drone_ai_run, 27, NULL,
+	drone_ai_run, 27, NULL,
+	drone_ai_run, 27, NULL
 };
 mmove_t berserk_move_run1 = {FRAME_run1, FRAME_run6, berserk_frames_run1, NULL};
 
@@ -134,7 +134,7 @@ void berserk_attack_spike (edict_t *self)
 	if (!G_EntExists(self->enemy))
 		return;
 
-	damage = 50 + 25 * self->monsterinfo.level;
+	damage = 50 + 20 * self->monsterinfo.level;
 	M_MeleeAttack(self, 96, damage, 400);
 	//FIXME: add bleed curse
 }
@@ -203,7 +203,7 @@ void berserk_attack_strike (edict_t *self)
 
 	self->lastsound = level.framenum;
 
-	damage = 100+20*self->monsterinfo.level;
+	damage = 100+10*self->monsterinfo.level;
 	gi.sound (self, CHAN_AUTO, gi.soundindex ("tank/tnkatck5.wav"), 1, ATTN_NORM, 0);
 	
 	while ((other = findradius(other, self->s.origin, 128)) != NULL)
@@ -355,7 +355,7 @@ void init_drone_berserk (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
-	self->health = self->max_health = 100 + 20 * self->monsterinfo.level;
+	self->health = self->max_health = 100 + 15 * self->monsterinfo.level;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
 	self->monsterinfo.power_armor_power = self->monsterinfo.max_armor = 100 + 40 * self->monsterinfo.level;
 	self->gib_health = -60;

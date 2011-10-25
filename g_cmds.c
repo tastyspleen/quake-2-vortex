@@ -294,6 +294,10 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	qboolean	ent2_boss=false;
 	edict_t		*e1, *e2;
 
+	if (G_IsSpectator(ent1) || G_IsSpectator(ent2))
+		return 0;
+
+
 	ent1_boss = IsBossTeam(ent1);//IsABoss(ent1);
 	ent2_boss = IsBossTeam(ent2);//IsABoss(ent2);
 
@@ -2401,6 +2405,14 @@ void Cmd_AdminCmd (edict_t *ent)
 			}
 		}
 	}
+	else if (Q_stricmp(cmd1, "setflag") == 0)
+	{
+		CTF_WriteFlagPosition(ent);
+	}
+	else if (Q_stricmp(cmd1, "compass") == 0)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Position = {%f, %f, %f}\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+	}
 	else
 		gi.cprintf(ent, PRINT_HIGH, "Level %d access granted for %s.\n", ent->myskills.administrator, ent->client->pers.netname);
 }
@@ -3250,8 +3262,6 @@ void ClientCommand (edict_t *ent)
 		Cmd_Napalm_f(ent);
 	else if (!Q_stricmp(cmd, "meteor"))
 		Cmd_Meteor_f(ent, 1.0, 1.0);
-	else if (!Q_stricmp(cmd, "writeflagpos"))
-		CTF_WriteFlagPosition(ent);
 	else if (!Q_stricmp(cmd, "medic"))
 		Cmd_PlayerToMedic_f(ent);
 	else if (Q_stricmp (cmd, "balancespirit") == 0)

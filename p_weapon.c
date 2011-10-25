@@ -843,13 +843,13 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		// number of frames to fire an extra shot
 		int haste_wait;
 
-		if (ent->myskills.abilities[HASTE].current_level <= 3)
+		if (ent->myskills.abilities[HASTE].current_level <= 1)
 			haste_wait = 5; // 17% improvement (1/1.2)
-		else if (ent->myskills.abilities[HASTE].current_level <= 6)
+		else if (ent->myskills.abilities[HASTE].current_level <= 2)
 			haste_wait = 4; // 20% improvement (1/1.25)
-		else if (ent->myskills.abilities[HASTE].current_level <= 9)
+		else if (ent->myskills.abilities[HASTE].current_level <= 3)
 			haste_wait = 3; // 25% improvement (1/1.333)
-		else if (ent->myskills.abilities[HASTE].current_level <= 12)
+		else if (ent->myskills.abilities[HASTE].current_level <= 4)
 			haste_wait = 2; // 33% improvement (1/1.5)
 		else
 			haste_wait = 1; // 50% improvement (1/2)

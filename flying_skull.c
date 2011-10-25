@@ -591,7 +591,8 @@ void SpawnSkull (edict_t *ent)
 	skull->clipmask = MASK_MONSTERSOLID;
 	skull->movetype = MOVETYPE_FLY;
 	skull->s.renderfx |= RF_IR_VISIBLE;
-	skull->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase cammed
+	// nope
+	//skull->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase cammed
 	skull->solid = SOLID_BBOX;
 	skull->think = skull_think;
 	skull->die = skull_die;

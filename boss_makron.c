@@ -289,6 +289,8 @@ void boss_makron_spawn (edict_t *ent)
 	boss->monsterinfo.power_armor_power = MAKRON_INITIAL_ARMOR+MAKRON_ADDON_ARMOR*boss->monsterinfo.level;
 	boss->monsterinfo.max_armor = boss->monsterinfo.power_armor_power;
 	boss->svflags |= SVF_MONSTER; // needed for armor
+
+	// okay maybe someone WOULD be interested in a boss.
 	boss->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase cammed
 	boss->mtype = BOSS_MAKRON;
 	boss->pain = boss_pain;

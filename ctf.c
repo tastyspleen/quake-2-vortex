@@ -1269,6 +1269,8 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 	#else
 		sprintf(path, "%s/Settings/%s_%d.loc", game_path->string, level.mapname, teamnum);
 	#endif
+	
+		gi.dprintf("Reading file %s.\n", path);
 
 	// read flag position from file
 	if ((fptr = fopen(path, "r")) != NULL)
@@ -1277,6 +1279,7 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 		 VectorCopy(v, pos);
 		 //gi.dprintf("%f %f %f\n", v[0], v[1], v[2]);
 		 fclose(fptr);
+		 gi.dprintf("Data for team %d at {%f, %f, %f}\n", teamnum, v[0], v[1], v[2]);
          return true; 
      }  
 
@@ -1292,7 +1295,7 @@ void CTF_WriteFlagPosition (edict_t *ent)
 	if (!ent->myskills.administrator)
 		return;
 
-	teamnum = atoi(gi.argv(1));
+	teamnum = atoi(gi.argv(2));
 
 	if (!teamnum)
 		return;

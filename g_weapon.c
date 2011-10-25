@@ -2822,7 +2822,7 @@ void Cmd_TossMirv (edict_t *ent)
 #define SPIKEBALL_INITIAL_HEALTH	100
 #define SPIKEBALL_ADDON_HEALTH		10
 #define SPIKEBALL_INITIAL_DAMAGE	50
-#define SPIKEBALL_ADDON_DAMAGE		15
+#define SPIKEBALL_ADDON_DAMAGE		20
 #define SPIKEBALL_INITIAL_RANGE		1024		// search range (should always be less than or equal to max dist)
 #define SPIKEBALL_MAX_DIST			1024		// maximum distance between enemy and activator
 #define SPIKEBALL_ADDON_RANGE		0

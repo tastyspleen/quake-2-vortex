@@ -213,7 +213,9 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, REGENERATION, 0, 5, true);
 	enableAbility(ent, RESISTANCE, 0, 5, true);
 	enableAbility(ent, STRENGTH, 0, 5, true);
-	enableAbility(ent, HASTE, 0, 5, true);
+	enableAbility(ent, HASTE, 0, 5, true); // Haste is hard capped as well; It's pretty powerful right now.
+	ent->myskills.abilities[HASTE].hard_max = 5;
+
 	enableAbility(ent, VAMPIRE, 0, 5, true);
 	enableAbility(ent, JETPACK, 0, 1, true);
 	enableAbility(ent, CLOAK, 0, 1, true);
@@ -630,8 +632,8 @@ void OpenJoinMenu (edict_t *ent)
 
 	//				    xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 
-	addlinetomenu(ent, va("Welcome to Vortex v%s!", VRX_VERSION), MENU_GREEN_CENTERED);
-	addlinetomenu(ent, "www.project-vortex.com", MENU_GREEN_CENTERED);
+	addlinetomenu(ent, va("Vortex Chile v%s", VRX_VERSION), MENU_GREEN_CENTERED);
+	addlinetomenu(ent, "www.v2gamers.cl", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Original design by Kombat03.", 0);
 	addlinetomenu(ent, "Ideas borrowed from KOTS,", 0);

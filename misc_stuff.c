@@ -439,8 +439,6 @@ qboolean TeleportNearArea (edict_t *ent, vec3_t point, int area_size, qboolean a
 	return false;
 }
 
-#define VITALITY_MULT	0.1
-
 int MAX_ARMOR(edict_t *ent)
 {
 	int vitlvl = 0;

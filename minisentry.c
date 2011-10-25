@@ -462,7 +462,8 @@ void base_createturret (edict_t *self)
 	sentry->nextthink = level.time + FRAMETIME;
 	sentry->s.modelindex = gi.modelindex ("models/weapons/g_bfg/tris.md2");
 	sentry->s.renderfx |= RF_IR_VISIBLE;
-	sentry->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase cammed
+	// who really wanted to chase sentries anyway
+	// sentry->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase cammed
 	sentry->solid = SOLID_BBOX;
 	sentry->movetype = MOVETYPE_NONE;
 	sentry->clipmask = MASK_MONSTERSOLID;

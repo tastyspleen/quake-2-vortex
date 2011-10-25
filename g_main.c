@@ -86,6 +86,7 @@ int PREV_DEFENSE_TEAM;
 long FLAG_FRAMES;
 float SPREE_TIME;
 int average_player_level;
+int pvm_average_level;
 qboolean SPREE_WAR;
 qboolean INVASION_OTHERSPAWNS_REMOVED;
 int invasion_difficulty_level;
@@ -147,6 +148,9 @@ cvar_t *world_min_rockets;
 cvar_t *world_min_slugs;
 
 cvar_t *ctf_enable_balanced_fc;
+
+// Force vote control
+cvar_t* adminctrl;
 //K03 End
 
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint);

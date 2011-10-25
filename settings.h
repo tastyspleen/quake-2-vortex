@@ -6,7 +6,7 @@ char s2[100];
 #define	CURRENT_DATE				_strdate(s1)
 #define CURRENT_TIME				_strtime(s2)
 
-#define VRX_VERSION "4.63"
+#define VRX_VERSION "1.0"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -89,7 +89,7 @@ char s2[100];
 #define INITIAL_HEALTH_SHAMAN		100
 #define INITIAL_HEALTH_ALIEN		100
 
-#define LEVELUP_HEALTH_SOLDIER		1
+#define LEVELUP_HEALTH_SOLDIER		3
 #define LEVELUP_HEALTH_NECROMANCER	1
 #define LEVELUP_HEALTH_ENGINEER		2
 #define LEVELUP_HEALTH_VAMPIRE		5
@@ -99,11 +99,11 @@ char s2[100];
 #define LEVELUP_HEALTH_MAGE			1
 #define LEVELUP_HEALTH_WEAPONMASTER	1
 #define	LEVELUP_HEALTH_SHAMAN		5
-#define LEVELUP_HEALTH_ALIEN		1
+#define LEVELUP_HEALTH_ALIEN		2
 
 #define INITIAL_ARMOR_SOLDIER		50
 #define INITIAL_ARMOR_NECROMANCER	50
-#define INITIAL_ARMOR_ENGINEER		100
+#define INITIAL_ARMOR_ENGINEER		50
 #define INITIAL_ARMOR_VAMPIRE		50
 #define INITIAL_ARMOR_POLTERGEIST	50
 #define INITIAL_ARMOR_KNIGHT		100
@@ -160,7 +160,7 @@ char s2[100];
 
 // Ammo upgrade skill
 #define AMMO_UP_BASE		1.0
-#define AMMO_UP_MULT		0.1	//10%
+#define AMMO_UP_MULT		0.2	//20%
 
 // CTF
 #define CTF_CAPTURE_BASE					ctf_capture_base->value
@@ -461,7 +461,7 @@ char s2[100];
 #define DELAY_INVULN				10
 #define DELAY_AMMOSTEAL				2.0
 #define DELAY_FREEZE				5
-#define DELAY_BOOST					3.0
+#define DELAY_BOOST					2.0
 #define DELAY_BLOODSUCKER			3
 #define DELAY_SALVATION				1
 #define DELAY_CORPSEEXPLODE			0.5
@@ -585,5 +585,7 @@ char s2[100];
 //Trade stuff
 #define TRADE_MAX_DISTANCE		512		//Trade distance
 #define TRADE_MAX_PLAYERS		5		//Max # of players to choose when trading
+
+#define VITALITY_MULT	0.15
 
 #endif

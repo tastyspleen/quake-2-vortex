@@ -501,21 +501,21 @@ void Sun_Think(edict_t *self)
 	{
 		lightlevel[0]++;
 		if (lightlevel[0] == 'z'){
-			self->nextthink = level.time + 300;
+			self->nextthink = level.time + 120;
 			day = 0;
 		}
 		else
-			self->nextthink = level.time + 10;
+			self->nextthink = level.time + 5;
 	}
 	else
 	{
 		lightlevel[0]--;
-		if (lightlevel[0] == 'h'){
-			self->nextthink = level.time + 60;
+		if (lightlevel[0] <= 'c'){
+			self->nextthink = level.time + 100;
 			day = 1;
 		}
 		else
-			self->nextthink = level.time + 10;
+			self->nextthink = level.time + 5;
 	}
 
 	if (lightlevel[0] < 'i')
@@ -560,6 +560,60 @@ int HighestLevelPlayer(void)
 		highest = 1;
 
 	return highest;
+}
+
+int PvMHighestLevelPlayer(void)
+{
+	edict_t *player;
+	int highest = 0, i;
+
+	for (i = 1; i <= maxclients->value; i++){
+		player = &g_edicts[i];
+
+		if (!player->inuse)
+			continue;
+		if (G_IsSpectator(player))
+			continue;
+		if (player->myskills.boss)
+			continue;
+		if (!(player->myskills.respawns & HOSTILE_MONSTERS))
+			continue;
+
+		if (player->myskills.level > highest)
+			highest = player->myskills.level;
+	}
+
+	if (highest < 1)
+		highest = 1;
+
+	return highest;
+}
+
+int PvMLowestLevelPlayer(void)
+{
+	edict_t *player;
+	int lowest = 999, i;
+
+	for (i = 1; i <= maxclients->value; i++){
+		player = &g_edicts[i];
+
+		if (!player->inuse)
+			continue;
+		if (G_IsSpectator(player))
+			continue;
+		if (player->myskills.boss)
+			continue;
+		if (!(player->myskills.respawns & HOSTILE_MONSTERS))
+			continue;
+
+		if (player->myskills.level < lowest)
+			lowest = player->myskills.level;
+	}
+
+	if (lowest < 1 || lowest == 999)
+		lowest = 1;
+
+	return lowest;
 }
 
 int LowestLevelPlayer(void)
@@ -611,6 +665,48 @@ int ActivePlayers (void)
 		return 0;
 	
 	return clients;
+}
+
+int PvMAveragePlayerLevel (void)
+{
+	edict_t *player;
+	int players=0, levels=0, average, i;
+
+	for (i = 1; i <= maxclients->value; i++)
+	{
+		player = &g_edicts[i];
+
+		if (!player->inuse)
+			continue;
+		if (G_IsSpectator(player))
+			continue;
+		if (player->myskills.boss)
+			continue;
+		players++;
+		levels += player->myskills.level;
+
+		if (pvm->value || ffa->value || invasion->value)
+		{
+			if (!(player->myskills.respawns & HOSTILE_MONSTERS))
+				continue;
+		}
+	
+	}
+
+	if (players < 1)
+		return 0;
+	if (levels < 1)
+		levels = 1;
+
+
+	average = levels/players;
+
+	if (average < 1)
+		average = 1;
+
+	if (debuginfo->value)
+		gi.dprintf("DEBUG: PvM Average player level %d\n", average);
+	return average;
 }
 
 int AveragePlayerLevel (void)

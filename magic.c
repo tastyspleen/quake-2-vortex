@@ -3034,7 +3034,8 @@ void CreateAutoCannon (edict_t *ent, int cost, float skill_mult, float delay_mul
 	cannon->clipmask = MASK_MONSTERSOLID;
 	cannon->deadflag = DEAD_NO;
 	cannon->svflags &= ~SVF_DEADMONSTER;
-	cannon->flags |= FL_CHASEABLE;
+	// NO one liked AI chasing
+	//cannon->flags |= FL_CHASEABLE;
 	cannon->mass = 300;
 	cannon->classname = "autocannon";
 	cannon->takedamage = DAMAGE_AIM;

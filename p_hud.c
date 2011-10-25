@@ -192,7 +192,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
      char entry[MAX_ENTRY_SIZE]; 
      char string[MAX_STRING_SIZE];
-	 char name[20], classname[20];//3.78
+	 char name[23], classname[20];//3.78
      int stringlength; 
      int i, j, k; 
      int sorted[MAX_CLIENTS];
@@ -231,10 +231,14 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		cl_ent = g_edicts + 1 + i;
 
         //3.0 scoreboard code fix
-		if (!cl_ent->client || !cl_ent->inuse || cl_ent->client->resp.spectator)
+		if (!cl_ent->client || !cl_ent->inuse)
 			continue;
+		
+		if (cl_ent->client->resp.spectator)
+			score = 0;
+		else
+			score = game.clients[i].resp.score;
 
-		score = game.clients[i].resp.score;
 		for (j=0 ; j<total ; j++)
 		{
 			if (score > sortedscores[j])
@@ -303,9 +307,13 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		padRight(name, 10);
 
 		Com_sprintf(entry, sizeof(entry),
-			"xv 0 yv %i string \"%s %2i %s %5i %3i %3i %3i\" ",
-			y, name, cl_ent->myskills.level, classname, cl->resp.score, 
-			cl->resp.frags, cl_ent->myskills.streak, cl->ping); 
+			"xv %i yv %i string \"%s%s %2i %s %5i %3i %3i %3i\" ",
+			cl_ent->client->resp.spectator? -24 : 0,
+			y, cl_ent->client->resp.spectator? "(s)" : "" ,name, 
+			cl_ent->client->resp.spectator? 0 : cl_ent->myskills.level, 
+			cl_ent->client->resp.spectator? "??" : classname, cl_ent->client->resp.spectator? 0 : cl->resp.score, 
+			cl_ent->client->resp.spectator? 0 : cl->resp.frags, 
+			cl_ent->client->resp.spectator? 0 : cl_ent->myskills.streak, cl->ping); 
 
 		j = strlen(entry);
 

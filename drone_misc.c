@@ -527,7 +527,11 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 			drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer())+invasion_difficulty_level-1;
 		else
 		{
-			drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer());
+			if (pvm->value || ffa->value)
+				drone->monsterinfo.level = GetRandom(PvMLowestLevelPlayer(), PvMHighestLevelPlayer());
+			else
+				drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer());
+				
 			
 			//4.5 assign monster bonus flags
 			if (ffa->value && drone->monsterinfo.level >= 10 && GetRandom(1, 100) <= 10)//10% chance for a champion to spawn
@@ -575,7 +579,8 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	drone->deadflag = DEAD_NO;
 	drone->svflags &= ~SVF_DEADMONSTER;
 	drone->svflags |= SVF_MONSTER;
-	drone->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase-cammed
+	// NOPE. NO ONE REALLY LIKED TO CHASE MONSTERS ANYWAY!
+	//drone->flags |= FL_CHASEABLE; // 3.65 indicates entity can be chase-cammed
 	drone->s.effects |= EF_PLASMA;
 	drone->s.renderfx |= (RF_FRAMELERP|RF_IR_VISIBLE);
 	drone->solid = SOLID_BBOX;
@@ -1617,7 +1622,8 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 	monster->svflags &= ~SVF_DEADMONSTER;
 	monster->yaw_speed = 20;
 	monster->monsterinfo.sight_range = 1024;
-	monster->flags |= FL_CHASEABLE;
+	// No one really liked chasing monsters
+	// monster->flags |= FL_CHASEABLE;
 	monster->deadflag = DEAD_NO;
 	monster->movetype = MOVETYPE_STEP;
 	monster->solid = SOLID_BBOX;

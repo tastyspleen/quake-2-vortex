@@ -56,6 +56,7 @@ extern qboolean INVASION_OTHERSPAWNS_REMOVED;
 extern int invasion_difficulty_level;
 extern float SPREE_TIME;
 extern int average_player_level;
+extern int pvm_average_level;
 extern int DEFENSE_TEAM;
 extern int PREV_DEFENSE_TEAM;
 extern long FLAG_FRAMES;
@@ -891,6 +892,7 @@ extern cvar_t *world_min_shells;
 extern cvar_t *world_min_grenades;
 extern cvar_t *world_min_rockets;
 extern cvar_t *world_min_slugs;
+extern cvar_t *adminctrl;
 //K03 End
 
 //ZOID
@@ -1158,6 +1160,8 @@ void BecomeTE(edict_t *self);//GHz
 void BecomeBigExplosion(edict_t *self);//GHz
 int HighestLevelPlayer(void);//GHz
 int LowestLevelPlayer(void);
+int PvMHighestLevelPlayer(void);//GHz
+int PvMLowestLevelPlayer(void);
 int ActivePlayers (void);//Apple
 float VortexGetAbilityModifier(int level, float base_modifier);//GHz
 int vrx_GetMonsterCost(int mtype);//GHz

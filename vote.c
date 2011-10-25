@@ -464,6 +464,7 @@ int V_AttemptModeChange(qboolean endlevel)
 #else
 	int max_players, players = total_players();
 
+#if FORCE_PVP_WITH_A_LOT_OF_PLAYERS
 	//4.4 forcibly switch to PvP if we are in Invasion/PvM and there are many players
 	max_players = 0.25 * maxclients->value;
 	if (max_players < 4)
@@ -474,7 +475,7 @@ int V_AttemptModeChange(qboolean endlevel)
 		gi.bprintf(PRINT_HIGH, "Forcing switch to FFA because there are too many players!\n");
 		return MAPMODE_FFA;
 	}
-
+#endif
 	// did the vote pass?
 	if (V_VoteDone())
 		return currentVote.mode;
@@ -549,6 +550,8 @@ void RunVotes ()
 //		**VOTE MAP SELECT MENU**
 //************************************************************************************************
 
+extern cvar_t *adminctrl;
+
 void ShowVoteMapMenu_handler(edict_t *ent, int option)
 {
 	if (option == 66666)
@@ -575,7 +578,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 		if (!maplist) return;
 
 		//Admins directly control the map change
-		if (ent->myskills.administrator)
+		if (ent->myskills.administrator && adminctrl->value) // IF the cvar is enabled.
 		{
 			VortexEndLevel();
             V_ChangeMap(maplist, mapnum-1, mode);
@@ -853,11 +856,14 @@ void ShowVoteModeMenu(edict_t *ent)
 //GHz START
 	players = total_players();
 	// pvm and invasion are only available when there are few players on the server
-
+#ifdef FORCE_PVP_WITH_A_LOT_OF_PLAYERS
 	if (0.33 * maxclients->value < 4)
 		min_players = 4;
 	else
 		min_players = 0.25 * maxclients->value;
+#else
+		min_players = maxclients->value;
+#endif
 	/*4.5
 	if (players < min_players)
 	{
@@ -871,14 +877,14 @@ void ShowVoteModeMenu(edict_t *ent)
 		lastline++;
 	}
 	
-	// domination available when there are at least 4 players
+	// domination available when there are at least 6 players
 	if (players >= 4)
 	{
 		addlinetomenu(ent, " Domination", MAPMODE_DOM);
 		lastline++;
 	}
-	// CTF available when there are at least 4 players
-	if (players >= 4)
+	// CTF available when there are at least 6 players
+	if (players >= 6)
 	{
 		addlinetomenu(ent, " CTF", MAPMODE_CTF);
 		lastline++;

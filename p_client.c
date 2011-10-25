@@ -2444,6 +2444,7 @@ void ClientDisconnect (edict_t *ent)
 //		gi.dprintf("%s %s teamnum %d\n", ent->client->pers.netname, G_IsSpectator(ent)?"y":"n", ent->teamnum);
 
 	average_player_level = AveragePlayerLevel();//GHz
+	pvm_average_level = PvMAveragePlayerLevel();
 
 	// make sure there are no mini-bosses on spree war status
 	if (deathmatch->value)
