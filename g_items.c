@@ -12,8 +12,8 @@ gitem_armor_t jacketarmor_info	= { 25, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t combatarmor_info	= { 50, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t bodyarmor_info	= {100, 200, .80, .60, ARMOR_BODY};
 
-static int	jacket_armor_index;
-static int	combat_armor_index;
+int	jacket_armor_index;
+int	combat_armor_index;
 int resistance_index;
 int	strength_index;
 int regeneration_index;
@@ -1224,7 +1224,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 //======================================================================
 
-static void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;

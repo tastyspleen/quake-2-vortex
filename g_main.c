@@ -199,6 +199,9 @@ void ShutdownGame (void)
 	gi.FreeTags (TAG_GAME);
 }
 
+#ifndef WINDOWS
+__attribute__ ((visibility ("default")))
+#endif
 game_export_t *GetGameAPI (game_import_t *import)
 {
 	gi = *import;

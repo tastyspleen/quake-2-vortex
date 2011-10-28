@@ -1,10 +1,14 @@
 #ifndef SETTINGS
 #define SETTINGS
 
-char s1[100];
-char s2[100];
-#define	CURRENT_DATE				_strdate(s1)
-#define CURRENT_TIME				_strtime(s2)
+const char *s1;
+const char *s2;
+
+const char* Date();
+const char* Time();
+
+#define	CURRENT_DATE				s1 = Date()
+#define CURRENT_TIME				s2 = Time()
 
 #define VRX_VERSION "1.0"
 

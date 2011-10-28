@@ -10,7 +10,7 @@
 #include "v_maplist.h"
 #include "shaman.h"
 #include "auras.h"
-#include "talents.h"
+#include "Talents.h"
 
 //************ lasersight.c ************
 void lasersight_off (edict_t *ent);

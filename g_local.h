@@ -19,7 +19,7 @@
 //ZOID
 
 #include "v_shared.h"	//3.0
-#include "spirit.h"		// 3.03+
+#include "Spirit.h"		// 3.03+
 #include "morph.h"
 #include "ally.h" // 3.12
 #include "gds.h" // 3.15
