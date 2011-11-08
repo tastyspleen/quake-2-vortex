@@ -191,7 +191,7 @@ void mymedic_fire_blaster (edict_t *self)
 	else
 		effect = EF_HYPERBLASTER;
 
-	damage = 20 + 3*self->monsterinfo.level;
+	damage = 10 + 4*self->monsterinfo.level;
 
 	MonsterAim(self, 0.8, 2000, false, MZ2_MEDIC_BLASTER_1, forward, start);
 	monster_fire_blaster(self, start, forward, damage, 2000, effect, BLASTER_PROJ_BOLT, 2.0, bounce, MZ2_MEDIC_BLASTER_1);
@@ -203,7 +203,7 @@ void mymedic_fire_bolt (edict_t *self)
 	vec3_t	forward, start;
 
 	min = 4*self->monsterinfo.level;
-	max = 60 + 30*self->monsterinfo.level;
+	max = 50 + 25*self->monsterinfo.level;
 
 	damage = GetRandom(min, max);
 

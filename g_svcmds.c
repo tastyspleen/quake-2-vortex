@@ -709,6 +709,39 @@ void SVCmd_ListCombatPrefs ()
 #endif
 //GHz END
 
+// az begin
+
+void DoMaplistFilename(int mode, char* filename);
+
+void SV_AddMapToMaplist()
+{
+	int mode = atoi(gi.argv(2));
+	char* map = gi.argv(3);
+	char filename[256];
+	qboolean IsAppend = true;
+	FILE* fp;
+
+	if (gi.argc() < 4)
+		gi.cprintf(NULL, PRINT_HIGH, "Missing arguments!\n");
+
+	DoMaplistFilename(mode, &filename[0]);
+
+	if (!(fp = fopen(filename, "a")))
+	{
+		gi.cprintf(NULL, PRINT_HIGH, "%s: file couldn't be opened... opening in write mode.\n", filename);
+		fp = fopen(filename, "w");
+		IsAppend = false;
+		if (!fp)
+			gi.cprintf(NULL, PRINT_HIGH, "Nope. Not in writing mode neither.\n");
+	}
+	
+	fprintf(fp, "%s\n", map);	
+	fclose(fp);
+}
+
+
+// az end
+
 /*
 =================
 ServerCommand
@@ -777,9 +810,12 @@ void	ServerCommand (void)
 	{
 		//3.0 Load the custom map lists
 		if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) 
-			&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF))
+			&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) 
+			&& v_LoadMapList(MAPMODE_FFA) && v_LoadMapList(MAPMODE_INV))
 			gi.cprintf(NULL, PRINT_HIGH, "INFO: Vortex Custom Map Lists loaded successfully\n");
 	}
+	else if (Q_stricmp (cmd, "addtomaplist") == 0)
+		SV_AddMapToMaplist ();
 	else if (Q_stricmp (cmd, "prefs") == 0)
 		SVCmd_ListCombatPrefs ();
 #endif

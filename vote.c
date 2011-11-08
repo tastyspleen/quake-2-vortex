@@ -873,11 +873,14 @@ void ShowVoteModeMenu(edict_t *ent)
 	// invasion mode
 	if (players < min_players)
 	{
-		addlinetomenu(ent, " Invasion", MAPMODE_INV);
-		lastline++;
+		if (invasion_enabled->value)
+		{
+			addlinetomenu(ent, " Invasion", MAPMODE_INV);
+			lastline++;
+		}
 	}
 	
-	// domination available when there are at least 6 players
+	// domination available when there are at least 4 players
 	if (players >= 4)
 	{
 		addlinetomenu(ent, " Domination", MAPMODE_DOM);

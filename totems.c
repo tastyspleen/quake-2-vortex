@@ -492,7 +492,7 @@ void SpawnTotem(edict_t *ent, int abilityID)
 	/*totem->owner =*/ totem->activator = ent;
 	totem->think = totem_general_think;
 	totem->touch = totem_touch;
-	totem->nextthink = level.time + FRAMETIME;
+	totem->nextthink = level.time + FRAMETIME*2;
 	totem->delay = level.time + 0.5;
 	totem->die = totem_die;
 

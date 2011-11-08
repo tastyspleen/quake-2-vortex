@@ -850,8 +850,8 @@ void Cmd_Cripple_f (edict_t *ent)
 
 #define BOLT_SPEED				1000
 #define BOLT_DURATION			3
-#define BOLT_INITIAL_DAMAGE		100
-#define BOLT_ADDON_DAMAGE		20
+#define BOLT_INITIAL_DAMAGE		50
+#define BOLT_ADDON_DAMAGE		10
 #define BOLT_DELAY				0.2
 #define IMP_BOLT_DELAY			0.3
 #define IMP_BOLT_RADIUS			100
@@ -6338,7 +6338,7 @@ void healer_heal (edict_t *self, edict_t *other)
 	// but used G_EntIsAlive for consistency.
 	if (G_EntIsAlive(other) && G_EntIsAlive(self) && OnSameTeam(self, other) && other != self)
 	{
-		int frames = 6000 / (12 * self->monsterinfo.level); // heals 100% health in 5 seconds at level 10
+		int frames = 5000 / (15 * self->monsterinfo.level); // idk how much would this change tbh
 
 		value = 1.0 + 0.1 * getTalentLevel(self->activator, TALENT_SUPER_HEALER);
 		// regenerate health

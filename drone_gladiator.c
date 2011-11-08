@@ -134,7 +134,7 @@ void GladiatorLightningStorm (edict_t *self)
 
 void GaldiatorMelee (edict_t *self)
 {
-	int		damage = 100 + 20 * self->monsterinfo.level;
+	int		damage = 60 + 20 * self->monsterinfo.level; // No one-shots, until later.
 	vec3_t	aim;
 
 	if (self->monsterinfo.bonus_flags & BF_UNIQUE_LIGHTNING)
@@ -220,7 +220,7 @@ void GladiatorGun (edict_t *self)
 	if (!G_EntExists(self->enemy))
 		return;
 
-	damage = 50 + 15 * self->monsterinfo.level;
+	damage = 30 + 25 * self->monsterinfo.level; // from 50. and 15.
 
 	MonsterAim(self, 0.33, 0, false, MZ2_GLADIATOR_RAILGUN_1, forward, start);
 

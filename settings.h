@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "1.0"
+#define VRX_VERSION "1.2"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -97,12 +97,12 @@ const char* Time();
 #define LEVELUP_HEALTH_NECROMANCER	1
 #define LEVELUP_HEALTH_ENGINEER		2
 #define LEVELUP_HEALTH_VAMPIRE		5
-#define LEVELUP_HEALTH_POLTERGEIST	5
-#define LEVELUP_HEALTH_KNIGHT		1
+#define LEVELUP_HEALTH_POLTERGEIST	4
+#define LEVELUP_HEALTH_KNIGHT		5
 #define LEVELUP_HEALTH_CLERIC		5
 #define LEVELUP_HEALTH_MAGE			1
 #define LEVELUP_HEALTH_WEAPONMASTER	1
-#define	LEVELUP_HEALTH_SHAMAN		5
+#define	LEVELUP_HEALTH_SHAMAN		4
 #define LEVELUP_HEALTH_ALIEN		2
 
 #define INITIAL_ARMOR_SOLDIER		50
@@ -306,7 +306,7 @@ const char* Time();
 
 // fires every 13-14 frames
 #define RAILGUN_INITIAL_DAMAGE		100
-#define RAILGUN_ADDON_DAMAGE		8//10
+#define RAILGUN_ADDON_DAMAGE		10//10
 #define RAILGUN_ADDON_HEATDAMAGE	1.0
 
 #define BFG10K_INITIAL_DAMAGE		30
@@ -499,7 +499,7 @@ const char* Time();
 #define ICEBOLT_COST				25
 #define FIREBALL_COST				25
 #define NOVA_COST					25
-#define BOLT_COST					25
+#define BOLT_COST					15
 #define CLIGHTNING_COST				25
 #define LIGHTNING_COST				25
 

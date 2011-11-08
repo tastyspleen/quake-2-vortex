@@ -836,6 +836,12 @@ extern cvar_t *nextlevel_mult;
 
 extern cvar_t *vrx_creditmult;
 extern cvar_t *vrx_pointmult;
+extern cvar_t *vrx_pvppointmult;
+extern cvar_t *vrx_pvmpointmult;
+
+extern cvar_t *vrx_pvpcreditmult;
+extern cvar_t *vrx_pvmcreditmult;
+
 extern cvar_t *sv_maplist;
 extern cvar_t *flood_msgs;
 extern cvar_t *flood_persecond;
@@ -843,6 +849,7 @@ extern cvar_t *flood_waitdelay;
 extern cvar_t *gamedir;
 extern cvar_t *dm_monsters;
 extern cvar_t *reconnect_ip;
+extern cvar_t *invasion_enabled;
 
 extern cvar_t *vrx_password;
 extern cvar_t *min_level;

@@ -1,13 +1,7 @@
 #include "g_local.h"
 
-int v_LoadMapList(int mode)
+void DoMaplistFilename(int mode, char* filename)
 {
-	FILE *fptr;
-	v_maplist_t *maplist;
-	char filename[256];
-	int iterator = 0;
-	
-	//determine path
 	#if defined(_WIN32) || defined(WIN32)
 		sprintf(filename, "%s\\Settings\\", game_path->string);
 	#else
@@ -18,26 +12,53 @@ int v_LoadMapList(int mode)
 	{
 	case MAPMODE_PVP:
 		strcat(filename, "maplist_PVP.txt");
-		maplist = &maplist_PVP;
 		break;
 	case MAPMODE_DOM:
 		strcat(filename, "maplist_DOM.txt");
-		maplist = &maplist_DOM;
 		break;
 	case MAPMODE_PVM:
 		strcat(filename, "maplist_PVM.txt");
-		maplist = &maplist_PVM;
 		break;
 	case MAPMODE_CTF:
 		strcat(filename, "maplist_CTF.txt");
-		maplist = &maplist_CTF;
 		break;
 	case MAPMODE_FFA:
 		strcat(filename, "maplist_FFA.txt");
-		maplist = &maplist_FFA;
 		break;
 	case MAPMODE_INV:
 		strcat(filename, "maplist_INV.txt");
+	}
+}
+
+int v_LoadMapList(int mode)
+{
+	FILE *fptr;
+	v_maplist_t *maplist;
+	char filename[256];
+	int iterator = 0;
+	
+	//determine path
+
+	DoMaplistFilename(mode, &filename[0]);
+
+	switch(mode)
+	{
+	case MAPMODE_PVP:
+		maplist = &maplist_PVP;
+		break;
+	case MAPMODE_DOM:
+		maplist = &maplist_DOM;
+		break;
+	case MAPMODE_PVM:
+		maplist = &maplist_PVM;
+		break;
+	case MAPMODE_CTF:
+		maplist = &maplist_CTF;
+		break;
+	case MAPMODE_FFA:
+		maplist = &maplist_FFA;
+		break;
+	case MAPMODE_INV:
 		maplist = &maplist_INV;
 		break;
 	default:

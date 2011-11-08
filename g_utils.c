@@ -1886,13 +1886,17 @@ float Get2dDistance (vec3_t v1, vec3_t v2)
 	return (sqrt((v2[0]-v1[0])*(v2[0]-v1[0])+(v2[1]-v1[1])*(v2[1]-v1[1])));
 }
 
+#include <time.h>
+
 const char* Date()
 {
 	static char buf[100];
 	time_t now;
+	struct tm *ltime;
+
 	now = time(NULL);
-	struct tm *ltime = localtime(&now);
-	strftime(buf, 100, "%D", ltime);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%x", ltime);
 	return buf;
 }
 
@@ -1900,8 +1904,10 @@ const char* Time()
 {
 	static char buf[100];
 	time_t now;
+	struct tm *ltime;
+
 	now = time(NULL);
-	struct tm *ltime = localtime(&now);
-	strftime(buf, 100, "%R", ltime);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%X", ltime);
 	return buf;
 }

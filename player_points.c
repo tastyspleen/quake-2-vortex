@@ -233,9 +233,9 @@ int VortexAddCredits(edict_t *ent, float level_diff, int bonus, qboolean client)
 	streak = ent->myskills.streak;
 
 	if (client)
-		add_credits = level_diff * (vrx_creditmult->value * (CREDITS_PLAYER_BASE + streak));
+		add_credits = level_diff * (vrx_creditmult->value * vrx_pvpcreditmult->value * (CREDITS_PLAYER_BASE + streak));
 	else
-		add_credits = level_diff * (vrx_creditmult->value * (CREDITS_OTHER_BASE));
+		add_credits = level_diff * (vrx_creditmult->value * vrx_pvmcreditmult->value * (CREDITS_OTHER_BASE));
 
 	if (add_credits > 250)
 		add_credits = 250;
@@ -722,6 +722,11 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	}
 
 	exp_points = dmgmod * (level_diff * (vrx_pointmult->value * (base_exp * bonus)) + break_points);
+
+	if (targ->client) // chile v1.1: pvp has another value.
+		exp_points *= vrx_pvppointmult->value;
+	else if (ffa->value && !targ->client) // Nonplayer entities give more exp.
+		exp_points *= vrx_pvmpointmult->value;
 
 	// min/max points awarded for a kill
 	if (exp_points > max_points)

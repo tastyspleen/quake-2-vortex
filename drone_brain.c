@@ -542,10 +542,10 @@ mframe_t mybrain_frames_attack2 [] =
 };
 mmove_t mybrain_move_attack2 = {FRAME_attak205, FRAME_attak217, mybrain_frames_attack2, mybrain_run};
 
-#define BRAIN_INITIAL_PULL			-60
-#define BRAIN_ADDON_PULL			-2
+#define BRAIN_INITIAL_PULL			-65 // from 60.
+#define BRAIN_ADDON_PULL			0 // from -2, pull shouldn't scale.
 #define BRAIN_INITIAL_TENTACLE_DMG	30
-#define BRAIN_ADDON_TENTACLE_DMG	6
+#define BRAIN_ADDON_TENTACLE_DMG	3 // from 6, give some life for the player.
 
 void mybrain_suxor (edict_t *self)
 {

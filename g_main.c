@@ -66,11 +66,16 @@ cvar_t *sentry_lev2_model;
 cvar_t *sentry_lev3_model;
 cvar_t *nextlevel_mult;
 cvar_t *vrx_creditmult;
+cvar_t *vrx_pvpcreditmult;
+cvar_t *vrx_pvmcreditmult;
 
+cvar_t *invasion_enabled;
 cvar_t *start_level;
 cvar_t *start_nextlevel;
 
 cvar_t *vrx_pointmult;
+cvar_t *vrx_pvppointmult;
+cvar_t *vrx_pvmpointmult;
 cvar_t *flood_msgs;
 cvar_t *flood_persecond;
 cvar_t *flood_waitdelay;
@@ -199,7 +204,7 @@ void ShutdownGame (void)
 	gi.FreeTags (TAG_GAME);
 }
 
-#ifndef WINDOWS
+#ifndef _WINDOWS
 __attribute__ ((visibility ("default")))
 #endif
 game_export_t *GetGameAPI (game_import_t *import)

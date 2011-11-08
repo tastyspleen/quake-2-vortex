@@ -235,7 +235,7 @@ void InitGame (void)
 //ZOID
 
 	// change anytime vars
-	dmflags = gi.cvar ("dmflags", "0", CVAR_SERVERINFO);
+	dmflags = gi.cvar ("dmflags", "0", 0);
 	fraglimit = gi.cvar ("fraglimit", "100", CVAR_SERVERINFO);
 	timelimit = gi.cvar ("timelimit", "21", CVAR_SERVERINFO);
 	password = gi.cvar ("password", "", CVAR_USERINFO);
@@ -270,9 +270,9 @@ void InitGame (void)
 	flood_persecond = gi.cvar ("flood_persecond", "4", 0);
 	flood_waitdelay = gi.cvar ("flood_waitdelay", "10", 0);
 	//maplist value
-	sv_maplist = gi.cvar ("sv_maplist", "", CVAR_SERVERINFO | CVAR_LATCH);
-	min_level = gi.cvar("min_level", "0", CVAR_SERVERINFO);
-	max_level = gi.cvar("max_level", "1000", CVAR_SERVERINFO);
+	sv_maplist = gi.cvar ("sv_maplist", "", CVAR_LATCH);
+	min_level = gi.cvar("min_level", "0", 0);
+	max_level = gi.cvar("max_level", "1000", 0);
 	check_dupeip = gi.cvar("check_dupeip", "0", 0);
 	check_dupename = gi.cvar("check_dupename", "1", 0);
 	newbie_protection = gi.cvar("newbie_protection","0",CVAR_ARCHIVE);
@@ -332,8 +332,13 @@ void InitGame (void)
 	start_level = gi.cvar("start_level","0",CVAR_SERVERINFO | CVAR_LATCH);
 	start_nextlevel = gi.cvar("start_nextlevel","1000",CVAR_LATCH);
 
-	vrx_pointmult = gi.cvar ("vrx_pointmult", "1.0", CVAR_SERVERINFO | CVAR_LATCH);
-	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_SERVERINFO | CVAR_LATCH);
+	invasion_enabled = gi.cvar ("invasion_enabled", "1", CVAR_SERVERINFO | CVAR_LATCH);
+	vrx_pointmult = gi.cvar ("vrx_pointmult", "1.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
+	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.5", 0);
+	vrx_pvmpointmult = gi.cvar ("vrx_pvmpointmult", "1.0", 0);
+	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
+	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "1.0", 0);
+	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "1.0", 0);
 	adminpass = gi.cvar ("adminpass", "", CVAR_ARCHIVE);
 #else
 	gi.cvar("timescale","1",CVAR_NOSET);
@@ -348,7 +353,11 @@ void InitGame (void)
 	gi.cvar_forceset("start_nextlevel", "1000");
 
 	vrx_pointmult = gi.cvar ("vrx_pointmult", "1.5", CVAR_NOSET);
+	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.5", CVAR_SERVERINFO | CVAR_NOSET);
+	vrx_pvmpointmult = gi.cvar ("vrx_pvmpointmult", "1.0", CVAR_SERVERINFO | CVAR_NOSET);
 	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_NOSET);
+	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "2.0", CVAR_SERVERINFO  | CVAR_NOSET);
+	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "2.0", CVAR_SERVERINFO  | CVAR_NOSET);
 	gi.cvar_forceset("vrx_pointmult", "1.5");
 	gi.cvar_forceset("vrx_creditmult", "2.0");
 

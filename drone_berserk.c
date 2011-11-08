@@ -134,7 +134,7 @@ void berserk_attack_spike (edict_t *self)
 	if (!G_EntExists(self->enemy))
 		return;
 
-	damage = 50 + 20 * self->monsterinfo.level;
+	damage = 25 + 20 * self->monsterinfo.level;
 	M_MeleeAttack(self, 96, damage, 400);
 	//FIXME: add bleed curse
 }
@@ -163,7 +163,7 @@ void berserk_attack_club (edict_t *self)
 	if (!G_EntExists(self->enemy))
 		return;
 
-	damage = 50 + 25 * self->monsterinfo.level;
+	damage = 30 + 20 * self->monsterinfo.level;
 	M_MeleeAttack(self, 96, damage, 400);
 }
 
@@ -203,7 +203,7 @@ void berserk_attack_strike (edict_t *self)
 
 	self->lastsound = level.framenum;
 
-	damage = 100+10*self->monsterinfo.level;
+	damage = 45+10*self->monsterinfo.level;
 	gi.sound (self, CHAN_AUTO, gi.soundindex ("tank/tnkatck5.wav"), 1, ATTN_NORM, 0);
 	
 	while ((other = findradius(other, self->s.origin, 128)) != NULL)

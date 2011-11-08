@@ -263,8 +263,8 @@ void myTankBlaster (edict_t *self)
 	else
 		flash_number = MZ2_TANK_BLASTER_3;
 
-	damage = 50 + 10*self->monsterinfo.level;
-	speed = 1000 + 50*self->monsterinfo.level;
+	damage = 35 + 15*self->monsterinfo.level;
+	speed = 1000 /*+ 50*self->monsterinfo.level*/; // speed should NEVER scale.
 
 	MonsterAim(self, 0.8, speed, false, flash_number, forward, start);
 	monster_fire_blaster(self, start, forward, damage, speed, EF_BLASTER, BLASTER_PROJ_BOLT, 2.0, true, flash_number);
@@ -291,8 +291,8 @@ void myTankRocket (edict_t *self)
 	else
 		flash_number = MZ2_TANK_ROCKET_3;
 
-	damage = 50 + 10*self->monsterinfo.level;
-	speed = 650 + 30*self->monsterinfo.level;
+	damage = 30 + 15*self->monsterinfo.level;
+	speed = 650 /*+ 30*self->monsterinfo.level*/; // No scaling speed.
 
 	MonsterAim(self, 0.5, speed, true, flash_number, forward, start);
 
@@ -310,7 +310,7 @@ void myTankMachineGun (edict_t *self)
 
 	flash_number = MZ2_TANK_MACHINEGUN_1 + (self->s.frame - FRAME_attak406);
 
-	damage = 20 + 2*self->monsterinfo.level;
+	damage = 10 + 2*self->monsterinfo.level;
 
 	MonsterAim(self, 0.8, 0, false, flash_number, forward, start);
 
