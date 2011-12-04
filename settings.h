@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "1.2"
+#define VRX_VERSION "1.3"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -97,7 +97,7 @@ const char* Time();
 #define LEVELUP_HEALTH_NECROMANCER	1
 #define LEVELUP_HEALTH_ENGINEER		2
 #define LEVELUP_HEALTH_VAMPIRE		5
-#define LEVELUP_HEALTH_POLTERGEIST	4
+#define LEVELUP_HEALTH_POLTERGEIST	5
 #define LEVELUP_HEALTH_KNIGHT		5
 #define LEVELUP_HEALTH_CLERIC		5
 #define LEVELUP_HEALTH_MAGE			1
@@ -306,7 +306,7 @@ const char* Time();
 
 // fires every 13-14 frames
 #define RAILGUN_INITIAL_DAMAGE		100
-#define RAILGUN_ADDON_DAMAGE		10//10
+#define RAILGUN_ADDON_DAMAGE		8//10
 #define RAILGUN_ADDON_HEATDAMAGE	1.0
 
 #define BFG10K_INITIAL_DAMAGE		30

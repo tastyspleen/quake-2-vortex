@@ -4741,7 +4741,7 @@ void ThrowLaserTrap (edict_t *self, vec3_t start, vec3_t aimdir, int skill_level
 	trap->yaw_speed = LASERTRAP_YAW_SPEED;// rotation speed
 	trap->health = trap->max_health = LASERTRAP_INITIAL_HEALTH + LASERTRAP_ADDON_HEALTH * skill_level;
 	trap->dmg = LASERTRAP_INITIAL_DAMAGE + LASERTRAP_ADDON_DAMAGE * skill_level;
-	trap->delay = level.time + 2.0; // activation time
+	trap->delay = level.time + 1.0; // activation time
 
 	trap->s.modelindex = gi.modelindex ("models/objects/detector/tris.md2");
 

@@ -3,7 +3,7 @@
 #define ADD_ALLY				1
 #define REMOVE_ALLY				2
 #define ALLY_RANGE				0
-#define ALLY_MAX_LEVEL_DELTA	2
+#define ALLY_MAX_LEVEL_DELTA	3
 
 #define	CENTERPRINT				1
 
@@ -99,17 +99,21 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 		return false;
 	}
 	// check for max allies
-	if ((numAllies(ent) + numAllies(other) + 1) > allies->value)
+	// alianza con la mitad del server activo (vrxchile v1.3)
+	if ((numAllies(ent) + numAllies(other) + 1) > ActivePlayers()/2)
 		return false;
 	// are we already allied?
 	if (IsAlly(ent, other))
 		return false;
+	
+	// vrxchile v1.3 encourages alliances ASAP.
 	// are we out of range?
-	if (range && (entdist(ent, other) > range))
-		return false;
+	/*if (range && (entdist(ent, other) > range))
+		return false;*/
 	// can we see each other?
-	if (range && !visible(ent, other))
-		return false;
+	/*if (range && !visible(ent, other))
+		return false;*/
+
 	// only allow allies that are close in level
 	// FIXME: we should get an average or median player level if there are >1 allies
 	if (abs(ent->myskills.level - other->myskills.level) > ALLY_MAX_LEVEL_DELTA)

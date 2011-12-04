@@ -440,9 +440,10 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 	exp_points *= bonus;
 
 	// cap max experience at 300% normal
-	max_exp = 3*base_exp*control_cost;
+	// vrxchile v1.3 Do not cap.
+	/*max_exp = 3*base_exp*control_cost;
 	if (exp_points > max_exp)
-		exp_points = max_exp;
+		exp_points = max_exp;*/
 
 	// give your team some experience
 	if (/*pvm->value ||*/ ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
@@ -728,10 +729,11 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	else if (ffa->value && !targ->client) // Nonplayer entities give more exp.
 		exp_points *= vrx_pvmpointmult->value;
 
+	//vrxchile v1.3 Don't cap.
 	// min/max points awarded for a kill
-	if (exp_points > max_points)
+	/*if (exp_points > max_points)
 		exp_points = max_points;
-	else if (exp_points < minimum_points)
+	else */if (exp_points < minimum_points)
 		exp_points = minimum_points;
 
 	// award experience to allied players

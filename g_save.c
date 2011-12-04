@@ -262,6 +262,7 @@ void InitGame (void)
 	//teamplay = gi.cvar("teamplay","0",CVAR_SERVERINFO);
 	vrx_password = gi.cvar ("vrx_password", "", CVAR_ARCHIVE | CVAR_USERINFO);
 	dm_monsters = gi.cvar ("dm_monsters", "8", CVAR_SERVERINFO);
+	// vrxchile v1.3 ally half server
 	allies = gi.cvar ("allies", "1", CVAR_SERVERINFO | CVAR_LATCH);
 	reconnect_ip = gi.cvar ("reconnect_ip", "0", CVAR_ARCHIVE);
 	//locational_damage = gi.cvar("locational_damage","0",CVAR_LATCH);
