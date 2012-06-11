@@ -264,9 +264,9 @@ void myTankBlaster (edict_t *self)
 		flash_number = MZ2_TANK_BLASTER_3;
 
 	damage = 35 + 15*self->monsterinfo.level;
-	speed = 1000 /*+ 50*self->monsterinfo.level*/; // speed should NEVER scale.
+	speed = 650 /*+ 50*self->monsterinfo.level*/; // speed should NEVER scale.
 
-	MonsterAim(self, 0.8, speed, false, flash_number, forward, start);
+	MonsterAim(self, 1, speed, false, flash_number, forward, start);
 	monster_fire_blaster(self, start, forward, damage, speed, EF_BLASTER, BLASTER_PROJ_BOLT, 2.0, true, flash_number);
 }	
 
@@ -291,10 +291,10 @@ void myTankRocket (edict_t *self)
 	else
 		flash_number = MZ2_TANK_ROCKET_3;
 
-	damage = 30 + 15*self->monsterinfo.level;
-	speed = 650 /*+ 30*self->monsterinfo.level*/; // No scaling speed.
+	damage = 20 + 10*self->monsterinfo.level;
+	speed = 450 /*+ 30*self->monsterinfo.level*/; // No scaling speed.
 
-	MonsterAim(self, 0.5, speed, true, flash_number, forward, start);
+	MonsterAim(self, 1, speed, true, flash_number, forward, start);
 
 	monster_fire_rocket (self, start, forward, damage, speed, flash_number);
 }	
@@ -310,9 +310,9 @@ void myTankMachineGun (edict_t *self)
 
 	flash_number = MZ2_TANK_MACHINEGUN_1 + (self->s.frame - FRAME_attak406);
 
-	damage = 10 + 2*self->monsterinfo.level;
+	damage = 5 + 2*self->monsterinfo.level;
 
-	MonsterAim(self, 0.8, 0, false, flash_number, forward, start);
+	MonsterAim(self, 0.6, 0, false, flash_number, forward, start);
 
 	monster_fire_bullet (self, start, forward, damage, damage, 
 		DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
@@ -1078,14 +1078,14 @@ void init_drone_tank (edict_t *self)
 	gi.soundindex ("tank/tnkatck3.wav");
 
 //	if (self->activator && self->activator->client)
-	self->health = 100 + 65*self->monsterinfo.level;
+	self->health = 100 + 35*self->monsterinfo.level;
 	//else self->health = 100 + 65*self->monsterinfo.level;
 
 	self->max_health = self->health;
 	self->gib_health = -200;
 
 	//if (self->activator && self->activator->client)
-	self->monsterinfo.power_armor_power = 200 + 105*self->monsterinfo.level;
+	self->monsterinfo.power_armor_power = 200 + 75*self->monsterinfo.level;
 	//else self->monsterinfo.power_armor_power = 200 + 105*self->monsterinfo.level;
 
 	self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
@@ -1134,10 +1134,10 @@ void init_drone_commander (edict_t *self)
 	init_drone_tank(self);
 
 	// modify health and armor
-	//self->health = 1000*self->monsterinfo.level;
-	//self->max_health = self->health;
-	//self->monsterinfo.power_armor_power = 1000*self->monsterinfo.level;
-	//self->monsterinfo.max_armor = self->monsterinfo.power_armor_power;
+	self->health = 1000 + 750*self->monsterinfo.level;
+	self->max_health = self->health;
+	self->monsterinfo.power_armor_power = 750*self->monsterinfo.level;
+	self->monsterinfo.max_armor = self->monsterinfo.power_armor_power;
 
 	self->monsterinfo.control_cost = 4;
 	self->monsterinfo.cost = M_COMMANDER_COST;

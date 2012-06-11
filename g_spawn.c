@@ -923,9 +923,9 @@ char *dm_statusbar =
 "yt 2 "
 "string \"Game\" "
 
-"xr	-65 "
+"xr	-80 "
 "yt 11 "
-"num 4 14 "
+"num 5 14 "
 //K03 End
 // spectator
 "if 29 "

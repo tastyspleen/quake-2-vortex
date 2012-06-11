@@ -4,6 +4,7 @@
 //FIXME: need queue that holds all players that are waiting to respawn but all spawns are busy
 edict_t		*INV_SpawnQue[MAX_CLIENTS];
 int			invasion_max_playerspawns;
+int nolagoldval; 
 
 void INV_Init (void)
 {
@@ -14,6 +15,8 @@ void INV_Init (void)
 	INVASION_OTHERSPAWNS_REMOVED = false;
 	invasion_difficulty_level = 1;
 	invasion_max_playerspawns = 0;
+	nolagoldval = nolag->value;
+	gi.cvar_set("nolag", "1");
 }
 
 // initialize array values to NULL
@@ -151,6 +154,8 @@ void INV_AwardPlayers (void)
 
 	gi.bprintf(PRINT_HIGH, "Humans win! Players were awarded a bonus.\n");
 
+	gi.cvar_set("nolag", nolagoldval? "1" : "0");
+
 	for (i=0; i<game.maxclients; i++) 
 	{
 		player = g_edicts+1+i;
@@ -171,13 +176,83 @@ void INV_AwardPlayers (void)
 	}
 }
 
+int fib(int iter)
+{
+	int a, b, c;
+    a = b = c = 1;
+
+	while (iter)
+	{
+		iter--;
+
+		c = a+b;
+		b = a;
+		a = c;
+	}
+	return c;
+}
+
+edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
+{
+	edict_t *monster;
+	vec3_t	start;
+	trace_t	tr;
+	int mhealth = 1;
+
+	monster = SpawnDrone(self, index, true);
+	//monster = SpawnDrone(self, 4, true);
+	
+	// calculate starting position
+	VectorCopy(e->s.origin, start);
+	start[2] = e->absmax[2] + 1 + abs(monster->mins[2]);
+
+	tr = gi.trace(start, monster->mins, monster->maxs, start, NULL, MASK_SHOT);
+
+	// don't spawn here if a friendly monster occupies this space
+	if ((tr.fraction < 1) && tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
+		&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD))
+	{
+		// remove the monster and try again
+		G_FreeEdict(monster);
+		//M_Remove(self, false, false);
+		return NULL;
+	}
+		
+	e->wait = level.time + 1.0; // time until spawn is available again
+	
+	monster->monsterinfo.aiflags |= AI_FIND_NAVI; // search for navi
+	monster->s.angles[YAW] = e->s.angles[YAW];
+	monster->prev_navi = NULL;
+
+
+	// we modify the monsters' health lightly
+	if (invasion_difficulty_level < 7 && invasion_difficulty_level > 5)
+		mhealth = (invasion_difficulty_level-5) * 0.07 + 1;
+	else if (invasion_difficulty_level >= 7)
+		mhealth = 1.5 + 0.05 * invasion_difficulty_level;
+
+	monster->max_health = monster->health = monster->max_health*mhealth;
+
+		// move the monster onto the spawn pad
+	VectorCopy(start, monster->s.origin);
+	VectorCopy(start, monster->s.old_origin);
+	monster->s.event = EV_OTHER_TELEPORT;
+
+	if (e->count)
+		monster->monsterinfo.inv_framenum = level.framenum + e->count;
+	else
+		monster->monsterinfo.inv_framenum = level.framenum + 50; // give them quad/invuln to prevent spawn-camping
+	gi.linkentity(monster);
+	return monster;
+}
+
+int printedmessage = 0;
+
 void INV_SpawnMonsters (edict_t *self)
 {
 	int		players, max_monsters;
 	int		total_monsters = PVM_TotalMonsters(self);
-	edict_t *monster, *e=NULL;
-	vec3_t	start;
-	trace_t	tr;
+	edict_t *e=NULL;
 
 	players = max_monsters = total_players();
 
@@ -201,51 +276,69 @@ void INV_SpawnMonsters (edict_t *self)
 		return;
 	}
 
+	switch (invasion_difficulty_level)
+	{
+	case 1: max_monsters = 15; break;
+	case 2: max_monsters = 20; break;
+	case 3: max_monsters = 25; break;
+	case 4: max_monsters = 30; break;
+	case 5: max_monsters = 40; break;
+	default: max_monsters = 40;
+	}
+
+	if (!(invasion_difficulty_level % 5))
+	{
+		max_monsters = 4*(ActivePlayers()-1);
+	}
+
+	if (!printedmessage)
+	{
+
+		if (invasion_difficulty_level == 1)
+				gi.bprintf(PRINT_HIGH, "The invasion begins!\n");
+		if (invasion_difficulty_level % 5)
+			gi.bprintf(PRINT_HIGH, "Welcome to level %d. %d monsters incoming!\n", invasion_difficulty_level, max_monsters);
+		else
+			gi.bprintf(PRINT_HIGH, "Welcome to level %d.\n", invasion_difficulty_level, max_monsters);
+		printedmessage = 1;
+	}
+
+	if (max_monsters > 50) // cap the amount of monsters
+		max_monsters = 50;
+
 	// the dm_monsters cvar is the minimum of monsters that will spawn
 	if (max_monsters < dm_monsters->value)
 		max_monsters = dm_monsters->value;
 
-	while (((e = INV_GetMonsterSpawn(e)) != NULL) 
-		&& (total_monsters < max_monsters))
+	if (invasion_difficulty_level % 5)
 	{
-		monster = SpawnDrone(self, GetRandom(1, 8), true);
-		//monster = SpawnDrone(self, 4, true);
-
-		// calculate starting position
-		VectorCopy(e->s.origin, start);
-		start[2] = e->absmax[2] + 1 + abs(monster->mins[2]);
-
-		tr = gi.trace(start, monster->mins, monster->maxs, start, NULL, MASK_SHOT);
-
-		// don't spawn here if a friendly monster occupies this space
-		if ((tr.fraction < 1) && tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
-			&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD))
+		while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && (total_monsters < max_monsters) )
 		{
-			// remove the monster and try again
-			G_FreeEdict(monster);
-			//M_Remove(self, false, false);
-			continue;
+			int randomval = GetRandom(1, 8);
+
+			while ( (randomval == 3) || (randomval == 5) ) // disallow bitches and medics
+			{
+				randomval = GetRandom(1, 8);
+			}
+
+			if (!INV_SpawnDrone(self, e, randomval))
+				continue;
+
+			total_monsters++;
+			//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
+			gi.dprintf("World has %d/%d monsters.\n", total_monsters, max_monsters);
 		}
+	}else if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
+	{
+		int bcount = 0;
+		while (((e = INV_GetMonsterSpawn(e)) != NULL) && (bcount < 1))
+		{
 
-		e->wait = level.time + 1.0; // time until spawn is available again
+			bcount++;
 
-		monster->monsterinfo.aiflags |= AI_FIND_NAVI; // search for navi
-		monster->s.angles[YAW] = e->s.angles[YAW];
-		// move the monster onto the spawn pad
-		VectorCopy(start, monster->s.origin);
-		VectorCopy(start, monster->s.old_origin);
-		monster->s.event = EV_OTHER_TELEPORT;
-
-		if (e->count)
-			monster->monsterinfo.inv_framenum = level.framenum + e->count;
-		else
-			monster->monsterinfo.inv_framenum = level.framenum + 50; // give them quad/invuln to prevent spawn-camping
-
-		gi.linkentity(monster);
-
-		total_monsters++;
-		//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
-		gi.dprintf("World has %d/%d monsters.\n", total_monsters, max_monsters);
+			INV_SpawnDrone(self, e, 30);
+			total_monsters = max_monsters = 1;
+		}
 	}
 
 	//if (!e)
@@ -253,14 +346,9 @@ void INV_SpawnMonsters (edict_t *self)
 
 	if (total_monsters == max_monsters)
 	{
-		if (invasion_difficulty_level == 1)
-			gi.bprintf(PRINT_HIGH, "The invasion begins!\n");
-
-		gi.bprintf(PRINT_HIGH, "Welcome to level %d.\n", invasion_difficulty_level);
-
 		// increase the difficulty level for the next wave
-		invasion_difficulty_level += 1 + (invasion_difficulty_level / 10);
-
+		invasion_difficulty_level += 1/* + (invasion_difficulty_level / 10)*/; // we're doing a fib amount of monsters, so this would be cruel
+		printedmessage = 0;
 		self->count = MONSTERSPAWN_STATUS_IDLE;
 	}
 
@@ -382,7 +470,7 @@ void SP_info_player_invasion (edict_t *self)
 	gi.setmodel (self, "models/objects/dmspot/tris.md2");
 	self->s.skinnum = 0;
 	self->mtype = INVASION_PLAYERSPAWN;
-	self->health = PLAYERSPAWN_HEALTH;
+	self->health = PLAYERSPAWN_HEALTH + 250*AveragePlayerLevel();
 	self->max_health = self->health;
 	self->takedamage = DAMAGE_YES;
 	self->die = info_player_invasion_death;
@@ -422,6 +510,8 @@ void SP_navi_monster_invasion (edict_t *self)
 		G_FreeEdict (self);
 		return;
 	}
+	
+	//gi.dprintf("navi point created!\n");
 
 	self->solid = SOLID_NOT;
 	self->mtype = INVASION_NAVI;

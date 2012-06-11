@@ -3,7 +3,7 @@
 #define ADD_ALLY				1
 #define REMOVE_ALLY				2
 #define ALLY_RANGE				0
-#define ALLY_MAX_LEVEL_DELTA	3
+#define ALLY_MAX_LEVEL_DELTA	5
 
 #define	CENTERPRINT				1
 
@@ -100,7 +100,9 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 	}
 	// check for max allies
 	// alianza con la mitad del server activo (vrxchile v1.3)
-	if ((numAllies(ent) + numAllies(other) + 1) > ActivePlayers()/2)
+	// si uno de los dos tiene una alianza con mas de la mitad de los jugadores activos, no se pueden aliar.
+	if (   ((numAllies(ent) + 1) > ActivePlayers()/2) || 
+		((numAllies(other) + 1) > ActivePlayers()/2) ) 
 		return false;
 	// are we already allied?
 	if (IsAlly(ent, other))
@@ -122,11 +124,11 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 		return false;
 	}
 	// only allow allies when their level isn't too high, and server has enough players
-	if ((ent->myskills.level > AveragePlayerLevel()*1.5) || (other->myskills.level > AveragePlayerLevel()*1.5) /*|| (ActivePlayers() < 6)*/)
+	/*if ((ent->myskills.level > AveragePlayerLevel()*1.5) || (other->myskills.level > AveragePlayerLevel()*1.5) || (ActivePlayers() < 6))
 	{
 		//gi.dprintf("no1\n");
 		return false;
-	}
+	}*/
 	//4.5 only allow allies if they have the same combat preferences
 	//if (ent->myskills.respawns != other->myskills.respawns)
 	if (((ent->myskills.respawns & HOSTILE_PLAYERS) != (other->myskills.respawns & HOSTILE_PLAYERS))

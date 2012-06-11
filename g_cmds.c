@@ -2366,6 +2366,11 @@ void Cmd_AdminCmd (edict_t *ent)
 		if (index < 0)	adminSpawnRune(ent, type, 0);
 			else adminSpawnRune(ent, type, index);
 	}
+	else if (Q_stricmp(cmd1, "incinv") == 0)
+	{
+		invasion_difficulty_level++;
+		gi.cprintf(ent, PRINT_HIGH, "invasion level now %d\n", invasion_difficulty_level);
+	}
 	else if (Q_stricmp(cmd1, "title") == 0)
 	{
 		if ((player = FindPlayerByName(cmd2)) != NULL)

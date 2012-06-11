@@ -366,7 +366,7 @@ qboolean FindValidSpawnPoint (edict_t *ent, qboolean air)
 		// check left
 		VectorMA(start, -8192, right, end);
 		tr = gi.trace(start, NULL, NULL, end, NULL, MASK_SOLID);
-		if (tr.surface->flags & SURF_SKY)
+		if (!tr.surface || (tr.surface->flags & SURF_SKY))
 			continue;
 
 		// then check our final position

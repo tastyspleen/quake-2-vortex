@@ -238,7 +238,7 @@ void mutant_hit_left (edict_t *self)
 
 	if (!self->activator->client)
 		damage = 40*self->monsterinfo.level;
-	else damage = 20*self->monsterinfo.level;
+	else damage = 6*self->monsterinfo.level;
 
 	VectorSet (aim, 100, self->mins[0], 8);
 	if (fire_hit (self, aim, damage, 100))
@@ -254,7 +254,7 @@ void mutant_hit_right (edict_t *self)
 
 	if (!self->activator->client)
 		damage = 40*self->monsterinfo.level;
-	else damage = 20*self->monsterinfo.level;
+	else damage = 7*self->monsterinfo.level;
 
 	VectorSet (aim, 100, self->maxs[0], 8);
 	if (fire_hit (self, aim, damage, 100))
@@ -312,7 +312,7 @@ void mutant_jump_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface
 		//if (!self->activator->client)
 		//	damage = 40*self->monsterinfo.level;
 		//else 
-			damage = 50 + 15*self->monsterinfo.level;
+			damage = 30 + 7*self->monsterinfo.level;
 			damage = monster_increaseDamageByTalent(self->activator, damage);
 
 		knockback = damage;
@@ -537,7 +537,7 @@ void init_drone_mutant (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 200 + 60*self->monsterinfo.level;
+	self->health = 150 + 20*self->monsterinfo.level;
 	//else
 		//self->health = 400 + 160*self->monsterinfo.level;
 

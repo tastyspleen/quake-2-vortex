@@ -263,8 +263,9 @@ edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, 
 
 	if (iRandom < CHANCE_UNIQUE)
 	{
-		//spawn a unique
-		if (!spawnUnique(rune, 0))
+		//spawn a unique 
+		// vrx chile 1.4 no uniques until someone makes them
+		//if (!spawnUnique(rune, 0))
 			spawnNorm(rune, targ_level, 0);
 	}
 	else if (iRandom < CHANCE_UNIQUE + CHANCE_CLASS)
@@ -318,13 +319,13 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 			else if (self->monsterinfo.bonus_flags & BF_UNIQUE_LIGHTNING 
 				|| self->monsterinfo.bonus_flags & BF_UNIQUE_FIRE)
 			// unique monsters have a 50% chance to spawn a rune
-				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 50.0;
+				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 75.0;
 			else if (self->monsterinfo.bonus_flags & BF_CHAMPION)
-			// champion monsters have a 2% chance to spawn a rune
-				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 2.0;
+			// champion monsters have a 15% chance to spawn a rune
+				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 15.0; // from 2%
 			else
-			// monsters have a 0.2% chance to spawn a rune
-				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 0.2;
+			// monsters have a 5% chance to spawn a rune
+				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 5.0; // from 0.2%
 
 			//gi.dprintf("%.3f\n", temp*RUNE_SPAWN_BASE);
 
@@ -344,9 +345,9 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 	{
 		//boss has a greater chance of dropping a rune
 		if (attacker->myskills.boss > 0)
-            temp = (float)attacker->myskills.boss / 5.0;
+            temp = (float)attacker->myskills.boss * 5;
 		else
-			temp = (float) (self->myskills.level + 1) / (attacker->myskills.level + 1);
+			temp = (float) (self->myskills.level + 1) * 5.0 / (attacker->myskills.level + 1);
 		
 		// miniboss has greater chance of dropping a rune
 		if (IsNewbieBasher(self))
@@ -380,7 +381,7 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 	if (iRandom < CHANCE_UNIQUE)
 	{
 		//spawn a unique
-		if (!spawnUnique(rune, 0))
+		//if (!spawnUnique(rune, 0))
 			spawnNorm(rune, targ_level, 0);
 	}
 	else if (iRandom < CHANCE_UNIQUE + CHANCE_CLASS)
@@ -500,7 +501,7 @@ void spawnClassRune(edict_t *rune, int targ_level)
 	max_mods = 1 + (0.2 * targ_level);	//This means lvl 15+ can get 4 mods
 	if (max_mods > 4)
 		max_mods = 4;
-	num_mods = GetRandom(0, max_mods);
+	num_mods = GetRandom(1, max_mods); // from 1 - don't be a dick
 	rune->vrxitem.itemtype = ITEM_CLASSRUNE;
 	rune->vrxitem.classNum = GetRandom(1, CLASS_MAX);	//class number
 	for (i = 0; i < num_mods; ++i)
@@ -1095,7 +1096,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 			if (ent->health < max_hp)
 			{
 				//Use the potion
-				ent->health += max_hp / 3;
+				ent->health += max_hp/* / 3*/; // make them useful once again vrx chile 1.4
 				if (ent->health > max_hp)
 					ent->health = max_hp;
 

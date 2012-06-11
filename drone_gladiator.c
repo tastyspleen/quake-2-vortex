@@ -220,9 +220,9 @@ void GladiatorGun (edict_t *self)
 	if (!G_EntExists(self->enemy))
 		return;
 
-	damage = 30 + 25 * self->monsterinfo.level; // from 50. and 15.
+	damage = 15 + 10 * self->monsterinfo.level; // from 50. and 15.
 
-	MonsterAim(self, 0.33, 0, false, MZ2_GLADIATOR_RAILGUN_1, forward, start);
+	MonsterAim(self, 0.7, 0, false, MZ2_GLADIATOR_RAILGUN_1, forward, start);
 
 	monster_fire_railgun (self, start, forward, damage, 100, MZ2_GLADIATOR_RAILGUN_1);
 }
@@ -390,7 +390,7 @@ void init_drone_gladiator (edict_t *self)
 	self->s.modelindex = gi.modelindex ("models/monsters/gladiatr/tris.md2");
 	VectorSet (self->mins, -24, -24, -24);
 	VectorSet (self->maxs, 24, 24, 48);
-	self->health = 100 + 10*self->monsterinfo.level;
+	self->health = 75 + 10*self->monsterinfo.level;
 	self->max_health = self->health;
 	self->gib_health = -100;
 	self->mass = 400;

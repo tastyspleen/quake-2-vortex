@@ -203,8 +203,8 @@ void myGunnerGrenade (edict_t *self)
 	if (!self->enemy || !self->enemy->inuse)
 		return;
 
-	damage = 50 + 10*self->monsterinfo.level;
-	speed = 600 + 30*self->monsterinfo.level;
+	damage = 24 + 6*self->monsterinfo.level;
+	speed = 600 /*+ 30*self->monsterinfo.level*/;
 
 	if (speed > 900)
 		speed = 900;
@@ -214,7 +214,7 @@ void myGunnerGrenade (edict_t *self)
 	else
 		flash_number = MZ2_GUNNER_GRENADE_4;
 
-	MonsterAim(self, 0.8, speed, false, flash_number, forward, start);
+	MonsterAim(self, 0.9, speed, false, flash_number, forward, start);
 	monster_fire_grenade(self, start, forward, damage, speed, flash_number);
 }
 
@@ -331,9 +331,9 @@ void myGunnerFire (edict_t *self)
 
 	flash_number = MZ2_GUNNER_MACHINEGUN_1 + (self->s.frame - FRAME_attak216);
  
-	damage = 10 + self->monsterinfo.level;
+	damage = 7 + self->monsterinfo.level;
 
-	MonsterAim(self, 0.8, 0, false, flash_number, forward, start);
+	MonsterAim(self, 0.9, 0, false, flash_number, forward, start);
 
 	monster_fire_bullet (self, start, forward, damage, damage, 
 		DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
@@ -657,7 +657,7 @@ void init_drone_gunner (edict_t *self)
 	VectorSet (self->maxs, 16, 16, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 50 + 25*self->monsterinfo.level;
+	self->health = 50 + 16*self->monsterinfo.level;
 	//else self->health = 100 + 30*self->monsterinfo.level;
 
 	self->max_health = self->health;

@@ -35,8 +35,8 @@ const char* Time();
 
 #define SMARTROCKET_LOCKFRAMES		3 // frames required for smart rocket to lock-on to a target
 #define DAMAGE_ESCAPE_DELAY			0.2 // seconds before player can use tball/jetpack/boost/teleport/superspeed after being damaged
-#define EXP_PLAYER_MONSTER				20
-#define EXP_WORLD_MONSTER				20
+#define EXP_PLAYER_MONSTER				100
+#define EXP_WORLD_MONSTER				75
 #define AMMO_REGEN_DELAY			5.0 // seconds until next ammo regen tick
 #define MAX_KNOCKBACK				300 // maximum knockback allowed for some attacks (e.g. rocket explosion)
 #define CHAT_PROTECT_FRAMES			200
@@ -511,7 +511,7 @@ const char* Time();
 #define RADIUS_BOMB					512
 
 //3.0 Armoury
-#define ARMORY_ITEMS				28	//Number of available items
+#define ARMORY_ITEMS				30	//Number of available items
 
 #define ARMORY_RUNE_UNIQUE_PRICE	150000
 #define ARMORY_RUNE_APOINT_PRICE	5000
@@ -530,7 +530,7 @@ const char* Time();
 #define ARMORY_PRICE_GRAVITYBOOTS	150
 #define ARMORY_PRICE_FIRE_RESIST	75
 #define ARMORY_PRICE_AUTO_TBALL		250
-#define ARMORY_PRICE_RESET			2500 // per level price (so level 10 would be 25k)
+#define ARMORY_PRICE_RESET			3000 // per level price (so level 10 would be 30k)
 
 //#define ARMORY_QTY_RESPAWNS			1000
 #define ARMORY_QTY_POTIONS			5

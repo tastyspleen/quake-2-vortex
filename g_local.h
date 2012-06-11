@@ -1890,6 +1890,7 @@ struct edict_s
 	float		removetime; //4.07 time to auto-remove
 	edict_t		*prev_owner; // for conversion
 //GHz END
+	edict_t *prev_navi;
 };
 
 #include "auras.h"

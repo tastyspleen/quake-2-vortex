@@ -128,6 +128,8 @@ char *GetArmoryItemString (int purchase_number)
 	case 26:	return "Ability Rune";
 	case 27:	return "Weapon Rune";
 	case 28:	return "Reset Abilities/Weapons";
+	case 29:	return "Ability point";
+	case 30:	return "Weapon point";
 
 	default:	return "<BAD ITEM NUMBER>";
 	}
@@ -666,6 +668,36 @@ char *GetRuneValString(item_t *rune)
 					case 4:  return "Guru's";
 					case 5:  return "Expert's";
 					case 6:  return "Elite's'";
+					default: return "Cheater's";
+					}
+				}
+				break;
+			case CLASS_ALIEN:
+				{
+					switch (level / 2)
+					{
+						case 0:  return "Newborn's";
+						case 1:	 return "Feeding's";
+						case 2:  return "Grown's";
+						case 3:  return "Martian's";
+						case 4:  return "Extraterrestrial's";
+						case 5:  return "Invader's";
+						case 6:  return "Royal";
+						default: return "Cheater's";
+					}
+				}
+				break;
+			case CLASS_SHAMAN:
+				{
+					switch (level / 2)
+					{
+					case 0:  return "Villager's";
+					case 1:	 return "Agricultor's";
+					case 2:  return "Shaman's";
+					case 3:  return "Exorcist's";
+					case 4:  return "Mapudungun's";
+					case 5:  return "Spiriter's";
+					case 6:  return "Totem Manipulator's";
 					default: return "Cheater's";
 					}
 				}

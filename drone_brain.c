@@ -800,7 +800,7 @@ void init_drone_brain (edict_t *self)
 	VectorSet (self->maxs, 16, 16, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 50 + 20*self->monsterinfo.level;
+	self->health = 45 + 15*self->monsterinfo.level;
 	//else self->health = 100 + 40*self->monsterinfo.level;
 
 	self->max_health = self->health;

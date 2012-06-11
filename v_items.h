@@ -48,13 +48,13 @@ typedef struct item_s
 
 #define RUNE_SPAWN_BASE			0.01	// (0.01 = 1% per frag) base chance of a rune spawning, before level modifiers
 #define RUNE_WEAPON_MAXVALUE	5		// maximum modifier for weapon runes
-#define RUNE_ABILITY_MAXVALUE	3		// maximum modifier for ability runes
+#define RUNE_ABILITY_MAXVALUE	10		// maximum modifier for ability runes
 #define RUNE_COST_BASE			2500
 #define RUNE_COST_ADDON			750
 
-#define CHANCE_NORM				700		//70%	(1 in 1.5)
-#define CHANCE_COMBO			270		//27%	(1 in 3.7)
-#define CHANCE_CLASS			28		//2.8%	(1 in 40)
+#define CHANCE_NORM				750		//50%	(1 in 1.5)
+#define CHANCE_COMBO			250		//27%	(1 in 3.7)
+#define CHANCE_CLASS			20		//2.8%	(1 in 40)
 #define CHANCE_UNIQUE			0		//0.2%	(1 in 500)
 
 #endif

@@ -276,6 +276,21 @@ qboolean drone_validnavi (edict_t *self, edict_t *other, qboolean visibility_che
 	if (self->activator->client || (self->monsterinfo.aiflags & AI_STAND_GROUND))
 		return false;
 	// make sure this is actually a beacon
+	if (!other || !other->inuse || (other->mtype != INVASION_NAVI))//INVASION_NAVI))
+		return false;
+	// do a visibility check if required
+	if (visibility_check && !visible(self, other))
+		return false;
+	return true;
+}
+
+qboolean drone_validpspawn (edict_t *self, edict_t *other, qboolean visibility_check)
+{
+	// only world-spawn monsters should search for invasion mode navi
+	// don't bother if they are not mobile
+	if (self->activator->client || (self->monsterinfo.aiflags & AI_STAND_GROUND))
+		return false;
+	// make sure this is actually a beacon
 	if (!other || !other->inuse || (other->mtype != INVASION_PLAYERSPAWN))//INVASION_NAVI))
 		return false;
 	// do a visibility check if required
@@ -378,25 +393,31 @@ edict_t *drone_get_enemy (edict_t *self)
 	return NULL;
 }
 
+edict_t *drone_findnavi (edict_t *self);
+
+// lolwut
 edict_t *drone_get_navi (edict_t *self)
 {
-	edict_t *target = NULL;
+	/*edict_t *target = NULL;
 
 	// find a navigational entity
 	// monster must be owned by world and not instructed to ignore navi
 	if (self->monsterinfo.aiflags & AI_FIND_NAVI)
 	{
 		while ((target = findclosestradius1 (target, self->s.origin, 
-			8192/*self->monsterinfo.sight_range*/)) != NULL)
-		{
+			8192/*self->monsterinfo.sight_range*//*)) != NULL)*/
+	/*	{
 			if (!drone_validnavi(self, target, false))
 				continue;
 			return target;
 		}
-	}
+	}*/
 
+	return drone_findnavi(self);
+ /*
 	// can't find a valid navigational entity
 	return NULL;
+	*/
 }
 
 edict_t *drone_get_target (edict_t *self, 
@@ -413,7 +434,7 @@ edict_t *drone_get_target (edict_t *self,
 		return target;
 
 	// find navi
-	if (get_navi && (target = drone_get_navi(self)) != NULL)
+	if (get_navi && ((target = drone_get_navi(self)) != NULL))
 		return target;
 
 	return NULL;
@@ -492,8 +513,8 @@ qboolean drone_findtarget (edict_t *self)
 		// set ai flags to chase goal and turn off circle strafing
 		self->monsterinfo.aiflags |= (AI_COMBAT_POINT|AI_NO_CIRCLE_STRAFE);
 		self->monsterinfo.aiflags &= ~AI_LOST_SIGHT;
-		//self->enemy = target;
-		self->goalentity = target;
+		self->enemy = target;
+		//self->goalentity = target;
 		VectorCopy(target->s.origin, self->monsterinfo.last_sighting);
 		return true;
 	}
@@ -544,6 +565,7 @@ void drone_ai_idle (edict_t *self)
 
 qboolean drone_ai_findgoal (edict_t *self)
 {
+
 	// did we have a previous enemy?
 	if (self->oldenemy)
 	{
@@ -1234,18 +1256,58 @@ void drone_cleargoal (edict_t *self)
 		self->monsterinfo.stand(self);
 }
 
+
 edict_t *drone_findnavi (edict_t *self)
 {
 	edict_t *e=NULL;
+	edict_t *navis[5];
+	int count = 0;
+	int iters = 0;
+	int i;
+	for (i = 0; i<5; i++ )
+		navis[i] = NULL;
+
+	if(self->prev_navi)
+	{
+		if (self->prev_navi->target && self->prev_navi->targetname &&
+						((e = G_Find(NULL, FOFS(targetname), self->prev_navi->target)) != NULL))
+		{
+			self->prev_navi = e;
+			return e;
+		}else // No navi points ahead.
+		{
+			while ((e = findclosestradius1 (e, self->s.origin, //find player spawn
+			self->monsterinfo.sight_range)) != NULL)
+			{
+				if (!drone_validpspawn(self, e, false))
+				{
+					continue;
+				}
+				return e;
+			}
+		}
+	}
 
 	while ((e = findclosestradius1 (e, self->s.origin, 
 		self->monsterinfo.sight_range)) != NULL)
 	{
-		if (!drone_validnavi(self, e, true))
+		if (!drone_validnavi(self, e, false))
+		{
+			iters++;
+			if (iters > 256)
+				break;
 			continue;
-		return e;
+		}
+		if (count == 5)
+			break;
+		navis[count] = e;
+		count++;
 	}
-	return NULL;
+	i = GetRandom(0,4);
+	e = navis[i];
+	self->prev_navi = e;
+	//gi.dprintf("selected navi %i at %d\n", i, e);
+	return e;
 }
 
 int NextWaypointLocation (vec3_t start, vec3_t loc, int *wp);
@@ -1466,14 +1528,18 @@ void drone_ai_run1 (edict_t *self, float dist)
 
 	// determine which goal to chase
 	if (self->enemy)
+	{
 		goal = self->enemy; // an enemy
+	}
 	else if (self->goalentity)
 	{
 		// try to find an enemy
 		drone_findtarget(self);
 		if (self->enemy)
+		{
 			goal = self->enemy;
-		// couldn't find one, so follow goalentity (non-enemy goal)
+			// couldn't find one, so follow goalentity (non-enemy goal)
+		}
 		else
 			goal = self->goalentity;
 	}
@@ -1638,16 +1704,16 @@ Called when the monster is chasing an enemy or goal
 */
 void drone_ai_run (edict_t *self, float dist)
 {
-	//float		time;
-	//vec3_t		start, end, v;
-	//trace_t		tr;
-	//edict_t		*tempgoal=NULL;
-	//qboolean	enemy_vis=false;
+	float		time;
+	vec3_t		start, end, v;
+	trace_t		tr;
+	edict_t		*tempgoal=NULL;
+	qboolean	enemy_vis=false;
 
 	drone_ai_run1(self, dist);
 	return;
-/*
-	// if we're dead, we shouldn't be here
+
+/*	// if we're dead, we shouldn't be here
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
@@ -1683,7 +1749,7 @@ void drone_ai_run (edict_t *self, float dist)
 					if (self->enemy->target && self->enemy->targetname &&
 						((e = G_Find(NULL, FOFS(targetname), self->enemy->target)) != NULL))
 					{
-						//gi.dprintf("following next navi in chain\n");
+						gi.dprintf("following next navi in chain\n");
 						self->enemy = e;
 					}
 					else
@@ -1692,7 +1758,7 @@ void drone_ai_run (edict_t *self, float dist)
 						// we've reached our final destination
 						drone_cleargoal(self);
 						self->monsterinfo.aiflags &= ~AI_FIND_NAVI;
-						//gi.dprintf("reached final destination\n");
+						gi.dprintf("reached final destination\n");
 						return;
 					}
 				}

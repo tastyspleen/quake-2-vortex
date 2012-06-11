@@ -669,6 +669,12 @@ edict_t *G_Spawn (void)
 	}
 		
 	globals.num_edicts++;
+
+	if (globals.num_edicts == 128 || globals.num_edicts == 129) 
+	{
+		gi.cprintf(NULL, PRINT_HIGH, "");
+	}
+
 	G_InitEdict (e);
 //GHz START
 	// added this to prevent game errors

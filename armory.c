@@ -260,6 +260,16 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			if (price > 50000)
 				price = 50000;
 			break;
+		case 29:	//ability point
+			price = 2750*ent->myskills.level;
+			if (price > 50000)
+				price = 50000;
+			break;
+		case 30: // weapon point
+			price = 2000*ent->myskills.level;
+			if (price > 50000)
+				price = 50000;
+			break;
 		default:
 			gi.dprintf("ERROR: Invalid armory item!\n");
 			return;
@@ -381,12 +391,20 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		case 28:	//Reset char data
 			ChangeClass(ent->client->pers.netname, ent->myskills.class_num, 2);
 			break;
+		case 29:
+			ent->myskills.speciality_points += 1;
+			gi.cprintf(ent, PRINT_HIGH, "You bought an ability point - you know have %d.\n", ent->myskills.speciality_points);
+			break;
+		case 30:
+			ent->myskills.weapon_points += 1;
+			gi.cprintf(ent, PRINT_HIGH, "You bought a weapon point - you know have %d.\n", ent->myskills.weapon_points);
+			break;
 		}
 	}
 
 	//spend the credits
 	ent->myskills.credits -= price;
-	gi.cprintf(ent, PRINT_HIGH, "You now have %d credits left. \n", ent->myskills.credits);
+	gi.cprintf(ent, PRINT_HIGH, "%d credits left. \n", ent->myskills.credits);
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 }

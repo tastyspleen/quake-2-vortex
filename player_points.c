@@ -67,7 +67,7 @@ void NewLevel_Addons(edict_t *ent)
 			ent->myskills.abilities[ID].current_level++;
 		}
 		else
-			ent->myskills.speciality_points += 2;
+			ent->myskills.speciality_points += 2 + ent->myskills.abilities[ID].level; // give back points spent on ID.
 	}
 
 	// free scanner at level 10

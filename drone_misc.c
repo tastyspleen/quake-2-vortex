@@ -524,7 +524,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		if (drone_type >= 30)// tank commander, supertank
 			drone->monsterinfo.level = HighestLevelPlayer();
 		else if (INVASION_OTHERSPAWNS_REMOVED)
-			drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer())+invasion_difficulty_level-1;
+			drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer())/*+invasion_difficulty_level-1*/;
 		else
 		{
 			if (pvm->value || ffa->value)
@@ -625,8 +625,8 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	// base hp/armor multiplier
 	mult = 1.0;
 
-	if (drone->mtype == M_COMMANDER)
-		mult *= 80;
+	//if (drone->mtype == M_COMMANDER)
+	//	mult *= 80;
 
 	//4.5 monster bonus flags
 	if (drone->monsterinfo.bonus_flags & BF_UNIQUE_FIRE 
