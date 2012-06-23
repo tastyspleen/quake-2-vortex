@@ -338,7 +338,7 @@ void InitGame (void)
 	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.5", 0);
 	vrx_pvmpointmult = gi.cvar ("vrx_pvmpointmult", "1.0", 0);
 	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
-	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "1.0", 0);
+	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "3.0", 0);
 	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "1.0", 0);
 	adminpass = gi.cvar ("adminpass", "", CVAR_ARCHIVE);
 #else

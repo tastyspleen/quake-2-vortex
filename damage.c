@@ -144,8 +144,13 @@ qboolean IsMorphedPlayer (edict_t *ent)
 float getPackModifier (edict_t *ent)
 {
 	//Talent: Pack Animal
-	int		talentLevel=getTalentLevel(ent, TALENT_PACK_ANIMAL);
+	int		talentLevel;
 	edict_t *e = NULL;
+
+	if (ent->client)
+		talentLevel=getTalentLevel(ent, TALENT_PACK_ANIMAL);
+	else if (ent->owner && ent->owner->inuse && ent->owner->client)
+		talentLevel=getTalentLevel(ent->owner, TALENT_PACK_ANIMAL);
 
 	// talent isn't upgraded or we are not morphed
 	if (talentLevel < 1 || !IsMorphedPlayer(ent))
@@ -566,13 +571,14 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	{
 		temp = 1.0;
 
-		// extra resistance against monsters
-		//if (attacker->activator && (attacker->svflags & SVF_MONSTER))
-		//	temp += 1;
-
 		// Talent: Superiority
 		// increases damage/resistance of morphed players against monsters
 		talentLevel = getTalentLevel(targ, TALENT_SUPERIORITY);
+		/*if (!talentLevel)
+			if (targ->owner && targ->owner->inuse && targ->owner->client)
+			{
+				talentLevel=getTalentLevel(targ->owner, TALENT_PACK_ANIMAL);
+			}*/
 		if (attacker->activator && attacker->mtype != P_TANK && (attacker->svflags & SVF_MONSTER) && talentLevel > 0)
 			temp += 0.2 * talentLevel;
 
@@ -592,6 +598,9 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			else
 				damage /= 1.25;
 		}
+
+		if (attacker->svflags & SVF_MONSTER) // monsters inflict only 3/4s damage to tanks
+			damage *= 0.75;
 	}
 
 	// morphed players

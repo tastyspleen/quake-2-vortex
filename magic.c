@@ -8152,20 +8152,19 @@ void Cmd_Meditate_f (edict_t *ent)
 {
 	//Talent: Meditation
 	int talentLevel = getTalentLevel(ent, TALENT_MEDITATION);
-	edict_t *power_cube;
+	gitem_t *power_cube;
 
 	if (talentLevel < 1)
 		return;
 	if (ent->client->ability_delay > level.time)
 		return;
 
-	power_cube = Drop_Item(ent, FindItem("Power Cube"));
-	power_cube->s.effects |= EF_PLASMA;
-	power_cube->think = meditate_think;
-	power_cube->nextthink = level.time + 2;
-	power_cube->count = 20 * talentLevel;
+	power_cube = FindItem("Power Cube");
+
+	ent->client->pers.inventory[ITEM_INDEX(power_cube)] += 20*talentLevel;
 
 	ent->holdtime = level.time + 2;
+
 	ent->client->ability_delay = level.time + 2;
 }
 

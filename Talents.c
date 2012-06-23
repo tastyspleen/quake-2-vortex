@@ -123,6 +123,7 @@ void eraseTalents(edict_t *ent)
 int getTalentSlot(edict_t *ent, int talentID)
 {
 	int i;
+	int num;
 
 	//Make sure the ent is valid
 	if(!ent)
@@ -138,9 +139,16 @@ int getTalentSlot(edict_t *ent, int talentID)
 		return -1;
 	}
 
+	num = ent->myskills.talents.count;
+
+	if (num < 5)
+		num = 5;
+
 	for(i = 0; i < ent->myskills.talents.count; ++i)
+	{
 		if(ent->myskills.talents.talent[i].id == talentID)
 			return i;
+	}
 	return -1;
 }
 
@@ -150,7 +158,19 @@ int getTalentLevel(edict_t *ent, int talentID)
 {
 	int slot = getTalentSlot(ent, talentID);
 	
-	if(slot < 0)	return 0;//-1;
+	if(slot < 0)
+	{ 
+		if (!ent->client) // so it's a morphed player?
+			if (ent->owner && ent->owner->inuse && ent->owner->client)
+			{
+				slot = getTalentSlot(ent->owner, talentID);
+				ent = ent->owner;
+			}
+
+			if(slot < 0) // still doesn't exist? k
+				return 0; 
+	} //;//-1;
+	
 
 	return ent->myskills.talents.talent[slot].upgradeLevel;	
 }

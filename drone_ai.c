@@ -420,6 +420,8 @@ edict_t *drone_get_navi (edict_t *self)
 	*/
 }
 
+edict_t *drone_findpspawn(edict_t *self);
+
 edict_t *drone_get_target (edict_t *self, 
 			qboolean get_medic_target, qboolean get_enemy, qboolean get_navi)
 {
@@ -436,6 +438,11 @@ edict_t *drone_get_target (edict_t *self,
 	// find navi
 	if (get_navi && ((target = drone_get_navi(self)) != NULL))
 		return target;
+
+	// No navi? go for a player spawn.
+	if (invasion->value)
+		if (get_navi && ((target = drone_findpspawn(self)) != NULL))
+			return target;
 
 	return NULL;
 }
@@ -1256,6 +1263,40 @@ void drone_cleargoal (edict_t *self)
 		self->monsterinfo.stand(self);
 }
 
+edict_t *drone_findpspawn(edict_t *self)
+{
+	edict_t *e=NULL;
+	edict_t *navis[5];
+	int count = 0;
+	int iters = 0;
+	int i;
+
+	
+
+	for (i =0; i < 5; i++)
+		navis[i] = NULL;
+
+	while ((e = findclosestradius1 (e, self->s.origin, 
+		self->monsterinfo.sight_range)) != NULL)
+	{
+		if (!drone_validpspawn(self, e, false))
+		{
+			iters++;
+			if (iters > 256)
+				break;
+			continue;
+		}
+		if (count == 5)
+			break;
+		navis[count] = e;
+		count++;
+	}
+	i = GetRandom(0,4);
+	e = navis[i];
+	self->prev_navi = e;
+	//gi.dprintf("selected navi %i at %d\n", i, e);
+	return e;
+}
 
 edict_t *drone_findnavi (edict_t *self)
 {
@@ -1276,15 +1317,7 @@ edict_t *drone_findnavi (edict_t *self)
 			return e;
 		}else // No navi points ahead.
 		{
-			while ((e = findclosestradius1 (e, self->s.origin, //find player spawn
-			self->monsterinfo.sight_range)) != NULL)
-			{
-				if (!drone_validpspawn(self, e, false))
-				{
-					continue;
-				}
-				return e;
-			}
+			return drone_findpspawn(self);
 		}
 	}
 

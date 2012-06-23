@@ -1833,8 +1833,8 @@ edict_t *DroneTempEnt (edict_t *ent, vec3_t pos, float delay)
 	e->activator = ent;
 	e->classname = "combat point";
 	e->mtype = M_COMBAT_POINT;
-	//e->think = drone_tempent_think;
-	//e->nextthink = level.time + FRAMETIME;
+	e->think = drone_tempent_think;
+	e->nextthink = level.time + FRAMETIME;
 	if (delay)
 	{
 		e->nextthink = level.time + delay;
@@ -2292,7 +2292,7 @@ void Cmd_Drone_f (edict_t *ent)
 		SpawnDrone(ent, 6, false);
 	else if (!Q_strcasecmp(s, "mutant"))
 		SpawnDrone(ent, 7, false);
-	else if (!Q_strcasecmp(s, "gladiator") && ent->myskills.administrator)
+	else if (!Q_strcasecmp(s, "gladiator")/* && ent->myskills.administrator*/)
 		SpawnDrone(ent, 8, false);
 	else if (!Q_strcasecmp(s, "berserker"))
 		SpawnDrone(ent, 9, false);

@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "1.4"
+#define VRX_VERSION "1.6"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -584,7 +584,7 @@ const char* Time();
 #define CLASS_ALIEN				10
 #define CLASS_WEAPONMASTER		11
 
-#define CLASS_MAX				10		//Number of classes to choose from
+#define CLASS_MAX				11		//Number of classes to choose from
 
 //Trade stuff
 #define TRADE_MAX_DISTANCE		512		//Trade distance

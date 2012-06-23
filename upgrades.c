@@ -242,7 +242,11 @@ void OpenUpgradeMenu (edict_t *ent)
 	addlinetomenu(ent, va("class is %s and you", GetClassString(ent->myskills.class_num)), 0);
 	addlinetomenu(ent, va("have %d ability points.", ent->myskills.speciality_points), 0);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Class specific skills", 1);
+
+	if (ent->myskills.class_num != CLASS_WEAPONMASTER) // WMs don't get class specific skills.
+		addlinetomenu(ent, "Class specific skills", 1);
+
+
 	addlinetomenu(ent, "General skills", 2);
 	addlinetomenu(ent, "Exit", 3);
 	setmenuhandler(ent, upgrademenu_handler);

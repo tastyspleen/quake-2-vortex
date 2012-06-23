@@ -1144,7 +1144,8 @@ void init_drone_commander (edict_t *self)
 	self->mtype = M_COMMANDER;
 	self->s.skinnum = 2;
 
-	G_PrintGreenText(va("A level %d tank commander has spawned!", self->monsterinfo.level));
+	if (!invasion->value)
+		G_PrintGreenText(va("A level %d tank commander has spawned!", self->monsterinfo.level));
 }
 
 

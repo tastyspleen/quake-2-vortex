@@ -47,7 +47,7 @@ void setHardMax(edict_t *ent, int index)
 			ent->myskills.abilities[index].hard_max = 1; break;
 		//Everything else
 		default:
-			ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 1.5; break;
+			ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.0; break;
 	}	
 }
 

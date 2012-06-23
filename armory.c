@@ -89,6 +89,7 @@ void GiveRuneToArmory(item_t *rune)
 	if (newPrice == 0)
 		return;
 
+
 	//remove the unique flag if it's there
 	if (type & ITEM_UNIQUE)
 		type ^= ITEM_UNIQUE;
@@ -261,12 +262,12 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 				price = 50000;
 			break;
 		case 29:	//ability point
-			price = 2750*ent->myskills.level;
+			price = 2650*ent->myskills.level;
 			if (price > 50000)
 				price = 50000;
 			break;
 		case 30: // weapon point
-			price = 2000*ent->myskills.level;
+			price = 850*ent->myskills.level;
 			if (price > 50000)
 				price = 50000;
 			break;
@@ -294,6 +295,16 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		gi.cprintf(ent, PRINT_HIGH, "You need at least %d credits to buy this item.\n", price);
 		return;
 	}
+
+	if (selection == 29 || selection == 30)
+	{
+		if (ent->myskills.level < 5)
+		{
+			gi.cprintf(ent, PRINT_HIGH, "You can't buy points until level 5.\n");
+			return;
+		}
+	}
+
 
 	//If a weapon was purchased
 	if ((selection < 11) && (selection > 0))
@@ -393,11 +404,11 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 		case 29:
 			ent->myskills.speciality_points += 1;
-			gi.cprintf(ent, PRINT_HIGH, "You bought an ability point - you know have %d.\n", ent->myskills.speciality_points);
+			gi.cprintf(ent, PRINT_HIGH, "You bought an ability point - you now have %d.\n", ent->myskills.speciality_points);
 			break;
 		case 30:
 			ent->myskills.weapon_points += 1;
-			gi.cprintf(ent, PRINT_HIGH, "You bought a weapon point - you know have %d.\n", ent->myskills.weapon_points);
+			gi.cprintf(ent, PRINT_HIGH, "You bought a weapon point - you now have %d.\n", ent->myskills.weapon_points);
 			break;
 		}
 	}
@@ -512,12 +523,21 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 		int i;
 		item_t *slot = &ent->myskills.items[option - 778];
 		int value = GetSellValue(slot);
+		int wpts, apts, total_pts;
+
 
 		//log the sale
 		WriteToLogfile(ent, va("Selling rune for %d credits. [%s]", value, slot->id));
 
+		// calculate number of weapon and ability points separately
+		wpts = V_GetRuneWeaponPts(ent, slot);
+		apts = V_GetRuneAbilityPts(ent, slot);
+		// calculate weighted total
+		total_pts = ceil(0.5*wpts + 0.75*apts);//was 0.66,2.0
+
 		//Copy item to armory
-		GiveRuneToArmory(slot);
+		if (total_pts < 25) // only if SOMEONE can actually equip it!
+			GiveRuneToArmory(slot);
 
 		//Delete item
 		memset(slot, 0, sizeof(item_t));

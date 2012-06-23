@@ -866,10 +866,10 @@ void ShowVoteModeMenu(edict_t *ent)
 #endif
 	/*4.5
 	if (players < min_players)
-	{
-		addlinetomenu(ent, " Player vs. Monster", MAPMODE_PVM);
+	{*/
+		addlinetomenu(ent, " PvM / Trading", MAPMODE_PVM);
 		lastline++;
-	}*/
+	/*}*/
 	// invasion mode
 	if (players < min_players)
 	{
@@ -881,13 +881,13 @@ void ShowVoteModeMenu(edict_t *ent)
 	}
 	
 	// domination available when there are at least 4 players
-	if (players >= 4)
+	if (players >= 8)
 	{
 		addlinetomenu(ent, " Domination", MAPMODE_DOM);
 		lastline++;
 	}
 	// CTF available when there are at least 6 players
-	if (players >= 6)
+	if (players >= 4)
 	{
 		addlinetomenu(ent, " CTF", MAPMODE_CTF);
 		lastline++;

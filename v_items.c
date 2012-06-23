@@ -324,9 +324,9 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 			// champion monsters have a 15% chance to spawn a rune
 				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 15.0; // from 2%
 			else
-			// monsters have a 5% chance to spawn a rune
-				temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 5.0; // from 0.2%
-
+			// monsters have a 5% chance to spawn a rune NOP MONSTERS DON'T DROP RUNES
+				//temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 5.0; // from 0.2%
+				temp = 0.8; // 0.8% to drop runes.
 			//gi.dprintf("%.3f\n", temp*RUNE_SPAWN_BASE);
 
 			if (RUNE_SPAWN_BASE * temp < random())
@@ -411,6 +411,8 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 
 //************************************************************************************************
 
+int GetAbilityUpgradeCost(int index);
+
 void spawnNorm(edict_t *rune, int targ_level, int type)
 {
     int x = GetRandom(1, 100);
@@ -482,7 +484,11 @@ void spawnNorm(edict_t *rune, int targ_level, int type)
 				continue;
 
 			rune->vrxitem.modifiers[i].index = abilityIndex;
-			rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+			if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 2+ stuff should get over...
+				rune->vrxitem.modifiers[i].value = 1;
+			else
+				rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+
 			rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 			rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
 		}
@@ -509,7 +515,11 @@ void spawnClassRune(edict_t *rune, int targ_level)
 		int abilityIndex = getClassRuneStat(rune->vrxitem.classNum);
 
 		rune->vrxitem.modifiers[i].index = abilityIndex;
-		rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+		
+		if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 2+ stuff should get over...
+			rune->vrxitem.modifiers[i].value = 1;
+		else
+			rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
 		rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 		rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
 	}
@@ -654,7 +664,12 @@ void spawnCombo(edict_t *rune, int targ_level)
 			int abilityIndex = GetRandom(0, MAX_ABILITIES-1);
 
 			rune->vrxitem.modifiers[i].index = abilityIndex;
-			rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+
+			if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 4 stuff should get over...
+				rune->vrxitem.modifiers[i].value = 1;
+			else
+				rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+
 			rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 			rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
 		}
@@ -970,7 +985,7 @@ void V_EquipItem(edict_t *ent, int index)
 	wpts = V_GetRuneWeaponPts(ent, &ent->myskills.items[index]);
 	apts = V_GetRuneAbilityPts(ent, &ent->myskills.items[index]);
 	// calculate weighted total
-	total_pts = ceil(0.5*wpts + 1.5*apts);//was 0.66,2.0
+	total_pts = ceil(0.5*wpts + 0.75*apts);//was 0.66,2.0
 	//gi.dprintf("wpts = %d, apts = %d, total = %d\n", wpts, apts, total_pts);
 
 	if(index < 3)

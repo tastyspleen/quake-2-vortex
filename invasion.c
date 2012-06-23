@@ -227,9 +227,9 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 
 	// we modify the monsters' health lightly
 	if (invasion_difficulty_level < 7 && invasion_difficulty_level > 5)
-		mhealth = (invasion_difficulty_level-5) * 0.07 + 1;
+		mhealth = (invasion_difficulty_level-5) * 0.1 + 1;
 	else if (invasion_difficulty_level >= 7)
-		mhealth = 1.5 + 0.05 * invasion_difficulty_level;
+		mhealth = 2 + 0.1 * invasion_difficulty_level;
 
 	monster->max_health = monster->health = monster->max_health*mhealth;
 
@@ -238,15 +238,32 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 	VectorCopy(start, monster->s.old_origin);
 	monster->s.event = EV_OTHER_TELEPORT;
 
-	if (e->count)
-		monster->monsterinfo.inv_framenum = level.framenum + e->count;
-	else
-		monster->monsterinfo.inv_framenum = level.framenum + 50; // give them quad/invuln to prevent spawn-camping
+	//if (e->count)
+		//monster->monsterinfo.inv_framenum = level.framenum + e->count;
+	//else
+		monster->monsterinfo.inv_framenum = level.framenum + 60; // give them quad/invuln to prevent spawn-camping
 	gi.linkentity(monster);
 	return monster;
 }
 
+float TimeFormula()
+{
+	int base = 4*60;
+	int playeramt = ActivePlayers() * 10;
+	int levelamt = invasion_difficulty_level * 10;
+	int cap = 60;
+	int rval = base - playeramt - levelamt;
+
+	if (rval < cap)
+		rval = cap;
+
+	return rval;
+}
+
 int printedmessage = 0;
+int mspawned = 0;
+float limitframe = 0;
+edict_t *boss = NULL;
 
 void INV_SpawnMonsters (edict_t *self)
 {
@@ -261,10 +278,27 @@ void INV_SpawnMonsters (edict_t *self)
 	{
 		// if there's nobody playing, remove all monsters
 		if (players < 1)
+		{
 			PVM_RemoveAllMonsters(self);
-
-		self->nextthink = level.time + FRAMETIME;
-		return;
+		}
+		if (limitframe > level.time) // we still got time?
+		{
+			self->nextthink = level.time + FRAMETIME;
+			return;
+		}else
+		{
+			gi.bprintf(PRINT_HIGH, "Time's up!\n");
+			if (boss) // out of time for the boss.
+			{	
+				G_PrintGreenText(va("You failed on eliminating the commander soon enough!\n"));
+				G_FreeEdict(boss);
+				boss = NULL;
+			}
+			// increase the difficulty level for the next wave
+			invasion_difficulty_level += 1; 
+			printedmessage = 0;
+			mspawned = total_monsters;
+		}
 	}
 
 	self->count = MONSTERSPAWN_STATUS_WORKING;
@@ -293,13 +327,15 @@ void INV_SpawnMonsters (edict_t *self)
 
 	if (!printedmessage)
 	{
-
+		limitframe = level.time + TimeFormula();
 		if (invasion_difficulty_level == 1)
 				gi.bprintf(PRINT_HIGH, "The invasion begins!\n");
 		if (invasion_difficulty_level % 5)
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d. %d monsters incoming!\n", invasion_difficulty_level, max_monsters);
 		else
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d.\n", invasion_difficulty_level, max_monsters);
+
+		G_PrintGreenText(va("Timelimit: %dm %ds.\n", (int)TimeFormula() / 60, (int)TimeFormula() % 60));
 		printedmessage = 1;
 	}
 
@@ -309,46 +345,59 @@ void INV_SpawnMonsters (edict_t *self)
 	// the dm_monsters cvar is the minimum of monsters that will spawn
 	if (max_monsters < dm_monsters->value)
 		max_monsters = dm_monsters->value;
-
-	if (invasion_difficulty_level % 5)
+	
+	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && (total_monsters < max_monsters || mspawned == max_monsters) )
 	{
-		while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && (total_monsters < max_monsters) )
-		{
-			int randomval = GetRandom(1, 8);
+		int randomval = GetRandom(1, 9);
 
-			while ( (randomval == 3) || (randomval == 5) ) // disallow bitches and medics
+		if (invasion_difficulty_level % 5) // nonboss stage?
+			while ( (randomval == 5) ) // disallow medics
 			{
 				randomval = GetRandom(1, 8);
 			}
 
-			if (!INV_SpawnDrone(self, e, randomval))
-				continue;
+		if (!INV_SpawnDrone(self, e, randomval))
+			continue;
 
-			total_monsters++;
-			//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
-			gi.dprintf("World has %d/%d monsters.\n", total_monsters, max_monsters);
-		}
-	}else if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
+		total_monsters++;
+		mspawned++;
+		//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
+	}
+	
+	if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
 	{
 		int bcount = 0;
+		int iter = 0;
 		while (((e = INV_GetMonsterSpawn(e)) != NULL) && (bcount < 1))
 		{
-
-			bcount++;
-
-			INV_SpawnDrone(self, e, 30);
-			total_monsters = max_monsters = 1;
+			if (!boss)
+			{
+				if(! (boss = INV_SpawnDrone(self, e, 30)) )
+				{
+					iter++;
+					
+					if (iter < 256) // 256 tries before quitting with spawning this boss
+						continue;
+					else
+						break;
+				}
+				bcount ++;
+				total_monsters++;
+				mspawned++;
+				max_monsters++; // let us add a monster.
+				G_PrintGreenText(va("A level %d tank commander has spawned!", boss->monsterinfo.level));
+				break;
+			}
 		}
-	}
+	}else
+		boss = NULL;
 
-	//if (!e)
-	//	gi.dprintf("failed to find valid monster spawn\n");
-
-	if (total_monsters == max_monsters)
+	if (total_monsters == max_monsters || mspawned >= max_monsters)
 	{
 		// increase the difficulty level for the next wave
-		invasion_difficulty_level += 1/* + (invasion_difficulty_level / 10)*/; // we're doing a fib amount of monsters, so this would be cruel
+		invasion_difficulty_level += 1/* + (invasion_difficulty_level / 10)*/;
 		printedmessage = 0;
+		mspawned = 0;
 		self->count = MONSTERSPAWN_STATUS_IDLE;
 	}
 
@@ -594,7 +643,7 @@ void inv_defenderspawn_think (edict_t *self)
 			if (self->count)
 				monster->monsterinfo.inv_framenum = level.framenum + self->count;
 			else
-				monster->monsterinfo.inv_framenum = level.framenum + 50; 
+				monster->monsterinfo.inv_framenum = level.framenum + 60; 
 
 			gi.linkentity(monster);
 
@@ -645,7 +694,7 @@ float GetTotalBossDamage (edict_t *self);
 void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 {
 	int		i, exp_points, credits, base_credits, max_credits, max_exp, base_exp;
-	float	bonus, dmgmod, levelmod, damage;
+	float	bonus, dmgmod, levelmod, damage, invmod;
 	edict_t *player;
 
 	//gi.dprintf("INV_AwardMonsterKill()\n");
@@ -686,7 +735,9 @@ void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 		//if (bonus > 2)
 		//	bonus = 2;
 
-		base_exp = target->monsterinfo.control_cost*EXP_WORLD_MONSTER;
+		invmod = 0.5; // half the exp in invasion.
+
+		base_exp = target->monsterinfo.control_cost*EXP_WORLD_MONSTER*invmod;
 		exp_points = (int)ceil(base_exp*levelmod*dmgmod*bonus);
 		base_credits = target->monsterinfo.control_cost*CREDITS_OTHER_BASE;
 		credits = (int)ceil(base_credits*levelmod*dmgmod*bonus);

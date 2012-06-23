@@ -237,8 +237,9 @@ int VortexAddCredits(edict_t *ent, float level_diff, int bonus, qboolean client)
 	else
 		add_credits = level_diff * (vrx_creditmult->value * vrx_pvmcreditmult->value * (CREDITS_OTHER_BASE));
 
-	if (add_credits > 250)
-		add_credits = 250;
+	// vrxchile v1.5 no credit cap
+	//if (add_credits > 250)
+	//	add_credits = 250;
 
 	add_credits += bonus;
 
@@ -738,6 +739,8 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 
 	// award experience to allied players
 	max_points = exp_points;
+	if (invasion->value && attacker->myskills.level > 10) // 3/5 exp in invasion for level 10+.
+		max_points *= 0.6;
 	if (!allies->value || ((exp_points = AddAllyExp(attacker, max_points)) < 1))
 	// award experience to non-allied players
 		exp_points = V_AddFinalExp(attacker, max_points);
