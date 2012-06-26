@@ -709,6 +709,20 @@ void SVCmd_ListCombatPrefs ()
 #endif
 //GHz END
 
+//Ticamai START
+void SV_SaveAllCharacters (void)
+{
+	int i;
+	edict_t *ent;
+
+	for_each_player(ent, i)
+	{
+		SaveCharacter(ent);
+	}
+	gi.dprintf("INFO: All players saved.\n");
+}
+//Ticamai END
+
 // az begin
 
 void DoMaplistFilename(int mode, char* filename);
@@ -820,6 +834,11 @@ void	ServerCommand (void)
 		SVCmd_ListCombatPrefs ();
 #endif
 //GHz END
+//Ticamai START
+else if (Q_stricmp (cmd, "saveplayers") == 0)
+	SV_SaveAllCharacters ();
+
+//Ticamai END
 	else
 		gi.cprintf (NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
 }

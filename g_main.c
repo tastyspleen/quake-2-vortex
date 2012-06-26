@@ -644,7 +644,7 @@ void CheckDMRules (void)
 		if (voting->value && (level.time >= (timelimit->value - 3)*60) &&
 			(maplist.warning_given == false))
 				{
-					gi.bprintf (PRINT_HIGH,(va("%s\n", HiPrint("***** 3 Minute Warning: Type 'vote' to place your vote for the next map and game type *****"))) );
+					G_PrintGreenText(va("***** 3 Minute Warning: Type 'vote' to place your vote for the next map and game type *****\n"));
 					maplist.warning_given = true;
 				}
 		//K03 End
