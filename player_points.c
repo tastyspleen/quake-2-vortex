@@ -67,7 +67,7 @@ void NewLevel_Addons(edict_t *ent)
 			ent->myskills.abilities[ID].current_level++;
 		}
 		else
-			ent->myskills.speciality_points += 2 + ent->myskills.abilities[ID].level; // give back points spent on ID.
+			ent->myskills.speciality_points += ent->myskills.abilities[ID].level*2; // give back points spent on ID.
 	}
 
 	// free scanner at level 10
@@ -176,7 +176,7 @@ void check_for_levelup (edict_t *ent)
 		levelup = true;
 
 		// maximum level cap
-		if (!ent->myskills.administrator && ent->myskills.level >= 25)
+		if (!ent->myskills.administrator && ent->myskills.level >= 30) // cap to 30
 		{
 			ent->myskills.next_level = ent->myskills.experience;
 			return;
@@ -364,7 +364,8 @@ int V_AddFinalExp (edict_t *player, int exp)
 		exp -= player->myskills.nerfme;
 	}
 
-	player->myskills.experience += exp;
+	if (player->myskills.level < 30) // hasn't reached the cap
+		player->myskills.experience += exp;
 	player->client->resp.score += exp;
 	check_for_levelup(player);
 

@@ -209,14 +209,15 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 	tr = gi.trace(start, monster->mins, monster->maxs, start, NULL, MASK_SHOT);
 
 	// don't spawn here if a friendly monster occupies this space
-	if ((tr.fraction < 1) && tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
-		&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD))
-	{
-		// remove the monster and try again
-		G_FreeEdict(monster);
-		//M_Remove(self, false, false);
-		return NULL;
-	}
+	if (index != 30) // not a boss?
+		if ((tr.fraction < 1) && tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
+			&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD))
+		{
+			// remove the monster and try again
+			G_FreeEdict(monster);
+			//M_Remove(self, false, false);
+			return NULL;
+		}
 		
 	e->wait = level.time + 1.0; // time until spawn is available again
 	
@@ -234,13 +235,16 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 	monster->max_health = monster->health = monster->max_health*mhealth;
 
 		// move the monster onto the spawn pad
-	VectorCopy(start, monster->s.origin);
-	VectorCopy(start, monster->s.old_origin);
+	if (index != 30)
+	{
+		VectorCopy(start, monster->s.origin);
+		VectorCopy(start, monster->s.old_origin);
+	}
 	monster->s.event = EV_OTHER_TELEPORT;
 
-	//if (e->count)
-		//monster->monsterinfo.inv_framenum = level.framenum + e->count;
-	//else
+	if (e->count)
+		monster->monsterinfo.inv_framenum = level.framenum + e->count;
+	else
 		monster->monsterinfo.inv_framenum = level.framenum + 60; // give them quad/invuln to prevent spawn-camping
 	gi.linkentity(monster);
 	return monster;
@@ -248,7 +252,7 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 
 float TimeFormula()
 {
-	int base = 4*60;
+	int base = 3.5*60;
 	int playeramt = ActivePlayers() * 10;
 	int levelamt = invasion_difficulty_level * 10;
 	int cap = 60;
@@ -264,6 +268,36 @@ int printedmessage = 0;
 int mspawned = 0;
 float limitframe = 0;
 edict_t *boss = NULL;
+
+void BossCheck(edict_t *e, edict_t *self)
+{
+	if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
+	{
+		int bcount = 0;
+		int iter = 0;
+		while (((e = INV_GetMonsterSpawn(e)) != NULL) && (bcount < 1))
+		{
+			if (!boss)
+			{
+				if(! (boss = INV_SpawnDrone(self, e, 30)) )
+				{
+					iter++;
+					
+					if (iter < 256) // 256 tries before quitting with spawning this boss
+						continue;
+					else
+						break;
+				}
+				bcount ++;
+				total_monsters++;
+				mspawned++;
+				G_PrintGreenText(va("A level %d tank commander has spawned!", boss->monsterinfo.level));
+				break;
+			}
+		}
+	}else
+		boss = NULL;
+}
 
 void INV_SpawnMonsters (edict_t *self)
 {
@@ -288,9 +322,14 @@ void INV_SpawnMonsters (edict_t *self)
 		}else
 		{
 			gi.bprintf(PRINT_HIGH, "Time's up!\n");
-			if (boss) // out of time for the boss.
+			if (boss && boss->deadflag != DEAD_DEAD) // out of time for the boss.
 			{	
 				G_PrintGreenText(va("You failed on eliminating the commander soon enough!\n"));
+				gi.WriteByte (svc_temp_entity);
+				gi.WriteByte (TE_BOSSTPORT);
+				gi.WritePosition (boss->s.origin);
+				gi.multicast (boss->s.origin, MULTICAST_PVS);
+				gi.unlinkentity(boss);
 				G_FreeEdict(boss);
 				boss = NULL;
 			}
@@ -334,8 +373,10 @@ void INV_SpawnMonsters (edict_t *self)
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d. %d monsters incoming!\n", invasion_difficulty_level, max_monsters);
 		else
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d.\n", invasion_difficulty_level, max_monsters);
-
 		G_PrintGreenText(va("Timelimit: %dm %ds.\n", (int)TimeFormula() / 60, (int)TimeFormula() % 60));
+
+		BossCheck(e, self);
+
 		printedmessage = 1;
 	}
 
@@ -363,34 +404,6 @@ void INV_SpawnMonsters (edict_t *self)
 		mspawned++;
 		//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
 	}
-	
-	if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
-	{
-		int bcount = 0;
-		int iter = 0;
-		while (((e = INV_GetMonsterSpawn(e)) != NULL) && (bcount < 1))
-		{
-			if (!boss)
-			{
-				if(! (boss = INV_SpawnDrone(self, e, 30)) )
-				{
-					iter++;
-					
-					if (iter < 256) // 256 tries before quitting with spawning this boss
-						continue;
-					else
-						break;
-				}
-				bcount ++;
-				total_monsters++;
-				mspawned++;
-				max_monsters++; // let us add a monster.
-				G_PrintGreenText(va("A level %d tank commander has spawned!", boss->monsterinfo.level));
-				break;
-			}
-		}
-	}else
-		boss = NULL;
 
 	if (total_monsters == max_monsters || mspawned >= max_monsters)
 	{

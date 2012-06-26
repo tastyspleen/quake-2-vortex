@@ -203,11 +203,11 @@ void KickPlayerBack(edict_t *ent)
 int total_players()
 {
 	int		i, total=0;
-	edict_t *cl_ent;
+	edict_t *cl_ent = NULL;
 	
 	for (i=0 ; i<game.maxclients ; i++)
 	 {
-          cl_ent = g_edicts + 1 + i;
+		 cl_ent = &g_edicts[1 + i];
 		  if (!cl_ent->inuse)
 			  continue;
 		  if (G_IsSpectator(cl_ent))

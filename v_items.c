@@ -479,9 +479,15 @@ void spawnNorm(edict_t *rune, int targ_level, int type)
 		{
 			int abilityIndex = GetRandom(0, MAX_ABILITIES-1);
 
+			while (abilityIndex == ID)
+			{
+				abilityIndex = GetRandom(0, MAX_ABILITIES-1);
+			}
+
 			//25% chance for rune mod not to show up
 			if (GetRandom(0, 4) == 0)
 				continue;
+
 
 			rune->vrxitem.modifiers[i].index = abilityIndex;
 			if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 2+ stuff should get over...
@@ -662,6 +668,11 @@ void spawnCombo(edict_t *rune, int targ_level)
 		if (type > 5)
 		{
 			int abilityIndex = GetRandom(0, MAX_ABILITIES-1);
+
+			while (abilityIndex == ID) // deny ID as a rune skill.
+			{
+				abilityIndex = GetRandom(0, MAX_ABILITIES-1);
+			}
 
 			rune->vrxitem.modifiers[i].index = abilityIndex;
 
@@ -1002,7 +1013,8 @@ void V_EquipItem(edict_t *ent, int index)
 		gi.cprintf(ent, PRINT_HIGH, "Item successfully placed in your stash.\n");
 	}
 	//Everyone but admins have a minimum level requirement to use a rune. (easier for rune testing)
-	else if (!ent->myskills.administrator && (ent->myskills.level < total_pts))
+	// vrxchile 2.0: only 999 admins are able to test runes.
+	else if ((ent->myskills.administrator < 999) && (ent->myskills.level < total_pts))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You need to be level %d to use this rune.\n", total_pts);
 		return;

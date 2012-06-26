@@ -900,6 +900,7 @@ extern cvar_t *world_min_grenades;
 extern cvar_t *world_min_rockets;
 extern cvar_t *world_min_slugs;
 extern cvar_t *adminctrl;
+extern cvar_t *generalabmode;
 //K03 End
 
 //ZOID

@@ -3209,8 +3209,8 @@ void Cmd_TossSpikeball (edict_t *ent)
 	//Talent: Swarming
 	if ((talentLevel = getTalentLevel(ent, TALENT_SWARMING)) > 0)
 	{
-		max_count *= 1.0 + 0.2 * talentLevel;
-		damage /= 1.0 + 0.2 * talentLevel;
+		// max_count *= 1.0 + 0.2 * talentLevel;
+		damage *= 1.0 + 0.25 * talentLevel; // Only increase damage.
 	}
 
 	if (ent->num_spikeball >= max_count)

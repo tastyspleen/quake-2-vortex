@@ -156,6 +156,8 @@ cvar_t *ctf_enable_balanced_fc;
 
 // Force vote control
 cvar_t* adminctrl;
+// 4x style ab system
+cvar_t *generalabmode;
 //K03 End
 
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint);

@@ -14,6 +14,8 @@ int GetAbilityUpgradeCost(int index)
 		//Abilities that cost 2 points		
 		//case FREEZE_SPELL:
 		case SCANNER:
+		case DOUBLE_JUMP:
+		case JETPACK:
 		case ID:				return 2;			
 		//Abilities that cost 3 points
 		case WORLD_RESIST:
@@ -21,22 +23,20 @@ int GetAbilityUpgradeCost(int index)
 		case SHELL_RESIST:
 		case ENERGY_RESIST:
 		case PIERCING_RESIST:
+		case BLACKHOLE:
+		case TELEPORT:
+		case BOOST_SPELL:
 		case SPLASH_RESIST:		return 3;
 		//Abilities that cost 4 points		
 		case CLOAK:
 		case CREATE_QUAD:
 		case CREATE_INVIN:
-		case BOOST_SPELL:
 		case SUPER_SPEED:
 		case DECOY:
 		case WEAPON_KNOCK:		
-		case TELEPORT:		
-		case JETPACK:		
 		case MORPH_MASTERY:	
-		case TOTEM_MASTERY:	
-		case BLACKHOLE:			
-		case SHIELD:			
-		case DOUBLE_JUMP:		return 4;
+		case TOTEM_MASTERY:				
+		case SHIELD:			return 4;
 		default:				return 1;
 	}
 }
@@ -60,10 +60,10 @@ void generalUpgradeMenu_handler(edict_t *ent, int option)
 		//You need 1 points? let's fix that:
 		if (cost > 1)
 			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
-		else gi.cprintf(ent, PRINT_HIGH, va("You need %d point to upgrade this ability.\n", cost));
+		else gi.cprintf(ent, PRINT_HIGH, va("You don't have 1 ability point.\n", cost));
 		return;
 	}
-	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || ent->myskills.administrator)
+	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || (ent->myskills.administrator > 999))
 	{
 		ent->myskills.speciality_points -= cost;
 		ent->myskills.abilities[option-1].level++;

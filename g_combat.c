@@ -835,7 +835,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			else
 				player->dmg_counter = damage;
 			
-			if (!(player->myskills.abilities[ID].disable) && (player->myskills.abilities[ID].current_level))
+			//if (!(player->myskills.abilities[ID].disable) && (player->myskills.abilities[ID].current_level))
 				player->client->ps.stats[STAT_ID_DAMAGE] = player->dmg_counter;
 			
 			player->lastdmg = level.time;

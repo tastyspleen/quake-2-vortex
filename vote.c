@@ -791,7 +791,7 @@ void ShowVoteModeMenu(edict_t *ent)
 	if (!voting->value)
 		return;
 	// don't allow non-admin voting during pre-game to allow players time to connect
-	if (!ent->myskills.administrator && (level.time < 30.0)) // allow 30 seconds for players to connect
+	if (!ent->myskills.administrator && (level.time < 15.0)) // allow 15 seconds for players to connect
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Please allow time for other players to connect.\n");
 		return;

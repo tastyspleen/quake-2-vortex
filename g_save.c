@@ -318,6 +318,7 @@ void InitGame (void)
 	// enable special rules for flag carrier in CTF mode
 	ctf_enable_balanced_fc = gi.cvar ("ctf_enable_balanced_fc", "1", CVAR_LATCH);
 	adminctrl = gi.cvar ("admin_forcevote", "0", CVAR_LATCH);
+	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
 
 	voting = gi.cvar ("voting", "1", CVAR_SERVERINFO);
 	gds = gi.cvar ("gds", "0", CVAR_LATCH);

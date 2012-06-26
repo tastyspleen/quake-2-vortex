@@ -26,9 +26,6 @@ qboolean playingtoomuch(edict_t *ent)
 
 void newPlayer(edict_t *ent)
 {
-	char tmpbuf[120];
-	char tmpbuf2[120];
-
 	ent->myskills.next_level = start_nextlevel->value;
 	ent->myskills.respawn_weapon = 7;
 
@@ -36,10 +33,7 @@ void newPlayer(edict_t *ent)
 
 	Q_strncpy (ent->myskills.password, CryptString(Info_ValueForKey	(ent->client->pers.userinfo, "vrx_password"), false), sizeof(ent->myskills.password)-1);
 
-	_strdate( tmpbuf );
-	_strtime( tmpbuf2 );
-
-	strcpy(ent->myskills.member_since, va("%s at %s", tmpbuf, tmpbuf2));
+	strcpy(ent->myskills.member_since, va("%s at %s", CURRENT_DATE, CURRENT_TIME));
 }
 
 //Returns true if the player is able to join the game.

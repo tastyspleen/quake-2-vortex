@@ -516,9 +516,9 @@ int writeTalentDescription(edict_t *ent, int talentID)
 		addlinetomenu(ent, "Allows cocoon to cloak.", MENU_WHITE_CENTERED);
 		return 1;
 	case TALENT_SWARMING:
-		addlinetomenu(ent, "Increases spore count,", MENU_WHITE_CENTERED);
-		addlinetomenu(ent, "but reduces damage.", MENU_WHITE_CENTERED);
-		return 2;
+		addlinetomenu(ent, "Increases spore damage.", MENU_WHITE_CENTERED);
+		// addlinetomenu(ent, "but reduces damage.", MENU_WHITE_CENTERED); // lol
+		return 1;
 	case TALENT_EXPLODING_BODIES:
 		addlinetomenu(ent, "Makes alien-summons'", MENU_WHITE_CENTERED);
 		addlinetomenu(ent, "corpses explode.", MENU_WHITE_CENTERED);

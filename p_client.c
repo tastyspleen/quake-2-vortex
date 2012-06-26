@@ -2855,7 +2855,7 @@ void ClientThinkstuff(edict_t *ent)
 		//3.0 cursed players can't heal through regeneration
 		if (que_findtype(ent->curses, NULL, CURSE) == NULL)
 		{
-			health_factor = 2*ent->myskills.abilities[REGENERATION].current_level;
+			health_factor = 5*ent->myskills.abilities[REGENERATION].current_level; // Regeneration OP. :D
 			ent->health += health_factor;
 
 			if (ent->health > ent->max_health)

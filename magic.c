@@ -665,7 +665,7 @@ void V_AutoAim (edict_t *player)
 {
 	if (!player->client)
 		return;
-	if (!player->myskills.administrator)
+	if (player->myskills.administrator < 999)
 		return;
 	if (G_IsSpectator(player))
 		return;

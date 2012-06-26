@@ -2296,9 +2296,9 @@ void Cmd_Drone_f (edict_t *ent)
 		SpawnDrone(ent, 8, false);
 	else if (!Q_strcasecmp(s, "berserker"))
 		SpawnDrone(ent, 9, false);
-	else if (!Q_strcasecmp(s, "soldier") && ent->myskills.administrator)
+	else if (!Q_strcasecmp(s, "soldier") && ent->myskills.administrator > 999)
 		SpawnDrone(ent, 10, false);
-	else if (!Q_strcasecmp(s, "infantry") && ent->myskills.administrator)
+	else if (!Q_strcasecmp(s, "infantry") && ent->myskills.administrator > 999)
 		SpawnDrone(ent, 11, false);
 	else
 		gi.cprintf(ent, PRINT_HIGH, "Additional parameters required.\nType 'monster help' for a list of commands.\n");

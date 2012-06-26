@@ -1,14 +1,14 @@
 #include "g_local.h"
 
-#define DOMINATION_POINTS			150
-#define DOMINATION_CREDITS			10
+#define DOMINATION_POINTS			500
+#define DOMINATION_CREDITS			350
 #define DOMINATION_AWARD_FRAMES		100
 #define DOMINATION_MINIMUM_PLAYERS	4
 #define DOMINATION_DEFEND_RANGE		512
-#define	DOMINATION_DEFEND_BONUS		50
-#define DOMINATION_FRAG_POINTS		15
-#define DOMINATION_CARRIER_BONUS	100
-#define DOMINATION_OFFENSE_BONUS	50
+#define	DOMINATION_DEFEND_BONUS		150
+#define DOMINATION_FRAG_POINTS		150
+#define DOMINATION_CARRIER_BONUS	450
+#define DOMINATION_OFFENSE_BONUS	350
 
 edict_t *dom_flagcarrier (void)
 {
@@ -52,8 +52,8 @@ void dom_awardpoints (void)
 			// flag carrier gets extra points
 			if (cl_ent->client->pers.inventory[flag_index])
 			{
-				points *= 1.5;
-				credits *= 1.5;
+				points *= 3;
+				credits *= 3;
 			}
 			/*
 			cl_ent->myskills.experience += points;

@@ -267,7 +267,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 				price = 50000;
 			break;
 		case 30: // weapon point
-			price = 850*ent->myskills.level;
+			price = 450*ent->myskills.level;
 			if (price > 50000)
 				price = 50000;
 			break;
@@ -536,7 +536,7 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 		total_pts = ceil(0.5*wpts + 0.75*apts);//was 0.66,2.0
 
 		//Copy item to armory
-		if (total_pts < 25) // only if SOMEONE can actually equip it!
+		if (total_pts < 30) // only if SOMEONE can actually equip it!
 			GiveRuneToArmory(slot);
 
 		//Delete item

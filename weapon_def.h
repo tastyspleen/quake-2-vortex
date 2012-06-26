@@ -1,5 +1,5 @@
 #define MAX_WEAPONS				13
-#define MAX_WEAPONMODS			4
+#define MAX_WEAPONMODS			5
 
 //New weapon defines	(doomie)
 #define WEAPON_BLASTER			0

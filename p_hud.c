@@ -565,12 +565,12 @@ void PlayerID_SetStats (edict_t *player, edict_t *target, qboolean chasecam)
 	if (!chasecam)
 	{
 		// newbies get a very basic free ID
-		if (player->myskills.abilities[ID].current_level < 1)
+		/*if (player->myskills.abilities[ID].current_level < 1)
 		{
 			if (M_IgnoreInferiorTarget(target, player) && !team_status)
 				strcat(buf, "is ignoring you");
 		}
-		else
+		else*/
 		{
 			strcat(buf, va("@ %.0f", dist));
 			strcat(buf, va(": %dh", health));
@@ -1011,7 +1011,9 @@ void G_SetStats (edict_t *ent)
 	// id code
 	//GHz End
 //GHz START
-	if ((ent->myskills.abilities[ID].disable) || (!ent->myskills.abilities[ID].current_level) || (level.time > ent->lastdmg+2))
+	if (/*(ent->myskills.abilities[ID].disable) || 
+		(!ent->myskills.abilities[ID].current_level) || */
+		(level.time > ent->lastdmg+3))
 		ent->client->ps.stats[STAT_ID_DAMAGE] = 0;
 //GHz END
 

@@ -1,7 +1,7 @@
 #include "g_local.h"
 
 #define JETPACK_DRAIN	1 //every x frames drain JETPACK_AMMO
-#define JETPACK_AMMO	4
+#define JETPACK_AMMO	2.5 // Less cube cost.
 
 void ApplyThrust (edict_t *ent)
 {
@@ -9,7 +9,7 @@ void ApplyThrust (edict_t *ent)
     vec3_t forward, right;
     vec3_t pack_pos, jet_vector;
 
-	if(ent->myskills.abilities[JETPACK].disable)
+	if(ent->myskills.abilities[JETPACK].disable && level.time > pregame_time->value)
 		return;
 
 	//Talent: Flight
@@ -24,8 +24,9 @@ void ApplyThrust (edict_t *ent)
 	}
 
 	//4.0 better jetpack check.
-	if (!G_CanUseAbilities (ent, ent->myskills.abilities[JETPACK].current_level, cost))
-		return;
+	if ((level.time > pregame_time->value))  // allow jetpack in pregame
+		if (!G_CanUseAbilities (ent, ent->myskills.abilities[JETPACK].current_level, cost) )
+			return;
 	//can't use abilities (spawning sentry gun/drone/etc...)
 	if (ent->holdtime > level.time)
 		return;
@@ -48,12 +49,13 @@ void ApplyThrust (edict_t *ent)
 		return;
 	}
 
-	if (ent->client->pers.inventory[power_cube_index] >= cost)
+	if (ent->client->pers.inventory[power_cube_index] >= cost || level.time < pregame_time->value) // pregame.
 	{
 		ent->client->thrustdrain ++;
 		if (ent->client->thrustdrain == JETPACK_DRAIN)
 		{
-			ent->client->pers.inventory[power_cube_index] -= cost;
+			if (level.time > pregame_time->value) // not pregame
+				ent->client->pers.inventory[power_cube_index] -= cost;
 			ent->client->thrustdrain = 0;
 		}
 	}

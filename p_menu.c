@@ -47,7 +47,7 @@ void setHardMax(edict_t *ent, int index)
 			ent->myskills.abilities[index].hard_max = 1; break;
 		//Everything else
 		default:
-			ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.0; break;
+			ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.5; break;
 	}	
 }
 
@@ -163,7 +163,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, GHOST, 99, 99, false);
 		enableAbility(ent, MORPH_MASTERY, 1, 1, false);
 		break;
-	case CLASS_SHAMAN:// 70 points
+	case CLASS_SHAMAN:// 80 points
 		enableAbility(ent, FIRE_TOTEM, 0, 10, false);
 		enableAbility(ent, WATER_TOTEM, 0, 10, false);
 		enableAbility(ent, AIR_TOTEM, 0, 10, false);
@@ -171,7 +171,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, DARK_TOTEM, 0, 10, false);
 		enableAbility(ent, NATURE_TOTEM, 0, 10, false);
 		enableAbility(ent, FURY, 0, 10, false);
-		//enableAbility(ent, HASTE, 0, 10, false);
+		enableAbility(ent, HASTE, 0, 10, false);
 		//enableAbility(ent, SUPER_SPEED, 1, 1, false);
 		enableAbility(ent, TOTEM_MASTERY, 1, 1, false);//4.4
 		break;
@@ -195,12 +195,7 @@ void setGeneralAbilities (edict_t *ent)
 {
 	// general
 	enableAbility(ent, VITALITY, 0, 10, true);
-	enableAbility(ent, ID, 0, 1, true);
-	enableAbility(ent, SHELL_RESIST, 0, 1, true);
-	enableAbility(ent, BULLET_RESIST, 0, 1, true);
-	enableAbility(ent, SPLASH_RESIST, 0, 1, true);
-	enableAbility(ent, PIERCING_RESIST, 0, 1, true);
-	enableAbility(ent, ENERGY_RESIST, 0, 1, true);
+	//enableAbility(ent, ID, 0, 1, true); // vrxchile 2.0- id is no longer a skill.
 	enableAbility(ent, MAX_AMMO, 0, 10, true);
 	enableAbility(ent, POWER_REGEN, 0, 5, true);
 	enableAbility(ent, WORLD_RESIST, 0, 1, true);
@@ -211,104 +206,115 @@ void setGeneralAbilities (edict_t *ent)
 
 	// shared
 	enableAbility(ent, REGENERATION, 0, 5, true);
-	enableAbility(ent, RESISTANCE, 0, 5, true);
 	enableAbility(ent, STRENGTH, 0, 5, true);
 	enableAbility(ent, HASTE, 0, 5, true); // Haste is hard capped as well; It's pretty powerful right now.
-	ent->myskills.abilities[HASTE].hard_max = 5;
+	ent->myskills.abilities[HASTE].hard_max = 5; // besides there are no valid upgrades over 5.
 
-	enableAbility(ent, VAMPIRE, 0, 5, true);
-	enableAbility(ent, JETPACK, 0, 1, true);
-	enableAbility(ent, CLOAK, 0, 1, true);
-	enableAbility(ent, WEAPON_KNOCK, 0, 1, true);
-	enableAbility(ent, ARMOR_UPGRADE, 0, 5, true);
-	enableAbility(ent, AMMO_STEAL, 0, 5, true);
+	// resists
+	enableAbility(ent, RESISTANCE, 0, 5, true);
+	enableAbility(ent, SHELL_RESIST, 0, 1, true);
+	enableAbility(ent, BULLET_RESIST, 0, 1, true);
+	enableAbility(ent, SPLASH_RESIST, 0, 1, true);
+	enableAbility(ent, PIERCING_RESIST, 0, 1, true);
+	enableAbility(ent, ENERGY_RESIST, 0, 1, true);
+
 	enableAbility(ent, GRAPPLE_HOOK, 0, 3, true);
-	enableAbility(ent, SUPPLY_STATION, 0, 5, true);
-	//enableAbility(ent, FREEZE_SPELL, 0, 1, true);
-	enableAbility(ent, CREATE_QUAD, 0, 1, true);
-	enableAbility(ent, CREATE_INVIN, 0, 1, true);
-	enableAbility(ent, POWER_SHIELD, 0, 5, true);
-	enableAbility(ent, CORPSE_EXPLODE, 0, 5, true);
-	enableAbility(ent, GHOST, 0, 5, true);
-	enableAbility(ent, SALVATION, 0, 5, true);
-	enableAbility(ent, FORCE_WALL, 0, 5, true);
-//	enableAbility(ent, AMMO_REGEN, 0, 5, true);
-	enableAbility(ent, BUILD_LASER, 0, 5, true);
-	enableAbility(ent, HA_PICKUP, 0, 5, true);
-	enableAbility(ent, BUILD_SENTRY, 0, 5, true);
-	enableAbility(ent, BOOST_SPELL, 0, 1, true);
-	enableAbility(ent, BLOOD_SUCKER, 0, 5, true);
-	enableAbility(ent, PROXY, 0, 5, true);
-	enableAbility(ent, MONSTER_SUMMON, 0, 5, true);
-	enableAbility(ent, SUPER_SPEED, 0, 1, true);
-	enableAbility(ent, ARMOR_REGEN, 0, 5, true);
-	enableAbility(ent, BOMB_SPELL, 0, 5, true);
-	enableAbility(ent, LIGHTNING, 0, 5, true);
-	enableAbility(ent, DECOY, 0, 1, true);
-	enableAbility(ent, HOLY_FREEZE, 0, 5, true);
-	enableAbility(ent, CACODEMON, 0, 5, true);
-	enableAbility(ent, PLAGUE, 0, 5, true);
-	enableAbility(ent, FLESH_EATER, 0, 5, true);
-	enableAbility(ent, HELLSPAWN, 0, 5, true);
-	enableAbility(ent, BEAM, 0, 5, true);
-	enableAbility(ent, BRAIN, 0, 5, true);
-	enableAbility(ent, MAGMINE, 0, 5, true);
-	enableAbility(ent, CRIPPLE, 0, 5, true);
-	enableAbility(ent, MAGICBOLT, 0, 5, true);
-	enableAbility(ent, TELEPORT, 0, 1, true);
-	enableAbility(ent, NOVA, 0, 5, true);
-	enableAbility(ent, EXPLODING_ARMOR, 0, 5, true);
-	enableAbility(ent, MIND_ABSORB, 0, 5, true);
-	enableAbility(ent, LIFE_DRAIN, 0, 5, true);
-	enableAbility(ent, AMP_DAMAGE, 0, 5, true);
-	enableAbility(ent, CURSE, 0, 5, true);
-	enableAbility(ent, BLESS, 0, 5, true);
-	enableAbility(ent, WEAKEN, 0, 5, true);
-	enableAbility(ent, HEALING, 0, 5, true);
-//	enableAbility(ent, AMMO_UPGRADE, 0, 5, true);
-	enableAbility(ent, YIN, 0, 5, true);
-	enableAbility(ent, YANG, 0, 5, true);
-	enableAbility(ent, FLYER, 0, 5, true);
-	enableAbility(ent, MUTANT, 0, 5, true);
-	enableAbility(ent, TANK, 0, 5, true);
-	enableAbility(ent, BERSERK, 0, 5, true);
-	enableAbility(ent, SPIKE, 0, 5, true);
-	enableAbility(ent, MORPH_MASTERY, 0, 1, true);
-	enableAbility(ent, NAPALM, 0, 5, true);
-	enableAbility(ent, MEDIC, 0, 5, true);
-	enableAbility(ent, METEOR, 0, 5, true);
-	enableAbility(ent, AUTOCANNON, 0, 5, true);
-	enableAbility(ent, HAMMER, 0, 5, true);
-	enableAbility(ent, BLACKHOLE, 0, 1, true);
-	enableAbility(ent, FIRE_TOTEM, 0, 5, true);
-	enableAbility(ent, WATER_TOTEM, 0, 5, true);
-	enableAbility(ent, AIR_TOTEM, 0, 5, true);
-	enableAbility(ent, EARTH_TOTEM, 0, 5, true);
-	enableAbility(ent, DARK_TOTEM, 0, 5, true);
-	enableAbility(ent, NATURE_TOTEM, 0, 5, true);
-	enableAbility(ent, FURY, 0, 5, true);
-	enableAbility(ent, TOTEM_MASTERY, 0, 1, true);
-	enableAbility(ent, SHIELD, 0, 1, true);
-	enableAbility(ent, CALTROPS, 0, 5, true);
-	enableAbility(ent, SPIKE_GRENADE, 0, 5, true);
-	enableAbility(ent, DETECTOR, 0, 5, true);
-	enableAbility(ent, CONVERSION, 0, 5, true);
-	enableAbility(ent, DEFLECT, 0, 5, true);
-	enableAbility(ent, SCANNER, 0, 1, true);
-	enableAbility(ent, EMP, 0, 5, true);
-	enableAbility(ent, DOUBLE_JUMP, 0, 1, true);
-	enableAbility(ent, LOWER_RESIST, 0, 5, true);
-	enableAbility(ent, FIREBALL, 0, 5, true);
-	enableAbility(ent, PLASMA_BOLT, 0, 5, true);
-	enableAbility(ent, LIGHTNING_STORM, 0, 5, true);
-	enableAbility(ent, MIRV, 0, 5, true);
-	enableAbility(ent, SPIKER, 0, 5, true);
-	enableAbility(ent, OBSTACLE, 0, 5, true);
-	enableAbility(ent, GASSER, 0, 5, true);
-	enableAbility(ent, HEALER, 0, 5, true);
-	enableAbility(ent, SPORE, 0, 5, true);
-	enableAbility(ent, ACID, 0, 5, true);
-	enableAbility(ent, COCOON, 0, 5, true);
+
+	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value) // vrxchile 2.0: WMs are the new APs.
+	{
+		enableAbility(ent, VAMPIRE, 0, 5, true);
+		enableAbility(ent, JETPACK, 0, 1, true);
+		enableAbility(ent, CLOAK, 0, 1, true);
+		enableAbility(ent, WEAPON_KNOCK, 0, 1, true);
+		enableAbility(ent, ARMOR_UPGRADE, 0, 5, true);
+		enableAbility(ent, AMMO_STEAL, 0, 5, true);
+		enableAbility(ent, SUPPLY_STATION, 0, 5, true);
+		//enableAbility(ent, FREEZE_SPELL, 0, 1, true);
+		enableAbility(ent, CREATE_QUAD, 0, 1, true);
+		enableAbility(ent, CREATE_INVIN, 0, 1, true);
+		enableAbility(ent, POWER_SHIELD, 0, 5, true);
+		enableAbility(ent, CORPSE_EXPLODE, 0, 5, true);
+		enableAbility(ent, GHOST, 0, 5, true);
+		enableAbility(ent, SALVATION, 0, 5, true);
+		enableAbility(ent, FORCE_WALL, 0, 5, true);
+		//	enableAbility(ent, AMMO_REGEN, 0, 5, true);
+		enableAbility(ent, BUILD_LASER, 0, 5, true);
+		enableAbility(ent, HA_PICKUP, 0, 5, true);
+		enableAbility(ent, BUILD_SENTRY, 0, 5, true);
+		enableAbility(ent, BOOST_SPELL, 0, 1, true);
+		enableAbility(ent, BLOOD_SUCKER, 0, 5, true);
+		enableAbility(ent, PROXY, 0, 5, true);
+		enableAbility(ent, MONSTER_SUMMON, 0, 5, true);
+		enableAbility(ent, SUPER_SPEED, 0, 1, true);
+		enableAbility(ent, ARMOR_REGEN, 0, 5, true);
+		enableAbility(ent, BOMB_SPELL, 0, 5, true);
+		enableAbility(ent, LIGHTNING, 0, 5, true);
+		enableAbility(ent, DECOY, 0, 1, true);
+		enableAbility(ent, HOLY_FREEZE, 0, 5, true);
+		enableAbility(ent, CACODEMON, 0, 5, true);
+		enableAbility(ent, PLAGUE, 0, 5, true);
+		enableAbility(ent, FLESH_EATER, 0, 5, true);
+		enableAbility(ent, HELLSPAWN, 0, 5, true);
+		enableAbility(ent, BEAM, 0, 5, true);
+		enableAbility(ent, BRAIN, 0, 5, true);
+		enableAbility(ent, MAGMINE, 0, 5, true);
+		enableAbility(ent, CRIPPLE, 0, 5, true);
+		enableAbility(ent, MAGICBOLT, 0, 5, true);
+		enableAbility(ent, TELEPORT, 0, 1, true);
+		enableAbility(ent, NOVA, 0, 5, true);
+		enableAbility(ent, EXPLODING_ARMOR, 0, 5, true);
+		enableAbility(ent, MIND_ABSORB, 0, 5, true);
+		enableAbility(ent, LIFE_DRAIN, 0, 5, true);
+		enableAbility(ent, AMP_DAMAGE, 0, 5, true);
+		enableAbility(ent, CURSE, 0, 5, true);
+		enableAbility(ent, BLESS, 0, 5, true);
+		enableAbility(ent, WEAKEN, 0, 5, true);
+		enableAbility(ent, HEALING, 0, 5, true);
+		//	enableAbility(ent, AMMO_UPGRADE, 0, 5, true);
+		enableAbility(ent, YIN, 0, 5, true);
+		enableAbility(ent, YANG, 0, 5, true);
+		enableAbility(ent, FLYER, 0, 5, true);
+		enableAbility(ent, MUTANT, 0, 5, true);
+		enableAbility(ent, TANK, 0, 5, true);
+		enableAbility(ent, BERSERK, 0, 5, true);
+		enableAbility(ent, SPIKE, 0, 5, true);
+		enableAbility(ent, MORPH_MASTERY, 0, 1, true);
+		enableAbility(ent, NAPALM, 0, 5, true);
+		enableAbility(ent, MEDIC, 0, 5, true);
+		enableAbility(ent, METEOR, 0, 5, true);
+		enableAbility(ent, AUTOCANNON, 0, 5, true);
+		enableAbility(ent, HAMMER, 0, 5, true);
+		enableAbility(ent, BLACKHOLE, 0, 1, true);
+		enableAbility(ent, FIRE_TOTEM, 0, 5, true);
+		enableAbility(ent, WATER_TOTEM, 0, 5, true);
+		enableAbility(ent, AIR_TOTEM, 0, 5, true);
+		enableAbility(ent, EARTH_TOTEM, 0, 5, true);
+		enableAbility(ent, DARK_TOTEM, 0, 5, true);
+		enableAbility(ent, NATURE_TOTEM, 0, 5, true);
+		enableAbility(ent, FURY, 0, 5, true);
+		enableAbility(ent, TOTEM_MASTERY, 0, 1, true);
+		enableAbility(ent, SHIELD, 0, 1, true);
+		enableAbility(ent, CALTROPS, 0, 5, true);
+		enableAbility(ent, SPIKE_GRENADE, 0, 5, true);
+		enableAbility(ent, DETECTOR, 0, 5, true);
+		enableAbility(ent, CONVERSION, 0, 5, true);
+		enableAbility(ent, DEFLECT, 0, 5, true);
+		enableAbility(ent, SCANNER, 0, 1, true);
+		enableAbility(ent, EMP, 0, 5, true);
+		enableAbility(ent, DOUBLE_JUMP, 0, 1, true);
+		enableAbility(ent, LOWER_RESIST, 0, 5, true);
+		enableAbility(ent, FIREBALL, 0, 5, true);
+		enableAbility(ent, PLASMA_BOLT, 0, 5, true);
+		enableAbility(ent, LIGHTNING_STORM, 0, 5, true);
+		enableAbility(ent, MIRV, 0, 5, true);
+		enableAbility(ent, SPIKER, 0, 5, true);
+		enableAbility(ent, OBSTACLE, 0, 5, true);
+		enableAbility(ent, GASSER, 0, 5, true);
+		enableAbility(ent, HEALER, 0, 5, true);
+		enableAbility(ent, SPORE, 0, 5, true);
+		enableAbility(ent, ACID, 0, 5, true);
+		enableAbility(ent, COCOON, 0, 5, true);
+	}
 }
 
 void ChaseCam(edict_t *ent)
