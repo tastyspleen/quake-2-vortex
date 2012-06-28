@@ -405,7 +405,7 @@ void Cmd_BombPlayer(edict_t *ent, float skill_mult, float cost_mult)
 	if (!G_CanUseAbilities(ent, ent->myskills.abilities[BOMB_SPELL].current_level, cost))
 		return;
 
-	ent->client->ability_delay = level.time + DELAY_BOMB * cost_mult;
+	ent->client->ability_delay = level.time + DELAY_BOMB/* * cost_mult*/;
 
 	// write a nice effect so everyone knows we've cast a spell
 	gi.WriteByte (svc_temp_entity);

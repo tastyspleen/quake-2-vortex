@@ -874,7 +874,7 @@ void magicbolt_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 
 		// scoring a hit refunds power cubes
 		if (talentLevel > 0)
-			self->owner->client->pers.inventory[power_cube_index] += self->monsterinfo.cost * (0.2 * talentLevel);
+			self->owner->client->pers.inventory[power_cube_index] += self->monsterinfo.cost * (0.4 * talentLevel);
 	}
 
 	gi.WriteByte (svc_temp_entity);
@@ -1033,7 +1033,7 @@ void Cmd_Nova_f (edict_t *ent, int frostLevel, float skill_mult, float cost_mult
 	NovaExplosionEffect(ent->s.origin);
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/novaelec.wav"), 1, ATTN_NORM, 0);
 
-	ent->client->ability_delay = level.time + NOVA_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + NOVA_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 
 	// calling entity made a sound, used to alert monsters
@@ -2340,7 +2340,7 @@ void MeteorAttack (edict_t *ent, int damage, int radius, int speed, float skill_
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
 	//gi.sound(meteor, CHAN_WEAPON, gi.soundindex("spells/meteorlaunch_short.wav"), 1, ATTN_NORM, 0);
-	ent->client->ability_delay = level.time + METEOR_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + METEOR_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= METEOR_COST * cost_mult;
 
 	// calling entity made a sound, used to alert monsters
@@ -2572,7 +2572,7 @@ void Cmd_ChainLightning_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	ChainLightning(ent, start, forward, damage, attack_range, hop_range);
 
-	ent->client->ability_delay = level.time + CLIGHTNING_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + CLIGHTNING_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 }
 
@@ -5836,7 +5836,7 @@ void Cmd_IceBolt_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	fire_icebolt(ent, start, forward, damage, radius, speed, 2*slvl, chill_duration);
 
-	ent->client->ability_delay = level.time + ICEBOLT_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + ICEBOLT_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 
 	// write a nice effect so everyone knows we've cast a spell
@@ -5874,7 +5874,7 @@ void Cmd_Fireball_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	fire_fireball(ent, start, forward, damage, radius, speed, flames, flamedmg);
 
-	ent->client->ability_delay = level.time + FIREBALL_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + FIREBALL_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 
 	// write a nice effect so everyone knows we've cast a spell
@@ -6129,7 +6129,7 @@ void Cmd_LightningStorm_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	SpawnLightningStorm(ent, tr.endpos, radius, duration, damage);
 
-	ent->client->ability_delay = level.time + LIGHTNING_ABILITY_DELAY * cost_mult;
+	ent->client->ability_delay = level.time + LIGHTNING_ABILITY_DELAY/* * cost_mult*/;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 
 	// write a nice effect so everyone knows we've cast a spell
