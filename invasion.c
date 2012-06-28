@@ -492,11 +492,7 @@ void info_player_invasion_death (edict_t *self, edict_t *inflictor, edict_t *att
 {
 	//FIXME: when all of these die (number of player spawns = 0) the map should end
 	//FIXME: a message saying monsters won should print, and players don't get any bonus points
-<<<<<<< local
 
-=======
-	
->>>>>>> other
 	G_UseTargets(self, self);
 	self->think = BecomeExplosion1;
 	self->nextthink = level.time + FRAMETIME;
