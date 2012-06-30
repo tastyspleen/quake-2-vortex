@@ -83,7 +83,8 @@ void NewLevel_Addons(edict_t *ent)
 	}
 
     //Give the player talents if they are eligible.
-	if(ent->myskills.level >= TALENT_MIN_LEVEL && ent->myskills.level <= TALENT_MAX_LEVEL)
+	//if(ent->myskills.level >= TALENT_MIN_LEVEL && ent->myskills.level <= TALENT_MAX_LEVEL)
+	if (ent->myskills.level > 1 && !(ent->myskills.level % 2)) // Give a talent point every two levels.
 		ent->myskills.talents.talentPoints++;
 }
 

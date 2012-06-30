@@ -2253,3 +2253,7 @@ do { \
 	strncpy ((dst), (src), (len)); \
 	(dst)[(len)] = 0; \
 } while (0)
+
+//az begin
+void SaveAllPlayers();
+//az end

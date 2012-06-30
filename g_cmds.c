@@ -2277,7 +2277,7 @@ void Cmd_AdminCmd (edict_t *ent)
 	cmd2 = gi.argv(2);
 	cmd3 = gi.argv(3);
 
-	if (Q_stricmp(cmd1, "reset_player") == 0)
+	if (Q_stricmp(cmd1, "reset_player") == 0 && ent->myskills.administrator > 9)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Resetting %s's character data...\n", cmd2);
 
@@ -2292,13 +2292,14 @@ void Cmd_AdminCmd (edict_t *ent)
 			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 
 	}
-	/*
-	else if (Q_stricmp(cmd1, "upgrade_ability") == 0)
+	
+	/*else if (Q_stricmp(cmd1, "upgrade_ability") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Upgrading ability #%d for %s...\n", atoi(cmd3), cmd2);
 
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
+			int oldpoints;
 			oldpoints = player->myskills.speciality_points;
 			player->myskills.speciality_points++;
 			Cmd_Upgrade_Ability(player, atoi(cmd3));
@@ -2326,7 +2327,7 @@ void Cmd_AdminCmd (edict_t *ent)
 		else
 			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 	}
-	else if (Q_stricmp(cmd1, "addexp") == 0)
+	else if (Q_stricmp(cmd1, "addexp") == 0 && ent->myskills.administrator > 9)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Adding exp for %s...\n", cmd2);
 
@@ -2394,7 +2395,7 @@ void Cmd_AdminCmd (edict_t *ent)
 			}
 		}
 	}
-	else if (Q_stricmp(cmd1, "admin") == 0)
+	else if (Q_stricmp(cmd1, "admin") == 0 && ent->myskills.administrator > 9)
 	{
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
@@ -2410,7 +2411,7 @@ void Cmd_AdminCmd (edict_t *ent)
 			}
 		}
 	}
-	else if (Q_stricmp(cmd1, "setflag") == 0)
+	else if (Q_stricmp(cmd1, "setflag") == 0 && ent->myskills.administrator > 9)
 	{
 		CTF_WriteFlagPosition(ent);
 	}
@@ -2421,6 +2422,39 @@ void Cmd_AdminCmd (edict_t *ent)
 	else
 		gi.cprintf(ent, PRINT_HIGH, "Level %d access granted for %s.\n", ent->myskills.administrator, ent->client->pers.netname);
 }
+
+// az begin
+
+// when GHz implemented runes he wanted a real player economy.
+// hereby I present you one.
+void Cmd_TransCredits(edict_t *ent)
+{
+	char *cmd1, *cmd2;
+	edict_t *player;
+	int creditval;
+
+	if (gi.argc() < 3)
+		gi.cprintf(ent, PRINT_HIGH, "transfercredits <player> <amount>\n");
+	cmd1 = gi.argv(1);
+	cmd2 = gi.argv(2);
+	creditval = atoi(cmd2);
+
+	if (creditval < 0)
+		gi.cprintf(ent, PRINT_HIGH, "You can't really /give/ that amount of credits, you know.\n");
+
+	if (player = FindPlayerByName(cmd1))
+	{
+		if (ent->myskills.credits > creditval)
+		{
+			player->myskills.credits += creditval;
+			ent->myskills.credits -= creditval;
+		}else
+			gi.cprintf(ent, PRINT_HIGH, "Not enough credits. (Got %d, need %d, you need %d more.\n)", 
+			ent->myskills.credits, creditval,  creditval - ent->myskills.credits);
+	}else
+		gi.cprintf(ent, PRINT_HIGH, "Player \"%s\" not found.\n", cmd1);
+}
+// az end
 
 void Cmd_GetFloorPos_f (edict_t *ent, int add)
 {
@@ -2883,6 +2917,8 @@ void ClientCommand (edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, "Lasers: %d/%d\n", ent->num_lasers, MAX_LASERS);
 	else if (Q_stricmp (cmd, "admincmd") == 0)
 		Cmd_AdminCmd(ent);
+	else if (Q_stricmp (cmd, "transfercredits") == 0)
+		Cmd_TransCredits(ent);
 	else if(!Q_stricmp(cmd,"forcewall"))
     {
      Cmd_Forcewall(ent);
