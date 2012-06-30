@@ -1255,7 +1255,7 @@ qboolean VSF_LoadPlayer(edict_t *player, char* path)
 			int j;
 			player->myskills.weapons[index].disable = sqlite3_column_int(stmt, 1);
 
-			format = strdup(va("SELECT * FROM weapon_mods WHERE weapon_index = %d"));
+			format = strdup(va("SELECT * FROM weapon_mods WHERE weapon_index=%d", index));
 
 			r = sqlite3_prepare_v2(db, format, strlen(format), &stmt_mods, NULL);
 			r = sqlite3_step(stmt_mods);
