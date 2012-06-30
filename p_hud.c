@@ -635,7 +635,7 @@ void G_SetStats (edict_t *ent)
 	//
 
 
-	ent->client->ps.stats[STAT_HEALTH_ICON] = level.pic_health;
+	ent->client->ps.stats[STAT_HEALTH_ICON] = 0;
 
 	if (ent->health <= 32767)
 		ent->client->ps.stats[STAT_HEALTH] = ent->health;
@@ -744,20 +744,44 @@ void G_SetStats (edict_t *ent)
 	//
 	if (!ent->client->ammo_index /* || !ent->client->pers.inventory[ent->client->ammo_index] */)
 	{
-		ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 		ent->client->ps.stats[STAT_AMMO] = 0;
 	}
 	else
 	{
 		item = &itemlist[ent->client->ammo_index];
-		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex (item->icon);
+		//ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex (item->icon);
+			if (ent->client->pers.weapon == Fdi_SHOTGUN )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_shells_hud");
+			else if (ent->client->pers.weapon == Fdi_SUPERSHOTGUN )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_shells_hud");
+			else if (ent->client->pers.weapon == Fdi_MACHINEGUN )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_bullets_hud");
+			else if (ent->client->pers.weapon == Fdi_CHAINGUN )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_bullets_hud");
+			else if (ent->client->pers.weapon == Fdi_GRENADES )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_grenades_hud");
+			else if (ent->client->pers.weapon == Fdi_GRENADELAUNCHER )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_grenades_hud");
+			else if (ent->client->pers.weapon == Fdi_ROCKETLAUNCHER )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_rockets_hud");
+			else if (ent->client->pers.weapon == Fdi_HYPERBLASTER )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
+			else if (ent->client->pers.weapon == Fdi_RAILGUN )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_slugs_hud");
+			else if (ent->client->pers.weapon == Fdi_BFG )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
+			else if (ent->client->pers.weapon == Fdi_20MM )
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_shells_hud");
+			else
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 		ent->client->ps.stats[STAT_AMMO] = ent->client->pers.inventory[ent->client->ammo_index];
 	}
 //GHz START
 	// blaster weapon ammo
 	if (ent->client->pers.weapon == Fdi_BLASTER)
 	{
-		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells");
+		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
 		ent->client->ps.stats[STAT_AMMO] = ent->monsterinfo.lefty;
 	}
 //GHz END
@@ -783,18 +807,15 @@ void G_SetStats (edict_t *ent)
 	index = ArmorIndex (ent);
 	if (power_armor_type && (!index || ent->mtype || (level.framenum & 8) ) )//4.2 morphed players only have powered armor
 	{	// flash between power armor and other armor icon
-		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex ("i_powershield");
 		ent->client->ps.stats[STAT_ARMOR] = cells;
 	}
 	else if (index && !ent->mtype)
 	{
 		item = GetItemByIndex (index);
-		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex (item->icon);
 		ent->client->ps.stats[STAT_ARMOR] = ent->client->pers.inventory[index];
 	}
 	else
 	{
-		ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
 		ent->client->ps.stats[STAT_ARMOR] = 0;
 	}
 
@@ -803,22 +824,22 @@ void G_SetStats (edict_t *ent)
 	{
 		if ((ent->mtype == MORPH_MEDIC) && (ent->client->weapon_mode == 0 || ent->client->weapon_mode == 2))
 		{
-			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells");
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
 			ent->client->ps.stats[STAT_AMMO] = ent->myskills.abilities[MEDIC].ammo;
 		}
 		else if (ent->mtype == MORPH_FLYER)
 		{
-			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells");
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
 			ent->client->ps.stats[STAT_AMMO] = ent->myskills.abilities[FLYER].ammo;
 		}
 		else if (ent->mtype == MORPH_CACODEMON)
 		{
-			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_rockets");
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_rockets_hud");
 			ent->client->ps.stats[STAT_AMMO] = ent->myskills.abilities[CACODEMON].ammo;
 		}
 		else
 		{
-			ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 			ent->client->ps.stats[STAT_AMMO] = 0;
 		}
 
@@ -831,40 +852,38 @@ void G_SetStats (edict_t *ent)
 		{
 			if (ent->client->weapon_mode == 0)
 			{
-				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_rockets");
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_rockets_hud");
 				ent->client->ps.stats[STAT_AMMO] = ent->owner->monsterinfo.jumpup;
 			}
 			else if (ent->client->weapon_mode == 2)
 			{
-				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_bullets");
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_bullets_hud");
 				ent->client->ps.stats[STAT_AMMO] = ent->owner->monsterinfo.lefty;
 			}
 			else if (ent->client->weapon_mode == 3)
 			{
-				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells");
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_cells_hud");
 				ent->client->ps.stats[STAT_AMMO] = ent->owner->monsterinfo.radius;
 			}
 			else
 			{
-				ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+				ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 				ent->client->ps.stats[STAT_AMMO] = 0;
 			}
 			
 			if (power_armor_type)
 			{
-				ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex ("i_powershield");
 				ent->client->ps.stats[STAT_ARMOR] = cells;
 			}
 			else
 			{
-				ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
 				ent->client->ps.stats[STAT_ARMOR] = 0;
 			}
 			
 		}
 		else
 		{
-			ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 			ent->client->ps.stats[STAT_AMMO] = 0;
 		}
 	}
@@ -1057,16 +1076,14 @@ void G_CheckChaseStats (edict_t *ent)
 
 			if (ent->client->chase_target->monsterinfo.power_armor_power)
 			{
-				ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex("i_powershield");
 				ent->client->ps.stats[STAT_ARMOR] = ent->client->chase_target->monsterinfo.power_armor_power;
 			}
 			else
 			{
-				ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
 				ent->client->ps.stats[STAT_ARMOR] = 0;
 			}
 			// monsters don't have ammo
-			ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex("a_blaster_hud");
 			ent->client->ps.stats[STAT_AMMO] = 0;
 			// set a configstring to the monster's classname
 			//if (ent->client->chase_target->mtype)
