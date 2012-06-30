@@ -1152,6 +1152,13 @@ void SP_worldspawn (edict_t *ent)
 
 	PrecacheItem (FindItem ("Blaster"));
 
+	gi.imageindex("a_blaster_hud");
+	gi.imageindex("a_shells_hud");
+	gi.imageindex("a_bullets_hud");
+	gi.imageindex("a_grenades_hud");
+	gi.imageindex("a_rockets_hud");
+	gi.imageindex("a_cells_hud");
+
 	gi.soundindex ("world/klaxon2.wav");
 	gi.soundindex ("player/lava1.wav");
 	gi.soundindex ("player/lava2.wav");
