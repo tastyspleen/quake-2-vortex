@@ -1438,9 +1438,10 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		//Reset talents, and give them their talent points
 		eraseTalents(player);
 		setTalents(player);
-		if(player->myskills.level < TALENT_MAX_LEVEL)
+		/*if(player->myskills.level < TALENT_MAX_LEVEL)
 			player->myskills.talents.talentPoints = player->myskills.level - TALENT_MIN_LEVEL + 1;
-		else player->myskills.talents.talentPoints = TALENT_MAX_LEVEL - TALENT_MIN_LEVEL + 1;
+		else player->myskills.talents.talentPoints = TALENT_MAX_LEVEL - TALENT_MIN_LEVEL + 1;*/
+		player->myskills.talents.talentPoints = (int)(player->myskills.level / 2);
 		if(player->myskills.talents.talentPoints < 0)
 			player->myskills.talents.talentPoints = 0;
 
