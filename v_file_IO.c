@@ -1188,6 +1188,8 @@ qboolean VSF_LoadPlayer(edict_t *player, char* path)
 			break;
 	}
 	//end talents
+	
+	sqlite3_finalize(stmt);
 
 	format = "SELECT COUNT(*) FROM abilities";
 
@@ -1239,6 +1241,8 @@ qboolean VSF_LoadPlayer(edict_t *player, char* path)
 
 	//begin weapons
     numWeapons = sqlite3_column_int(stmt, 0);
+	
+	sqlite3_finalize(stmt);
 
 	format = "SELECT * FROM weapon_meta";
 

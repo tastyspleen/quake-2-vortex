@@ -797,11 +797,11 @@ side of the screen. Numbers go from right (at 0) to left, while strings
 go from left to right. Confusing eh?
 */
 char *single_statusbar = 
-"yb	-24 "
+"yb	-48 "
 
 // health
-"xv	0 "
-"hnum "
+"xl	200 "
+"num 3 1 "
 "xv	50 "
 "pic 0 "
 
@@ -841,10 +841,12 @@ char *single_statusbar =
 
 // timer
 "if 9 "
-"	xv	262 "
+"	xl	0 "
+"   yb -96 "
 "	num	2	10 "
 "	xv	296 "
 "	pic	9 "
+"   yb -50 "
 "endif "
 
 //  help / weapon icon 
@@ -855,37 +857,35 @@ char *single_statusbar =
 ;
 
 char *dm_statusbar =
-"yb	-24 "
+"yb	-72 "
 
 // health
-"xv	0 "
+"xl	24 "
 "hnum "
-"xv	50 "
-"pic 0 "
 
 // ammo
 "if 2 "
-"	xv	90 "//K03 was 100
+"	xl 24 "
+"	yb	-48 "//K03 was 100
 "	anum "
-"	xv	140 "//K03 was 150
+"	xl 0 "//K03 was 150
+"   yb -72 "
 "	pic 2 "
 "endif "
 
 // armor
-"if 4 "
-"	xv	180 "//K03 was 200
-"	rnum "
-"	xv	230 "//K03 was 250
-"	pic 4 "
+"yb -24 "
+"xl 24 "//K03 was 200
+"rnum "
 "endif "
 
 // selected item
 "if 6 "
 //K03 Begin
-"   xv  246 "
+"   xr  -72 "
 "   num 3 27 "
 //K03 End
-"	xv	296 "
+"	xr -24 "
 "	pic 6 "
 "endif "
 
@@ -893,10 +893,11 @@ char *dm_statusbar =
 
 // picked up item
 "if 7 "
-"	xv	0 "
+"   yv 125 "
+"	xv	120 "
 "	pic 7 "
-"	xv	26 "
-"	yb	-42 "
+"	xv 145"
+"	yv 133 "
 "	stat_string 8 "
 "	yb	-50 "
 "endif "
@@ -905,11 +906,13 @@ char *dm_statusbar =
 "if 9 "
 //K03 Begin
 //"	xv	246 "
-" xv 221 "
+" yb -96 "
+" xl 25 "
 "	num	3 10 "//was " num 2 10 "
 //K03 End
-"	xv	296 "
+"	xl	0 "
 "	pic	9 "
+"   yb -50"
 "endif "
 
 //  help / weapon icon 
@@ -920,12 +923,12 @@ char *dm_statusbar =
 //K03 Begin
 //  frags
 "xr -34 "
-"yt 2 "
+"yb -116 "
 "string \"Game\" "
 
-"xr	-80 "
-"yt 11 "
-"num 5 14 "
+"xr	-65 "
+"yb -108 "
+"num 4 14 "
 //K03 End
 // spectator
 "if 29 "
@@ -985,20 +988,20 @@ char *dm_statusbar =
 //GHz END
 //Show the Streak
 "xr -42 "
-"yt 37 "
+"yb -86 "
 "string \"Spree\" "
 //  total players
 "xr -50 "
-"yt	46 "
+"yb	-78 "
 "num 3 25 "
 //End streak stuff
 //power cubes left
 "xr -42 "
-"yt 72 "
+"yb -56 "
 "string \"Cubes\" "
 
 "xr -50 "
-"yt 81 "
+"yb -48 "
 "num 3 28 "
 /*
 //print out our current level
