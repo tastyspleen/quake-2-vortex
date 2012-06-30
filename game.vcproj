@@ -3552,6 +3552,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\sqlite3.c"
+				>
+			</File>
+			<File
 				RelativePath="supplystation.c"
 				>
 				<FileConfiguration
@@ -4210,7 +4214,7 @@
 				>
 			</File>
 			<File
-				RelativePath="sqlstuff.h"
+				RelativePath=".\sqlite3.h"
 				>
 			</File>
 			<File

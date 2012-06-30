@@ -907,6 +907,10 @@ extern cvar_t *generalabmode;
 extern	qboolean	is_quad;
 //ZOID
 
+// az begin
+extern cvar_t *savemethod;
+// az end
+
 #define world	(&g_edicts[0])
 
 // item spawnflags

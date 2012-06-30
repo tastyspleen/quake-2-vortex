@@ -292,6 +292,9 @@ void InitGame (void)
 	server_email = gi.cvar ("server_email", "ghz@project-vortex.com", CVAR_SERVERINFO);
 	team1_skin = gi.cvar ("team1_skin", "female/ctf_r", 0);
 	team2_skin = gi.cvar ("team2_skin", "male/ctf_b", 0);
+	// az begin
+	savemethod = gi.cvar ("savemethod", "0", 0);
+	// az end
 
 	// class skins
 	enforce_class_skins = gi.cvar ("enforce_class_skins", "1", CVAR_LATCH);
