@@ -149,8 +149,15 @@ void resetWeapons(edict_t *ent)
 					//Sword gets an extra bonus
 					if ((j < 3) || ((j == 3) && (i == WEAPON_SWORD)))
 					{
-						ent->myskills.weapons[i].mods[j].soft_max = 10;
-						ent->myskills.weapons[i].mods[j].hard_max = 25;
+						if (ent->myskills.class_num != CLASS_KNIGHT)
+						{
+							ent->myskills.weapons[i].mods[j].soft_max = 10;
+							ent->myskills.weapons[i].mods[j].hard_max = 25;
+						}else // knights get extra upgrade levels
+						{
+							ent->myskills.weapons[i].mods[j].soft_max = 15;
+							ent->myskills.weapons[i].mods[j].hard_max = 30;
+						}
 					}
 					else
 					{

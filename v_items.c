@@ -326,7 +326,7 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 			else
 			// monsters have a 5% chance to spawn a rune NOP MONSTERS DON'T DROP RUNES
 				//temp = (float) (self->monsterinfo.level + 1) / (attacker->myskills.level + 1) * 5.0; // from 0.2%
-				temp = 0.8; // 0.8% to drop runes.
+				temp = 1; // 1% to drop runes.
 			//gi.dprintf("%.3f\n", temp*RUNE_SPAWN_BASE);
 
 			if (RUNE_SPAWN_BASE * temp < random())

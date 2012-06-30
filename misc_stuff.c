@@ -178,6 +178,13 @@ void Pick_respawnweapon(edict_t *ent)
 	ent->client->pers.weapon = item;
 	ent->client->pers.lastweapon = item;
 	ent->client->newweapon = item;
+
+	// vrxchile bugfix: make sure player has one of these!
+	ent->client->pers.inventory[ITEM_INDEX(item)] = 1;
+	ent->client->pers.inventory[ITEM_INDEX(Fdi_BLASTER)] = 1;
+	ent->client->pers.inventory[ITEM_INDEX(FindItem("Sword"))] = 1;
+	// end vrxchile
+
 	ChangeWeapon(ent);
 }
 

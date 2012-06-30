@@ -131,6 +131,9 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 	}*/
 	//4.5 only allow allies if they have the same combat preferences
 	//if (ent->myskills.respawns != other->myskills.respawns)
+	if (!invasion->value && !pvm->value && !ffa->value) // pvp, always allow no matter the preferences.
+		return true; 
+
 	if (((ent->myskills.respawns & HOSTILE_PLAYERS) != (other->myskills.respawns & HOSTILE_PLAYERS))
 		|| ((ent->myskills.respawns & HOSTILE_MONSTERS) != (other->myskills.respawns & HOSTILE_MONSTERS)))
 	{

@@ -427,6 +427,8 @@ void VortexEndLevel (void)
 			WriteToLogfile(tempent, "Disconnected from server.\n");
 	}
 
+	gi.dprintf("INFO: All players saved.\n");
+
 	SPREE_WAR = false;
 	SPREE_DUDE = NULL;
 	INVASION_OTHERSPAWNS_REMOVED = false;
@@ -823,20 +825,6 @@ void G_RunFrame (void)
 
 	// build the playerstate_t structures for all players
 	ClientEndServerFrames ();
-
-	//GHz START
-	// auto-save files every 3 minutes
-	if (!(level.framenum % 1800))
-	{
-		for (i = 0; i < maxclients->value; i++) {
-			ent = &g_edicts[i];
-			if (!G_EntExists(ent))
-				continue;
-			SaveCharacter(ent);
-		}
-		gi.dprintf("INFO: All players saved.\n");
-	}
-//GHz END
 
     //3.0 Remove votes by players who left the server
 	//Every 5 minutes

@@ -49,7 +49,7 @@ const char* SQLITE_RESETTABLES[TOTAL_RESETTABLES] =
 	{"DELETE FROM abilities;"},
 	{"DELETE FROM talents;"},
 	{"DELETE FROM runes_meta;"},
-	{"DELETE FROM runes_mod;"},
+	{"DELETE FROM runes_mods;"},
 	{"DELETE FROM weapon_meta;"},
 	{"DELETE FROM weapon_mods;"}
 };
@@ -1565,4 +1565,17 @@ qboolean openPlayer(edict_t *ent)
 	
 	
 	return true;
+}
+
+void SaveAllPlayers()
+{
+	int i;
+	edict_t* ent;
+	for (i = 0; i < maxclients->value; i++) {
+			ent = &g_edicts[i];
+			if (!G_EntExists(ent))
+				continue;
+			SaveCharacter(ent);
+		}
+		gi.dprintf("INFO: All players saved.\n");
 }

@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "2.2"
+#define VRX_VERSION "2.3"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 

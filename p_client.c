@@ -2005,8 +2005,9 @@ void PutClientInServer (edict_t *ent)
 	ent->client->invincible_framenum = level.framenum + 20;//Add 2.0 seconds to invincibility when you spawn.
 	KickPlayerBack(ent);//Kicks all campers away!
 	//K03 End
-
-	KillBox(ent);
+	
+	if (!invasion->value || !pvm->value) // pvp telefrags. Kickback in pvm.
+		KillBox(ent);
 
 	gi.linkentity (ent);
 
@@ -2855,16 +2856,16 @@ void ClientThinkstuff(edict_t *ent)
 		//3.0 cursed players can't heal through regeneration
 		if (que_findtype(ent->curses, NULL, CURSE) == NULL)
 		{
-			health_factor = 5*ent->myskills.abilities[REGENERATION].current_level; // Regeneration OP. :D
+			health_factor = 1*ent->myskills.abilities[REGENERATION].current_level; // Regeneration OP. :D
 			ent->health += health_factor;
 
 			if (ent->health > ent->max_health)
 				ent->health = ent->max_health;
 			//stuffcmd(ent, va("\nplay %s\n", "items/n_health.wav"));
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/n_health.wav"), 1, ATTN_STATIC, 0);
-			nextRegen = 10.0 / (float) ent->myskills.abilities[REGENERATION].current_level;
-			if (nextRegen < 1)
-				nextRegen = 1;
+			nextRegen = 5.0 / (float) ent->myskills.abilities[REGENERATION].current_level;
+			if (nextRegen < 0.5)
+				nextRegen = 0.5;
 
 			ent->client->healthregen_time = level.time + nextRegen;
 		}
@@ -2886,7 +2887,10 @@ void ClientThinkstuff(edict_t *ent)
 		&& !(ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 		&& !que_findtype(ent->curses, NULL, CURSE)) // can't regen when cursed
 	{
-		health_factor = floattoint(0.5*ent->myskills.abilities[ARMOR_REGEN].current_level);
+		if (ent->myskills.class_num == CLASS_KNIGHT)
+			health_factor = floattoint(1.5*ent->myskills.abilities[ARMOR_REGEN].current_level);
+		else
+			health_factor = floattoint(1*ent->myskills.abilities[ARMOR_REGEN].current_level);
 		//gi.dprintf("%d\n", health_factor);
 		if (health_factor < 1)
 			health_factor = 1;
@@ -2895,9 +2899,9 @@ void ClientThinkstuff(edict_t *ent)
 		if (*armor > max_armor)
 			*armor = max_armor;
 
-		nextRegen = 10.0 / (float) ent->myskills.abilities[ARMOR_REGEN].current_level;
-		if (nextRegen < 1)
-			nextRegen = 1;
+		nextRegen = 5 / (float) ent->myskills.abilities[ARMOR_REGEN].current_level;
+		if (nextRegen < 0.5)
+			nextRegen = 0.5;
 
 		ent->client->armorregen_time = level.time + nextRegen;
 	}

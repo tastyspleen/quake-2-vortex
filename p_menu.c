@@ -372,6 +372,15 @@ void StartGame (edict_t *ent)
 
 	ent->client->pers.combat_changed = ent->myskills.respawns;//4.5 set changed combat preferences to default
 
+	if (invasion->value || pvm->value)  // vrxchile: default combat modes
+	{ 
+		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_MONSTERS;
+	}else if (!invasion->value && !pvm->value && !ffa->value) // pvp mode
+	{
+		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS;
+	}else // anything else?
+		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS & HOSTILE_MONSTERS;
+
 	average_player_level = AveragePlayerLevel();
 	ent->health = ent->myskills.current_health;
 	for (i=0; i<game.num_items; i++, item++)
@@ -460,12 +469,17 @@ void combatmenu_handler (edict_t *ent, int option)
 			SaveCharacter(ent);
 		}
 		else
-			gi.centerprintf(ent, "Combat preferences will be applied\nthe next time you respawn.");
+		{
+			if (level.time > pregame_time->value) // out of pregame
+				gi.centerprintf(ent, "Combat preferences will be applied\nthe next time you respawn.");
+			else
+				gi.centerprintf(ent, "Combat preferences updated!");
+		}
 		return;
 	}
 
 	// update preferences immediately for spectators (new characters)
-	if (ent->client->resp.spectator)
+	if (ent->client->resp.spectator || level.time < pregame_time->value) // pregame no need to suicide
 		ent->myskills.respawns = ent->client->pers.combat_changed;
 
 	OpenCombatMenu(ent, ent->client->menustorage.currentline);
@@ -1003,7 +1017,7 @@ void OpenWhoisMenu (edict_t *ent)
 
 	if ((player = FindPlayerByName(gi.argv(1))) == NULL)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Couldn't find that player.\n");
+		gi.cprintf(ent, PRINT_HIGH, "Couldn't find player \"%s\".\n", gi.argv(1));
 		return;
 	}
 
