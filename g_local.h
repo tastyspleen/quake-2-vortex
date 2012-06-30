@@ -824,6 +824,7 @@ extern	float	spawncycle;
 
 //K03 Begin
 
+extern	cvar_t	*killboxspawn;
 extern cvar_t *save_path;
 extern cvar_t *particles;
 extern cvar_t *sentry_lev1_model;

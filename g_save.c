@@ -253,6 +253,7 @@ void InitGame (void)
 
 	//K03 Begin
 	
+	killboxspawn = gi.cvar("killboxatspawn", "1", 0);
 	save_path = gi.cvar("save_path", va("%s\\characters", gamedir->string), CVAR_LATCH);
 	particles = gi.cvar ("particles", "0", 0);
 
