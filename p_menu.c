@@ -379,7 +379,7 @@ void StartGame (edict_t *ent)
 	{
 		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS;
 	}else // anything else?
-		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS | HOSTILE_MONSTERS;
+		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS |  HOSTILE_MONSTERS;
 
 	average_player_level = AveragePlayerLevel();
 	ent->health = ent->myskills.current_health;
