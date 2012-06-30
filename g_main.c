@@ -58,6 +58,7 @@ float	spawncycle;
 //ponpoko
 
 //K03 Begin
+cvar_t *killboxspawn;
 cvar_t *save_path;
 cvar_t *particles;
 

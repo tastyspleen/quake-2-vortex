@@ -855,6 +855,32 @@ qboolean KillBox (edict_t *ent)
 	return true; // all clear
 }
 
+qboolean KillBoxMonsters (edict_t *ent)
+{
+	trace_t		tr;
+
+	while (1)
+	{
+		// 3.7 first attempt to teleport away anything nearby
+		G_TeleportNearbyEntities(ent->s.origin, 64, false, ent);
+
+		// first check
+		tr = gi.trace (ent->s.origin, ent->mins, ent->maxs, ent->s.origin, NULL, MASK_SHOT);
+		if (tr.fraction == 1) // nothing here
+			break;
+
+		// try to kill it
+		if (!ent->client && !ent->mtype) // not a player or morphed
+			T_Damage (tr.ent, ent, ent, vec3_origin, ent->s.origin, vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+
+		// if it isn't gibbed by now, fail
+		if (tr.ent->solid)
+			return false;
+	}
+
+	return true; // all clear
+}
+
 /*
 qboolean KillBox (edict_t *ent)
 {

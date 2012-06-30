@@ -2006,9 +2006,14 @@ void PutClientInServer (edict_t *ent)
 	KickPlayerBack(ent);//Kicks all campers away!
 	//K03 End
 	
-	if (!invasion->value || !pvm->value) // pvp telefrags. Kickback in pvm.
+	if (!killboxspawn->value)
+	{
+		if (!invasion->value || !pvm->value) // pvp telefrags. Kickback in pvm.
+			KillBox(ent);
+		else
+			KillBoxMonsters(ent);
+	}else
 		KillBox(ent);
-
 	gi.linkentity (ent);
 
 	// force the current weapon up
