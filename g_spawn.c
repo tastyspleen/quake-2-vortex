@@ -717,7 +717,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		{
 			if (deathmatch->value)
 			{
-				if ( ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH )
+				if ( (ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH) ||
+					((!invasion->value) && ent->spawnflags & SPAWNFLAG_INVASION_ONLY) )
 				{
 					G_FreeEdict (ent);	
 					inhibit++;
@@ -726,8 +727,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 			}
 			else
 			{
-				if (  ((!invasion->value) && (ent->spawnflags & SPAWNFLAG_NOT_COOP)) || 
-					((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+				if (((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
 					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
 					(((skill->value == 2) || (skill->value == 3)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
@@ -738,7 +738,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 					}
 			}
 
-			ent->spawnflags &= ~(SPAWNFLAG_NOT_EASY|SPAWNFLAG_NOT_MEDIUM|SPAWNFLAG_NOT_HARD|SPAWNFLAG_NOT_COOP|SPAWNFLAG_NOT_DEATHMATCH);
+			ent->spawnflags &= ~(SPAWNFLAG_NOT_EASY|SPAWNFLAG_NOT_MEDIUM|SPAWNFLAG_NOT_HARD|SPAWNFLAG_INVASION_ONLY|SPAWNFLAG_NOT_DEATHMATCH);
 		}
 
 		ED_CallSpawn (ent);
@@ -1158,7 +1158,7 @@ void SP_worldspawn (edict_t *ent)
 	gi.imageindex("a_grenades_hud");
 	gi.imageindex("a_rockets_hud");
 	gi.imageindex("a_cells_hud");
-	gi.imageindex("a_slugs_hud"); // oops.
+	gi.imageindex("a_slugs_hud");
 
 	gi.soundindex ("world/klaxon2.wav");
 	gi.soundindex ("player/lava1.wav");
