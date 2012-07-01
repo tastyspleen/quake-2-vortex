@@ -726,7 +726,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 			}
 			else
 			{
-				if ( /* ((coop->value) && (ent->spawnflags & SPAWNFLAG_NOT_COOP)) || */
+				if (  ((!invasion->value) && (ent->spawnflags & SPAWNFLAG_NOT_COOP)) || 
 					((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
 					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
 					(((skill->value == 2) || (skill->value == 3)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
@@ -1158,6 +1158,7 @@ void SP_worldspawn (edict_t *ent)
 	gi.imageindex("a_grenades_hud");
 	gi.imageindex("a_rockets_hud");
 	gi.imageindex("a_cells_hud");
+	gi.imageindex("a_slugs_hud"); // oops.
 
 	gi.soundindex ("world/klaxon2.wav");
 	gi.soundindex ("player/lava1.wav");
