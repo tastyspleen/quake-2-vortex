@@ -383,8 +383,11 @@ void StartGame (edict_t *ent)
 
 	average_player_level = AveragePlayerLevel();
 	ent->health = ent->myskills.current_health;
-	for (i=0; i<game.num_items; i++, item++)
-		ent->client->pers.inventory[ITEM_INDEX(item)] = ent->myskills.inventory[ITEM_INDEX(item)];
+
+	if(savemethod->value == 1) // binary .vrx style saving
+		for (i=0; i<game.num_items; i++, item++) // reload inventory.
+			ent->client->pers.inventory[ITEM_INDEX(item)] = ent->myskills.inventory[ITEM_INDEX(item)];
+
 	ent->client->pers.inventory[flag_index] = 0; // NO FLAG FOR YOU!!!
 	ent->client->pers.inventory[red_flag_index] = 0;
 	ent->client->pers.inventory[blue_flag_index] = 0;
@@ -395,7 +398,7 @@ void StartGame (edict_t *ent)
 	ent->client->pers.inventory[regeneration_index] = 0;
 	ent->touch = player_touch;
 	modify_max(ent);
-	Pick_respawnweapon(ent);
+	Give_respawnweapon(ent, ent->myskills.respawn_weapon);
 		
 	// add a teleportation effect
 	ent->s.event = EV_PLAYER_TELEPORT;
