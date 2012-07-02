@@ -77,6 +77,7 @@ void boss_update (edict_t *ent, usercmd_t *ucmd)
 		sidespeed *= 3;
 		maxspeed = 3*BOSS_MAXVELOCITY;
 	}
+
 	else if (boss->monsterinfo.air_frames)// used for boost
 		maxspeed = 9999;
 	else

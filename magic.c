@@ -5489,40 +5489,41 @@ edict_t *MirrorEntity (edict_t *ent)
 	return e;
 }
 
-void Cmd_Mirror_f (edict_t *ent)
+void Cmd_Antigrav_f (edict_t *ent)
 {
-	edict_t *e=NULL;
+	if ((!ent->inuse) || (!ent->client))
+		return;
+	if(ent->myskills.abilities[ANTIGRAV].disable)
+		return;
 
-	// DISABLED FOR NOW (SKINS DONT WORK) :(
-//	if (!ent->myskills.administrator)
-//		return;
-
-	// remove existing decoys
-	if (MirroredEntitiesExist(ent))
-	{
-		mirrored_removeall(ent);
-		gi.cprintf(ent, PRINT_HIGH, "Decoys removed.\n");
+	if ((deathmatch->value) && (level.time < pregame_time->value)) {
+		if (ent->client)
+			gi.cprintf(ent, PRINT_HIGH, "You cannot use this ability in pre-game!\n");
 		return;
 	}
 
-	// find monster decoys
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
+	if (ent->antigrav == true)
 	{
-		if (e && e->inuse && (e->activator == ent) && (e->mtype == M_DECOY))
-		{
-			gi.cprintf(ent, PRINT_HIGH, "You already have decoys out!\n");
-			return;
-		}
+		gi.cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
+		ent->antigrav = false;
+		return;
 	}
 
-	if (!V_CanUseAbilities(ent, DECOY, MIRROR_COST, true))
+	if(ent->myskills.abilities[ANTIGRAV].disable)
 		return;
 
-	ent->mirror1 = MirrorEntity(ent);
-	ent->mirror2 = MirrorEntity(ent);
+	if (HasFlag(ent))
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
+		return;
+	}
 
-	ent->client->ability_delay = level.time + MIRROR_DELAY;
-	ent->client->pers.inventory[power_cube_index] -= MIRROR_COST;
+	//3.0 amnesia disables super speed
+	if (que_findtype(ent->curses, NULL, AMNESIA) != NULL)
+		return;
+
+	gi.cprintf(ent, PRINT_HIGH, "Antigrav enabled.\n");
+	ent->antigrav= true;
 }
 
 #define FIREBALL_INITIAL_DAMAGE		50

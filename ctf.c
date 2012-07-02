@@ -376,6 +376,8 @@ qboolean CTF_PickupFlag (edict_t *ent, edict_t *other)
 		other->client->hook_state = HOOK_READY;
 		// super speed
 		other->superspeed = false;
+		// antigrav
+		other->antigrav = false;
 		// reset their velocity
 		VectorClear(other->velocity);
 		// stun them briefly (to prevent mage lameness)

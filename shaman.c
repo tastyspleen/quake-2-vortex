@@ -744,6 +744,7 @@ void V_DisableAllSkills(edict_t *ent)
 	}
 	//superspeed
 	ent->superspeed = false;
+	ent->antigrav = false;
 	//Disable all auras
 	AuraRemove(ent, 0);
 }

@@ -398,7 +398,7 @@ char *GetAbilityString (int ability_number)
 	case ARMOR_REGEN:		return	"Armor Regen";
 	case BOMB_SPELL:		return	"Bomb Spell";
 	case LIGHTNING:			return	"Chain Lightning";
-	case DECOY:				return	"Mirror";
+	case ANTIGRAV:			return	"Antigrav";
 	case HOLY_FREEZE:		return	"HolyFreeze Aura";
 	case WORLD_RESIST:		return	"World Resist";
 	case BULLET_RESIST:		return	"Bullet Resist";
@@ -1992,6 +1992,8 @@ void V_ResetPlayerState (edict_t *ent)
 	ent->client->hook_state = HOOK_READY;
 	// super speed
 	ent->superspeed = false;
+	// antigrav
+	ent->antigrav = false;
 	// mana shield
 	ent->manashield = false;
 	// reset holdtime

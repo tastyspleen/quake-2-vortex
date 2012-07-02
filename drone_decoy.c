@@ -386,7 +386,7 @@ void Cmd_Decoy_f (edict_t *ent)
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_Decoy_f()\n", ent->client->pers.netname);
 
-	if (!V_CanUseAbilities(ent, DECOY, M_DEFAULT_COST, true))
+	if (!V_CanUseAbilities(ent, ANTIGRAV, M_DEFAULT_COST, true))
 		return;
 
 	if (MirroredEntitiesExist(ent))

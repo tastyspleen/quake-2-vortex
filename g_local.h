@@ -1771,6 +1771,7 @@ struct edict_s
 	qboolean	slow;
 	qboolean	superspeed;
 	qboolean	sucking;//GHz
+	qboolean	antigrav;
 	int	lockon;
 
 	int FrameShot;

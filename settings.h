@@ -59,6 +59,11 @@ const char* Time();
 #define SUPERSPEED_DRAIN_COST		3
 #define RESPAWN_INVIN_TIME			20	//2.0 seconds
 
+//Ticamai START
+#define ANTIGRAV_COST				1 //per-frame ability cost
+#define ANTIGRAV_AMT				400 //gravity to change to
+//Ticamai END
+
 // force wall
 #define FORCEWALL_WIDTH				256
 #define FORCEWALL_HEIGHT			128

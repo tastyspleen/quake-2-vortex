@@ -39,7 +39,7 @@ void setHardMax(edict_t *ent, int index)
 		case CREATE_INVIN:
 		case BOOST_SPELL:
 		case SUPER_SPEED:
-		case DECOY:
+		case ANTIGRAV:
 		case WEAPON_KNOCK:
 		case TELEPORT:
 		case JETPACK:
@@ -127,7 +127,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CALTROPS, 0, 10, false);
 		enableAbility(ent, AUTOCANNON, 0, 10, false);
 		enableAbility(ent, DETECTOR, 0, 10, false);
-		enableAbility(ent, DECOY, 1, 1, false);
+		enableAbility(ent, ANTIGRAV, 1, 1, false);
 		break;
 	case CLASS_MAGE:// 80 points
 		enableAbility(ent, MAGICBOLT, 0, 10, false);
@@ -249,7 +249,7 @@ void setGeneralAbilities (edict_t *ent)
 		enableAbility(ent, ARMOR_REGEN, 0, 5, true);
 		enableAbility(ent, BOMB_SPELL, 0, 5, true);
 		enableAbility(ent, LIGHTNING, 0, 5, true);
-		enableAbility(ent, DECOY, 0, 1, true);
+		enableAbility(ent, ANTIGRAV, 0, 1, true);
 		enableAbility(ent, HOLY_FREEZE, 0, 5, true);
 		enableAbility(ent, CACODEMON, 0, 5, true);
 		enableAbility(ent, PLAGUE, 0, 5, true);

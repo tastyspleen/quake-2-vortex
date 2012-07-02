@@ -168,6 +168,8 @@ qboolean dom_pickupflag (edict_t *ent, edict_t *other)
 	other->client->hook_state = HOOK_READY;
 	// super speed
 	other->superspeed = false;
+	// antigrav
+	other->antigrav = false;
 
 	// disable scanner
 	if (other->client->pers.scanner_active & 1)

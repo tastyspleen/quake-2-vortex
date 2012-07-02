@@ -34,7 +34,7 @@
 #define ARMOR_REGEN		32
 #define BOMB_SPELL		33
 #define LIGHTNING		34
-#define DECOY			35
+#define ANTIGRAV		35
 #define HOLY_FREEZE		36
 #define WORLD_RESIST	37
 #define BULLET_RESIST	38
