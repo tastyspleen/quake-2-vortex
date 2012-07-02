@@ -5496,11 +5496,8 @@ void Cmd_Antigrav_f (edict_t *ent)
 	if(ent->myskills.abilities[ANTIGRAV].disable)
 		return;
 
-	if ((deathmatch->value) && (level.time < pregame_time->value)) {
-		if (ent->client)
-			gi.cprintf(ent, PRINT_HIGH, "You cannot use this ability in pre-game!\n");
+	if (!G_CanUseAbilities(ent, ent->myskills.abilities[ANTIGRAV].current_level, 0))
 		return;
-	}
 
 	if (ent->antigrav == true)
 	{
