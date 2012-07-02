@@ -2521,7 +2521,7 @@ void Cmd_SpikeGrenade_f (edict_t *ent);
 void Cmd_Detector_f (edict_t *ent);
 void Cmd_Conversion_f (edict_t *ent);
 void Cmd_Deflect_f (edict_t *ent);
-void Cmd_Mirror_f (edict_t *ent);
+void Cmd_Antigrav_f (edict_t *ent);
 void Cmd_TossEMP (edict_t *ent);
 void Cmd_Fireball_f (edict_t *ent, float skill_mult, float cost_mult);
 void Cmd_Plasmabolt_f (edict_t *ent);
@@ -3244,8 +3244,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_CreateSupplyStation_f(ent);
 //	else if (Q_stricmp (cmd, "decoy") == 0)
 //		Cmd_Decoy_f(ent);
-	else if (Q_stricmp (cmd, "mirror") == 0)
-		Cmd_Mirror_f(ent);
+	else if (Q_stricmp (cmd, "antigrav") == 0)
+		Cmd_Antigrav_f(ent);
 	else if (Q_stricmp (cmd, "masterpw") == 0)
 		Cmd_SetMasterPassword_f(ent);
 	else if (Q_stricmp (cmd, "owner") == 0)

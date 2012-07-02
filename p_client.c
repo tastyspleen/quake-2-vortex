@@ -2942,6 +2942,16 @@ void ClientThinkstuff(edict_t *ent)
 			}
 		}
 	}
+	if (ent->antigrav && ent->deadflag != DEAD_DEAD && !ent->groundentity)
+	{
+		ent->client->pers.inventory[power_cube_index] -= ANTIGRAV_COST;
+		ent->velocity[2] += 55;
+		if (ent->client->pers.inventory[power_cube_index] == 0)
+		{
+			ent->antigrav = 0;
+			gi.cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
+		}
+	}
 
 	if ((ent->client->hook_state == HOOK_ON) && ent->client->hook)
 		hook_service(ent->client->hook);
@@ -3325,6 +3335,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		//K03 Begin
 		//4.07 can't superspeed while being hurt
+
 		if (ent->superspeed)
 		{
 			

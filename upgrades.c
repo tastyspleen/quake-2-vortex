@@ -32,7 +32,7 @@ int GetAbilityUpgradeCost(int index)
 		case CREATE_QUAD:
 		case CREATE_INVIN:
 		case SUPER_SPEED:
-		case DECOY:
+		case ANTIGRAV:
 		case WEAPON_KNOCK:		
 		case MORPH_MASTERY:	
 		case TOTEM_MASTERY:				
