@@ -341,7 +341,6 @@ void berserk_melee (edict_t *self)
 */
 void init_drone_berserk (edict_t *self)
 {
-	// pre-caches
 	sound_pain  = gi.soundindex ("berserk/berpain2.wav");
 	sound_die   = gi.soundindex ("berserk/berdeth2.wav");
 	sound_idle  = gi.soundindex ("berserk/beridle1.wav");
@@ -350,6 +349,7 @@ void init_drone_berserk (edict_t *self)
 	sound_sight = gi.soundindex ("berserk/sight.wav");
 
 	self->s.modelindex = gi.modelindex("models/monsters/berserk/tris.md2");
+
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
 	self->movetype = MOVETYPE_STEP;

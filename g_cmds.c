@@ -2433,6 +2433,9 @@ void Cmd_TransCredits(edict_t *ent)
 	edict_t *player;
 	int creditval;
 
+	if (G_IsSpectator(ent))
+		return;
+
 	if (gi.argc() < 3)
 		gi.cprintf(ent, PRINT_HIGH, "transfercredits <player> <amount>\n");
 	cmd1 = gi.argv(1);
@@ -2442,12 +2445,20 @@ void Cmd_TransCredits(edict_t *ent)
 	if (creditval < 0)
 		gi.cprintf(ent, PRINT_HIGH, "You can't really /give/ that amount of credits, you know.\n");
 
-	if (player = FindPlayerByName(cmd1))
+	if ( (player = FindPlayerByName(cmd1)) && 
+			!G_IsSpectator(player))
 	{
 		if (ent->myskills.credits > creditval)
 		{
 			player->myskills.credits += creditval;
 			ent->myskills.credits -= creditval;
+			gi.cprintf(player, PRINT_MEDIUM, "%s transfered %d credits to you.\n", player->myskills.player_name, creditval);
+			gi.cprintf(ent, PRINT_MEDIUM, "You transfer %d credits to %s. (%d left)\n", creditval, ent->myskills.credits);
+
+			WriteToLogFile(ent->myskills.player_name, va("Transfers %d credits to %s. %d left\n", 
+				creditval, player->myskills.player_name, ent->myskills.credits));
+			WriteToLogFile(player->myskills.player_name, va("Got %d credits from %s. (%d after transfer)\n",
+				creditval, ent->myskills.player_name, player->myskills.credits));
 		}else
 			gi.cprintf(ent, PRINT_HIGH, "Not enough credits. (Got %d, need %d, you need %d more.\n)", 
 			ent->myskills.credits, creditval,  creditval - ent->myskills.credits);

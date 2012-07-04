@@ -337,6 +337,7 @@ void INV_SpawnMonsters (edict_t *self)
 			invasion_difficulty_level += 1; 
 			printedmessage = 0;
 			mspawned = total_monsters;
+			gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
 		}
 	}
 
@@ -374,6 +375,8 @@ void INV_SpawnMonsters (edict_t *self)
 		else
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d.\n", invasion_difficulty_level, max_monsters);
 		G_PrintGreenText(va("Timelimit: %dm %ds.\n", (int)TimeFormula() / 60, (int)TimeFormula() % 60));
+
+		gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/talk1.wav"), 1, ATTN_NONE, 0);
 
 		BossCheck(e, self);
 

@@ -93,6 +93,9 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 {
 	//Give_respawnitems(ent);
 
+	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+		return;
+
 	//3.02 begin new respawn weapon code
 	//Give them the weapon
 	switch (weaponID)
@@ -113,9 +116,7 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 	}
 
 	//Give them the ammo
-	if (ent->myskills.level < 5)
-		V_GiveAmmoClip(ent, 2, V_GetRespawnAmmoType(ent));
-	else V_GiveAmmoClip(ent, 1, V_GetRespawnAmmoType(ent));
+	V_GiveAmmoClip(ent, 2, V_GetRespawnAmmoType(ent));
 	//3.02 end new respawn weapon code
 
 	Pick_respawnweapon(ent);
@@ -178,12 +179,6 @@ void Pick_respawnweapon(edict_t *ent)
 	ent->client->pers.weapon = item;
 	ent->client->pers.lastweapon = item;
 	ent->client->newweapon = item;
-
-	// vrxchile bugfix: make sure player has one of these!
-	ent->client->pers.inventory[ITEM_INDEX(item)] = 1;
-	ent->client->pers.inventory[ITEM_INDEX(Fdi_BLASTER)] = 1;
-	ent->client->pers.inventory[ITEM_INDEX(FindItem("Sword"))] = 1;
-	// end vrxchile
 
 	ChangeWeapon(ent);
 }

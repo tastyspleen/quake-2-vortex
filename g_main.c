@@ -650,6 +650,36 @@ void CheckDMRules (void)
 					G_PrintGreenText(va("***** 3 Minute Warning: Type 'vote' to place your vote for the next map and game type *****\n"));
 					maplist.warning_given = true;
 				}
+
+		
+
+		if (level.time >= ((float)timelimit->value*60.0 - 30.0))
+		{
+			if (maplist.sounds[1] != 1)
+			{
+				gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("invasion/30sec.wav"), 1, ATTN_NONE, 0);
+				maplist.sounds[1] = 1;
+			}
+		}
+
+		if (level.time >= ((float)(timelimit->value*60.0) - 20.0))
+		{
+			if (maplist.sounds[2] != 1)
+			{
+				gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("invasion/20sec.wav"), 1, ATTN_NONE, 0);
+				maplist.sounds[2] = 1;
+			}
+		}
+
+		if (level.time >= (((float)(timelimit->value)*60.0) - 10.0))
+		{
+			if (maplist.sounds[3] != 1)
+			{
+				gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("world/10_0.wav"), 1, ATTN_NONE, 0);
+				maplist.sounds[3] = 1;
+			}
+		}
+
 		//K03 End
 		if (level.time >= timelimit->value*60)
 		{
@@ -854,7 +884,10 @@ void G_RunFrame (void)
 		if (level.time == pregame_time->value-10)
 			gi.bprintf(PRINT_HIGH, "10 seconds left of pre-game\n");
 		if (level.time == pregame_time->value-5)
+		{
 			gi.bprintf(PRINT_HIGH, "5 seconds\n");
+			gi.sound(ent, CHAN_VOICE, gi.soundindex("5_0.wav"), 1, ATTN_NONE, 0);
+		}
 		if (level.time == pregame_time->value-4)
 			gi.bprintf(PRINT_HIGH, "4\n");
 		if (level.time == pregame_time->value-3)
@@ -866,7 +899,10 @@ void G_RunFrame (void)
 		if (level.time == pregame_time->value) {
 			gi.bprintf(PRINT_HIGH, "Game commences!\n");
 
-			gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/fight.wav"), 1, ATTN_NONE, 0);
+			if (!invasion->value)
+				gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/fight.wav"), 1, ATTN_NONE, 0);
+			else
+				gi.sound(ent, CHAN_VOICE, gi.soundindex("invasion/fight_invasion.wav"), 1, ATTN_NONE, 0);
 
 			tech_spawnall();
 

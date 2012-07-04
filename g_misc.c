@@ -510,7 +510,7 @@ void Sun_Think(edict_t *self)
 	else
 	{
 		lightlevel[0]--;
-		if (lightlevel[0] <= 'c'){
+		if (lightlevel[0] <= 'j'){
 			self->nextthink = level.time + 100;
 			day = 1;
 		}

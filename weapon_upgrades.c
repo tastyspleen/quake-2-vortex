@@ -177,6 +177,13 @@ void weaponmenu_handler (edict_t *ent, int option)
 void OpenWeaponUpgradeMenu (edict_t *ent, int lastline)
 {
 	int i;
+
+	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You can't upgrade weapons.\n");
+		return;
+	}
+
 	if (!ShowMenu(ent))
 		return;
 	clearmenu(ent);
@@ -187,12 +194,29 @@ void OpenWeaponUpgradeMenu (edict_t *ent, int lastline)
 	addlinetomenu(ent, "want to upgrade:", 0);
 	addlinetomenu(ent, " ", 0);
 
-	for (i = 0; i < MAX_WEAPONS; ++i)
+	// todo: unuglyfy
+	if (ent->myskills.class_num == CLASS_KNIGHT) // only add the sword
 	{
-		char weaponString[24];
-		strcpy(weaponString, GetWeaponString(i));
-		padRight(weaponString, 18);
-		addlinetomenu(ent, va("%s%d%c", weaponString, V_WeaponUpgradeVal(ent, i),'%'), (i+10)*100);
+		for (i = 0; i < MAX_WEAPONS; ++i)
+		{
+			char weaponString[24];
+			strcpy(weaponString, GetWeaponString(i));
+			if (!strcmp(weaponString, "Sword")) // only add the sword
+			{
+				padRight(weaponString, 18);
+				addlinetomenu(ent, va("%s%d%c", weaponString, V_WeaponUpgradeVal(ent, i),'%'), (i+10)*100);
+			}
+		}
+	}else
+	{
+		for (i = 0; i < MAX_WEAPONS; ++i)
+		{
+			char weaponString[24];
+			strcpy(weaponString, GetWeaponString(i));
+			padRight(weaponString, 18);
+			addlinetomenu(ent, va("%s%d%c", weaponString, V_WeaponUpgradeVal(ent, i),'%'), (i+10)*100);
+
+		}
 	}
 
 	addlinetomenu(ent, " ", 0);

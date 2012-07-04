@@ -2396,10 +2396,10 @@ void weapon_20mm_fire (edict_t *ent)
 	//if (kick < 0)
 	//	kick = 0;
 
-	if (!ent->groundentity){
+	if (!ent->groundentity && !ent->waterlevel){
 		ent->client->ps.gunframe = 5;
 		if (ent->client && !(ent->svflags & SVF_MONSTER))
-			gi.cprintf(ent, PRINT_HIGH, "You must be on the ground to fire the 20mm cannon.\n");
+			gi.cprintf(ent, PRINT_HIGH, "You must be stepping on the ground or in water to fire the 20mm cannon.\n");
 		return;
 	}
 
