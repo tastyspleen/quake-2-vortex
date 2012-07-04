@@ -519,6 +519,13 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
      int          count;  
      //float qty;  
  
+	 if ((other->client || other->mtype) &&  // knights and polts can't get ammo in pvm modes
+		 (pvm->value || invasion->value) &&
+		 (other->myskills.class_num == CLASS_POLTERGEIST ||
+		 other->myskills.class_num == CLASS_KNIGHT))
+		 return false;
+
+
      if (ent->count)
 		 count = ent->count; 
      else

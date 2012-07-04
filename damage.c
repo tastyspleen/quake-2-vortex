@@ -574,11 +574,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		// Talent: Superiority
 		// increases damage/resistance of morphed players against monsters
 		talentLevel = getTalentLevel(targ, TALENT_SUPERIORITY);
-		/*if (!talentLevel)
-			if (targ->owner && targ->owner->inuse && targ->owner->client)
-			{
-				talentLevel=getTalentLevel(targ->owner, TALENT_PACK_ANIMAL);
-			}*/
+		
 		if (attacker->activator && attacker->mtype != P_TANK && (attacker->svflags & SVF_MONSTER) && talentLevel > 0)
 			temp += 0.2 * talentLevel;
 

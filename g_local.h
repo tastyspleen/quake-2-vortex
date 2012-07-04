@@ -1927,6 +1927,7 @@ typedef struct
    qboolean warning_given; // Have we given people a warning to vote?
    int	active;				//is map list active?
    int people_voted;
+   int sounds[4];
 } maplist_t; 
 maplist_t		maplist;
 

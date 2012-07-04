@@ -398,6 +398,8 @@ void StartGame (edict_t *ent)
 	ent->client->pers.inventory[regeneration_index] = 0;
 	ent->touch = player_touch;
 	modify_max(ent);
+
+	Give_respawnitems(ent);
 	Give_respawnweapon(ent, ent->myskills.respawn_weapon);
 		
 	// add a teleportation effect
@@ -756,6 +758,12 @@ void OpenRespawnWeapMenu(edict_t *ent)
 		return;
 	}
 
+	if(ent->myskills.class_num == CLASS_POLTERGEIST)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You can't pick a respawn weapon.\n");
+		return;
+	}
+
 	clearmenu(ent);
 
 	//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
@@ -966,8 +974,11 @@ void OpenGeneralMenu (edict_t *ent)
 	addlinetomenu(ent, "Please choose a sub-menu.", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Upgrade abilities", 1);
-	addlinetomenu(ent, "Upgrade weapons", 2);
+	if (ent->myskills.class_num != CLASS_POLTERGEIST)
+		addlinetomenu(ent, "Upgrade weapons", 2);
 	addlinetomenu(ent, "Upgrade talents", 3);
+	if (ent->myskills.class_num != CLASS_POLTERGEIST && 
+		ent->myskills.class_num != CLASS_KNIGHT)
 	addlinetomenu(ent, "Set respawn weapon", 4);
 	addlinetomenu(ent, "Set master password", 5);
 	addlinetomenu(ent, "Show character info", 6);
