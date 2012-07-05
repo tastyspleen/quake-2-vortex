@@ -2452,8 +2452,8 @@ void Cmd_TransCredits(edict_t *ent)
 		{
 			player->myskills.credits += creditval;
 			ent->myskills.credits -= creditval;
-			gi.cprintf(player, PRINT_MEDIUM, "%s transfered %d credits to you.\n", player->myskills.player_name, creditval);
-			gi.cprintf(ent, PRINT_MEDIUM, "You transfer %d credits to %s. (%d left)\n", creditval, ent->myskills.credits);
+			gi.cprintf(player, PRINT_MEDIUM, "%s transfered %d credits to you.\n", ent->myskills.player_name, creditval);
+			gi.cprintf(ent, PRINT_MEDIUM, "You transfer %d credits to %s. (%d left)\n", creditval, player->myskills.player_name, ent->myskills.credits);
 
 			WriteToLogFile(ent->myskills.player_name, va("Transfers %d credits to %s. %d left\n", 
 				creditval, player->myskills.player_name, ent->myskills.credits));
