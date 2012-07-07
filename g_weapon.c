@@ -1456,6 +1456,21 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 
 		VectorCopy (tr.endpos, from);
 
+		if (tr.fraction != 1.0) // vrc 2.32: give some feedback
+		{
+			if (strncmp (tr.surface->name, "sky", 3) != 0)
+			{
+				gi.WriteByte (svc_temp_entity);
+				gi.WriteByte (TE_GUNSHOT);
+				gi.WritePosition (tr.endpos);
+				gi.WriteDir (tr.plane.normal);
+				gi.multicast (tr.endpos, MULTICAST_PVS);
+
+				if (self->client)
+					PlayerNoise(self, tr.endpos, PNOISE_IMPACT);
+			}
+		}
+
 	//GHz Start
 		if (!self->client || (self->client->ps.pmove.pm_flags & PMF_DUCKED))
 			ducked = true;

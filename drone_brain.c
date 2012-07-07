@@ -729,11 +729,13 @@ void mybrain_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	M_Notify(self);
 
 	// reduce lag by removing the entity right away
+#ifdef OLD_NOLAG_STYLE
 	if (nolag->value)
 	{
 		M_Remove(self, false, true);
 		return;
 	}
+#endif
 
 	self->s.effects = 0;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
@@ -748,7 +750,14 @@ void mybrain_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		for (n= 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		//ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+#ifdef OLD_NOLAG_STYLE
 		M_Remove(self, false, false);
+#else
+		if (nolag->value)
+			M_Remove(self, false, true);
+		else
+			M_Remove(self, false, false);
+#endif
 		return;
 	}
 

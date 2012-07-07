@@ -665,12 +665,14 @@ void m_soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	// notify the owner that the monster is dead
 	M_Notify(self);
 
+#ifdef OLD_NOLAG_STYLE
 	// reduce lag by removing the entity right away
 	if (nolag->value)
 	{
 		M_Remove(self, false, true);
 		return;
 	}
+#endif
 
 	// check for gib
 	if (self->health <= self->gib_health)
@@ -682,7 +684,14 @@ void m_soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		//ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		//self->deadflag = DEAD_DEAD;
+#ifdef OLD_NOLAG_STYLE
 		M_Remove(self, false, false);
+#else
+		if (nolag->value)
+			M_Remove(self, false, true);
+		else
+			M_Remove(self, false, false);
+#endif
 		return;
 	}
 

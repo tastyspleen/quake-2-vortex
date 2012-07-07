@@ -438,6 +438,7 @@ typedef struct
 	int			num_bots;
 	int			r_monsters;			//4.5 recommended monster value for this map
 	qboolean	daytime; //GHz: Is the sun going up or down?
+	qboolean    modechange;
 	gdsfiles_t	gdsfiles[MAX_CLIENTS];
 
 	// experimental monster pathfinding

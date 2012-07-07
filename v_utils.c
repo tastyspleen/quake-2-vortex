@@ -83,13 +83,12 @@ void PrintCommands(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "Vortex Command List:\n\n");
 	gi.cprintf(ent, PRINT_HIGH, va("Version %s\n\n", VRX_VERSION));
 
-	gi.cprintf(ent, PRINT_HIGH, "*** Skills ***\n\n");
-
-	gi.cprintf(ent, PRINT_HIGH, "aura_holyfreeze\naura_shock\naura_salvation\nbless [self]\ncacodemon\ncripple\ncurse\nampdamage\nironmaiden\nweaken\namnesia\ndecoy\ndetpipes\nforcewall [solid]\ngravjump\nguardian\n+hook\nheal [self]\nlaser[s] [remove]\nmagicbolt\nmagmine\nminisentry [remove]\nmonster [help/hunt/remove/select/stand]\nnova\n+parasite\nsentry [remove/rotate]\nspell_boost\nspell_bomb [area/forward]\nspell_corpseexplode\nspell_stealammo\n+superspeed\nsupplystation\nteleport_fwd\n+thrust\nuse [power screen/holywater/potion/gravityboots]\n\n");
-	
-	gi.cprintf(ent, PRINT_HIGH, "*** Standard Commands ***\n\n");
-	
-	gi.cprintf(ent, PRINT_HIGH, "owner <name>\nwhois <playername>\nflashlight\nrune\nteam\ntrade\ntogglesecondary\nuse tball [self]\nupgrade_ability\nupgrade_weapon\nvote\nvrx_password\nvrxarmory\nvrxhelp\nvrxid\nvrxinfo\nvrxrespawn\n\n");
+	gi.cprintf(ent, PRINT_HIGH, "== Character abilities ==\n\n    acid\n    airtotem [protect]\n    ammosteal\n    amnesia\n    ampdamage\n    antigrav\n    armorbomb\n    aura_holyfreeze\n    aura_salvation\n    autocannon\n    balancespirit\n    beam_off\n    beam_on\n    berserker\n    bless\n    blessedhammer\n    bombspell\n    boomerang\n    boost\n    brain\n    cacodemon\n    caltrop\n    chainlightning\n    cocoon\n    convert\n    ");
+	gi.cprintf(ent, PRINT_HIGH, "cripple\n    curse\n    darknesstotem\n    deathray\n    deflect\n    detector\n    detonatebody\n    detpipe\n    earthtotem\n    emp\n    explode\n    fireball\n    firetotem\n    flyer\n    forcewall\n    forcewall_off\n    frostnova\n    gasser\n    heal\n    healer\n    healray\n    hellspawn\n    holyfreeze\n    holyground\n    icebolt\n    laser\n    laser\n    laserplatform\n    lasertrap\n    lifedrain\n    lightningstorm\n    lowerresist\n    magicbolt\n    magmine\n    manashield\n    medic\n    meditate\n    meteor\n    minisentry\n    mirv\n    monster\n    mutant\n    napalm\n    naturetotem\n    nosspeed\n    nova\n    obstacle\n    overload\n    parasite\n    plasmabolt\n    proxy\n    purge\n    salvation\n    scanner\n    sentry\n    shieldoff\n    shieldon\n    spell_bomb\n    spell_boost\n    spell_corpse\n    spell_stealammo\n    spike\n    spikegrenade\n    spiker\n    spore\n    sprintoff\n    sprinton\n    sspeed\n    supplystation\n    tank\n    teleport_fwd\n    totem [remove]\n    unholyground\n    watertotem\n    weaken\n    wormhole\n    yang\n    yin\n");
+    gi.cprintf(ent, PRINT_HIGH, "\n\n== General commands ==\n\n    abilityindex\n    ally\n    allyinfo\n    combat\n    flashlight\n    gravjump \n    lasersight\n    masterpw\n    mute\n    owner\n    rune\n    speech\n    team\n    togglesecondary\n    trade\n    transfercredits\n    update\n    vrxhelp\n    vrxid\n    vrxmenu\n    whois\n    yell\n");
+    
+    if (ent->myskills.administrator)
+        gi.cprintf(ent, PRINT_HIGH, "\n\n== Admin commands ==\n\n    addnode\n    admincmd\n    bbox\n    checkclientsettings\n    computenode\n    deleteallnode\n    deletenode\n    loadnode\n    lockon_crosshair\n    lockon_off\n    lockon_on\n    navipos\n    savenode\n    showgrid\n    spawnpos\n    teleport_rnd\n    writepos\n");
 }
 
 //************************************************************************************************
@@ -266,7 +265,11 @@ char *GetClassString (int class_num)
 	case CLASS_POLTERGEIST: return "Poltergeist";
 	case CLASS_KNIGHT:		return "Knight";
 	case CLASS_CLERIC:		return "Cleric";
-	case CLASS_WEAPONMASTER:return "Weapon Master";
+	case CLASS_WEAPONMASTER:
+		if (generalabmode->value) // :)
+			return "Weapon Master";
+		else
+			return "Apprentice";
 	case CLASS_SHAMAN:		return "Shaman";
 	case CLASS_ALIEN:		return	"Alien";
 	default:				return "Unknown";

@@ -305,6 +305,14 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 
 	M_Notify(self);
 
+#ifdef OLD_NOLAG_STYLE
+	if (nolag->value)
+	{
+		M_Remove(self, false, true);
+		return;
+	}
+#endif
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -315,7 +323,14 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 
+#ifdef OLD_NOLAG_STYLE
 		M_Remove(self, false, false);
+#else
+		if (nolag->value)
+			M_Remove(self, false, true);
+		else
+			M_Remove(self, false, false);
+#endif
 		return;
 	}
 

@@ -19,6 +19,8 @@ void MoveClientToIntermission (edict_t *ent)
 	ent->client->ps.pmove.pm_type = PM_FREEZE;
 	ent->client->ps.gunindex = 0;
 	ent->client->ps.blend[3] = 0;
+	ent->client->ps.viewangles[ROLL] = 0;
+	ent->client->ps.kick_angles[ROLL] = 0;
 
 	VectorCopy (level.intermission_origin, ent->s.origin);
 	// clean up powerup info
@@ -1145,4 +1147,5 @@ void G_SetSpectatorStats (edict_t *ent)
 	else
 		cl->ps.stats[STAT_CHASE] = 0;*/
 }
+
 

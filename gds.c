@@ -239,7 +239,7 @@ void GDS_CheckPlayer (edict_t *ent)
 		return;
 	}
 }
-*/
+
 
 int GDS_OpenConfigFile(edict_t *ent)
 {
@@ -275,3 +275,4 @@ void GDS_CheckPlayer(edict_t *ent)
 #endif
 }
 
+*/

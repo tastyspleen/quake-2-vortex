@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-#define ARMORY_MAX_CONSUMABLES	2
+#define ARMORY_MAX_CONSUMABLES	10
 
 void OpenPurchaseMenu (edict_t *ent, int page_num, int lastline);
 void OpenBuyRuneMenu(edict_t *ent, int page_num, int lastline);
@@ -257,6 +257,13 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		case 27:	//weapon rune
 			PurchaseRandomRune(ent, ITEM_WEAPON); return;
 		case 28:	//reset char data
+
+			// justification for lower reset price: allows player
+			// to try out new builds and
+			// makes it less punishing to decide
+			// to reset and try a new build or to buy ab points.
+
+			// note: resetting doesn't give back bought ab points.
 			price = ARMORY_PRICE_RESET*ent->myskills.level;
 			if (price > 50000)
 				price = 50000;
@@ -267,7 +274,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 				price = 50000;
 			break;
 		case 30: // weapon point
-			price = 450*ent->myskills.level;
+			price = 420*ent->myskills.level;
 			if (price > 50000)
 				price = 50000;
 			break;
@@ -407,8 +414,8 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			gi.cprintf(ent, PRINT_HIGH, "You bought an ability point - you now have %d.\n", ent->myskills.speciality_points);
 			break;
 		case 30:
-			ent->myskills.weapon_points += 1;
-			gi.cprintf(ent, PRINT_HIGH, "You bought a weapon point - you now have %d.\n", ent->myskills.weapon_points);
+			ent->myskills.weapon_points += 2;
+			gi.cprintf(ent, PRINT_HIGH, "You bought two weapon points - you now have %d.\n", ent->myskills.weapon_points);
 			break;
 		}
 	}

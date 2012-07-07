@@ -1,7 +1,7 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
-#define MAX_VRXITEMS			10
+#define MAX_VRXITEMS			11
 #define MAX_VRXITEMMODS			6
 
 #define TYPE_NONE			0

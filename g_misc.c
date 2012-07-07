@@ -121,6 +121,11 @@ void ThrowGib (edict_t *self, char *gibname, int damage, int type)
 	vec3_t	size;
 	float	vscale;
 
+#ifndef OLD_NOLAG_STYLE
+	if (nolag->value)
+		return;
+#endif
+
 	gib = G_Spawn();
 
 	VectorScale (self->size, 0.5, size);
@@ -510,7 +515,7 @@ void Sun_Think(edict_t *self)
 	else
 	{
 		lightlevel[0]--;
-		if (lightlevel[0] <= 'j'){
+		if (lightlevel[0] <= 'g'){
 			self->nextthink = level.time + 100;
 			day = 1;
 		}
@@ -518,7 +523,7 @@ void Sun_Think(edict_t *self)
 			self->nextthink = level.time + 5;
 	}
 
-	if (lightlevel[0] < 'i')
+	if (lightlevel[0] < 'k')
 		level.daytime = false;
 	else
 		level.daytime = true;

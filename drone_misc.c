@@ -7,7 +7,7 @@
 
 void drone_think (edict_t *self);
 void drone_wakeallies (edict_t *self);
-qboolean drone_findtarget (edict_t *self);
+qboolean drone_findtarget (edict_t *self, qboolean force);
 void init_drone_gunner (edict_t *self);
 void init_drone_parasite (edict_t *self);
 void init_drone_bitch (edict_t *self);
@@ -194,7 +194,7 @@ void drone_ai_checkattack (edict_t *self)
 	if (!visible(self, self->enemy))
 	{
 		self->oldenemy = self->enemy;
-		if (!drone_findtarget(self))
+		if (!drone_findtarget(self, false))
 			return;
 		//gi.dprintf("%d going for an easier target\n", self->mtype);	
 	}
@@ -594,6 +594,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	drone->monsterinfo.control_cost = M_DEFAULT_CONTROL_COST;
 	drone->monsterinfo.cost = M_DEFAULT_COST;
 	drone->monsterinfo.sight_range = 1024; // 3.56 default sight range for finding targets
+	drone->inuse = true;
 
 	switch(drone_type)
 	{
@@ -643,7 +644,9 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	{
 		//Talent: Corpulence (also in M_Initialize)
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
-		if(talentLevel > 0)	mult +=	0.1 * talentLevel;	//+10% per upgrade
+		if(talentLevel > 0)	mult +=	0.3 * talentLevel;	//+30% per upgrade
+
+		mult += 0.5; // base mult for player monsters
 
 		//Talent: Drone Power (durability penalty)
 	//	talentLevel = getTalentLevel(ent, TALENT_DRONE_POWER);
@@ -1608,7 +1611,7 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 	{
 		//Talent: Corpulence
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
-		if(talentLevel > 0)	mult +=	0.1 * talentLevel;	//+10% per upgrade
+		if(talentLevel > 0)	mult +=	0.3 * talentLevel;	//+30% per upgrade
 	}
 
 	monster->health *= mult;
@@ -2262,7 +2265,7 @@ void Cmd_Drone_f (edict_t *ent)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Available monster commands:\n");
 		//gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster select\nmonster move\nmonster remove\nmonster hunt\nmonster count\n");
-		gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster command\nmonster follow me\nmonster remove\nmonster count\n");
+		gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster gladiator\nmonster command\nmonster follow me\nmonster remove\nmonster count\n");
 		return;
 	}
 

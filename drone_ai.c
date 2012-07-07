@@ -16,7 +16,7 @@ qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target);
 float distance (vec3_t p1, vec3_t p2);
 edict_t *SpawnGoalEntity (edict_t *ent, vec3_t org);
 void drone_ai_checkattack (edict_t *self);
-qboolean drone_findtarget (edict_t *self);
+qboolean drone_findtarget (edict_t *self, qboolean force);
 edict_t *drone_get_target (edict_t *self, qboolean get_medic_target, qboolean get_enemy, qboolean get_navi);
 void drone_wakeallies (edict_t *self);
 
@@ -284,7 +284,7 @@ qboolean drone_validnavi (edict_t *self, edict_t *other, qboolean visibility_che
 	return true;
 }
 
-qboolean drone_validpspawn (edict_t *self, edict_t *other, qboolean visibility_check)
+qboolean drone_validpspawn (edict_t *self, edict_t *other)
 {
 	// only world-spawn monsters should search for invasion mode navi
 	// don't bother if they are not mobile
@@ -292,9 +292,6 @@ qboolean drone_validpspawn (edict_t *self, edict_t *other, qboolean visibility_c
 		return false;
 	// make sure this is actually a beacon
 	if (!other || !other->inuse || (other->mtype != INVASION_PLAYERSPAWN))//INVASION_NAVI))
-		return false;
-	// do a visibility check if required
-	if (visibility_check && !visible(self, other))
 		return false;
 	return true;
 }
@@ -439,11 +436,6 @@ edict_t *drone_get_target (edict_t *self,
 	if (get_navi && ((target = drone_get_navi(self)) != NULL))
 		return target;
 
-	// No navi? go for a player spawn.
-	if (invasion->value)
-		if (get_navi && ((target = drone_findpspawn(self)) != NULL))
-			return target;
-
 	return NULL;
 }
 
@@ -455,7 +447,7 @@ Searches a spherical area for enemies and
 returns true if one is found within range
 =============
 */
-qboolean drone_findtarget (edict_t *self)
+qboolean drone_findtarget (edict_t *self, qboolean force)
 {
 	int			frames;
 	edict_t		*target=NULL;
@@ -471,7 +463,7 @@ qboolean drone_findtarget (edict_t *self)
 	else
 		frames = DRONE_FINDTARGET_FRAMES;
 
-	if (level.framenum % frames)
+	if (level.framenum % frames && !force)
 		return false;
 
 	// if we're a medic, do a sweep for those with medical need!
@@ -590,7 +582,7 @@ qboolean drone_ai_findgoal (edict_t *self)
 		self->oldenemy = NULL;
 	}
 	// can we find a new target?
-	else if (drone_findtarget(self))
+	else if (drone_findtarget(self, false))
 	{
 		// go after him
 		if (!(self->monsterinfo.aiflags & AI_STAND_GROUND))
@@ -649,7 +641,7 @@ void drone_ai_walk (edict_t *self, float dist)
 		if (drone_ValidChaseTarget(self, self->enemy))
 			self->monsterinfo.run(self);
 		// otherwise, try to find a new one
-		else if (drone_findtarget(self))
+		else if (drone_findtarget(self, false))
 			self->monsterinfo.run(self);
 		// enemy isn't valid, so give up
 		else
@@ -706,7 +698,7 @@ void drone_ai_stand (edict_t *self, float dist)
 
 		if (drone_ValidChaseTarget(self, self->enemy))
 			self->monsterinfo.run(self);
-		else if (drone_findtarget(self))
+		else if (drone_findtarget(self, false))
 			self->monsterinfo.run(self);
 		else
 			self->enemy = NULL;
@@ -1277,9 +1269,9 @@ edict_t *drone_findpspawn(edict_t *self)
 		navis[i] = NULL;
 
 	while ((e = findclosestradius1 (e, self->s.origin, 
-		self->monsterinfo.sight_range)) != NULL)
+		self->monsterinfo.sight_range*6)) != NULL)
 	{
-		if (!drone_validpspawn(self, e, false))
+		if (!drone_validpspawn(self, e))
 		{
 			iters++;
 			if (iters > 256)
@@ -1340,7 +1332,11 @@ edict_t *drone_findnavi (edict_t *self)
 	e = navis[i];
 	self->prev_navi = e;
 	//gi.dprintf("selected navi %i at %d\n", i, e);
-	return e;
+
+	if (e != NULL)
+		return e;
+	else
+		return drone_findpspawn(self); // vrc 2.32: Ebil.
 }
 
 int NextWaypointLocation (vec3_t start, vec3_t loc, int *wp);
@@ -1387,7 +1383,7 @@ void drone_ai_giveup (edict_t *self)
 qboolean drone_ai_lost (edict_t *self, edict_t *goalent, float dist)
 {
 	// give up searching for a goal/path after a while
-	if (self->monsterinfo.search_frames > 100)
+	if (self->monsterinfo.search_frames > 50)
 	{
 		//gi.dprintf("%s gave up\n", V_GetMonsterKind(self->mtype));
 		drone_ai_giveup(self);
@@ -1567,7 +1563,7 @@ void drone_ai_run1 (edict_t *self, float dist)
 	else if (self->goalentity)
 	{
 		// try to find an enemy
-		drone_findtarget(self);
+		drone_findtarget(self, false);
 		if (self->enemy)
 		{
 			goal = self->enemy;
@@ -1710,15 +1706,20 @@ void drone_ai_run1 (edict_t *self, float dist)
 			else
 			{
 				// we've reached the end of the path and can't see our goal
-				drone_ai_lost(self, goal, dist);
-				// don't bother trying to re-compute path until we see our goal again
-				self->monsterinfo.aiflags |= AI_LOST_SIGHT;
+				if (!invasion->value)
+				{
+					drone_ai_lost(self, goal, dist);
+
+					// don't bother trying to re-compute path until we see our goal again
+					self->monsterinfo.aiflags |= AI_LOST_SIGHT;
+				}else
+					drone_findtarget(self, true); // find new goal
 			}
 		}
 		else
 		{
 			// we couldn't determine a valid path
-			drone_ai_lost(self, goal, dist);
+			drone_ai_lost(self, goal, dist);			
 		}
 	}
 	else
