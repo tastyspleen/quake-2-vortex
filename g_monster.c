@@ -8,7 +8,7 @@ float monster_increaseDamageByTalent(edict_t *owner, float damage)
 		//Talent: Corpulence
 		int talentLevel = getTalentLevel(owner, TALENT_CORPULENCE);
 		// corpulence increases health but reduces damage
-		if(talentLevel > 0)	damage *= 1 / (1 + 0.1 * talentLevel);
+		if(talentLevel > 0)	damage *= 1 / (1 + 0.085 * talentLevel);
 		//Talent: Life Tap
 		talentLevel = getTalentLevel(owner, TALENT_LIFE_TAP);
 		if (talentLevel > 0) damage *= 1 + 0.05 * talentLevel;

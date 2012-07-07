@@ -1796,6 +1796,10 @@ a deathmatch.
 void ShowGun(edict_t *ent);
 // ###	Hentai ### END
 
+//az begin
+void KillBoxMonsters(edict_t *ent);
+// az end
+
 //void MorphToBrain (edict_t *ent);
 void PutClientInServer (edict_t *ent)
 {
@@ -3773,7 +3777,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		ClientThinkstuff(ent);
 
 	//Check player to see if they were loading or saving
-	if(gds->value)	GDS_CheckPlayer(ent);
+	//if(gds->value)	GDS_CheckPlayer(ent);
 
 	if (deathmatch->value &&
 		client->pers.spectator != client->resp.spectator &&

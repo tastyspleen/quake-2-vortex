@@ -346,11 +346,13 @@ void gladiator_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	M_Notify(self);
 
 	// reduce lag by removing the entity right away
+#ifdef OLD_NOLAG_STYLE
 	if (nolag->value)
 	{
 		M_Remove(self, false, true);
 		return;
 	}
+#endif
 
 	// check for gib
 	if (self->health <= self->gib_health)
@@ -361,7 +363,14 @@ void gladiator_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 		for (n= 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 
+#ifdef OLD_NOLAG_STYLE
 		M_Remove(self, false, false);
+#else
+		if (nolag->value)
+			M_Remove(self, false, true);
+		else
+			M_Remove(self, false, false);
+#endif
 		return;
 	}
 

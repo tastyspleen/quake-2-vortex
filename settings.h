@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "2.3.1"
+#define VRX_VERSION "2.4"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -238,14 +238,14 @@ const char* Time();
 #define SABRE_INITIAL_KICK		100
 #define SABRE_ADDON_KICK		0
 
-#define BLASTER_INITIAL_DAMAGE_MIN	10
-#define BLASTER_INITIAL_DAMAGE_MAX	40
-#define BLASTER_ADDON_DAMAGE_MIN	2
-#define BLASTER_ADDON_DAMAGE_MAX	3
+#define BLASTER_INITIAL_DAMAGE_MIN	20
+#define BLASTER_INITIAL_DAMAGE_MAX	60
+#define BLASTER_ADDON_DAMAGE_MIN	4
+#define BLASTER_ADDON_DAMAGE_MAX	7
 #define BLASTER_INITIAL_HASTE		50
 #define BLASTER_ADDON_HASTE			14
 #define BLASTER_INITIAL_SPEED		1000
-#define BLASTER_ADDON_SPEED			50
+#define BLASTER_ADDON_SPEED			55
 
 // 20mm cannon fires every 0.2 seconds
 #define WEAPON_20MM_INITIAL_DMG		35
@@ -254,8 +254,8 @@ const char* Time();
 //#define WEAPON_20MM_INITIAL_DMG_MAX 50
 //#define WEAPON_20MM_ADDON_DMG_MIN	1.5
 //#define WEAPON_20MM_ADDON_DMG_MAX	2.5
-#define WEAPON_20MM_INITIAL_RANGE	500
-#define WEAPON_20MM_ADDON_RANGE		25
+#define WEAPON_20MM_INITIAL_RANGE	550
+#define WEAPON_20MM_ADDON_RANGE		30
 
 // fires every 1.0 seconds
 #define SHOTGUN_INITIAL_DAMAGE		8
@@ -274,9 +274,9 @@ const char* Time();
 #define MACHINEGUN_ADDON_TRACERDAMAGE	3
 
 // note: CG fires 40 bullets/sec
-#define CHAINGUN_INITIAL_DAMAGE			5
-#define CHAINGUN_ADDON_DAMAGE			0.2
-#define CHAINGUN_ADDON_TRACERDAMAGE		5
+#define CHAINGUN_INITIAL_DAMAGE			6
+#define CHAINGUN_ADDON_DAMAGE			0.25
+#define CHAINGUN_ADDON_TRACERDAMAGE		6
 
 #define GRENADE_INITIAL_DAMAGE			200
 #define GRENADE_ADDON_DAMAGE			10
@@ -537,7 +537,7 @@ const char* Time();
 #define ARMORY_PRICE_GRAVITYBOOTS	150
 #define ARMORY_PRICE_FIRE_RESIST	75
 #define ARMORY_PRICE_AUTO_TBALL		250
-#define ARMORY_PRICE_RESET			3000 // per level price (so level 10 would be 30k)
+#define ARMORY_PRICE_RESET			1500 // per level price (so level 10 would be 15k)
 
 //#define ARMORY_QTY_RESPAWNS			1000
 #define ARMORY_QTY_POTIONS			5

@@ -314,7 +314,10 @@ void INV_SpawnMonsters (edict_t *self)
 		if (players < 1)
 		{
 			PVM_RemoveAllMonsters(self);
+			return; // don't spawn any monsters.
 		}
+		if (level.intermissiontime)
+			return;
 		if (limitframe > level.time) // we still got time?
 		{
 			self->nextthink = level.time + FRAMETIME;
@@ -356,8 +359,15 @@ void INV_SpawnMonsters (edict_t *self)
 	case 2: max_monsters = 20; break;
 	case 3: max_monsters = 25; break;
 	case 4: max_monsters = 30; break;
-	case 5: max_monsters = 40; break;
-	default: max_monsters = 40;
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+		max_monsters = 40; break;
+
+	default: max_monsters = 45;
 	}
 
 	if (!(invasion_difficulty_level % 5))

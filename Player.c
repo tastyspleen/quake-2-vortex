@@ -76,10 +76,11 @@ int canJoinGame(edict_t *ent)
 	if (playingtoomuch(ent))
 		return -5;	//playing too much
 	
-	/*
-	if (newbie_protection->value && IsNewbieBasher(ent) && (ent->myskills.level >= NEWBIE_BASHER_MAX))
-		return -6;	//newbie basher can't play
-	*/
+	
+	if (!invasion->value || !pvm->value)
+		if (newbie_protection->value && IsNewbieBasher(ent) && (ent->myskills.level >= NEWBIE_BASHER_MAX))
+			return -6;	//newbie basher can't play on non pvm modes
+	
 	
 	if (ent->myskills.boss && total_players() < (0.5*maxclients->value))
 		return -7; //boss can't play

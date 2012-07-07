@@ -951,7 +951,7 @@ void Cmd_Magicbolt_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	damage = (BOLT_INITIAL_DAMAGE+BOLT_ADDON_DAMAGE*ent->myskills.abilities[MAGICBOLT].current_level)*skill_mult;
 
-	ent->client->ability_delay = level.time+BOLT_DELAY*cost_mult;
+	ent->client->ability_delay = level.time/*+BOLT_DELAY*cost_mult*/; // vrc 2.32 remove  magicbolt delay to spam!
 
 	fire_magicbolt(ent, damage, 0, 0, cost_mult);
 

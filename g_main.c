@@ -409,7 +409,7 @@ void VortexEndLevel (void)
 
 	INV_AwardPlayers();
 
-	gi.dprintf("Vortex is shutting down...");
+	gi.dprintf("Vortex is shutting down...\n");
 	
 	CTF_ShutDown(); // 3.7 shut down CTF, remove flags and bases
 	clearallmenus();
@@ -461,6 +461,7 @@ void EndDMLevel (void)
 		int mode = V_AttemptModeChange(true);
 		v_maplist_t *maplist;
 		int mapnum;
+		qboolean changing = false; // vrc 2.32: A small technical thing and q2pro server.
 
 		//Is the game mode changing?
 		if(mode)
@@ -470,29 +471,48 @@ void EndDMLevel (void)
 			{
 			case MAPMODE_PVP: 
 				if (pvm->value || domination->value)
+				{
 					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Player (PvP) mode!\n");
+					changing = true;
+				}
 				break;
 			case MAPMODE_PVM: 
 				if (!pvm->value)
-					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Monster (PvM) mode!\n");
+				{
+					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Monster / Trading (PvM) mode!\n");
+					changing = true;
+				}
 				break;
 			case MAPMODE_DOM: 
 				if (!domination->value)
+				{
 					gi.bprintf(PRINT_HIGH, "Switching to Domination mode!\n");
+					changing = true;
+				}
 				break;
 			case MAPMODE_CTF: 
 				if (!ctf->value)
+				{
 					gi.bprintf(PRINT_HIGH, "Switching to CTF mode!\n");
+					changing = true;
+				}
 				break;
 			case MAPMODE_FFA: 
 				if (!ffa->value)
+				{
 					gi.bprintf(PRINT_HIGH, "Switching to Free For All (FFA) mode!\n");
+					changing = true;
+				}
 				break;
 			case MAPMODE_INV: 
 				if (!invasion->value)
+				{
 					gi.bprintf(PRINT_HIGH, "Switching to Invasion mode!\n");
+				}
 				break;
 			}
+
+			level.modechange = changing;
 
 			//gi.dprintf("changing to mode %d\n", mode);
 
@@ -741,7 +761,16 @@ void ExitLevel (void)
 	if(level.changemap)
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
 	else if (level.nextmap)
+	{
+#ifdef Q2PRO_COMPATIBILITY
+		if (!level.modechange)
+			Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
+		else // vrc 2.32: latched cvars hate us in q2pro server if we only gamemap
+			Com_sprintf (command, sizeof(command), "map \"%s\"\n", level.nextmap);
+#else
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
+#endif
+	}
 	else 
 	{
 		//default to q2dm1 and give an error

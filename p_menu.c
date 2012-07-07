@@ -542,8 +542,8 @@ void JoinTheGame (edict_t *ent)
 		return;
 	}
 
-	if(gds->value)	returned = GDS_OpenConfigFile(ent);
-	else			returned = OpenConfigFile(ent);
+	/*if(gds->value)	returned = GDS_OpenConfigFile(ent);
+	else			*/returned = OpenConfigFile(ent);
 
 	switch(returned)
 	{

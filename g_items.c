@@ -1534,7 +1534,7 @@ void tech_spawnall (void)
 qboolean tech_pickup (edict_t *ent, edict_t *other)
 {
 	int index;
-	int	maxLevel = 2*AveragePlayerLevel();
+	int	maxLevel = 1.7*AveragePlayerLevel();
 
 	// can't pick-up more than 1 tech
 	if (other->client->pers.inventory[resistance_index] 
@@ -1543,12 +1543,13 @@ qboolean tech_pickup (edict_t *ent, edict_t *other)
 		|| other->client->pers.inventory[haste_index])
 		return false;
 
-	if (maxLevel > 10)
-		maxLevel = 10;
-
-	// can't pick-up if 2x higher than average player level
+    // vrc 2.32: allow players to get techs unless there's a player significantly lower
+	// than himself instead of limiting techs to level 15.
+	
+	// can't pick-up if 1.7x higher than average player level
 	if (other->myskills.level > maxLevel)
 		return false;
+	
 
 	index = ITEM_INDEX(ent->item);
 

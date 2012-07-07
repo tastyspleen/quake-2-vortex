@@ -295,6 +295,7 @@ void InitGame (void)
 	team2_skin = gi.cvar ("team2_skin", "male/ctf_b", 0);
 	// az begin
 	savemethod = gi.cvar ("savemethod", "0", 0);
+	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
 	// az end
 
 	// class skins
@@ -306,7 +307,10 @@ void InitGame (void)
 	class5_skin = gi.cvar ("class5_skin", "terminator/blood", CVAR_LATCH); // engy
 	class6_skin = gi.cvar ("class6_skin", "pknight/knight", CVAR_LATCH); // knight
 	class7_skin = gi.cvar ("class7_skin", "alita/alita", CVAR_LATCH); // cleric
-	class8_skin = gi.cvar ("class8_skin", "ratamahatta/ratamahatta", CVAR_LATCH); // weapon master
+	if (generalabmode->value)
+		class8_skin = gi.cvar ("class8_skin", "ratamahatta/ratamahatta", CVAR_LATCH); // weapon master
+	else
+		class8_skin = gi.cvar ("class8_skin", "marine/brownie", CVAR_LATCH); // weapon master
 	class9_skin = gi.cvar ("class9_skin", "slith/chompers", CVAR_LATCH); // necromancer
 	class10_skin = gi.cvar ("class10_skin", "bauul/bauul", CVAR_LATCH); // shaman
 	class11_skin = gi.cvar ("class11_skin", "xenoid/xenotype1", CVAR_LATCH); // alien
@@ -322,7 +326,6 @@ void InitGame (void)
 	// enable special rules for flag carrier in CTF mode
 	ctf_enable_balanced_fc = gi.cvar ("ctf_enable_balanced_fc", "1", CVAR_LATCH);
 	adminctrl = gi.cvar ("admin_forcevote", "0", CVAR_LATCH);
-	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
 
 	voting = gi.cvar ("voting", "1", CVAR_SERVERINFO);
 	gds = gi.cvar ("gds", "0", CVAR_LATCH);

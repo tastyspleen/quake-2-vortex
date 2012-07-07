@@ -1005,12 +1005,14 @@ void mytank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	M_Notify(self);
 
+#ifdef OLD_NOLAG_STYLE
 	// reduce lag by removing the entity right away
 	if (nolag->value)
 	{
 		M_Remove(self, false, true);
 		return;
 	}
+#endif
 
 	// check for gibbed body
 	if (self->health <= self->gib_health)
@@ -1023,7 +1025,14 @@ void mytank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
 		//ThrowHead (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
 		//self->deadflag = DEAD_DEAD;
+#ifdef OLD_NOLAG_STYLE
 		M_Remove(self, false, false);
+#else
+		if (nolag->value)
+			M_Remove(self, false, true);
+		else
+			M_Remove(self, false, false);
+#endif
 		return;
 	}
 
@@ -1134,9 +1143,9 @@ void init_drone_commander (edict_t *self)
 	init_drone_tank(self);
 
 	// modify health and armor
-	self->health = 1000 + 750*self->monsterinfo.level;
+	self->health = 950 + 675*self->monsterinfo.level;
 	self->max_health = self->health;
-	self->monsterinfo.power_armor_power = 750*self->monsterinfo.level;
+	self->monsterinfo.power_armor_power = 675*self->monsterinfo.level;
 	self->monsterinfo.max_armor = self->monsterinfo.power_armor_power;
 
 	self->monsterinfo.control_cost = 4;
