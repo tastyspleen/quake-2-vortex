@@ -720,8 +720,12 @@ void LifeDrain (edict_t *curse)
 	}
 
 	// take it away from curse's target
-	T_Damage(curse->enemy, caster, caster, vec3_origin, vec3_origin, 
-		vec3_origin, take, 0, DAMAGE_NO_ABILITIES, MOD_LIFE_DRAIN);
+	if (!curse->enemy->client) //deal even MORE damage to non-players.
+		T_Damage(curse->enemy, caster, caster, vec3_origin, vec3_origin, 
+			vec3_origin, take * 1.5, 0, DAMAGE_NO_ABILITIES, MOD_LIFE_DRAIN);
+	else
+		T_Damage(curse->enemy, caster, caster, vec3_origin, vec3_origin, 
+			vec3_origin, take, 0, DAMAGE_NO_ABILITIES, MOD_LIFE_DRAIN);
 
 	curse->wait = level.time + LIFE_DRAIN_UPDATETIME;
 }

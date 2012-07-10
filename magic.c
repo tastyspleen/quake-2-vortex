@@ -1504,7 +1504,8 @@ void proxy_explode (edict_t *self)
 
 	gi.cprintf(self->creator, PRINT_HIGH, "Proxy detonated.\n");
 
-	T_RadiusDamage(self, self->creator, self->dmg, self, self->dmg_radius, MOD_PROXY);
+	T_RadiusDamage_Players(self, self->creator, self->dmg, self, self->dmg_radius, MOD_PROXY);
+	T_RadiusDamage_Nonplayers(self, self->creator, self->dmg * 1.5, self, self->dmg_radius * 1.5, MOD_PROXY);
 
 	// create explosion effect
 	gi.WriteByte (svc_temp_entity);
