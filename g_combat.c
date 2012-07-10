@@ -1297,3 +1297,117 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 		}
 	}
 }
+
+void T_RadiusDamage_Players (edict_t *inflictor, edict_t *attacker, float damage, edict_t *ignore, float radius, int mod) //only affects players
+{
+	float	points;
+	edict_t	*ent = NULL;
+	vec3_t	v;
+	vec3_t	dir;
+
+	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
+	{
+		if (ent == ignore)
+			continue;
+		if (!ent->takedamage)
+			continue;
+		if (!visible1(inflictor, ent))
+			continue;
+		if (!ent->client)
+			continue;
+
+		//gi.dprintf("damage = %.0f radius = %.0f range = %.0f\n", damage, radius, entdist(inflictor, ent));
+
+		VectorAdd (ent->mins, ent->maxs, v);
+		VectorMA (ent->s.origin, 0.5, v, v);
+		VectorSubtract (inflictor->s.origin, v, v);
+		//K03 Begin
+		points = damage - damage * 0.5 *((VectorLength(v))/radius);
+
+	//	gi.dprintf("points = %.1f\n", points);
+		//points = damage - 0.5 * VectorLength (v);
+		//K03 End
+		// points = damage * (1 - (VectorLength(v) / radius));
+		// points = damage * (1 - (VectorLength(v) / radius)^2);
+		if (ent == attacker)
+		{
+			// reduce self-inflicted damage
+			if (mod == MOD_EXPLODINGARMOR)
+				points *= 0.25;
+			else
+				points *= 0.5;
+		}
+
+		if (points > 0)
+		{
+			if (CanDamage (ent, inflictor))
+			{
+				int knockback = (int) points;
+
+				//4.2 limit knockback
+				if (knockback > MAX_KNOCKBACK)
+					knockback = MAX_KNOCKBACK;
+
+				VectorSubtract (ent->s.origin, inflictor->s.origin, dir);
+				T_Damage (ent, inflictor, attacker, dir, inflictor->s.origin, vec3_origin, (int)points, knockback, DAMAGE_RADIUS, mod);
+			}
+		}
+	}
+}
+
+void T_RadiusDamage_Nonplayers (edict_t *inflictor, edict_t *attacker, float damage, edict_t *ignore, float radius, int mod) //only affects players
+{
+	float	points;
+	edict_t	*ent = NULL;
+	vec3_t	v;
+	vec3_t	dir;
+
+	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
+	{
+		if (ent == ignore)
+			continue;
+		if (!ent->takedamage)
+			continue;
+		if (!visible1(inflictor, ent))
+			continue;
+		if (ent->client)
+			continue;
+
+		//gi.dprintf("damage = %.0f radius = %.0f range = %.0f\n", damage, radius, entdist(inflictor, ent));
+
+		VectorAdd (ent->mins, ent->maxs, v);
+		VectorMA (ent->s.origin, 0.5, v, v);
+		VectorSubtract (inflictor->s.origin, v, v);
+		//K03 Begin
+		points = damage - damage * 0.5 *((VectorLength(v))/radius);
+
+	//	gi.dprintf("points = %.1f\n", points);
+		//points = damage - 0.5 * VectorLength (v);
+		//K03 End
+		// points = damage * (1 - (VectorLength(v) / radius));
+		// points = damage * (1 - (VectorLength(v) / radius)^2);
+		if (ent == attacker)
+		{
+			// reduce self-inflicted damage
+			if (mod == MOD_EXPLODINGARMOR)
+				points *= 0.25;
+			else
+				points *= 0.5;
+		}
+
+		if (points > 0)
+		{
+			if (CanDamage (ent, inflictor))
+			{
+				int knockback = (int) points;
+
+				//4.2 limit knockback
+				if (knockback > MAX_KNOCKBACK)
+					knockback = MAX_KNOCKBACK;
+
+				VectorSubtract (ent->s.origin, inflictor->s.origin, dir);
+				T_Damage (ent, inflictor, attacker, dir, inflictor->s.origin, vec3_origin, (int)points, knockback, DAMAGE_RADIUS, mod);
+			}
+		}
+	}
+}
