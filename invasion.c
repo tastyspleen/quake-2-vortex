@@ -170,9 +170,12 @@ void INV_AwardPlayers (void)
 
 	//	gi.dprintf("points=%d credits=%d spawns=%d max=%d\n", 
 	//		points, credits, num_spawns, invasion_max_playerspawns);
-
-		V_AddFinalExp(player, points);
-		player->myskills.credits += credits;
+	
+		if (!G_IsSpectator(player))
+		{
+			V_AddFinalExp(player, points);
+			player->myskills.credits += credits;
+		}
 	}
 }
 

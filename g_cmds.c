@@ -1085,7 +1085,7 @@ void Cmd_Inven_f (edict_t *ent)
 
 	//ItemMenuClose(ent);//3.0 removed for now
 	//K03 Begin
-	if (ent->client->resp.spectator || ent->client->pers.spectator)
+	if ((ent->client->resp.spectator || ent->client->pers.spectator) && level.intermissiontime < level.time)
 	{
 		OpenJoinMenu(ent);
 		return;

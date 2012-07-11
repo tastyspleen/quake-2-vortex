@@ -84,6 +84,9 @@ int canJoinGame(edict_t *ent)
 	
 	if (ent->myskills.boss && total_players() < (0.5*maxclients->value))
 		return -7; //boss can't play
+
+	if (!strcmp(ent->myskills.player_name, "Player"))
+		return -8; // lol
 	
 	return 0;	//success
 }

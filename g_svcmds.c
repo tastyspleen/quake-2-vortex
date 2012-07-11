@@ -736,7 +736,10 @@ void SV_AddMapToMaplist()
 	FILE* fp;
 
 	if (gi.argc() < 4)
+	{
 		gi.cprintf(NULL, PRINT_HIGH, "Missing arguments!\n");
+		return;
+	}
 
 	DoMaplistFilename(mode, &filename[0]);
 

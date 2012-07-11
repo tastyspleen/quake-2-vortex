@@ -1607,11 +1607,14 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 	default: return false;
 	}
 
-	if (ent && ent->inuse && ent->client)
+	if ( (ent && ent->inuse && ent->client) ||
+		(monster->activator && monster->activator->inuse && monster->activator->client) ) // player summons exception.
 	{
 		//Talent: Corpulence
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
 		if(talentLevel > 0)	mult +=	0.3 * talentLevel;	//+30% per upgrade
+
+		mult += 0.5; // base player's monster multiplier.
 	}
 
 	monster->health *= mult;
