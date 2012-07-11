@@ -47,7 +47,12 @@ void setHardMax(edict_t *ent, int index)
 			ent->myskills.abilities[index].hard_max = 1; break;
 		//Everything else
 		default:
-			ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.5; break;
+			if (GetAbilityUpgradeCost(index) < 2)
+			{
+				ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.5; break;
+			}
+			else 
+				ent->myskills.abilities[index].hard_max = 1; break;
 	}	
 }
 
@@ -576,6 +581,9 @@ void JoinTheGame (edict_t *ent)
 	case -7:	//boss can't play
 		gi.cprintf(ent, PRINT_HIGH, "Unable to join: Bosses are not allowed unless the server is at least half capacity.\n");
 		gi.cprintf(ent, PRINT_HIGH, "Please come back at a later time, or try a different character.\n");
+		return;
+	case -8: // stupid name
+		gi.cprintf(ent, PRINT_HIGH, "Unable to join with default name \"Player\" - Don't use this name. We won't be able to know who are you.\n");
 		return;
 	default:	//passed every check
 		break;

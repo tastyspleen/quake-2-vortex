@@ -165,6 +165,10 @@ int getTalentLevel(edict_t *ent, int talentID)
 			{
 				slot = getTalentSlot(ent->owner, talentID);
 				ent = ent->owner;
+			}else if (ent->activator && ent->activator->inuse && ent->activator->client)
+			{
+				slot = getTalentSlot(ent->activator, talentID);
+				ent = ent->activator;
 			}
 
 			if(slot < 0) // still doesn't exist? k

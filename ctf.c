@@ -402,8 +402,7 @@ qboolean CTF_PickupFlag (edict_t *ent, edict_t *other)
 		other->client->resp.score += CTF_FLAG_TAKE_EXP;
 		check_for_levelup(other);
 		*/
-		other->myskills.credits += CTF_FLAG_TAKE_CREDITS;
-		V_AddFinalExp(other, CTF_FLAG_TAKE_EXP);
+		CTF_AwardPlayer(other, CTF_FLAG_TAKE_EXP, CTF_FLAG_TAKE_CREDITS);
 
 		return true;
 	}

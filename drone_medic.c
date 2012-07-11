@@ -795,6 +795,7 @@ void mymedic_cable_attack (edict_t *self)
 	if (M_NeedRegen(self->enemy))
 	{
 		int frames = 6000/(12*self->monsterinfo.level);
+		float mult = 1.0;
 
 		if (!frames)
 			frames = 1;
@@ -806,7 +807,7 @@ void mymedic_cable_attack (edict_t *self)
 		self->enemy->holywaterProtection = level.time + 2.0; //2 seconds immunity
 
 		// heal them
-		M_Regenerate(self->enemy, frames, 0, 1.0, true, true, false, &self->enemy->monsterinfo.regen_delay2);
+		M_Regenerate(self->enemy, frames, 0, mult, true, true, false, &self->enemy->monsterinfo.regen_delay2);
 
 		// hold monsters in-place
 		if (self->enemy->svflags & SVF_MONSTER)
