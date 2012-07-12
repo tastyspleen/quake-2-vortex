@@ -109,8 +109,22 @@ void TradeItems(edict_t *player1, edict_t *player2)
 	player2->client->trade_accepted = false;
 
 	//Save players
-	SaveCharacter(player1);
-	SaveCharacter(player2);
+	if (savemethod->value == 1)
+	{
+		SaveCharacter(player1);
+		SaveCharacter(player2);
+	}else if (savemethod->value == 0)
+	{
+		char path[MAX_QPATH];
+
+		memset(path, 0, strlen(path));
+		VRXGetPath(path, player1);
+		VSF_SaveRunes(player1, path);
+
+		memset(path, 0, strlen(path));
+		VRXGetPath(path, player2);
+		VSF_SaveRunes(player2, path);
+	}
 }
 
 //************************************************************************************************

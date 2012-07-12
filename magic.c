@@ -1476,6 +1476,9 @@ void Cmd_Spike_f (edict_t *ent)
 #define PROXY_BASE_HEALTH	200
 #define PROXY_ADDON_HEALTH	30
 
+void T_RadiusDamage_Nonplayers (edict_t *inflictor, edict_t *attacker, float damage, edict_t *ignore, float radius, int mod); //only affects players
+void T_RadiusDamage_Players (edict_t *inflictor, edict_t *attacker, float damage, edict_t *ignore, float radius, int mod); //only affects players
+
 void proxy_remove (edict_t *self, qboolean print)
 {
 	if (self->deadflag == DEAD_DEAD)
