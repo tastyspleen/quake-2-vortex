@@ -228,7 +228,7 @@ void upgradeTalent(edict_t *ent, int talentID)
 	ent->myskills.talents.talentPoints--;
 	gi.cprintf(ent, PRINT_HIGH, va("%s upgraded to level %d/%d.\n", GetTalentString(talent->id), talent->upgradeLevel, talent->maxLevel));
 	gi.cprintf(ent, PRINT_HIGH, va("Talent points remaining: %d\n", ent->myskills.talents.talentPoints));
-	savePlayer(ent);
+	//savePlayer(ent);
 }
 
 //****************************************

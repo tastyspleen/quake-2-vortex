@@ -73,8 +73,10 @@ void disableAbilities (edict_t *ent);
 //************ p_menu.c ***********
 
 //********** v_file_IO.c **********
+void VRXGetPath(char* path, edict_t* ent);
 char *CryptPassword(char *text);
 qboolean savePlayer(edict_t *ent);
+void VSF_SaveRunes(edict_t *player, char *path);
 qboolean openPlayer(edict_t *ent);
 void createOpenPlayerThread(edict_t *ent);
 //********** v_file_IO.c **********

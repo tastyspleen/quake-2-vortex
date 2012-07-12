@@ -776,7 +776,15 @@ void PurchaseRandomRune(edict_t *ent, int runetype)
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 	//Save the player
-	SaveCharacter(ent);
+	if (savemethod->value == 1)
+		SaveCharacter(ent);
+	else if (savemethod->value == 0)
+	{
+		char path[MAX_QPATH];
+		memset(path, 0, strlen(path));
+		VRXGetPath(path, ent);
+		VSF_SaveRunes(ent, path);
+	}
 
 	//write to the log
 	gi.dprintf("INFO: %s purchased a level %d rune (%s).\n", 
@@ -822,7 +830,15 @@ qboolean Pickup_Rune (edict_t *ent, edict_t *other)
 	V_ItemCopy(&ent->vrxitem, slot);
 
 	//Save the player file (prevents lost runes)
-	SaveCharacter(other);
+	if (savemethod->value == 1)
+		SaveCharacter(other);
+	else if (savemethod->value == 0)
+	{
+		char path[MAX_QPATH];
+		memset(path, 0, strlen(path));
+		VRXGetPath(path, other);
+		VSF_SaveRunes(other, path);
+	}
 
 	other->client->rune_delay = level.time + RUNE_PICKUP_DELAY;
 

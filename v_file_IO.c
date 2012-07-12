@@ -91,6 +91,25 @@ const char* SQLITE_VRXSELECT = "SELECT * FROM %s";
 
 qboolean SavePlayer(edict_t *ent);	//Called by savePlayer(). Don't call this directly.
 
+void VRXGetPath (char* path, edict_t *ent)
+{
+	if (savemethod->value == 1)
+	{
+#if defined(_WIN32) || defined(WIN32)
+		sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
+#else
+		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
+#endif
+	}else
+	{
+#if defined(_WIN32) || defined(WIN32)
+		sprintf(path, "%s\\%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
+#else
+		sprintf(path, "%s/%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
+#endif
+	}
+}
+
 #if defined(_WIN32) || defined(WIN32)
 #include <process.h>
 
@@ -690,6 +709,41 @@ int CountAbilities(edict_t *player)
 	return count;
 }
 
+// az begin
+//************************************************
+
+void BeginTransaction(sqlite3* db)
+{
+	char* format;
+	int r;
+	sqlite3_stmt *statement;
+
+	format = "BEGIN TRANSACTION;";
+
+	r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
+
+	r = sqlite3_step(statement);
+
+	sqlite3_finalize(statement);
+}
+
+void CommitTransaction(sqlite3 *db)
+{
+	char* format;
+	int r;
+	sqlite3_stmt *statement;
+
+	format = "COMMIT;";
+
+	r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
+
+	r = sqlite3_step(statement);
+
+	sqlite3_finalize(statement);
+}
+
+// az end
+
 //************************************************
 
 int FindAbilityIndex(int index, edict_t *player)
@@ -778,22 +832,97 @@ int FindRuneIndex(int index, edict_t *player)
 	return -1;	//just in case something messes up
 }
 
-//************************************************
-//************************************************
 // az begin
+void VSF_SaveRunes(edict_t *player, char *path)
+{
+	// We assume two things: the player is logged in; the player is a client; and its file exists.
+	sqlite3* db;
+	sqlite3_stmt *statement;
+	int r, i;
+	int numRunes = CountRunes(player);
+	char* format;
+
+	r = sqlite3_open(path, &db);
+
+	BeginTransaction(db);
+
+	format = "DELETE FROM runes_meta;";
+
+	sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
+	sqlite3_step(statement);
+	sqlite3_finalize(statement);
+
+	format = "DELETE FROM runes_mods;";
+
+	sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
+	sqlite3_step(statement);
+	sqlite3_finalize(statement);
+
+	//begin runes
+	for (i = 0; i < numRunes; ++i)
+	{
+		int index = FindRuneIndex(i+1, player);
+		if (index != -1)
+		{
+			int j;
+
+			format = strdup(va(SQLITE_INSERTRMETA, 
+				index,
+				player->myskills.items[index].itemtype,
+				player->myskills.items[index].itemLevel,
+				player->myskills.items[index].quantity,
+				player->myskills.items[index].untradeable,
+				player->myskills.items[index].id,
+				player->myskills.items[index].name,
+				player->myskills.items[index].numMods,
+				player->myskills.items[index].setCode,
+				player->myskills.items[index].classNum));
+
+			r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
+			r = sqlite3_step(statement);
+			sqlite3_finalize(statement);
+			free (format);
+
+			for (j = 0; j < MAX_VRXITEMMODS; ++j)
+			{
+				format = strdup(va(SQLITE_INSERTRMOD, 
+					index,
+					player->myskills.items[index].modifiers[j].type,
+					player->myskills.items[index].modifiers[j].index,
+					player->myskills.items[index].modifiers[j].value,
+					player->myskills.items[index].modifiers[j].set));
+
+				r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
+				r = sqlite3_step(statement);
+				sqlite3_finalize(statement);
+				free (format);
+			}
+		}
+	}
+	//end runes
+
+	CommitTransaction(db);
+	sqlite3_close(db); // end saving.
+}
+
+//************************************************
+//************************************************
 qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* playername)
 {
 	sqlite3* db;
+	sqlite3_stmt *statement;
 	int r, i;
 	int numAbilities = CountAbilities(player);
 	int numWeapons = CountWeapons(player);
 	int numRunes = CountRunes(player);
+	char *format;
 
 	r = sqlite3_open(path, &db);
 
+	BeginTransaction(db);
+
 	if (!fileexists)
 	{
-		sqlite3_stmt *statement;
 		// Create initial database.
 		
 		gi.dprintf("SQLite: creating initial database [%d]... ", r);
@@ -816,7 +945,6 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 
 	{ // real saving
 		sqlite3_stmt *statement;
-		char *format;
 
 		// reset tables (remove records for reinsertion)
 		for (i = 0; i < TOTAL_RESETTABLES; i++)
@@ -1038,6 +1166,8 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 
 	} // end saving
 
+	CommitTransaction(db);
+
 	if (player->client->pers.inventory[power_cube_index] > player->client->pers.max_powercubes)
 		player->client->pers.inventory[power_cube_index] = player->client->pers.max_powercubes;
 
@@ -1071,21 +1201,7 @@ qboolean SavePlayer(edict_t *ent)
 		gi.dprintf("savePlayer called to save: %s\n", ent->client->pers.netname);
 
 	//determine path
-	if (savemethod->value == 1)
-	{
-		#if defined(_WIN32) || defined(WIN32)
-			sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#else
-			sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#endif
-	}else
-	{
-		#if defined(_WIN32) || defined(WIN32)
-			sprintf(path, "%s\\%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#else
-			sprintf(path, "%s/%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#endif
-	}
+	VRXGetPath(path, ent);
 
 	if (stat (path, &exist) == 0)
 		file_exists = 1;

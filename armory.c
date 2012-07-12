@@ -561,7 +561,15 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 		//save the player file
-		SaveCharacter(ent);
+		if (savemethod->value == 1)
+			SaveCharacter(ent);
+		else if (savemethod->value == 0)
+		{
+			char path[MAX_QPATH];
+			memset(path, 0, strlen(path));
+			VRXGetPath(path, ent);
+			VSF_SaveRunes(ent, path);
+		}
 
 	}
 	else if (option - 666 > 0)
@@ -698,7 +706,16 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 			V_ItemSwap(rune, slot);
 			ent->myskills.credits -= cost;
 			SaveArmory();
-			savePlayer(ent);
+			if (savemethod->value == 0)
+			{
+				char path[MAX_QPATH];
+				memset (path, 0, strlen(path));
+				VRXGetPath(path, ent);
+				VSF_SaveRunes(ent, path);
+			}
+			else if (savemethod->value == 1)
+				savePlayer(ent);
+
 			gi.cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 		}

@@ -1738,11 +1738,11 @@ Called when the monster is chasing an enemy or goal
 */
 void drone_ai_run (edict_t *self, float dist)
 {
-	float		time;
+	/*float		time;
 	vec3_t		start, end, v;
 	trace_t		tr;
 	edict_t		*tempgoal=NULL;
-	qboolean	enemy_vis=false;
+	qboolean	enemy_vis=false;*/
 
 	drone_ai_run1(self, dist);
 	return;
