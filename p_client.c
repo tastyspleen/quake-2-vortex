@@ -2792,7 +2792,8 @@ void ClientThinkstuff(edict_t *ent)
 	if (ent->myskills.abilities[AMMO_REGEN].current_level > 0)
 		Ammo_Regen(ent);
 	
-	if (!(level.framenum%50) && ent->myskills.abilities[POWER_REGEN].current_level > 0)
+	if (ent->myskills.abilities[POWER_REGEN].current_level > 0 && // We simply restore 5 cubes more often.
+		!(level.framenum % (50/ent->myskills.abilities[POWER_REGEN].current_level)))
 		Special_Regen(ent);
 
 	//3.0 Mind absorb every x seconds
@@ -3732,7 +3733,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		else
 			frames = MAX_IDLE_FRAMES;
 
-		if (!ent->myskills.administrator)
+		if (!ent->myskills.administrator && !trading->value)
 		{
 			if (ent->client->still_frames == frames-300)
 				gi.centerprintf(ent, "You have 30 seconds to stop\nidling or you will be kicked.\n");
@@ -3753,19 +3754,22 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		if(!((!ent->myskills.abilities[CLOAK].disable) && ((ent->myskills.abilities[CLOAK].current_level > 0))))
 		{
-			if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-100)
-				gi.centerprintf(ent, "10 seconds to chat-protect.\n");
-			else if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-50)
-				gi.centerprintf(ent, "5 seconds to chat-protect.\n");
-		
-			if (ent->client->idle_frames == CHAT_PROTECT_FRAMES)
+			if (!trading->value) // trading mode no chat protection
 			{
-				gi.centerprintf(ent, "Now in chat-protect mode.\n");
-				ent->flags |= FL_CHATPROTECT;
-				ent->svflags |= SVF_NOCLIENT;//4.5
-				VortexRemovePlayerSummonables(ent);
-				//3.0 Remove all active auras when entering chat protect
-				AuraRemove(ent, 0);
+				if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-100)
+					gi.centerprintf(ent, "10 seconds to chat-protect.\n");
+				else if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-50)
+					gi.centerprintf(ent, "5 seconds to chat-protect.\n");
+		
+				if (ent->client->idle_frames == CHAT_PROTECT_FRAMES)
+				{
+					gi.centerprintf(ent, "Now in chat-protect mode.\n");
+					ent->flags |= FL_CHATPROTECT;
+					ent->svflags |= SVF_NOCLIENT;//4.5
+					VortexRemovePlayerSummonables(ent);
+					//3.0 Remove all active auras when entering chat protect
+					AuraRemove(ent, 0);
+				}
 			}
 		}
 	}

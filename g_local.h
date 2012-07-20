@@ -861,6 +861,8 @@ extern cvar_t *check_dupename;
 extern cvar_t *newbie_protection;
 extern cvar_t *debuginfo;
 extern cvar_t *pvm;
+extern cvar_t *trading;
+extern cvar_t *tradingmode_enabled;
 extern cvar_t *ptr;
 extern cvar_t *domination;
 extern cvar_t *ctf;
@@ -1951,6 +1953,7 @@ v_maplist_t maplist_PVM;
 v_maplist_t	maplist_CTF;
 v_maplist_t maplist_FFA;
 v_maplist_t maplist_INV;
+v_maplist_t maplist_TRA;
 //end new map lists
 
 // teamplay stuff

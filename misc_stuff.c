@@ -710,7 +710,7 @@ void Special_Regen(edict_t *ent)
 		index = ITEM_INDEX(item);
 		if (ent->client->pers.inventory[index] < ent->client->pers.max_powercubes)
 		{
-			temp = 5*ent->myskills.abilities[POWER_REGEN].current_level;
+			temp = 5/**ent->myskills.abilities[POWER_REGEN].current_level*/;
 
 			ent->client->pers.inventory[index] += temp;
 

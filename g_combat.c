@@ -661,7 +661,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 
 	//gi.dprintf("T_damage\n");
 	// 3.7 respawn flag if it's being crushed
-	if (mod == MOD_CRUSH)
+	if (mod == MOD_CRUSH || mod == MOD_TRIGGER_HURT) // vrxchile 2.5: or we fall into nothingness
 	{
 		//gi.dprintf("flag is being crushed\n");
 		CTF_CheckFlag(targ);
@@ -732,7 +732,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	//damage = VortexModifyDamage(targ, inflictor, attacker, point, damage, dflags, mod);
 //	gi.dprintf("%d damage\n", damage);
 	
-	if (targ->flags & FL_CHATPROTECT)
+	if (targ->flags & FL_CHATPROTECT || trading->value)
 		knockback = 0;
 
 	//Talent: Mag Boots

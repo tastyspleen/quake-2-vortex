@@ -793,7 +793,7 @@ void FindMonsterSpot (edict_t *self)
 {
 	edict_t *scan=NULL;
 	int		players=total_players();
-	int		pvm_players=1;//4.5
+	int		pvm_players=1, ffa_players=1;//4.5
 	int		total_monsters, max_monsters=0;
 	int		mtype=0, num=0, i=0;
 
@@ -801,6 +801,9 @@ void FindMonsterSpot (edict_t *self)
 
 	// get # of players with PvM only preference
 	pvm_players = V_GetNumPlayerPrefs(true, false);
+	
+	// OR ffa players. vrx chile 2.5
+	ffa_players = V_GetNumPlayerPrefs(true, true);
 
 	//4.5 if server has 50% or more PvM players, then use maximum monster value
 	if (level.r_monsters && pvm_players >= 0.5 * players)
@@ -811,14 +814,16 @@ void FindMonsterSpot (edict_t *self)
 		max_monsters = dm_monsters->value;
 
 	// only spawn monsters if there are PvM players
-	if (pvm_players < 1)
+	if (pvm_players < 1 && ffa_players < 1) // Or ffa players.
 	{
 		if (total_monsters)
 		{
-			while((scan = G_Find(scan, FOFS(classname), "drone")) != NULL) {
-			if (G_EntExists(scan) && scan->activator && (scan->activator == self)) {
-				M_Remove(scan, false, false);
-				num++;
+			while((scan = G_Find(scan, FOFS(classname), "drone")) != NULL) 
+			{
+				if (G_EntExists(scan) && scan->activator && (scan->activator == self)) 
+				{
+					M_Remove(scan, false, false);
+					num++;
 				} 
 			}
 			WriteServerMsg(va("Removed %d monsters due to insufficient players.", num), "Info", true, false);
