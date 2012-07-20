@@ -11,6 +11,7 @@
 #define MAPMODE_CTF			4
 #define MAPMODE_FFA			5
 #define MAPMODE_INV			6
+#define MAPMODE_TRA			7 // vrx chile 2.5 trading mode
 
 #define ML_ROTATE_SEQ          0
 #define ML_ROTATE_RANDOM       1

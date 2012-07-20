@@ -924,7 +924,7 @@ void OpenArmoryMenu (edict_t *ent)
 	addlinetomenu(ent, va("Armory. You have %d", ent->myskills.credits), 0);
 	addlinetomenu(ent, "credits.", 0);
 	addlinetomenu(ent, " ", 0);
-	if (level.time < pregame_time->value)
+	if (level.time < pregame_time->value || trading->value)
 		addlinetomenu(ent, "Buy", 1);
 	addlinetomenu(ent, "Buy Runes", 2);
 	addlinetomenu(ent, "Sell", 3);

@@ -286,6 +286,11 @@ void InitGame (void)
 	ctf = gi.cvar ("ctf", "0", CVAR_LATCH);
 	invasion = gi.cvar ("invasion", "0", CVAR_LATCH);
 	nolag = gi.cvar ("nolag", "0", 0);
+
+	// az v2.5 vrxchile trading mode
+	trading = gi.cvar("trading", "0", 0);
+	tradingmode_enabled = gi.cvar("tradingmode_enabled", "0", CVAR_LATCH);
+	// az end
 	pvm_respawntime = gi.cvar ("pvm_respawntime", "10", 0);
 	pvm_monstermult = gi.cvar ("pvm_monstermult", "1.0", 0);
 	ffa_respawntime = gi.cvar ("ffa_respawntime", "20", 0);
@@ -310,7 +315,7 @@ void InitGame (void)
 	if (generalabmode->value)
 		class8_skin = gi.cvar ("class8_skin", "ratamahatta/ratamahatta", CVAR_LATCH); // weapon master
 	else
-		class8_skin = gi.cvar ("class8_skin", "marine/brownie", CVAR_LATCH); // weapon master
+		class8_skin = gi.cvar ("class8_skin", "marine/brownie", CVAR_LATCH); // apprentice
 	class9_skin = gi.cvar ("class9_skin", "slith/chompers", CVAR_LATCH); // necromancer
 	class10_skin = gi.cvar ("class10_skin", "bauul/bauul", CVAR_LATCH); // shaman
 	class11_skin = gi.cvar ("class11_skin", "xenoid/xenotype1", CVAR_LATCH); // alien
@@ -395,7 +400,8 @@ void InitGame (void)
 
 	//3.0 Load the custom map lists
 	if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) && v_LoadMapList(MAPMODE_INV)
-		&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) && v_LoadMapList(MAPMODE_FFA))
+		&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) && v_LoadMapList(MAPMODE_FFA)
+		&& v_LoadMapList(MAPMODE_TRA))
 		gi.dprintf("INFO: Vortex Custom Map Lists loaded successfully\n");
 	else
 		gi.dprintf("WARNING: Error loading custom map lists\n");

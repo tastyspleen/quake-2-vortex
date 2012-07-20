@@ -27,6 +27,10 @@ void DoMaplistFilename(int mode, char* filename)
 		break;
 	case MAPMODE_INV:
 		strcat(filename, "maplist_INV.txt");
+		break;
+	case MAPMODE_TRA:
+		strcat(filename, "maplist_TRA.txt");
+		break;
 	}
 }
 
@@ -60,6 +64,9 @@ int v_LoadMapList(int mode)
 		break;
 	case MAPMODE_INV:
 		maplist = &maplist_INV;
+		break;
+	case MAPMODE_TRA:
+		maplist = &maplist_TRA;
 		break;
 	default:
 		gi.dprintf("ERROR in v_LoadMapList(). Incorrect map mode. (%d)\n", mode);

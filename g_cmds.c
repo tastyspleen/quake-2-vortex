@@ -341,7 +341,9 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 		&& (ent1->teamnum == ent2->teamnum))
 		return 2;
 	
-	if (pvm->value)//4.5 FIXME: deprecated, don't need this if we can't vote PvM
+	// 4.5 FIXME: deprecated, don't need this if we can't vote PvM
+	// Damn right. We can vote PvM.
+	if (pvm->value)
 	{
 		// summonables not owned by a client are on the same team (world monsters)
 		if (!ent1->client && !ent2->client && (ent1->mtype != INVASION_PLAYERSPAWN) 
@@ -1085,7 +1087,7 @@ void Cmd_Inven_f (edict_t *ent)
 
 	//ItemMenuClose(ent);//3.0 removed for now
 	//K03 Begin
-	if ((ent->client->resp.spectator || ent->client->pers.spectator) && level.intermissiontime < level.time)
+	if ((ent->client->resp.spectator || ent->client->pers.spectator) && !level.intermissiontime)
 	{
 		OpenJoinMenu(ent);
 		return;

@@ -3845,10 +3845,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="v_items.h"
-				>
-			</File>
-			<File
 				RelativePath="v_maplist.c"
 				>
 				<FileConfiguration
@@ -4219,6 +4215,10 @@
 			</File>
 			<File
 				RelativePath="Talents.h"
+				>
+			</File>
+			<File
+				RelativePath="..\vortex-fusion\v_items.h"
 				>
 			</File>
 			<File

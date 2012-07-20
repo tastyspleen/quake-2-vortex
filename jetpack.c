@@ -24,7 +24,7 @@ void ApplyThrust (edict_t *ent)
 	}
 
 	//4.0 better jetpack check.
-	if ((level.time > pregame_time->value))  // allow jetpack in pregame
+	if ((level.time > pregame_time->value) || !trading->value)  // allow jetpack in pregame and trading
 		if (!G_CanUseAbilities (ent, ent->myskills.abilities[JETPACK].current_level, cost) )
 			return;
 	//can't use abilities (spawning sentry gun/drone/etc...)

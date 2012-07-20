@@ -236,7 +236,7 @@ void NatureTotem_think(edict_t *self, edict_t *caster)
 			
 			if (!target->client)
 			{
-				regen_frames = 3000 / self->monsterinfo.level; // full-regeneration in 30 seconds at level 10
+				regen_frames = 1500 / self->monsterinfo.level; // full-regeneration in 15 seconds at level 10
 				M_Regenerate(target, regen_frames, 50, 1.0, true, true, false, &target->monsterinfo.regen_delay2);
 				continue;
 			}

@@ -113,6 +113,8 @@ cvar_t *check_dupeip;
 cvar_t *check_dupename;
 cvar_t *newbie_protection;
 cvar_t *pvm;
+cvar_t *trading;
+cvar_t *tradingmode_enabled;
 cvar_t *ptr;
 cvar_t *ffa;
 cvar_t *domination;
@@ -479,7 +481,7 @@ void EndDMLevel (void)
 			case MAPMODE_PVM: 
 				if (!pvm->value)
 				{
-					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Monster / Trading (PvM) mode!\n");
+					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Monster (PvM) mode!\n");
 					changing = true;
 				}
 				break;
@@ -508,6 +510,14 @@ void EndDMLevel (void)
 				if (!invasion->value)
 				{
 					gi.bprintf(PRINT_HIGH, "Switching to Invasion mode!\n");
+					changing = true;
+				}
+				break;
+			case MAPMODE_TRA:
+				if (!trading->value)
+				{
+					gi.bprintf(PRINT_HIGH, "Switching to Trading mode!\n");
+					changing = true;
 				}
 				break;
 			}
@@ -894,7 +904,8 @@ void G_RunFrame (void)
 #endif
 	//3.0 END 
 
-	if (level.time < pregame_time->value)
+	if (level.time <= pregame_time->value && !trading->value)
+	{
 		if (level.time == pregame_time->value-30) {
 			gi.bprintf(PRINT_HIGH, "30 seconds left of pre-game\n");
 		
@@ -953,6 +964,7 @@ void G_RunFrame (void)
 				ent->Slower = level.time - 1;
 			}
 		}
+	}
 
 	if (domination->value && (level.time == pregame_time->value))
 		dom_init();

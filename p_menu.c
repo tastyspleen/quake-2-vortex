@@ -45,6 +45,19 @@ void setHardMax(edict_t *ent, int index)
 		case JETPACK:
 		case SHIELD:
 			ent->myskills.abilities[index].hard_max = 1; break;
+
+			// Special cases for the non-general ability mode.
+
+		case REGENERATION:
+		case STRENGTH:
+		case RESISTANCE: 
+			if (!generalabmode->value)
+			{
+				if (ent->myskills.abilities[index].general_skill)
+					ent->myskills.abilities[index].hard_max = 15;
+				break;
+			}
+
 		//Everything else
 		default:
 			if (GetAbilityUpgradeCost(index) < 2)
@@ -168,7 +181,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, GHOST, 99, 99, false);
 		enableAbility(ent, MORPH_MASTERY, 1, 1, false);
 		break;
-	case CLASS_SHAMAN:// 80 points
+	case CLASS_SHAMAN:// 75 points
 		enableAbility(ent, FIRE_TOTEM, 0, 10, false);
 		enableAbility(ent, WATER_TOTEM, 0, 10, false);
 		enableAbility(ent, AIR_TOTEM, 0, 10, false);
@@ -176,7 +189,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, DARK_TOTEM, 0, 10, false);
 		enableAbility(ent, NATURE_TOTEM, 0, 10, false);
 		enableAbility(ent, FURY, 0, 10, false);
-		enableAbility(ent, HASTE, 0, 10, false);
+		enableAbility(ent, HASTE, 0, 5, false); // lol oops
 		//enableAbility(ent, SUPER_SPEED, 1, 1, false);
 		enableAbility(ent, TOTEM_MASTERY, 1, 1, false);//4.4
 		break;
@@ -433,10 +446,17 @@ void StartGame (edict_t *ent)
 	//Set the player's name
 	strcpy(ent->myskills.player_name, ent->client->pers.netname);
 
-	if (level.time < pregame_time->value) {
+	if (level.time < pregame_time->value && !trading->value) {
 		gi.centerprintf(ent, "This map is currently in pre-game\nPlease warm up, upgrade and\naccess the Armory now\n");
 		ent->s.effects |= EF_COLOR_SHELL;
 		ent->s.renderfx |= (RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE);
+	}
+
+	if (trading->value) // Red shell for trading mode.
+	{
+		gi.centerprintf(ent, "Welcome to trading mode\nBuy stuff and trade runes freely.\nVote for another mode to start playing.\n");
+		ent->s.effects |= EF_COLOR_SHELL;
+		ent->s.renderfx |= RF_SHELL_RED;
 	}
 	gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 	WriteToLogfile(ent, "Logged in.\n");
@@ -497,6 +517,12 @@ void combatmenu_handler (edict_t *ent, int option)
 
 void OpenCombatMenu (edict_t *ent, int lastline)
 {
+	if ((V_IsPVP() || pvm->value || invasion->value) && ent->myskills.administrator < 9)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You're disallowed to modify combat settings on this mode.\n");
+		return;
+	}
+
 	if (!ShowMenu(ent))
         return;
 	clearmenu(ent);
@@ -666,7 +692,8 @@ void OpenJoinMenu (edict_t *ent)
 	//				    xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 
 	addlinetomenu(ent, va("Vortex Chile v%s", VRX_VERSION), MENU_GREEN_CENTERED);
-	addlinetomenu(ent, "www.v2gamers.cl", MENU_GREEN_CENTERED);
+	//addlinetomenu(ent, "www.v2gamers.cl", MENU_GREEN_CENTERED);
+	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Original design by Kombat03.", 0);
 	addlinetomenu(ent, "Ideas borrowed from KOTS,", 0);

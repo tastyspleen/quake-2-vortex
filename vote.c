@@ -32,8 +32,9 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("ctf", "0");
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
-			gi.cvar_set("fraglimit", "100");
+			gi.cvar_set("fraglimit", "50"); // vrxchile 2.5: less time per round (more dynamic pvp)
 			gi.cvar_set("timelimit", "0");
+			gi.cvar_set("trading", "0");
 			//gi.cvar_set("dm_monsters", "0");				
 		}
 		break;
@@ -46,7 +47,8 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "12");
+			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("trading", "0");
 			//if (dm_monsters->value < 8)
 			//	gi.cvar_set("dm_monsters", "8");
 			//else
@@ -62,7 +64,8 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "12");
+			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("trading", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -75,7 +78,8 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "12");
+			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("trading", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -88,7 +92,8 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "100");
-			gi.cvar_set("timelimit", "22");
+			gi.cvar_set("timelimit", "21");
+			gi.cvar_set("trading", "0");
 			//if (dm_monsters->value < 4)
 			//	gi.cvar_set("dm_monsters", "4");
 			//else
@@ -104,8 +109,23 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "1");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "22");
+			gi.cvar_set("timelimit", "21");
+			gi.cvar_set("trading", "0");
 			//gi.cvar_set("dm_monsters", "4");
+		}
+		break;
+		case MAPMODE_TRA:
+		{
+			// player versus monsters
+			gi.cvar_set("ffa", "0");
+			gi.cvar_set("domination", "0");
+			gi.cvar_set("ctf", "0");
+			gi.cvar_set("pvm", "0");
+			gi.cvar_set("invasion", "0");
+			gi.cvar_set("fraglimit", "0");
+			gi.cvar_set("trading", "1");
+			gi.cvar_set("timelimit", "0");
+			break;
 		}
 		break;
 	}
@@ -140,6 +160,7 @@ v_maplist_t *GetMapList(int mode)
 	case MAPMODE_CTF:	return &maplist_CTF;
 	case MAPMODE_FFA:	return &maplist_FFA;
 	case MAPMODE_INV:	return &maplist_INV;
+	case MAPMODE_TRA:   return &maplist_TRA; // vrxchile 2.5: trading mode maplist
 	default:
 		gi.dprintf("ERROR in GetMapList(). Incorrect map mode. (%d)\n", mode);
 		return 0;
@@ -302,7 +323,8 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_DOM:	Com_sprintf (tempBuffer, 1024, "%sDomination ", tempBuffer);			break;
 			case MAPMODE_CTF:	Com_sprintf (tempBuffer, 1024, "%sCapture The Flag (CTF) ", tempBuffer);					break;
 			case MAPMODE_FFA:	Com_sprintf (tempBuffer, 1024, "%sFree For All (FFA) ", tempBuffer);	break;
-			case MAPMODE_INV:	Com_sprintf (tempBuffer, 1024, "%sInvasion ", tempBuffer);
+			case MAPMODE_INV:	Com_sprintf (tempBuffer, 1024, "%sInvasion ", tempBuffer); break;
+			case MAPMODE_TRA:	Com_sprintf (tempBuffer, 1024, "%sTrading ", tempBuffer); break;
 		}
 		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
 
@@ -867,9 +889,17 @@ void ShowVoteModeMenu(edict_t *ent)
 	/*4.5
 	if (players < min_players)
 	{*/
-		addlinetomenu(ent, " PvM / Trading", MAPMODE_PVM);
+		addlinetomenu(ent, " Player vs. Monster", MAPMODE_PVM);
 		lastline++;
 	/*}*/
+
+		// vrx chile 2.5: trading mode
+		if (tradingmode_enabled->value)
+		{
+			addlinetomenu(ent, " Trading", MAPMODE_TRA);
+			lastline++;
+		}
+
 	// invasion mode
 	if (players < min_players)
 	{

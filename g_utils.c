@@ -986,7 +986,7 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 //	if (HasActiveCurse(ent, CURSE_FROZEN))
 	if (que_typeexists(ent->curses, CURSE_FROZEN))
 		return false;
-	if (level.time < pregame_time->value)
+	if (level.time < pregame_time->value && !trading->value)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
 		return false;
@@ -1174,6 +1174,8 @@ qboolean G_ValidTargetEnt (edict_t *target, qboolean alive)
 
 qboolean G_ValidTarget (edict_t *self, edict_t *target, qboolean vis)
 {
+	if (trading->value)
+		return false;
 	// check for targets that require medic healing
 	if (self && self->mtype == M_MEDIC)
 	{
