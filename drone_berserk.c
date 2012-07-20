@@ -360,7 +360,7 @@ void init_drone_berserk (edict_t *self)
 	self->monsterinfo.power_armor_power = self->monsterinfo.max_armor = 100 + 40 * self->monsterinfo.level;
 	self->gib_health = -60;
 	self->mass = 250;
-	self->monsterinfo.control_cost = 1;
+	self->monsterinfo.control_cost = 40;
 	self->monsterinfo.cost = M_DEFAULT_COST;//FIXME
 	self->monsterinfo.jumpup = 64;
 	self->monsterinfo.jumpdn = 512;

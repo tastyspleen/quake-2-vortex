@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "2.5"
+#define VRX_VERSION "2.51"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -426,7 +426,7 @@ const char* Time();
 #define GASSER_MAX_COUNT			4
 #define OBSTACLE_MAX_COUNT			6
 #define SPIKEBALL_MAX_COUNT			3
-#define MAX_MONSTERS				3
+#define MAX_MONSTERS				100
 #define DELAY_MONSTER_THINK			3
 #define DELAY_MONSTER				3
 
@@ -450,21 +450,22 @@ const char* Time();
 
 // Monster control cost
 
-#define M_FLYER_CONTROL_COST			1
-#define M_INSANE_CONTROL_COST			1
-#define M_SOLDIERLT_CONTROL_COST		1
-#define M_SOLDIER_CONTROL_COST			1
-#define M_GUNNER_CONTROL_COST			1
-#define M_CHICK_CONTROL_COST			1
-#define M_PARASITE_CONTROL_COST			1
-#define M_MEDIC_CONTROL_COST			1
-#define M_TANK_CONTROL_COST				2
-#define M_BRAIN_CONTROL_COST			1
-#define M_HOVER_CONTROL_COST			1
-#define M_SUPERTANK_CONTROL_COST		3
-#define M_COMMANDER_CONTROL_COST		3
-#define M_MUTANT_CONTROL_COST			1
-#define M_DEFAULT_CONTROL_COST			1
+#define M_FLYER_CONTROL_COST			33
+#define M_INSANE_CONTROL_COST			33
+#define M_SOLDIERLT_CONTROL_COST		30
+#define M_SOLDIER_CONTROL_COST			30
+#define M_GUNNER_CONTROL_COST			40
+#define M_CHICK_CONTROL_COST			25
+#define M_PARASITE_CONTROL_COST			30
+#define M_MEDIC_CONTROL_COST			30
+#define M_TANK_CONTROL_COST				70
+#define M_BRAIN_CONTROL_COST			33
+#define M_HOVER_CONTROL_COST			33
+#define M_SUPERTANK_CONTROL_COST		100
+#define M_COMMANDER_CONTROL_COST		100
+#define M_MUTANT_CONTROL_COST			33
+#define M_GLADIATOR_CONTROL_COST		40
+#define M_DEFAULT_CONTROL_COST			35
 
 // Misc Delays
 

@@ -761,7 +761,7 @@ int PVM_TotalMonsters (edict_t *monster_owner)
 			&& (scan->activator == monster_owner))
 		{
 			//4.57 bosses should take a few monsters slots
-			if (scan->monsterinfo.control_cost > 2)
+			if (scan->monsterinfo.control_cost > 80)
 				monsters += scan->monsterinfo.control_cost;
 			else
 				monsters++;

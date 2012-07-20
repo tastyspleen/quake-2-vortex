@@ -613,7 +613,7 @@ void init_drone_makron (edict_t *self)
 	self->gib_health = -2000;
 	self->mass = 500;
 	self->mtype = M_MAKRON;
-	self->monsterinfo.control_cost = 4;
+	self->monsterinfo.control_cost = 101;
 	self->monsterinfo.cost = 300;
 	self->monsterinfo.jumpup = 64;
 	self->monsterinfo.jumpdn = 512;

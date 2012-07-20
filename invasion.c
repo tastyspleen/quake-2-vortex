@@ -768,7 +768,7 @@ void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 
 		invmod = 0.5; // half the exp in invasion.
 
-		base_exp = target->monsterinfo.control_cost*EXP_WORLD_MONSTER*invmod;
+		base_exp = target->monsterinfo.control_cost/10*EXP_WORLD_MONSTER*invmod;
 		exp_points = (int)ceil(base_exp*levelmod*dmgmod*bonus);
 		base_credits = target->monsterinfo.control_cost*CREDITS_OTHER_BASE;
 		credits = (int)ceil(base_credits*levelmod*dmgmod*bonus);

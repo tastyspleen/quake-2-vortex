@@ -257,12 +257,14 @@ void BombArea (edict_t *ent, float skill_mult, float cost_mult)
 	edict_t *bomb;
 	int		cost=COST_FOR_BOMB*cost_mult;
 
+#ifdef OLD_NOLAG_STYLE
 	// 3.5 don't allow bomb area to prevent lag
 	if (nolag->value)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Bomb area is temporarily disabled to prevent lag.\n");
 		return;
 	}
+#endif
 
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 	VectorSet(offset, 0, 7, ent->viewheight-8);

@@ -739,6 +739,7 @@ void p_tank_spawn (edict_t *ent, int cost)
 	// set up pointers
 	tank->owner = ent;
 	ent->owner = tank;
+	ent->activator = tank;
 	
 	tank->s.modelindex = gi.modelindex ("models/monsters/tank/tris.md2");
 	//VectorSet (tank->mins, -24, -24, -16);

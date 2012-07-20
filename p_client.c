@@ -217,6 +217,12 @@ qboolean MonsterObits (edict_t *player, edict_t *monster)
 	if (monster->monsterinfo.level < 1)
 		return false;
 
+	if (monster->activator == player || monster->owner == player)
+	{
+		gi.bprintf(PRINT_MEDIUM, "%s suicides.\n");
+		return true;
+	}
+
 	// is this monster owned by another player?
 	if (!IsABoss(monster) && ((monster_owner = G_GetClient(monster)) != NULL))
 	{

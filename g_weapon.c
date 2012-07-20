@@ -2547,7 +2547,7 @@ void EMP_Explode (edict_t *self)
 		else if (!strcmp(e->classname, "drone"))
 		{
 			// bosses can't be stunned easily
-			if (e->monsterinfo.control_cost >= 3 || e->monsterinfo.bonus_flags & BF_UNIQUE_FIRE 
+			if (e->monsterinfo.control_cost >= 100 || e->monsterinfo.bonus_flags & BF_UNIQUE_FIRE 
 				|| e->monsterinfo.bonus_flags & BF_UNIQUE_LIGHTNING)
 				time *= 0.2;
 

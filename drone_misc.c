@@ -619,7 +619,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 
 	//4.0 gib health based on monster control cost
 	if (drone_type != 30)
-		drone->gib_health = -drone->monsterinfo.control_cost*200;
+		drone->gib_health = -drone->monsterinfo.control_cost*2;
 	else
 		drone->gib_health = 0;//gib boss immediately
 
@@ -738,7 +738,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		VectorCopy(tr.endpos, drone->s.origin);
 		drone->s.angles[YAW] = ent->s.angles[YAW];
 
-		ent->client->ability_delay = level.time + 2*drone->monsterinfo.control_cost;
+		ent->client->ability_delay = level.time + drone->monsterinfo.control_cost/15;
 		//ent->holdtime = level.time + 2*drone->monsterinfo.control_cost;
 		ent->client->pers.inventory[power_cube_index] -= drone->monsterinfo.cost;
 		drone->health = 0.5*drone->max_health;
@@ -1488,7 +1488,7 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 				self->activator->enemy = NULL;
 
 			// reduce boss count
-			if (self->monsterinfo.control_cost > 2)
+			if (self->monsterinfo.control_cost > 80)
 				self->activator->num_sentries--;
 
 			// end spree war if there are no more bosses remaining
@@ -1579,6 +1579,8 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 	if (*cubes < upkeep_cost)
 	{
 		// owner can't pay upkeep, so we're dead :(
+		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of the monster %d - Removing!\n", 
+			GetMonsterKindString(self->mtype));
 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, 100000, 0, 0, 0);
 		return false;
 	}
@@ -1721,6 +1723,7 @@ char *GetMonsterKindString (int mtype)
 		case TOTEM_FIRE: return "Fire Totem";
 		case TOTEM_WATER: return "Water Totem";
 		case M_ALARM: return "Laser Trap";
+		case M_GLADIATOR: return "Gladiator";
         default: return "Monster";
     }
 }
