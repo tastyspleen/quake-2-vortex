@@ -517,7 +517,7 @@ void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
 	//VortexSpreeAbilities(attacker);
 
 	//GHz: Only award experience to one person if monster is not a boss
-	if (monster->monsterinfo.control_cost <= 3)
+	if (monster->monsterinfo.control_cost <= 100)
 	{
 		if (INVASION_OTHERSPAWNS_REMOVED)
 			INV_AwardMonsterKill(attacker, monster);
@@ -711,8 +711,8 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 			level_diff *= 1.5;
 		
 		// control cost bonus (e.g. tanks)
-		if (targ->monsterinfo.control_cost > 1)
-			level_diff *= (0.75 * targ->monsterinfo.control_cost);
+		if (targ->monsterinfo.control_cost > 33)
+			level_diff *= (0.75 * targ->monsterinfo.control_cost) / 30;
 
 		// award credits for kill
 		credits = VortexAddCredits(attacker, (dmgmod * level_diff), 0, false);
@@ -787,7 +787,7 @@ void VortexAddExp(edict_t *attacker, edict_t *targ)
 	target = G_GetClient(targ);
 
 	// world monster boss kill
-	if (!target && targ->monsterinfo.control_cost > 3)
+	if (!target && targ->monsterinfo.control_cost >= 100)
 	{
 		if (targ->mtype == M_JORG)
 			return;

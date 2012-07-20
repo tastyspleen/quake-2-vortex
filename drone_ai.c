@@ -169,7 +169,7 @@ qboolean M_ValidMedicTarget (edict_t *self, edict_t *target)
 		return false;
 
 	// don't heal supertank or tank commander boss
-	if (target->monsterinfo.control_cost >= 3)
+	if (target->monsterinfo.control_cost >= 100)
 		return false;
 
 	// don't target players with invulnerability
@@ -551,7 +551,7 @@ void drone_ai_idle (edict_t *self)
 	if (self->activator && !self->activator->client && !(self->monsterinfo.aiflags & AI_STAND_GROUND)
 		&& (self->monsterinfo.idle_frames > DRONE_SUICIDE_FRAMES))
 	{
-		if (self->monsterinfo.control_cost > 2) // we're a boss
+		if (self->monsterinfo.control_cost > 80) // we're a boss
 			self->activator->num_sentries--;
 		if (self->activator)
 			self->activator->num_monsters -= self->monsterinfo.control_cost;
@@ -2077,7 +2077,7 @@ qboolean drone_boss_stuff (edict_t *self)
 	*/
 
 	// bosses teleport away from danger when they are weakened
-	if (self->activator && !self->activator->client && (self->monsterinfo.control_cost >= 3)
+	if (self->activator && !self->activator->client && (self->monsterinfo.control_cost >= 100)
 		&& (level.time > self->sentrydelay) && (self->health < (0.3*self->max_health))
 		&& self->enemy && visible(self, self->enemy))
 	{
@@ -2176,7 +2176,7 @@ void drone_think (edict_t *self)
 	}
 
 	// if owner can't pay upkeep, monster dies
-	if (!M_Upkeep(self, 10, self->monsterinfo.control_cost))
+	if (!M_Upkeep(self, 10, self->monsterinfo.cost/5))
 		return;
 
 	M_UpdateLastSight(self);

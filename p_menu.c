@@ -517,7 +517,7 @@ void combatmenu_handler (edict_t *ent, int option)
 
 void OpenCombatMenu (edict_t *ent, int lastline)
 {
-	if ((V_IsPVP() || pvm->value || invasion->value) && ent->myskills.administrator < 9)
+	if ((V_IsPVP() || pvm->value || invasion->value) && ent->myskills.administrator < 9 && !ent->client->resp.spectator)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You're disallowed to modify combat settings on this mode.\n");
 		return;
@@ -654,7 +654,7 @@ void JoinTheGame (edict_t *ent)
 
 qboolean StartClient(edict_t *ent)
 {
-	if (ent->client->pers.spectator) 
+	if (ent->client->pers.spectator && !level.intermissiontime) 
 	{
 		OpenJoinMenu(ent);
 		return true;

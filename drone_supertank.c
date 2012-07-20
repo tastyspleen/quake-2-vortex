@@ -596,7 +596,7 @@ void init_drone_supertank (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 	self->mtype = M_SUPERTANK;
-	self->monsterinfo.control_cost = 4;
+	self->monsterinfo.control_cost = 101;
 	self->monsterinfo.cost = 300;
 	self->s.modelindex = gi.modelindex ("models/monsters/boss1/tris.md2");
 	VectorSet (self->mins, -64, -64, 0);

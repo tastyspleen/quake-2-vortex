@@ -285,7 +285,7 @@ void InitGame (void)
 	domination = gi.cvar ("domination", "0", CVAR_LATCH);
 	ctf = gi.cvar ("ctf", "0", CVAR_LATCH);
 	invasion = gi.cvar ("invasion", "0", CVAR_LATCH);
-	nolag = gi.cvar ("nolag", "0", 0);
+	nolag = gi.cvar ("nolag", "1", 0);
 
 	// az v2.5 vrxchile trading mode
 	trading = gi.cvar("trading", "0", 0);

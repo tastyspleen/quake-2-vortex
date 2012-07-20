@@ -737,7 +737,7 @@ void init_drone_soldier (edict_t *self)
 	if (!self->mtype)
 		self->mtype = M_SOLDIER;
 
-	self->monsterinfo.control_cost = 1;
+	self->monsterinfo.control_cost = 33;
 	self->monsterinfo.cost = 50;
 
 	// set health

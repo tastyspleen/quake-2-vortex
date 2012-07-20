@@ -369,7 +369,7 @@ void init_drone_decoy (edict_t *self)
 	self->monsterinfo.stand = decoy_stand;
 	self->monsterinfo.run = actor_run;
 	self->monsterinfo.attack = actor_attack;
-	self->monsterinfo.control_cost = 1;
+	self->monsterinfo.control_cost = 33;
 	self->monsterinfo.cost = 25;
 	self->monsterinfo.jumpup = 64;
 	self->monsterinfo.jumpdn = 512;

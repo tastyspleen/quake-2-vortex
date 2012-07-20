@@ -411,6 +411,7 @@ void init_drone_gladiator (edict_t *self)
 	self->monsterinfo.jumpup = 64;
 	self->monsterinfo.jumpdn = 512;
 	self->monsterinfo.aiflags |= AI_NO_CIRCLE_STRAFE;
+	self->monsterinfo.control_cost = M_GLADIATOR_CONTROL_COST;
 
 	self->die = gladiator_die;
 	self->monsterinfo.stand = gladiator_stand;

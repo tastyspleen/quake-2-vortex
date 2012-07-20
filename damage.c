@@ -476,6 +476,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	float	temp;
 	que_t	*aura=NULL;
 	int talentLevel;
+	edict_t *activator;
 
 	//gi.dprintf("G_SubDamage()\n");
 	//gi.dprintf("%d damage before G_SubDamage() modification\n", damage);
@@ -595,6 +596,28 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 				damage /= 1.5;
 			else
 				damage /= 1.25;
+		}
+
+		// resistance effect (for tanks, lessened)
+		if (!targ->owner->myskills.abilities[RESISTANCE].disable)
+		{
+			temp = 1 + 0.07 * targ->owner->myskills.abilities[RESISTANCE].current_level;
+
+			//Talent: Improved Resist
+			talentLevel  = getTalentLevel(targ, TALENT_IMP_RESIST);
+			if(talentLevel > 0)
+				temp += talentLevel * 0.07;
+
+			//Talent: Improved Strength
+			talentLevel = getTalentLevel(targ, TALENT_IMP_STRENGTH);
+			if(talentLevel > 0)		
+				temp -= talentLevel * 0.07;
+			
+			// don't allow more than 100% damage
+			if (temp < 1.0)
+				temp = 1.0;
+
+			damage /= temp;
 		}
 
 		if (attacker->svflags & SVF_MONSTER) // monsters inflict only 3/4s damage to tanks
