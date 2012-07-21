@@ -1579,7 +1579,7 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 	if (*cubes < upkeep_cost)
 	{
 		// owner can't pay upkeep, so we're dead :(
-		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of the monster %d - Removing!\n", 
+		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of the monster %s - Removing!\n", 
 			GetMonsterKindString(self->mtype));
 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, 100000, 0, 0, 0);
 		return false;
