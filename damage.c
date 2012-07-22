@@ -521,6 +521,28 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		return 0; //4.4 don't hurt cocooned entities
 	if ((attacker->myskills.class_num == CLASS_POLTERGEIST) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
 		return 0; // poltergeist cannot hurt anyone while in human form
+	
+	if (ffa->value)
+	{
+		edict_t *ent1 = G_GetClient(attacker);
+		edict_t *ent2 = G_GetClient(targ);
+		edict_t *uattacker = ent1 ? ent1 : attacker;
+		edict_t *utarg = ent2 ? ent2 : targ;
+
+		if ((uattacker->myskills.respawns & HOSTILE_PLAYERS) &&  // attacker is hostile to players
+			// and target is hostile to players, is a client or is a piloted monster.
+			(!(utarg->myskills.respawns & HOSTILE_PLAYERS) && ent2 ))
+		{
+			return 0; // can't damage players that aren't hostile towards them
+		}
+		if (!ent2 && ent1) // attacking a monster with no owner (worldspawn)
+		{
+			// not hostile towards monsters, can't damage them.
+			if (!(uattacker->myskills.respawns & HOSTILE_MONSTERS))
+				return 0;
+		}
+	}
+
 
 	if (dflags & DAMAGE_NO_ABILITIES)
 		return damage; // ignore abilities		
