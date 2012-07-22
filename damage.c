@@ -504,7 +504,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		if (invasion->value > 1)
 		{
 			// if none of them is a client and the target is not a piloted monster
-			if (!(attacker->client && targ->client) && !PM_MonsterHasPilot(targ))
+			if (!(G_GetClient(attacker) && G_GetClient(targ)))
 				return 0; // then friendly fire is off.
 		}else
 			return 0;  // can't damage teammates
