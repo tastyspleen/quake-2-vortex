@@ -1954,6 +1954,7 @@ v_maplist_t	maplist_CTF;
 v_maplist_t maplist_FFA;
 v_maplist_t maplist_INV;
 v_maplist_t maplist_TRA;
+v_maplist_t maplist_INH;
 //end new map lists
 
 // teamplay stuff

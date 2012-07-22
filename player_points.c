@@ -621,6 +621,9 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	if (!attacker || !attacker->inuse || !attacker->client)
 		return 0;
 
+	if (attacker->client && targ->client && invasion->value > 1) // don't give exp for friendly fire in invasion hard mode
+		return 0;
+
 	// don't award points for monster that was just resurrected
 	if (targ->monsterinfo.resurrected_time > level.time)
 		return 0;
@@ -744,8 +747,8 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 
 	// award experience to allied players
 	max_points = exp_points;
-	if (invasion->value && attacker->myskills.level > 10) // 3/5 exp in invasion for level 10+.
-		max_points *= 0.6;
+	if (invasion->value == 1 && attacker->myskills.level > 10) // 1/3 exp in easy invasion for level 10+.
+		max_points *= 0.33;
 	if (!allies->value || ((exp_points = AddAllyExp(attacker, max_points)) < 1))
 	// award experience to non-allied players
 		exp_points = V_AddFinalExp(attacker, max_points);

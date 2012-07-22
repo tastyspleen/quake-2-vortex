@@ -401,7 +401,7 @@ void InitGame (void)
 	//3.0 Load the custom map lists
 	if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) && v_LoadMapList(MAPMODE_INV)
 		&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) && v_LoadMapList(MAPMODE_FFA)
-		&& v_LoadMapList(MAPMODE_TRA))
+		&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH))
 		gi.dprintf("INFO: Vortex Custom Map Lists loaded successfully\n");
 	else
 		gi.dprintf("WARNING: Error loading custom map lists\n");

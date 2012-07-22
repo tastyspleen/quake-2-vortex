@@ -1143,7 +1143,11 @@ void init_drone_commander (edict_t *self)
 	init_drone_tank(self);
 
 	// modify health and armor
-	self->health = 950 + 675*self->monsterinfo.level;
+	if (invasion->value < 2)
+		self->health = 950 + 675*self->monsterinfo.level;
+	else
+		self->health = 1500 + 750*self->monsterinfo.level;
+
 	self->max_health = self->health;
 	self->monsterinfo.power_armor_power = 675*self->monsterinfo.level;
 	self->monsterinfo.max_armor = self->monsterinfo.power_armor_power;

@@ -498,6 +498,10 @@ void InitScanEntity (void)
 	gi.linkentity(scanent);
 }
 
+char fullbright;
+char nightbright;
+char nighttimelight;
+
 void Sun_Think(edict_t *self)
 {
 	// Setup light animation tables. 'a' is total darkness, 'z' is doublebright.
@@ -505,7 +509,7 @@ void Sun_Think(edict_t *self)
 	if (day)
 	{
 		lightlevel[0]++;
-		if (lightlevel[0] == 'z'){
+		if (lightlevel[0] == fullbright){
 			self->nextthink = level.time + 120;
 			day = 0;
 		}
@@ -515,7 +519,7 @@ void Sun_Think(edict_t *self)
 	else
 	{
 		lightlevel[0]--;
-		if (lightlevel[0] <= 'g'){
+		if (lightlevel[0] <= nightbright){
 			self->nextthink = level.time + 100;
 			day = 1;
 		}
@@ -523,7 +527,7 @@ void Sun_Think(edict_t *self)
 			self->nextthink = level.time + 5;
 	}
 
-	if (lightlevel[0] < 'k')
+	if (lightlevel[0] < nighttimelight)
 		level.daytime = false;
 	else
 		level.daytime = true;
@@ -540,6 +544,17 @@ void InitSunEntity(void)
 	sun->think = Sun_Think;
 	sun->nextthink = level.time + 10.0;
 	gi.linkentity(sun);
+	if (invasion->value < 2)
+	{
+		fullbright = 'z';
+		nightbright = 'g';
+		nighttimelight = 'k';
+	}else
+	{
+		fullbright = 't';
+		nightbright = 'e';
+		nighttimelight = 'k';
+	}
 }
 
 int HighestLevelPlayer(void)

@@ -507,6 +507,32 @@ void drone_grow (edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
+void AssignChampionStuff(edict_t *drone, int *drone_type)
+{
+	if ((ffa->value || invasion->value == 2) && drone->monsterinfo.level >= 10 && GetRandom(1, 100) <= 10)//10% chance for a champion to spawn
+	{
+		drone->monsterinfo.bonus_flags |= BF_CHAMPION;
+
+		if ( (!invasion->value && GetRandom(1, 100) <= 33) // 33% chance to spawn a special champion
+			|| (invasion->value == 2 && GetRandom(1, 100) <= 10) )  // 5% chance in invasion.
+		{
+			int r = GetRandom(1, 7);
+
+			switch (r)
+			{
+			case 1: drone->monsterinfo.bonus_flags |= BF_GHOSTLY; break;
+			case 2: drone->monsterinfo.bonus_flags |= BF_FANATICAL; break;
+			case 3: drone->monsterinfo.bonus_flags |= BF_BERSERKER; break;
+			case 4: drone->monsterinfo.bonus_flags |= BF_POSESSED; break;
+			case 5: drone->monsterinfo.bonus_flags |= BF_STYGIAN; break;
+			case 6: drone->monsterinfo.bonus_flags |= BF_UNIQUE_FIRE; *drone_type = 3; break;
+			case 7: drone->monsterinfo.bonus_flags |= BF_UNIQUE_LIGHTNING; *drone_type = 8; break;
+			default: break;
+			}
+		}
+	}
+}
+
 edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 {
 	vec3_t		forward, right, start, end, offset;
@@ -524,7 +550,15 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		if (drone_type >= 30)// tank commander, supertank
 			drone->monsterinfo.level = HighestLevelPlayer();
 		else if (INVASION_OTHERSPAWNS_REMOVED)
-			drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer())/*+invasion_difficulty_level-1*/;
+		{
+			if (invasion->value == 1)
+				drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer())/*+invasion_difficulty_level-1*/;
+			else if (invasion->value == 2) // hard mode invasion
+			{
+				drone->monsterinfo.level = HighestLevelPlayer()+invasion_difficulty_level-1;
+				AssignChampionStuff(drone, &drone_type);
+			}
+		}
 		else
 		{
 			if (pvm->value || ffa->value)
@@ -533,28 +567,9 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 				drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer());
 				
 			
-			//4.5 assign monster bonus flags
-			if (ffa->value && drone->monsterinfo.level >= 10 && GetRandom(1, 100) <= 10)//10% chance for a champion to spawn
-			{
-				drone->monsterinfo.bonus_flags |= BF_CHAMPION;
-
-				if (GetRandom(1, 100) <= 33) // 33% chance to spawn a special champion
-				{
-					int r = GetRandom(1, 7);
-
-					switch (r)
-					{
-					case 1: drone->monsterinfo.bonus_flags |= BF_GHOSTLY; break;
-					case 2: drone->monsterinfo.bonus_flags |= BF_FANATICAL; break;
-					case 3: drone->monsterinfo.bonus_flags |= BF_BERSERKER; break;
-					case 4: drone->monsterinfo.bonus_flags |= BF_POSESSED; break;
-					case 5: drone->monsterinfo.bonus_flags |= BF_STYGIAN; break;
-					case 6: drone->monsterinfo.bonus_flags |= BF_UNIQUE_FIRE; drone_type = 3; break;
-					case 7: drone->monsterinfo.bonus_flags |= BF_UNIQUE_LIGHTNING; drone_type = 8; break;
-					default: break;
-					}
-				}
-			}
+			// 4.5 assign monster bonus flags
+			// Champions spawn on invasion hard mode.
+			AssignChampionStuff(drone, &drone_type);
 		}
 	}
 	else
@@ -1579,7 +1594,7 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 	if (*cubes < upkeep_cost)
 	{
 		// owner can't pay upkeep, so we're dead :(
-		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of the monster %s - Removing!\n", 
+		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of %s - Removing!\n", 
 			GetMonsterKindString(self->mtype));
 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, 100000, 0, 0, 0);
 		return false;
