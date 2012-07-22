@@ -673,11 +673,37 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 		// award 2fer bonus
 		if (attacker->lastkill >= level.time)
 		{
-			message = HiPrint(va("%s got a 2fer.", attacker->client->pers.netname));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
-			bonus += 1 - ((attacker->lastkill - level.time) + 0.1);
+			
+			if (attacker->nfer < 2)
+				attacker->nfer = 2;
+			else
+				attacker->nfer++;
+
+			bonus += 1 - ((attacker->lastkill - level.time) + 0.1) + attacker->nfer*25;
 			attacker->myskills.num_2fers++;
+
+			if (attacker->nfer == 4)
+			{
+				gi.sound(attacker, CHAN_VOICE, gi.soundindex("speech/threat.wav"), 1, ATTN_NORM, 0);
+			}
+			else if (attacker->nfer == 5)
+			{
+				gi.sound(attacker, CHAN_VOICE, gi.soundindex("speech/hey.wav"), 1, ATTN_NORM, 0);
+			}
+			else
+			{
+				gi.sound(target, CHAN_VOICE, gi.soundindex("speech/excellent.wav"), 1, ATTN_NORM, 0);
+			}
+
+		}else // We get a nfer, print the LAST kill that was done within the time frame.
+		{
+			if (attacker->nfer)
+			{
+				message = HiPrint(va("%s got a %d fer.", attacker->client->pers.netname, attacker->nfer));
+				gi.bprintf(PRINT_HIGH, "%s\n", message);
+				message = LoPrint(message);
+			}
+			attacker->nfer = 0;
 		}
 
 		base_exp = EXP_PLAYER_BASE;
@@ -883,12 +909,15 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 
 		return;
 	}
+	
+	if (invasion->value < 2)
+	{
+		targ->myskills.fragged++;
 
-	targ->myskills.fragged++;
-
-	attacker->myskills.frags++;
-	attacker->client->resp.frags++;
-	attacker->lastkill = level.time + 1;
+		attacker->myskills.frags++;
+		attacker->client->resp.frags++;
+		attacker->lastkill = level.time + 2;
+	}
 
 	if (!ptr->value && !domination->value && !pvm->value && !ctf->value
 		&& (targ->myskills.streak >= SPREE_START))

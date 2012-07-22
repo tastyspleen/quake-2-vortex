@@ -1930,7 +1930,8 @@ void PutClientInServer (edict_t *ent)
 	ent->flags &= ~FL_CHATPROTECT;//GHz
 	ent->svflags &= ~SVF_DEADMONSTER;
 	ent->svflags &= ~SVF_MONSTER;
-	ent->lastkill = level.time;//GHz
+	ent->lastkill = 0;//GHz
+	ent->nfer = 0;
 	VectorCopy (mins, ent->mins);
 	VectorCopy (maxs, ent->maxs);
 	VectorClear (ent->velocity);
