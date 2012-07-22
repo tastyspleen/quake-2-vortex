@@ -219,7 +219,7 @@ qboolean MonsterObits (edict_t *player, edict_t *monster)
 
 	if (monster->activator == player || monster->owner == player)
 	{
-		gi.bprintf(PRINT_MEDIUM, "%s suicides.\n");
+		gi.bprintf(PRINT_MEDIUM, "%s suicides.\n", player->client->pers.netname);
 		return true;
 	}
 
@@ -517,7 +517,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		}
 
 		self->enemy = attacker;
-		if (attacker && attacker->client)
+		if (attacker && attacker->client && invasion->value < 2)
 		{
 			switch (mod)
 			{

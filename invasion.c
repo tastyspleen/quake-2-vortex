@@ -173,8 +173,9 @@ void INV_AwardPlayers (void)
 	
 		if (!G_IsSpectator(player))
 		{
-			V_AddFinalExp(player, points);
+			int fexp = V_AddFinalExp(player, points);
 			player->myskills.credits += credits;
+			gi.cprintf(player, PRINT_MEDIUM, "Earned %d exp and %d credits!\n", fexp, credits);
 		}
 	}
 }
@@ -230,10 +231,16 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 
 
 	// we modify the monsters' health lightly
-	if (invasion_difficulty_level < 7 && invasion_difficulty_level > 5)
-		mhealth = (invasion_difficulty_level-5) * 0.1 + 1;
-	else if (invasion_difficulty_level >= 7)
-		mhealth = 2 + 0.1 * invasion_difficulty_level;
+	if (invasion->value == 1) // easy mode
+	{
+		if (invasion_difficulty_level < 7 && invasion_difficulty_level > 5)
+			mhealth = (invasion_difficulty_level-5) * 0.1 + 1;
+		else if (invasion_difficulty_level >= 7)
+			mhealth = 2 + 0.1 * invasion_difficulty_level;
+	}else if (invasion->value == 2) // hard mode
+	{
+		mhealth = 2.5 + 0.2 * invasion_difficulty_level;
+	}
 
 	monster->max_health = monster->health = monster->max_health*mhealth;
 
@@ -248,18 +255,26 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 	if (e->count)
 		monster->monsterinfo.inv_framenum = level.framenum + e->count;
 	else
-		monster->monsterinfo.inv_framenum = level.framenum + 60; // give them quad/invuln to prevent spawn-camping
+	{
+		if (invasion->value == 1)
+			monster->monsterinfo.inv_framenum = level.framenum + 60; // give them quad/invuln to prevent spawn-camping
+		else if (invasion->value == 2)
+			monster->monsterinfo.inv_framenum = level.framenum + 80; // Hard mode invin
+	}
 	gi.linkentity(monster);
 	return monster;
 }
 
 float TimeFormula()
 {
-	int base = 3.5*60;
+	int base = 4*60;
 	int playeramt = ActivePlayers() * 10;
 	int levelamt = invasion_difficulty_level * 10;
 	int cap = 60;
 	int rval = base - playeramt - levelamt;
+
+	if (invasion->value == 2) // hard mode
+		cap = 40;
 
 	if (rval < cap)
 		rval = cap;
@@ -340,7 +355,10 @@ void INV_SpawnMonsters (edict_t *self)
 				boss = NULL;
 			}
 			// increase the difficulty level for the next wave
-			invasion_difficulty_level += 1; 
+			if (invasion->value == 1)
+				invasion_difficulty_level += 1; 
+			else
+				invasion_difficulty_level += 2; // Hard mode.
 			printedmessage = 0;
 			mspawned = total_monsters;
 			gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
@@ -375,14 +393,22 @@ void INV_SpawnMonsters (edict_t *self)
 
 	if (!(invasion_difficulty_level % 5))
 	{
-		max_monsters = 4*(ActivePlayers()-1);
+		if (invasion->value == 1)
+			max_monsters = 4*(ActivePlayers()-1);
+		else if (invasion->value == 2)
+			max_monsters = 6*(ActivePlayers()-1);
 	}
 
 	if (!printedmessage)
 	{
 		limitframe = level.time + TimeFormula();
 		if (invasion_difficulty_level == 1)
+		{
+			if (invasion->value == 1)
 				gi.bprintf(PRINT_HIGH, "The invasion begins!\n");
+			else
+				gi.bprintf(PRINT_HIGH, "The invasion... begins.\n");
+		}
 		if (invasion_difficulty_level % 5)
 			gi.bprintf(PRINT_HIGH, "Welcome to level %d. %d monsters incoming!\n", invasion_difficulty_level, max_monsters);
 		else
@@ -407,7 +433,7 @@ void INV_SpawnMonsters (edict_t *self)
 	{
 		int randomval = GetRandom(1, 9);
 
-		if (invasion_difficulty_level % 5) // nonboss stage?
+		if (invasion_difficulty_level % 5 && invasion->value == 1) // nonboss stage? easy mode?
 			while ( (randomval == 5) ) // disallow medics
 			{
 				randomval = GetRandom(1, 8);
@@ -550,7 +576,12 @@ void SP_info_player_invasion (edict_t *self)
 	gi.setmodel (self, "models/objects/dmspot/tris.md2");
 	self->s.skinnum = 0;
 	self->mtype = INVASION_PLAYERSPAWN;
-	self->health = PLAYERSPAWN_HEALTH + 250*AveragePlayerLevel();
+
+	if (invasion->value == 1)
+		self->health = PLAYERSPAWN_HEALTH + 250*AveragePlayerLevel();
+	else if (invasion->value == 2)
+		self->health = PLAYERSPAWN_HEALTH*2 + 250*AveragePlayerLevel();
+
 	self->max_health = self->health;
 	self->takedamage = DAMAGE_YES;
 	self->die = info_player_invasion_death;

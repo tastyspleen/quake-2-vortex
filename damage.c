@@ -500,7 +500,15 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	if (trading->value)
 		return 0; // az 2.5 vrxchile: no damage in trading mode
 	if (OnSameTeam(attacker, targ) && (attacker != targ))
-		return 0; // can't damage teammates
+	{
+		if (invasion->value > 1)
+		{
+			// if none of them is a client and the target is not a piloted monster
+			if (!(attacker->client && targ->client) && !PM_MonsterHasPilot(targ))
+				return 0; // then friendly fire is off.
+		}else
+			return 0;  // can't damage teammates
+	}
 	if (que_typeexists(targ->curses, CURSE_FROZEN))
 		return 0; // can't damage frozen entities
 	if (targ->flags & FL_CHATPROTECT)

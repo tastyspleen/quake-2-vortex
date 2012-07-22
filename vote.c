@@ -114,6 +114,20 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			//gi.cvar_set("dm_monsters", "4");
 		}
 		break;
+		case MAPMODE_INH:
+		{
+			// invasion mode - hard
+			gi.cvar_set("ffa", "0");
+			gi.cvar_set("domination", "0");
+			gi.cvar_set("ctf", "0");
+			gi.cvar_set("pvm", "1");
+			gi.cvar_set("invasion", "2");
+			gi.cvar_set("fraglimit", "0");
+			gi.cvar_set("timelimit", "31");
+			gi.cvar_set("trading", "0");
+			//gi.cvar_set("dm_monsters", "4");
+		}
+		break;
 		case MAPMODE_TRA:
 		{
 			// player versus monsters
@@ -161,6 +175,7 @@ v_maplist_t *GetMapList(int mode)
 	case MAPMODE_FFA:	return &maplist_FFA;
 	case MAPMODE_INV:	return &maplist_INV;
 	case MAPMODE_TRA:   return &maplist_TRA; // vrxchile 2.5: trading mode maplist
+	case MAPMODE_INH:	return &maplist_INH; // vrxchile 2.6: invasion hard mode
 	default:
 		gi.dprintf("ERROR in GetMapList(). Incorrect map mode. (%d)\n", mode);
 		return 0;
@@ -325,6 +340,7 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_FFA:	Com_sprintf (tempBuffer, 1024, "%sFree For All (FFA) ", tempBuffer);	break;
 			case MAPMODE_INV:	Com_sprintf (tempBuffer, 1024, "%sInvasion ", tempBuffer); break;
 			case MAPMODE_TRA:	Com_sprintf (tempBuffer, 1024, "%sTrading ", tempBuffer); break;
+			case MAPMODE_INH:	Com_sprintf (tempBuffer, 1024, "%sInvasion (Hard mode) ", tempBuffer); break;
 		}
 		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
 
@@ -908,6 +924,12 @@ void ShowVoteModeMenu(edict_t *ent)
 			addlinetomenu(ent, " Invasion", MAPMODE_INV);
 			lastline++;
 		}
+	}
+
+	if (invasion_enabled->value && AveragePlayerLevel() > 10)
+	{
+		addlinetomenu(ent, " Invasion (Hard mode)", MAPMODE_INH);
+		lastline++;
 	}
 	
 	// domination available when there are at least 4 players

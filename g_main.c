@@ -550,8 +550,10 @@ void EndDMLevel (void)
 			//Find out what current game mode is
 			if (pvm->value)
 			{
-				if (invasion->value)
+				if (invasion->value == 1)
 					mode = MAPMODE_INV;
+				else if (invasion->value == 2)
+					mode = MAPMODE_INH;
 				else
 					mode = MAPMODE_PVM;
 			}
@@ -561,6 +563,7 @@ void EndDMLevel (void)
 				mode = MAPMODE_CTF;
 			else if (ffa->value)
 				mode = MAPMODE_FFA;
+
 			else mode = MAPMODE_PVP;
 
 			//Point to the correct map list
