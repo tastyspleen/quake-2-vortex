@@ -655,6 +655,9 @@ CheckDMRules
 =================
 */
 char *HiPrint(char *text);//K03
+
+void SP_target_speaker (edict_t *ent);
+
 void CheckDMRules (void)
 {
 	int			i, check;//K03
@@ -718,6 +721,37 @@ void CheckDMRules (void)
 		{
 			gi.bprintf (PRINT_HIGH, "Timelimit hit.\n");
 			EndDMLevel ();
+			
+			if (invasion->value > 1) // we hit timelimit on hard mode invasion = we win
+			{
+				int i, num_winners = 0;
+				edict_t *speaker, *player;
+
+				for (i=0; i<game.maxclients; i++) 
+				{
+					player = g_edicts+1+i;
+					if (!player->inuse)
+						continue;
+					if (!G_IsSpectator(player)) // if players actually played..
+					{
+						if (player->client && player->client->pers.score)
+							num_winners++;
+					}
+				}
+
+				if (num_winners) // then we have a hard victory, woot!
+				{
+					speaker = G_Spawn();
+					st.noise = "invasion/hard_victory.wav";
+					speaker->spawnflags |= 1;
+					speaker->attenuation = 1;
+					speaker->volume = 1;
+					VectorCopy(level.intermission_origin, speaker->s.origin);
+					SP_target_speaker(speaker);
+				}
+
+			}
+
 			return;
 		}
 	}

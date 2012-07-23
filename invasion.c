@@ -133,11 +133,11 @@ edict_t *INV_GetMonsterSpawn (edict_t *from)
 	}
 
 	return NULL;
-}
+} 
 
 void INV_AwardPlayers (void)
 {
-	int		i, points, credits, num_spawns = INV_GetNumPlayerSpawns();
+	int		i, points, credits, num_spawns = INV_GetNumPlayerSpawns(), num_winners = 0;
 	edict_t *player;
 
 	// we're not in invasion mode
@@ -152,8 +152,6 @@ void INV_AwardPlayers (void)
 	if (num_spawns < 1)
 		return;
 
-	gi.bprintf(PRINT_HIGH, "Humans win! Players were awarded a bonus.\n");
-
 	gi.cvar_set("nolag", nolagoldval? "1" : "0");
 
 	for (i=0; i<game.maxclients; i++) 
@@ -161,12 +159,19 @@ void INV_AwardPlayers (void)
 		player = g_edicts+1+i;
 		if (!player->inuse)
 			continue;
+		
+		if (invasion->value == 2)
+			points = player->client->resp.score*((float)num_spawns/invasion_max_playerspawns) + 500 * invasion_difficulty_level;
+		else
+			points = player->client->resp.score*((float)num_spawns/invasion_max_playerspawns);
 
-		points = player->client->resp.score*((float)num_spawns/invasion_max_playerspawns);
-		if (points > INVASION_BONUS_EXP)
+		if (invasion->value == 1  && points > INVASION_BONUS_EXP)
 			points = INVASION_BONUS_EXP;
 		//points = INVASION_BONUS_EXP*((float)num_spawns/invasion_max_playerspawns);
-		credits = INVASION_BONUS_CREDITS*((float)num_spawns/invasion_max_playerspawns);
+		if (invasion->value < 2)
+			credits = INVASION_BONUS_CREDITS*((float)num_spawns/invasion_max_playerspawns);
+		else
+			credits = INVASION_BONUS_CREDITS*((float)num_spawns/invasion_max_playerspawns) + 1000 * invasion_difficulty_level;
 
 	//	gi.dprintf("points=%d credits=%d spawns=%d max=%d\n", 
 	//		points, credits, num_spawns, invasion_max_playerspawns);
@@ -176,8 +181,14 @@ void INV_AwardPlayers (void)
 			int fexp = V_AddFinalExp(player, points);
 			player->myskills.credits += credits;
 			gi.cprintf(player, PRINT_MEDIUM, "Earned %d exp and %d credits!\n", fexp, credits);
+
+			if (player->client && player->client->pers.score) // we've been here for a while at least
+				num_winners++;
 		}
 	}
+	
+	if (!num_winners)
+		gi.bprintf(PRINT_HIGH, "Humans win! Players were awarded a bonus.\n");
 }
 
 int fib(int iter)
@@ -282,10 +293,14 @@ float TimeFormula()
 	return rval;
 }
 
-int printedmessage = 0;
-int mspawned = 0;
-float limitframe = 0;
-edict_t *boss = NULL;
+struct invdata_s
+{
+	int printedmessage;
+	int mspawned;
+	float limitframe;
+	edict_t *boss;
+
+} invasion_data;
 
 void BossCheck(edict_t *e, edict_t *self)
 {
@@ -295,9 +310,9 @@ void BossCheck(edict_t *e, edict_t *self)
 		int iter = 0;
 		while (((e = INV_GetMonsterSpawn(e)) != NULL) && (bcount < 1))
 		{
-			if (!boss)
+			if (!invasion_data.boss)
 			{
-				if(! (boss = INV_SpawnDrone(self, e, 30)) )
+				if(! (invasion_data.boss = INV_SpawnDrone(self, e, 30)) )
 				{
 					iter++;
 					
@@ -308,13 +323,13 @@ void BossCheck(edict_t *e, edict_t *self)
 				}
 				bcount ++;
 				total_monsters++;
-				mspawned++;
-				G_PrintGreenText(va("A level %d tank commander has spawned!", boss->monsterinfo.level));
+				invasion_data.mspawned++;
+				G_PrintGreenText(va("A level %d tank commander has spawned!", invasion_data.boss->monsterinfo.level));
 				break;
 			}
 		}
 	}else
-		boss = NULL;
+		invasion_data.boss = NULL;
 }
 
 void INV_SpawnMonsters (edict_t *self)
@@ -335,32 +350,36 @@ void INV_SpawnMonsters (edict_t *self)
 			return; // don't spawn any monsters.
 		}
 		if (level.intermissiontime)
+		{
+			if (total_monsters)
+				PVM_RemoveAllMonsters(self);
 			return;
-		if (limitframe > level.time) // we still got time?
+		}
+		if (invasion_data.limitframe > level.time) // we still got time?
 		{
 			self->nextthink = level.time + FRAMETIME;
 			return;
 		}else
 		{
 			gi.bprintf(PRINT_HIGH, "Time's up!\n");
-			if (boss && boss->deadflag != DEAD_DEAD) // out of time for the boss.
+			if (invasion_data.boss && invasion_data.boss->deadflag != DEAD_DEAD) // out of time for the boss.
 			{	
 				G_PrintGreenText(va("You failed on eliminating the commander soon enough!\n"));
 				gi.WriteByte (svc_temp_entity);
 				gi.WriteByte (TE_BOSSTPORT);
-				gi.WritePosition (boss->s.origin);
-				gi.multicast (boss->s.origin, MULTICAST_PVS);
-				gi.unlinkentity(boss);
-				G_FreeEdict(boss);
-				boss = NULL;
+				gi.WritePosition (invasion_data.boss->s.origin);
+				gi.multicast (invasion_data.boss->s.origin, MULTICAST_PVS);
+				gi.unlinkentity(invasion_data.boss);
+				G_FreeEdict(invasion_data.boss);
+				invasion_data.boss = NULL;
 			}
 			// increase the difficulty level for the next wave
 			if (invasion->value == 1)
 				invasion_difficulty_level += 1; 
 			else
 				invasion_difficulty_level += 2; // Hard mode.
-			printedmessage = 0;
-			mspawned = total_monsters;
+			invasion_data.printedmessage = 0;
+			invasion_data.mspawned = total_monsters;
 			gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
 		}
 	}
@@ -399,9 +418,9 @@ void INV_SpawnMonsters (edict_t *self)
 			max_monsters = 6*(ActivePlayers()-1);
 	}
 
-	if (!printedmessage)
+	if (!invasion_data.printedmessage)
 	{
-		limitframe = level.time + TimeFormula();
+		invasion_data.limitframe = level.time + TimeFormula();
 		if (invasion_difficulty_level == 1)
 		{
 			if (invasion->value == 1)
@@ -419,7 +438,7 @@ void INV_SpawnMonsters (edict_t *self)
 
 		BossCheck(e, self);
 
-		printedmessage = 1;
+		invasion_data.printedmessage = 1;
 	}
 
 	if (max_monsters > 50) // cap the amount of monsters
@@ -429,7 +448,8 @@ void INV_SpawnMonsters (edict_t *self)
 	if (max_monsters < dm_monsters->value)
 		max_monsters = dm_monsters->value;
 	
-	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && (total_monsters < max_monsters || mspawned == max_monsters) )
+	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && 
+		(total_monsters < max_monsters || invasion_data.mspawned < max_monsters) )
 	{
 		int randomval = GetRandom(1, 9);
 
@@ -443,16 +463,16 @@ void INV_SpawnMonsters (edict_t *self)
 			continue;
 
 		total_monsters++;
-		mspawned++;
+		invasion_data.mspawned++;
 		//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
 	}
 
-	if (total_monsters == max_monsters || mspawned >= max_monsters)
+	if (total_monsters == max_monsters || invasion_data.mspawned >= max_monsters)
 	{
 		// increase the difficulty level for the next wave
 		invasion_difficulty_level += 1/* + (invasion_difficulty_level / 10)*/;
-		printedmessage = 0;
-		mspawned = 0;
+		invasion_data.printedmessage = 0;
+		invasion_data.mspawned = 0;
 		self->count = MONSTERSPAWN_STATUS_IDLE;
 	}
 

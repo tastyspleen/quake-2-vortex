@@ -621,7 +621,8 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	if (!attacker || !attacker->inuse || !attacker->client)
 		return 0;
 
-	if (attacker->client && targ->client && invasion->value > 1) // don't give exp for friendly fire in invasion hard mode
+	// don't give exp for friendly fire in invasion hard mode
+	if ((targ->client || (targ->owner && targ->owner->client) || (targ->activator && targ->activator->client)) && invasion->value > 1)
 		return 0;
 
 	// don't award points for monster that was just resurrected
@@ -690,20 +691,13 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 			{
 				gi.sound(attacker, CHAN_VOICE, gi.soundindex("speech/hey.wav"), 1, ATTN_NORM, 0);
 			}
-			else
+			else if (attacker->nfer > 3 && attacker->nfer < 4)
 			{
-				gi.sound(target, CHAN_VOICE, gi.soundindex("speech/excellent.wav"), 1, ATTN_NORM, 0);
-			}
-
-		}else // We get a nfer, print the LAST kill that was done within the time frame.
-		{
-			if (attacker->nfer)
+				gi.sound(target, CHAN_VOICE, gi.soundindex("speech/excelent.wav"), 1, ATTN_NORM, 0);
+			}else if (attacker->nfer == 10)
 			{
-				message = HiPrint(va("%s got a %d fer.", attacker->client->pers.netname, attacker->nfer));
-				gi.bprintf(PRINT_HIGH, "%s\n", message);
-				message = LoPrint(message);
+				gi.sound(attacker, CHAN_VOICE, gi.soundindex("misc/10fer.wav"), 1, ATTN_NORM, 0);
 			}
-			attacker->nfer = 0;
 		}
 
 		base_exp = EXP_PLAYER_BASE;

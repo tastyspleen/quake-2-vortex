@@ -237,6 +237,7 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, ENERGY_RESIST, 0, 1, true);
 
 	enableAbility(ent, GRAPPLE_HOOK, 0, 3, true);
+	//enableAbility(ent, SCANNER, 0, 1, true);
 
 	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value) // vrxchile 2.0: WMs are the new APs.
 	{
@@ -317,7 +318,6 @@ void setGeneralAbilities (edict_t *ent)
 		enableAbility(ent, DETECTOR, 0, 5, true);
 		enableAbility(ent, CONVERSION, 0, 5, true);
 		enableAbility(ent, DEFLECT, 0, 5, true);
-		enableAbility(ent, SCANNER, 0, 1, true);
 		enableAbility(ent, EMP, 0, 5, true);
 		enableAbility(ent, DOUBLE_JUMP, 0, 1, true);
 		enableAbility(ent, LOWER_RESIST, 0, 5, true);
