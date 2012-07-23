@@ -2294,7 +2294,19 @@ void Cmd_AdminCmd (edict_t *ent)
 			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 
 	}
-	
+
+	if (!Q_stricmp(cmd1, "debugsound"))
+	{
+		edict_t *speaker;
+		speaker = G_Spawn();
+		st.noise = "invasion/hard_victory.wav";
+		speaker->spawnflags |= 1;
+		speaker->attenuation = 1;
+		speaker->volume = 1;
+		VectorCopy(ent->s.origin, speaker->s.origin);
+		SP_target_speaker(speaker);
+	}
+
 	/*else if (Q_stricmp(cmd1, "upgrade_ability") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Upgrading ability #%d for %s...\n", atoi(cmd3), cmd2);

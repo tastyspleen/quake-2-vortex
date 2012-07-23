@@ -547,12 +547,12 @@ void InitSunEntity(void)
 	if (invasion->value < 2)
 	{
 		fullbright = 'z';
-		nightbright = 'g';
+		nightbright = 'e';
 		nighttimelight = 'k';
 	}else
 	{
 		fullbright = 't';
-		nightbright = 'e';
+		nightbright = 'c';
 		nighttimelight = 'k';
 	}
 }
@@ -944,9 +944,11 @@ edict_t *InitMonsterEntity (qboolean manual_spawn)
 	monster->svflags |= SVF_NOCLIENT;
 	monster->mtype = M_WORLDSPAWN;
 
-	if (V_IsPVP())
+	/*if (V_IsPVP())
 		monster->think = SpawnRandomBoss;//4.4
-	else if (INVASION_OTHERSPAWNS_REMOVED)
+	else */
+	// most of the time people don't like having their pvp interrupted by a boss
+	if (INVASION_OTHERSPAWNS_REMOVED)
 		monster->think = INV_SpawnMonsters;
 	else
 		monster->think = FindMonsterSpot;

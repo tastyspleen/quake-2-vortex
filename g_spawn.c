@@ -768,6 +768,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	{
 		gi.soundindex("5_0.wav");
 		gi.soundindex("invasion/fight_invasion.wav");
+		if (invasion->value > 1)
+			gi.soundindex("invasion/hard_victory.wav");
 	}
 
 	gi.soundindex("invasion/30sec.wav");

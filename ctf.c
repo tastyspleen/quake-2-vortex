@@ -576,6 +576,9 @@ void CTF_AwardPlayer (edict_t *ent, int points, int credits)
 	if (G_IsSpectator(ent))
 		return;
 
+	if (total_players() < CTF_MINIMUM_PLAYERS)
+		return;
+
 	/*
 	ent->myskills.experience += points;
 	ent->client->resp.score += points;
