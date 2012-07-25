@@ -993,11 +993,14 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (que_typeexists(ent->curses, CURSE_FROZEN))
 		return false;
 
-	if (level.time < pregame_time->value && !trading->value)
+	if (level.time < pregame_time->value && !trading->value )
 	{
-		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
-		return false;
+		if (invasion->value < 2)  // allow use of abilities in invasion hard mode.
+		{
+			if (print_msg)
+				gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
+			return false;
+		}
 	}
 	
 	// can't use abilities immediately after a re-spawn

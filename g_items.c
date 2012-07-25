@@ -521,8 +521,9 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
  
 	 if ((other->client || other->mtype) &&  // knights and polts can't get ammo in pvm modes
 		 (pvm->value || invasion->value) &&
-		 (other->myskills.class_num == CLASS_POLTERGEIST ||
-		 other->myskills.class_num == CLASS_KNIGHT))
+		 // polts only if the ammo is not cells
+		 (other->myskills.class_num == CLASS_POLTERGEIST && strcmp(ent->classname,"ammo_cells") ||
+		 other->myskills.class_num == CLASS_KNIGHT)) // and knights, never.
 		 return false;
 
 
@@ -1540,7 +1541,8 @@ qboolean tech_pickup (edict_t *ent, edict_t *other)
 	if (other->client->pers.inventory[resistance_index] 
 		|| other->client->pers.inventory[strength_index] 
 		|| other->client->pers.inventory[regeneration_index]
-		|| other->client->pers.inventory[haste_index])
+		|| other->client->pers.inventory[haste_index]
+		|| (other->myskills.streak > 15 && (V_IsPVP() || ffa->value) ) ) // don't allow to pick up techs
 		return false;
 
     // vrc 2.32: allow players to get techs unless there's a player significantly lower

@@ -841,6 +841,11 @@ extern cvar_t *vrx_pointmult;
 extern cvar_t *vrx_pvppointmult;
 extern cvar_t *vrx_pvmpointmult;
 
+// az
+extern cvar_t *vrx_sub10mult;
+extern cvar_t *vrx_over10mult;
+// az end
+
 extern cvar_t *vrx_pvpcreditmult;
 extern cvar_t *vrx_pvmcreditmult;
 

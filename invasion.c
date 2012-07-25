@@ -302,6 +302,15 @@ struct invdata_s
 
 } invasion_data;
 
+// we'll override the other die functino to set our boss pointer to NULL.
+void mytank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+
+void invasiontank_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+{
+	mytank_die(self, inflictor, attacker, damage, point);
+	invasion_data.boss = NULL;
+}
+
 void BossCheck(edict_t *e, edict_t *self)
 {
 	if (!(invasion_difficulty_level % 5))// every 5 levels, spawn a boss
@@ -324,6 +333,7 @@ void BossCheck(edict_t *e, edict_t *self)
 				bcount ++;
 				total_monsters++;
 				invasion_data.mspawned++;
+				invasion_data.boss->die = invasiontank_die;
 				G_PrintGreenText(va("A level %d tank commander has spawned!", invasion_data.boss->monsterinfo.level));
 				break;
 			}

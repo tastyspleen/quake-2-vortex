@@ -988,8 +988,11 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 		return false;
 	if (level.time < pregame_time->value && !trading->value)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
-		return false;
+		if ( invasion->value < 2 ) // invasion hard mode can use abilities in pregame.
+		{
+			gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
+			return false;
+		}
 	}
 	if (ent->client->respawn_time > level.time)
 	{

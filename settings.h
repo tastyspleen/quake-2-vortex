@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "2.65"
+#define VRX_VERSION "2.7"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -274,9 +274,9 @@ const char* Time();
 #define MACHINEGUN_ADDON_TRACERDAMAGE	3
 
 // note: CG fires 40 bullets/sec
-#define CHAINGUN_INITIAL_DAMAGE			6
-#define CHAINGUN_ADDON_DAMAGE			0.25
-#define CHAINGUN_ADDON_TRACERDAMAGE		6
+#define CHAINGUN_INITIAL_DAMAGE			5
+#define CHAINGUN_ADDON_DAMAGE			0.15
+#define CHAINGUN_ADDON_TRACERDAMAGE		5
 
 #define GRENADE_INITIAL_DAMAGE			200
 #define GRENADE_ADDON_DAMAGE			10

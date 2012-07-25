@@ -14,7 +14,7 @@ typedef struct upgrade_s
 	int			max_ammo; // maximum ability-specific ammo
 	int			ammo_regenframe; // frame ability ammo should regenerate
 	qboolean	disable;
-	qboolean	general_skill;
+	int     	general_skill; // vrxchile 2.7 allow mobility menu
 	qboolean	hidden;
 	qboolean	runed;
 }upgrade_t;

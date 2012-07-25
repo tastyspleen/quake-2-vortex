@@ -477,6 +477,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	que_t	*aura=NULL;
 	int talentLevel;
 	edict_t *activator;
+	qboolean invasion_friendlyfire = false;
 
 	//gi.dprintf("G_SubDamage()\n");
 	//gi.dprintf("%d damage before G_SubDamage() modification\n", damage);
@@ -506,6 +507,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			// if none of them is a client and the target is not a piloted monster
 			if (!(G_GetClient(attacker) && G_GetClient(targ)))
 				return 0; // then friendly fire is off.
+			invasion_friendlyfire = true;
 		}else
 			return 0;  // can't damage teammates
 	}
@@ -550,6 +552,9 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	// 4.5 monster bonus flags
 	if (targ->monsterinfo.bonus_flags & BF_GHOSTLY && random() <= 0.5)
 		return 0;
+
+	if (invasion_friendlyfire)
+		damage *= 0.5;
 
 	//Talent: Bombardier - reduces self-inflicted grenade damage
 	if (PM_GetPlayer(targ) == PM_GetPlayer(attacker) 
@@ -767,7 +772,11 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		// resistance effect
 		if (!targ->myskills.abilities[RESISTANCE].disable)
 		{
-			temp = 1 + 0.1 * targ->myskills.abilities[RESISTANCE].current_level;
+			if (!V_IsPVP() || !ffa->value)
+				temp = 1 + 0.1 * targ->myskills.abilities[RESISTANCE].current_level;
+			// PvP modes are getting frustrating with players that are too resisting
+			else if ( (V_IsPVP() || ffa->value) && targ->myskills.respawns & HOSTILE_PLAYERS )
+				temp = 1 + 0.08 * targ->myskills.abilities[RESISTANCE].current_level;
 
 			//Talent: Improved Resist
 			talentLevel  = getTalentLevel(targ, TALENT_IMP_RESIST);

@@ -1,8 +1,7 @@
 #include "g_local.h"
 
 void OpenSpecialUpgradeMenu (edict_t *ent, int lastline);
-void OpenGeneralUpgradeMenu(edict_t *ent, int lastline);
-void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page); // 3.17
+void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype); // 3.17
 
 //************************************************************************************************
 //************************************************************************************************
@@ -16,6 +15,7 @@ int GetAbilityUpgradeCost(int index)
 		case SCANNER:
 		case DOUBLE_JUMP:
 		case JETPACK:
+		case ANTIGRAV:
 		case ID:				return 2;			
 		//Abilities that cost 3 points
 		case WORLD_RESIST:
@@ -32,7 +32,6 @@ int GetAbilityUpgradeCost(int index)
 		case CREATE_QUAD:
 		case CREATE_INVIN:
 		case SUPER_SPEED:
-		case ANTIGRAV:
 		case WEAPON_KNOCK:		
 		case MORPH_MASTERY:	
 		case TOTEM_MASTERY:				
@@ -41,43 +40,6 @@ int GetAbilityUpgradeCost(int index)
 	}
 }
 
-//************************************************************************************************
-
-void generalUpgradeMenu_handler(edict_t *ent, int option)
-{
-	int cost = GetAbilityUpgradeCost(option-1);
-
-	//are we navigating the menu?
-	switch (option)
-	{
-	case 502:	OpenUpgradeMenu(ent);	return;
-	case 500:	closemenu(ent);			return;
-	}
-
-	//We are upgrading
-	if (ent->myskills.speciality_points < cost)
-	{
-		//You need 1 points? let's fix that:
-		if (cost > 1)
-			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
-		else gi.cprintf(ent, PRINT_HIGH, va("You don't have 1 ability point.\n", cost));
-		return;
-	}
-	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || (ent->myskills.administrator > 999))
-	{
-		ent->myskills.speciality_points -= cost;
-		ent->myskills.abilities[option-1].level++;
-		ent->myskills.abilities[option-1].current_level++;
-	}
-	else 
-	{
-		gi.cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
-			ent->myskills.abilities[option-1].max_level));
-		return;
-	}
-	// refresh the menu
-	OpenGeneralUpgradeMenu(ent, ent->client->menustorage.currentline);
-}
 
 //************************************************************************************************
 
@@ -163,50 +125,6 @@ void OpenSpecialUpgradeMenu(edict_t *ent, int lastline)
 }
 
 //************************************************************************************************
-
-void OpenGeneralUpgradeMenu(edict_t *ent, int lastline)
-{
-	int i;
-	int total_lines = 7;
-	if (!ShowMenu(ent))
-        return;
-	clearmenu(ent);
-	//					xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
-	addlinetomenu(ent, "Player Upgrades Menu", MENU_GREEN_CENTERED);
-	addlinetomenu(ent, " ", 0);
-	for (i = 0; i < MAX_ABILITIES; i++)
-	{
-		upgrade_t *upgrade;
-		int num = i + 1;
-		char buffer[30];
-
-		upgrade = &ent->myskills.abilities[i];
-
-		if((upgrade->disable) || (!upgrade->general_skill) || (upgrade->hidden))
-			continue;
-
-		//Create ability menu string
-		strcpy(buffer, GetAbilityString(i));
-		strcat(buffer, ":");
-		padRight(buffer, 15);
-
-		addlinetomenu(ent, va("%d. %s %d[%d]", total_lines-6, buffer, upgrade->level, upgrade->current_level), num);
-		total_lines++;
-	}
-	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, va("You have %d ability points.", ent->myskills.speciality_points), 0);
-	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Previous Menu", 502);
-	addlinetomenu(ent, "Exit", 500);
-	setmenuhandler(ent, generalUpgradeMenu_handler);
-	if (!lastline)
-		ent->client->menustorage.currentline = total_lines-1;
-	else
-		ent->client->menustorage.currentline = lastline;
-	showmenu(ent);
-}
-
-//************************************************************************************************
 //************************************************************************************************
 
 void upgrademenu_handler (edict_t *ent, int option)
@@ -220,7 +138,9 @@ void upgrademenu_handler (edict_t *ent, int option)
 			OpenSpecialUpgradeMenu(ent, 0);
 	}
 	else if (option == 2)
-		OpenMultiUpgradeMenu(ent, 0, 0);//OpenGeneralUpgradeMenu(ent, 0);
+		OpenMultiUpgradeMenu(ent, 0, 0, 1);//OpenGeneralUpgradeMenu(ent, 0);
+	else if (option == 3)
+		OpenMultiUpgradeMenu(ent, 0, 0, 2);//OpenGeneralUpgradeMenu(ent, 0);
 	else closemenu(ent);
 }
 
@@ -246,9 +166,10 @@ void OpenUpgradeMenu (edict_t *ent)
 	if (ent->myskills.class_num != CLASS_WEAPONMASTER) // WMs don't get class specific skills.
 		addlinetomenu(ent, "Class specific skills", 1);
 
-
 	addlinetomenu(ent, "General skills", 2);
-	addlinetomenu(ent, "Exit", 3);
+	addlinetomenu(ent, "Mobility skills", 3); // az, vrxchile 2.7
+
+	addlinetomenu(ent, "Exit", 4);
 	setmenuhandler(ent, upgrademenu_handler);
 	ent->client->menustorage.currentline = 11;
 	showmenu(ent);
@@ -264,7 +185,7 @@ void OpenUpgradeMenu (edict_t *ent)
 #define PAGE_NEXT		100
 #define PAGE_PREVIOUS	102
 
-int getMultiPageIndex (edict_t *ent, int page)
+int getMultiPageIndex (edict_t *ent, int page, int mode)
 {
 	int			i, pagenum=0, abilities=0;
 	upgrade_t	*upgrade;
@@ -273,7 +194,7 @@ int getMultiPageIndex (edict_t *ent, int page)
 	for (i=0; i<MAX_ABILITIES; i++)
 	{
 		upgrade = &ent->myskills.abilities[i];
-		if (!upgrade->disable && upgrade->general_skill && !upgrade->hidden)
+		if (!upgrade->disable && upgrade->general_skill == mode && !upgrade->hidden)
 		{
 			abilities++;
 
@@ -302,6 +223,34 @@ int getMultiPageIndex (edict_t *ent, int page)
 	return i;
 }
 
+void UpgradeAbility(edict_t *ent, int ability_index)
+{
+	int cost;
+	cost = GetAbilityUpgradeCost(ability_index);
+
+	//We are upgrading
+	if (ent->myskills.speciality_points < cost)
+	{
+		//You need 1 points? let's fix that:
+		if (cost > 1)
+			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
+		else gi.cprintf(ent, PRINT_HIGH, va("You need one point to upgrade this ability.\n"));
+	}
+	if (ent->myskills.abilities[ability_index].level < ent->myskills.abilities[ability_index].max_level || ent->myskills.administrator > 999)
+	{
+		ent->myskills.speciality_points -= cost;
+		ent->myskills.abilities[ability_index].level++;
+		ent->myskills.abilities[ability_index].current_level++;
+	}
+	else 
+	{
+		gi.cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
+			ent->myskills.abilities[ability_index].max_level));
+		// doon't close the menu. -az
+		//return;
+	}
+}
+
 void upgradeMultiMenu_handler (edict_t *ent, int option)
 {
 	int p, cost, ability_index;
@@ -317,7 +266,7 @@ void upgradeMultiMenu_handler (edict_t *ent, int option)
 	// next menu
 	if (option < 300)
 	{
-		OpenMultiUpgradeMenu(ent, PAGE_NEXT, option-199);
+		OpenMultiUpgradeMenu(ent, PAGE_NEXT, option-199, 1);
 		return;
 	}
 	// previous menu
@@ -327,7 +276,7 @@ void upgradeMultiMenu_handler (edict_t *ent, int option)
 		if (p < 0)
 			OpenUpgradeMenu(ent);
 		else	
-			OpenMultiUpgradeMenu(ent, PAGE_PREVIOUS, p);
+			OpenMultiUpgradeMenu(ent, PAGE_PREVIOUS, p, 1);
 		return;
 	}
 
@@ -336,34 +285,50 @@ void upgradeMultiMenu_handler (edict_t *ent, int option)
 
 	ability_index = option%1000;
 	//gi.dprintf("ability = %s (%d)\n", GetAbilityString(ability_index), ability_index);
-	cost = GetAbilityUpgradeCost(ability_index);
+	
+	UpgradeAbility(ent, ability_index);
 
-	//We are upgrading
-	if (ent->myskills.speciality_points < cost)
-	{
-		//You need 1 points? let's fix that:
-		if (cost > 1)
-			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
-		else gi.cprintf(ent, PRINT_HIGH, va("You need %d point to upgrade this ability.\n", cost));
-		return;
-	}
-	if (ent->myskills.abilities[ability_index].level < ent->myskills.abilities[ability_index].max_level || ent->myskills.administrator)
-	{
-		ent->myskills.speciality_points -= cost;
-		ent->myskills.abilities[ability_index].level++;
-		ent->myskills.abilities[ability_index].current_level++;
-	}
-	else 
-	{
-		gi.cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
-			ent->myskills.abilities[ability_index].max_level));
-		return;
-	}
-
-	OpenMultiUpgradeMenu(ent, ent->client->menustorage.currentline, p);
+	OpenMultiUpgradeMenu(ent, ent->client->menustorage.currentline, p, 1);
 }
 
-void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page)
+void upgradeMultiMenu_handler_mobility (edict_t *ent, int option)
+{
+	int p, cost, ability_index;
+
+	if (option == 999)
+	{
+		closemenu(ent);
+		return;
+	}
+
+	//gi.dprintf("option=%d\n", option);
+
+	// next menu
+	if (option < 300)
+	{
+		OpenMultiUpgradeMenu(ent, PAGE_NEXT, option-199, 2);
+		return;
+	}
+	// previous menu
+	else if (option < 400)
+	{
+		p = option-301;
+		if (p < 0)
+			OpenUpgradeMenu(ent);
+		else	
+			OpenMultiUpgradeMenu(ent, PAGE_PREVIOUS, p, 2);
+		return;
+	}
+
+	p = option/1000-1;
+	ability_index = option%1000;
+
+	UpgradeAbility(ent, ability_index);
+
+	OpenMultiUpgradeMenu(ent, ent->client->menustorage.currentline, p, 2);
+}
+
+void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype)
 {
 	int			i, index, abilities=0,total_lines=7;
 	char		buffer[30];
@@ -378,13 +343,13 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page)
 	addlinetomenu(ent, "Player Upgrades Menu", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
 
-	index = getMultiPageIndex(ent, page);
+	index = getMultiPageIndex(ent, page, generaltype);
 	//gi.dprintf("index= %d\n", index);
 
 	for (i=index; i<MAX_ABILITIES; i++)
 	{
 		upgrade = &ent->myskills.abilities[i];
-		if((upgrade->disable) || (!upgrade->general_skill) || (upgrade->hidden))
+		if((upgrade->disable) || (upgrade->general_skill != generaltype) || (upgrade->hidden))
 			continue;
 
 		abilities++;
@@ -410,17 +375,22 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page)
 	addlinetomenu(ent, va("You have %d ability points.", ent->myskills.speciality_points), 0);
 	addlinetomenu(ent, " ", 0);
 
-	if (i < MAX_ABILITIES)
+	if (i < MAX_ABILITIES || generaltype == 1)
 	{
 		addlinetomenu(ent, "Next", 200+page);	
 		total_lines++;
 		next_option = true;
 	}
+	
+	if (generaltype == 1)
+		addlinetomenu(ent, "Previous", 300+page);
 
-	addlinetomenu(ent, "Previous", 300+page);
 	addlinetomenu(ent, "Exit", 999);
-
-	setmenuhandler(ent, upgradeMultiMenu_handler);
+	
+	if (generaltype == 1)
+		setmenuhandler(ent, upgradeMultiMenu_handler);
+	else
+		setmenuhandler(ent, upgradeMultiMenu_handler_mobility);
 
 	if (!lastline)
 	{
@@ -444,7 +414,4 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page)
 
 	ent->client->menustorage.menu_index = MENU_MULTI_UPGRADE;
 }
-
-
-
 
