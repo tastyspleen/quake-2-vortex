@@ -235,6 +235,7 @@ void UpgradeAbility(edict_t *ent, int ability_index)
 		if (cost > 1)
 			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
 		else gi.cprintf(ent, PRINT_HIGH, va("You need one point to upgrade this ability.\n"));
+		return;
 	}
 	if (ent->myskills.abilities[ability_index].level < ent->myskills.abilities[ability_index].max_level || ent->myskills.administrator > 999)
 	{
