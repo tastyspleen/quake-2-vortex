@@ -151,6 +151,9 @@ void laser_beam_think (edict_t *self)
 			return;
 		}
 
+		if (G_GetClient(tr.ent) && invasion->value > 1) // don't deal damage to friends in invasion hard.
+			damage = 0;
+
 		// deal damage to anything in the beam's path
 		if (!T_Damage(tr.ent, self, self->activator, forward, tr.endpos, 
 			vec3_origin, damage, 0, DAMAGE_ENERGY, MOD_LASER_DEFENSE))

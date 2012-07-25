@@ -551,9 +551,9 @@ void InitSunEntity(void)
 		nighttimelight = 'k';
 	}else
 	{
-		fullbright = 't';
+		fullbright = 's';
 		nightbright = 'c';
-		nighttimelight = 'k';
+		nighttimelight = 'i';
 	}
 }
 

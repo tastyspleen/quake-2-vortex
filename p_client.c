@@ -1936,6 +1936,8 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (maxs, ent->maxs);
 	VectorClear (ent->velocity);
 
+	V_ResetPlayerState(ent);
+
 	// clear playerstate values
 	memset (&ent->client->ps, 0, sizeof(client->ps));
 

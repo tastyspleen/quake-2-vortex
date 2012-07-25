@@ -277,7 +277,7 @@ void InitGame (void)
 	max_level = gi.cvar("max_level", "1000", 0);
 	check_dupeip = gi.cvar("check_dupeip", "0", 0);
 	check_dupename = gi.cvar("check_dupename", "1", 0);
-	newbie_protection = gi.cvar("newbie_protection","0",CVAR_ARCHIVE);
+	newbie_protection = gi.cvar("newbie_protection","1.8",CVAR_ARCHIVE);
 	debuginfo = gi.cvar("debuginfo", "0", CVAR_ARCHIVE);
 	pvm = gi.cvar ("pvm", "0", CVAR_LATCH);
 	ffa = gi.cvar ("ffa", "1", CVAR_LATCH);
@@ -348,8 +348,11 @@ void InitGame (void)
 
 	invasion_enabled = gi.cvar ("invasion_enabled", "1", CVAR_SERVERINFO | CVAR_LATCH);
 	vrx_pointmult = gi.cvar ("vrx_pointmult", "1.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
-	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.5", 0);
+	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.0", 0); // 1.5 is TOO much.
 	vrx_pvmpointmult = gi.cvar ("vrx_pvmpointmult", "1.0", 0);
+	vrx_sub10mult = gi.cvar ("vrx_sub10mult", "1.5", 0);
+	vrx_over10mult = gi.cvar ("vrx_over10mult", "0.75", 0);
+
 	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
 	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "3.0", 0);
 	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "1.0", 0);

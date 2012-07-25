@@ -758,6 +758,11 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	else if (ffa->value && !targ->client) // Nonplayer entities give more exp.
 		exp_points *= vrx_pvmpointmult->value;
 
+	if (attacker->myskills.level > 10)
+		exp_points *= vrx_over10mult->value;
+	else
+		exp_points *= vrx_sub10mult->value;
+
 	//vrxchile v1.3 Don't cap.
 	// min/max points awarded for a kill
 	/*if (exp_points > max_points)
@@ -937,6 +942,12 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 	if (!(IsNewbieBasher(attacker) && (level_diff <= 0.5)))
 	{
 		attacker->myskills.streak++;
+
+		if (((ffa->value && attacker->myskills.respawns & HOSTILE_PLAYERS) || V_IsPVP()) && attacker->myskills.streak > 15)
+		{
+			tech_dropall(attacker); // you can't use techs on a spree.
+		}
+
 		VortexSpreeAbilities(attacker);
 	}
 	else

@@ -440,7 +440,11 @@ void RunMedicFrames (edict_t *ent, usercmd_t *ucmd)
 		return;
 
 	ent->s.modelindex2 = 0; // no weapon model
-	ent->s.skinnum = 0;
+
+	if (!ent->myskills.administrator)
+		ent->s.skinnum = 0;
+	else
+		ent->s.skinnum = 2;
 
 	if (level.framenum >= ent->count)
 	{
@@ -533,7 +537,11 @@ void Cmd_PlayerToMedic_f (edict_t *ent)
 	ent->mtype = MORPH_MEDIC;
 	ent->s.modelindex = gi.modelindex ("models/monsters/medic/tris.md2");
 	ent->s.modelindex2 = 0;
-	ent->s.skinnum = 0;
+
+	if (!ent->myskills.administrator)
+		ent->s.skinnum = 0;
+	else
+		ent->s.skinnum = 2; // commander
 
 	// set maximum hyperblaster ammo
 	ent->myskills.abilities[MEDIC].max_ammo = MEDIC_HB_INITIAL_AMMO+MEDIC_HB_ADDON_AMMO

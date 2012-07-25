@@ -77,6 +77,9 @@ cvar_t *start_nextlevel;
 cvar_t *vrx_pointmult;
 cvar_t *vrx_pvppointmult;
 cvar_t *vrx_pvmpointmult;
+cvar_t *vrx_sub10mult;
+cvar_t *vrx_over10mult;
+
 cvar_t *flood_msgs;
 cvar_t *flood_persecond;
 cvar_t *flood_waitdelay;
