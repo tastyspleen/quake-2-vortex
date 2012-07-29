@@ -92,7 +92,7 @@ void setClassAbilities (edict_t *ent)
 {
 	switch (ent->myskills.class_num)
 	{
-	case CLASS_SOLDIER:// 70 points
+	case CLASS_SOLDIER:// 78 points
 		enableAbility(ent, STRENGTH, 0, 10, 0);
 		enableAbility(ent, RESISTANCE, 0, 10, 0);
 		enableAbility(ent, HA_PICKUP, 0, 10, 0);
@@ -100,6 +100,9 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, SPIKE_GRENADE, 0, 10, 0);
 		enableAbility(ent, EMP, 0, 10, 0);
 		enableAbility(ent, MIRV, 0, 10, 0);
+		enableAbility(ent, CREATE_QUAD, 0, 1, 0);
+		enableAbility(ent, CREATE_INVIN, 0, 1, 0);
+
 		enableAbility(ent, GRAPPLE_HOOK, 3, 3, 2);
 		break;
 	case CLASS_KNIGHT:// 70 points
@@ -111,6 +114,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, BEAM, 0, 10, 0);
 		enableAbility(ent, PLASMA_BOLT, 0, 10, 0);
 		enableAbility(ent, SHIELD, 1, 1, 0);
+
 		enableAbility(ent, BOOST_SPELL, 1, 1, 2);
 		ent->myskills.respawn_weapon = 1;	//sword only
 		break;
@@ -134,6 +138,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CURSE, 0, 10, 0);
 		enableAbility(ent, WEAKEN, 0, 10, 0);
 		enableAbility(ent, LOWER_RESIST, 0, 10, 0);
+
 		enableAbility(ent, JETPACK, 1, 1, 2);
 		break;
 	case CLASS_ENGINEER:// 80 points
@@ -145,6 +150,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CALTROPS, 0, 10, 0);
 		enableAbility(ent, AUTOCANNON, 0, 10, 0);
 		enableAbility(ent, DETECTOR, 0, 10, 0);
+
 		enableAbility(ent, ANTIGRAV, 1, 1, 2);
 		break;
 	case CLASS_MAGE:// 80 points
@@ -156,6 +162,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, METEOR, 0, 10, 0);
 		enableAbility(ent, FIREBALL, 0, 10, 0);
 		enableAbility(ent, LIGHTNING_STORM, 0, 10, 0);
+
 		enableAbility(ent, TELEPORT, 1, 1, 2);
 		break;
 	case CLASS_CLERIC:// 80 points
@@ -167,6 +174,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, YANG, 0, 10, 0);
 		enableAbility(ent, HAMMER, 0, 10, 0);
 		enableAbility(ent, DEFLECT, 0, 10, 0);
+
 		enableAbility(ent, DOUBLE_JUMP, 1, 1, 2);
 		break;
 	case CLASS_POLTERGEIST:// 80 points
@@ -190,7 +198,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, NATURE_TOTEM, 0, 10, 0);
 		enableAbility(ent, FURY, 0, 10, 0);
 		enableAbility(ent, HASTE, 0, 5, 0); // lol oops
-		//enableAbility(ent, SUPER_SPEED, 1, 1, 0);
+		enableAbility(ent, SUPER_SPEED, 1, 1, 0);
 		enableAbility(ent, TOTEM_MASTERY, 1, 1, 0);//4.4
 		break;
 	case CLASS_ALIEN:// 80 points
@@ -202,6 +210,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, ACID, 0, 10, 0);
 		enableAbility(ent, SPIKE, 0, 10, 0);
 		enableAbility(ent, COCOON, 0, 10, 0);
+
 		enableAbility(ent, BLACKHOLE, 1, 1, 2);
 		break;
 	case CLASS_WEAPONMASTER:// 0 points
@@ -342,7 +351,8 @@ void ChaseCam(edict_t *ent)
 	if (ent->client->menustorage.menu_active)
 		closemenu(ent);
 
-	if (ent->client->chase_target) {
+	if (ent->client->chase_target) 
+	{
 		ent->client->chase_target = NULL;
 		ent->client->ps.gunindex = 0;
 		return;

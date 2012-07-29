@@ -190,6 +190,13 @@ void FL_think (edict_t *self)
     tr = gi.trace(start, NULL, NULL, end, self->owner,CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER);
     vectoangles(tr.plane.normal, self->s.angles);
     VectorCopy(tr.endpos, self->s.origin);
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_FLASHLIGHT);
+	gi.WritePosition(self->s.origin);
+	gi.WriteShort(self - world);
+	gi.multicast(self->s.origin, MULTICAST_ALL);
+
     gi.linkentity(self);
     self->nextthink = level.time + FRAMETIME;
 }
@@ -222,8 +229,8 @@ void FL_make(edict_t *self)
     self->flashlight->classname = "flashlight";
     self->flashlight->s.modelindex = gi.modelindex ("models/objects/flash/tris.md2"); 
     self->flashlight->s.skinnum = 0;
-    self->flashlight->s.effects |= 0x10000000;//transparency
-    self->flashlight->s.effects |= EF_HYPERBLASTER;
+    /*self->flashlight->s.effects |= 0x10000000;//transparency
+    self->flashlight->s.effects |= EF_HYPERBLASTER;*/
 
     self->flashlight->think = FL_think;
     self->flashlight->nextthink = level.time + FRAMETIME;
@@ -792,7 +799,7 @@ qboolean Cmd_UseMorphWeapons_f (edict_t *ent, char *s)
 			}
 		}
 
-		if (Q_strcasecmp(s, "punch") == 0)
+		if (Q_strcasecmp(s, "punch") == 0 || Q_strcasecmp(s, "shotgun") == 0)
 		{
 			ent->client->weapon_mode = 1;
 			return true;
@@ -2785,6 +2792,72 @@ void Cmd_WritePos_f (edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, "Unable to append to file: %s\n", filename);
 }
 
+// az rune manipulation
+void Cmd_Rune_f(edict_t *ent)
+{
+	if (gi.argc() < 2)
+	{
+		ShowInventoryMenu(ent, 0, false);
+		return;
+	}else
+	{
+
+		if (gi.argc() == 3)
+		{
+			if (!strcmp(gi.argv(1), "manip"))
+			{
+				int index = atoi(gi.argv(2));
+				if (index < 0)
+				{
+					gi.cprintf(ent, PRINT_LOW, "Very funny.\n");
+					return;
+				}else if (index < MAX_VRXITEMS)
+				{
+					V_EquipItem(ent, index);
+					return;
+				}
+				gi.cprintf(ent, PRINT_LOW, "Nope. Out of bounds.\n");
+				return;
+			}
+		}
+
+		if (gi.argc() == 4)
+		{
+			if (!strcmp(gi.argv(1), "swap"))
+			{
+				int index = atoi(gi.argv(2)); // where from
+				int moveto = atoi(gi.argv(3)); // where to
+
+				if (index < 3) // Equiped rune
+				{
+					if (index > 0) 
+						gi.cprintf(ent, PRINT_LOW, "You can't move equipped runes. Unequip them first!\n");
+					else // Negative index?
+						gi.cprintf(ent, PRINT_LOW, "Nope.\n");
+					return;
+				}else if (index < MAX_VRXITEMS) // index in bounds.
+				{
+
+					if (moveto > 0 && moveto < MAX_VRXITEMS) // moveto in bounds
+					{
+						V_ItemSwap(&ent->myskills.items[index], &ent->myskills.items[moveto]);
+						gi.cprintf(ent, PRINT_LOW, "Items swapped successfully.\n");
+						return;
+					}else
+					{
+						gi.cprintf(ent, PRINT_LOW, "Out of bounds.\n");
+						return;
+					}
+
+				} // endif index in bounds
+
+			} // endif (swap)
+		} //endif (argc 4)
+	}
+	gi.cprintf(ent, PRINT_LOW, "rune [[manip/swap] [rune index [rune swap index]]]\n");
+	
+}
+
 void ClientCommand (edict_t *ent)
 {
 	char	*cmd;
@@ -2981,7 +3054,7 @@ void ClientCommand (edict_t *ent)
 		VortexCheckClientSettings(ent, atoi(gi.argv(1)), atoi(gi.argv(2)));
 	//NewB
 	else if (Q_stricmp (cmd, "rune") == 0)
-		ShowInventoryMenu(ent, 0, false);
+		Cmd_Rune_f(ent);
 	else if (Q_stricmp (cmd, "trade") == 0)
 	{
 		char *opt = gi.argv(1);
