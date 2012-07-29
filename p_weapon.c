@@ -1715,7 +1715,7 @@ void Machinegun_Fire (edict_t *ent)
 		if (ent->myskills.weapons[WEAPON_MACHINEGUN].mods[2].current_level >= 1)
 		{
 			damage = MACHINEGUN_ADDON_TRACERDAMAGE * ent->myskills.weapons[WEAPON_MACHINEGUN].mods[2].current_level;
-			fire_blaster(ent, start, forward, damage, 2000, 0, BLASTER_PROJ_BOLT, MOD_HYPERBLASTER, 2.0, false);
+			fire_blaster(ent, start, forward, damage, 2000, EF_BLUEHYPERBLASTER, BLASTER_PROJ_BOLT, MOD_HYPERBLASTER, 2.0, false);
 		}
 		ent->lasthbshot = level.time + 0.5;
 	}
@@ -1908,7 +1908,7 @@ void Chaingun_Fire (edict_t *ent)
 		if (ent->lasthbshot <= level.time)
 		{
 			damage = CHAINGUN_ADDON_TRACERDAMAGE * ent->myskills.weapons[WEAPON_CHAINGUN].mods[2].current_level;
-			fire_blaster(ent, start, forward, damage, 2000, 0, BLASTER_PROJ_BOLT, MOD_HYPERBLASTER, 2.0, false);
+			fire_blaster(ent, start, forward, damage, 2000, EF_BLUEHYPERBLASTER, BLASTER_PROJ_BOLT, MOD_HYPERBLASTER, 2.0, false);
 			ent->lasthbshot = level.time + 0.5;
 		}
 	if (ent->myskills.weapons[WEAPON_CHAINGUN].mods[4].current_level < 1)

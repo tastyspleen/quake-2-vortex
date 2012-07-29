@@ -586,6 +586,9 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		VectorClear (bolt->maxs);
 	}
 
+	/*if (effect == EF_BLUEHYPERBLASTER)
+		modelindex = gi.modelindex("models/objects/blaser/tris.md2");*/
+
 	// select movetype
 	if (bounce)
 		movetype = MOVETYPE_WALLBOUNCE;
@@ -1705,6 +1708,21 @@ void bfg_think (edict_t *self)
 			damage *= 0.5;
 		
 		T_Damage (target, self, self->owner, dir, tr.endpos, vec3_origin, damage, 0, DAMAGE_ENERGY, MOD_BFG_LASER);
+
+		// bfg pull
+		/*VectorNormalize(v);
+
+		VectorScale(v, self->owner->myskills.weapons[WEAPON_BFG10K].mods[4].current_level*5, v);
+
+		VectorSubtract(target->s.origin, v, v);
+
+		tr = gi.trace(v, target->mins, target->maxs, v, target->s.origin, MASK_PLAYERSOLID);
+
+		if (tr.fraction == 1.0) // we hit nothing! :D
+		{
+			VectorCopy(v, target->s.origin);
+			gi.linkentity(target);
+		}*/
 		
 		//gi.dprintf("BFG caused %d damage at %.1f\n", damage, level.time);
 

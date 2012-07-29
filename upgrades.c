@@ -131,11 +131,7 @@ void upgrademenu_handler (edict_t *ent, int option)
 {
 	if (option == 1)
 	{
-		//3.17 special menu for apprentice class
-//		if (ent->myskills.class_num == CLASS_APPRENTICE)
-//			OpenMultiUpgradeMenu(ent, 0, 0);
-//		else
-			OpenSpecialUpgradeMenu(ent, 0);
+		OpenSpecialUpgradeMenu(ent, 0);
 	}
 	else if (option == 2)
 		OpenMultiUpgradeMenu(ent, 0, 0, 1);//OpenGeneralUpgradeMenu(ent, 0);
@@ -168,6 +164,7 @@ void OpenUpgradeMenu (edict_t *ent)
 
 	addlinetomenu(ent, "General skills", 2);
 	addlinetomenu(ent, "Mobility skills", 3); // az, vrxchile 2.7
+	addlinetomenu(ent, " ", 0);
 
 	addlinetomenu(ent, "Exit", 4);
 	setmenuhandler(ent, upgrademenu_handler);

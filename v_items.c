@@ -265,7 +265,7 @@ edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, 
 	{
 		//spawn a unique 
 		// vrx chile 1.4 no uniques until someone makes them
-		//if (!spawnUnique(rune, 0))
+		if (!spawnUnique(rune, 0))
 			spawnNorm(rune, targ_level, 0);
 	}
 	else if (iRandom < CHANCE_UNIQUE + CHANCE_CLASS)
@@ -1035,13 +1035,6 @@ void V_EquipItem(edict_t *ent, int index)
 		gi.cprintf(ent, PRINT_HIGH, "You need to be level %d to use this rune.\n", total_pts);
 		return;
 	}
-	/*
-	else if ((int)((float)ent->myskills.items[index].itemLevel / RUNE_POINTS_PER_LEVEL) > ent->myskills.level && (!ent->myskills.administrator))
-	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to be level %d to use this rune.\n", (int)((float)ent->myskills.items[index].itemLevel/RUNE_POINTS_PER_LEVEL));
-		return;
-	}
-	*/
 	else if (index < MAX_VRXITEMS)
 	{
 		int type = ent->myskills.items[index].itemtype;
