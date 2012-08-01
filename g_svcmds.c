@@ -72,7 +72,7 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 	{
 		if (*s < '0' || *s > '9')
 		{
-			gi.cprintf(NULL, PRINT_HIGH, "Bad filter address: %s\n", s);
+			safe_cprintf(NULL, PRINT_HIGH, "Bad filter address: %s\n", s);
 			return false;
 		}
 		
@@ -142,7 +142,7 @@ void SVCmd_AddIP_f (void)
 	int		i;
 	
 	if (gi.argc() < 3) {
-		gi.cprintf(NULL, PRINT_HIGH, "Usage:  addip <ip-mask>\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Usage:  addip <ip-mask>\n");
 		return;
 	}
 
@@ -153,7 +153,7 @@ void SVCmd_AddIP_f (void)
 	{
 		if (numipfilters == MAX_IPFILTERS)
 		{
-			gi.cprintf (NULL, PRINT_HIGH, "IP filter list is full\n");
+			safe_cprintf (NULL, PRINT_HIGH, "IP filter list is full\n");
 			return;
 		}
 		numipfilters++;
@@ -174,7 +174,7 @@ void SVCmd_RemoveIP_f (void)
 	int			i, j;
 
 	if (gi.argc() < 3) {
-		gi.cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
 		return;
 	}
 
@@ -188,10 +188,10 @@ void SVCmd_RemoveIP_f (void)
 			for (j=i+1 ; j<numipfilters ; j++)
 				ipfilters[j-1] = ipfilters[j];
 			numipfilters--;
-			gi.cprintf (NULL, PRINT_HIGH, "Removed.\n");
+			safe_cprintf (NULL, PRINT_HIGH, "Removed.\n");
 			return;
 		}
-	gi.cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
+	safe_cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
 }
 
 /*
@@ -204,11 +204,11 @@ void SVCmd_ListIP_f (void)
 	int		i;
 	byte	b[4];
 
-	gi.cprintf (NULL, PRINT_HIGH, "Filter list:\n");
+	safe_cprintf (NULL, PRINT_HIGH, "Filter list:\n");
 	for (i=0 ; i<numipfilters ; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
-		gi.cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
+		safe_cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
 	}
 }
 
@@ -232,12 +232,12 @@ void SVCmd_WriteIP_f (void)
 	else
 		sprintf (name, "%s/listip.cfg", game->string);
 
-	gi.cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
+	safe_cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
 
 	f = fopen (name, "wb");
 	if (!f)
 	{
-		gi.cprintf (NULL, PRINT_HIGH, "Couldn't open %s\n", name);
+		safe_cprintf (NULL, PRINT_HIGH, "Couldn't open %s\n", name);
 		return;
 	}
 	
@@ -254,7 +254,7 @@ void SVCmd_WriteIP_f (void)
 
 void	Svcmd_Test_f (void)
 {
-	gi.cprintf (NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
+	safe_cprintf (NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
 }
 
 //GHz START
@@ -282,13 +282,13 @@ void SVCmd_AddExp_f (void)
 
 		e->myskills.experience += points;
 		e->client->resp.score += points;
-		gi.cprintf(NULL, PRINT_HIGH, "Gave %d experience to %s.\n", points, e->client->pers.netname);
+		safe_cprintf(NULL, PRINT_HIGH, "Gave %d experience to %s.\n", points, e->client->pers.netname);
 		check_for_levelup(e);
 		WriteToLogfile(e, va("Experience was modified. (amount = %d)\n", points));
 		return;
 	}
 	
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 }
 
 void SVCmd_AddCredits_f (void)
@@ -303,12 +303,12 @@ void SVCmd_AddCredits_f (void)
 	{
 		points = atoi(gi.argv(3));
 		e->myskills.credits += points;
-		gi.cprintf(NULL, PRINT_HIGH, "Gave %d credits to %s.\n", points, e->client->pers.netname);
+		safe_cprintf(NULL, PRINT_HIGH, "Gave %d credits to %s.\n", points, e->client->pers.netname);
 		WriteToLogfile(e, va("Credits were modified. (amount = %d)\n", points));
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 }
 
 void SVCmd_MakeAdmin_f (void)
@@ -326,14 +326,14 @@ void SVCmd_MakeAdmin_f (void)
 		if (lvl < 0)
 			lvl = 0;
 		if (!lvl)
-			gi.cprintf(NULL, PRINT_HIGH, "%s's administrator flag was reset.\n", e->client->pers.netname);
+			safe_cprintf(NULL, PRINT_HIGH, "%s's administrator flag was reset.\n", e->client->pers.netname);
 		else
-			gi.cprintf(NULL, PRINT_HIGH, "%s's admin flag set to level %d.\n", e->client->pers.netname, lvl);
+			safe_cprintf(NULL, PRINT_HIGH, "%s's admin flag set to level %d.\n", e->client->pers.netname, lvl);
 		WriteToLogfile(e, "Administrator flag was modified.\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 }
 
 void SVCmd_AddAbilityPoints_f (void)
@@ -346,12 +346,12 @@ void SVCmd_AddAbilityPoints_f (void)
 	if ((e = FindPlayer(name)) != NULL)
 	{
 		e->myskills.speciality_points += atoi(gi.argv(3));
-		gi.cprintf(NULL, PRINT_HIGH, "Ability points added.\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Ability points added.\n");
 		WriteToLogfile(e, "Ability points were modified.\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 }
 
 void SVCmd_AddTalentPoints_f (void)
@@ -364,12 +364,12 @@ void SVCmd_AddTalentPoints_f (void)
 	if ((e = FindPlayer(name)) != NULL)
 	{
 		e->myskills.talents.talentPoints += atoi(gi.argv(3));
-		gi.cprintf(NULL, PRINT_HIGH, "Talent points added.\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Talent points added.\n");
 		WriteToLogfile(e, "Talent points were modified.\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 }
 
 void SVCmd_AddWeaponPoints_f (void)
@@ -382,12 +382,12 @@ void SVCmd_AddWeaponPoints_f (void)
 	if ((e = FindPlayer(name)) != NULL)
 	{
 		e->myskills.weapon_points += atoi(gi.argv(3));
-		gi.cprintf(NULL, PRINT_HIGH, "Weapon points added.\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Weapon points added.\n");
 		WriteToLogfile(e, "Weapon points were modified.\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", name);
 
 }
 
@@ -567,7 +567,7 @@ void SVCmd_SpawnBoss_f (void)
 	else if (!strcmp(gi.argv(2), "jorg"))
 		SpawnDrone(m_worldspawn, 32, true);
 	else
-		gi.cprintf(NULL, PRINT_HIGH, "Invalid boss type. Usage: sv spawnboss <type>\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Invalid boss type. Usage: sv spawnboss <type>\n");
 }
 
 void SVCmd_MakeBoss_f (void)
@@ -581,11 +581,11 @@ void SVCmd_MakeBoss_f (void)
 		else if (!strcmp(gi.argv(3), "makron"))
 			boss_makron_spawn(p);
 		else
-			gi.cprintf(NULL, PRINT_HIGH, "Invalid boss type. Usage: sv makeboss <player> <type>\n");
+			safe_cprintf(NULL, PRINT_HIGH, "Invalid boss type. Usage: sv makeboss <player> <type>\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Couldn't find %s\n", gi.argv(2));
+	safe_cprintf(NULL, PRINT_HIGH, "Couldn't find %s\n", gi.argv(2));
 }
 
 void SVCmd_ChangeClass_f (void)
@@ -596,14 +596,14 @@ void SVCmd_ChangeClass_f (void)
 
 	if ((newclass < 1) || (newclass > CLASS_MAX))
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "Invalid class number: %d\n", newclass);
+		safe_cprintf(NULL, PRINT_HIGH, "Invalid class number: %d\n", newclass);
 		return;
 	}
 
 	if ((p = FindPlayer(playername)) != NULL)
 		ChangeClass(p->client->pers.netname, newclass, 1);
 	else
-		gi.cprintf(NULL, PRINT_HIGH, "Couldn't find %s\n", playername);
+		safe_cprintf(NULL, PRINT_HIGH, "Couldn't find %s\n", playername);
 }
 
 void SVCmd_ExpHole_f()
@@ -614,19 +614,19 @@ void SVCmd_ExpHole_f()
 
 	if ((value < 0) || (value > 1000000) || (strlen(pname) < 1))
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "cmd: exphole <playername> <value>.\n", pname);
+		safe_cprintf(NULL, PRINT_HIGH, "cmd: exphole <playername> <value>.\n", pname);
 		return;
 	}
 
 	if ((p = FindPlayer(pname)) != NULL)
 	{
 		p->myskills.nerfme = value;
-		gi.cprintf(NULL, PRINT_HIGH, "%s's experience hole has been set to %d\n", p->client->pers.netname, value);
+		safe_cprintf(NULL, PRINT_HIGH, "%s's experience hole has been set to %d\n", p->client->pers.netname, value);
 		WriteToLogfile(p, "Experience hole was modified.\n");
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
 }
 
 void SVCmd_SetTeam_f()
@@ -637,18 +637,18 @@ void SVCmd_SetTeam_f()
 
 	if ((value < 0) || (strlen(pname) < 0))
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "cmd: setteam <playername> <value>.\n", pname);
+		safe_cprintf(NULL, PRINT_HIGH, "cmd: setteam <playername> <value>.\n", pname);
 		return;
 	}
 	
 	if ((p = FindPlayer(pname)) != NULL)
 	{
 		p->teamnum = value;
-		gi.cprintf(NULL, PRINT_HIGH, "%s's team has been set to %d (%s)\n", p->client->pers.netname, value, CTF_GetTeamString(value));
+		safe_cprintf(NULL, PRINT_HIGH, "%s's team has been set to %d (%s)\n", p->client->pers.netname, value, CTF_GetTeamString(value));
 		return;
 	}
 
-	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
+	safe_cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
 }
 
 void SVCmd_DeleteCharacter_f()
@@ -660,13 +660,13 @@ void SVCmd_DeleteCharacter_f()
 
 	if (strlen(pname) < 1 || strlen(reason) < 1)
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "cmd: delchar <playername> <reason>\n", pname);
+		safe_cprintf(NULL, PRINT_HIGH, "cmd: delchar <playername> <reason>\n", pname);
 		return;
 	}
 
 	if (strlen(reason) > 50)
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "Reason string too long (> 50 characters).\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Reason string too long (> 50 characters).\n");
 		return;
 	}
 
@@ -696,12 +696,12 @@ void SVCmd_ListCombatPrefs ()
 		if (!player || !player->inuse || player->client->pers.spectator)
 			continue;
 
-		gi.cprintf(NULL, PRINT_HIGH, "%s (%d) is hostile against: ", player->client->pers.netname, player->myskills.respawns);
+		safe_cprintf(NULL, PRINT_HIGH, "%s (%d) is hostile against: ", player->client->pers.netname, player->myskills.respawns);
 		if (player->myskills.respawns & HOSTILE_MONSTERS)
-			gi.cprintf(NULL, PRINT_HIGH, "monsters ");
+			safe_cprintf(NULL, PRINT_HIGH, "monsters ");
 		if (player->myskills.respawns & HOSTILE_PLAYERS)
-			gi.cprintf(NULL, PRINT_HIGH, "players ");
-		gi.cprintf(NULL, PRINT_HIGH, "\n");
+			safe_cprintf(NULL, PRINT_HIGH, "players ");
+		safe_cprintf(NULL, PRINT_HIGH, "\n");
 	}
 
 }
@@ -737,7 +737,7 @@ void SV_AddMapToMaplist()
 
 	if (gi.argc() < 4)
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "Missing arguments!\n");
+		safe_cprintf(NULL, PRINT_HIGH, "Missing arguments!\n");
 		return;
 	}
 
@@ -745,11 +745,11 @@ void SV_AddMapToMaplist()
 
 	if (!(fp = fopen(filename, "a")))
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "%s: file couldn't be opened... opening in write mode.\n", filename);
+		safe_cprintf(NULL, PRINT_HIGH, "%s: file couldn't be opened... opening in write mode.\n", filename);
 		fp = fopen(filename, "w");
 		IsAppend = false;
 		if (!fp)
-			gi.cprintf(NULL, PRINT_HIGH, "Nope. Not in writing mode neither.\n");
+			safe_cprintf(NULL, PRINT_HIGH, "Nope. Not in writing mode neither.\n");
 	}
 	
 	fprintf(fp, "%s\n", map);	
@@ -773,6 +773,12 @@ void	ServerCommand (void)
 	char	*cmd;
 
 	cmd = gi.argv(1);
+
+	// JABot[start]
+	if (BOT_ServerCommand ())
+		return;
+	// [end]
+
 	if (Q_stricmp (cmd, "test") == 0)
 		Svcmd_Test_f ();
 	else if (Q_stricmp (cmd, "addip") == 0)
@@ -829,8 +835,8 @@ void	ServerCommand (void)
 		if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) 
 			&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) 
 			&& v_LoadMapList(MAPMODE_FFA) && v_LoadMapList(MAPMODE_INV)
-			&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH))
-			gi.cprintf(NULL, PRINT_HIGH, "INFO: Vortex Custom Map Lists loaded successfully\n");
+			&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH) && v_LoadMapList(MAPMODE_VHW))
+			safe_cprintf(NULL, PRINT_HIGH, "INFO: Vortex Custom Map Lists loaded successfully\n");
 	}
 	else if (Q_stricmp (cmd, "addtomaplist") == 0)
 		SV_AddMapToMaplist ();
@@ -844,6 +850,6 @@ else if (Q_stricmp (cmd, "saveplayers") == 0)
 
 //Ticamai END
 	else
-		gi.cprintf (NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
+		safe_cprintf (NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
 }
 

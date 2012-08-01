@@ -1164,7 +1164,7 @@ void Cmd_DeleteNode_f (edict_t *ent)
 	if ((nearestNode = NearestNodeNumber(ent->s.origin, 255, true)) != -1)
 		DeleteNode(nearestNode);
 
-	gi.cprintf(ent, PRINT_HIGH, "**Closest node deleted (%d nodes total).**\n", numnodes);
+	safe_cprintf(ent, PRINT_HIGH, "**Closest node deleted (%d nodes total).**\n", numnodes);
 }
 
 void Cmd_AddNode_f (edict_t *ent)
@@ -1183,7 +1183,7 @@ void Cmd_AddNode_f (edict_t *ent)
 	VectorCopy(start, pathnode[numnodes]);
 	numnodes++;
 
-	gi.cprintf(ent, PRINT_HIGH, "**Node added at current position (%d nodes total).\n**", numnodes);
+	safe_cprintf(ent, PRINT_HIGH, "**Node added at current position (%d nodes total).\n**", numnodes);
 }
 
 void Cmd_DeleteAllNodes_f (edict_t *ent)
@@ -1194,7 +1194,7 @@ void Cmd_DeleteAllNodes_f (edict_t *ent)
 	memset(&pathnode, 0, numnodes*sizeof(vec3_t));
 	numnodes = 0;
 
-	gi.cprintf(ent, PRINT_HIGH, "All nodes deleted.\n");
+	safe_cprintf(ent, PRINT_HIGH, "All nodes deleted.\n");
 }
 
 void SaveGrid (void)
@@ -1244,7 +1244,7 @@ void Cmd_SaveNodes_f (edict_t *ent)
 
 	SaveGrid();
 
-	gi.cprintf(ent, PRINT_HIGH, "Saving nodes...\n", numnodes);
+	safe_cprintf(ent, PRINT_HIGH, "Saving nodes...\n", numnodes);
 }
 
 void Cmd_LoadNodes_f (edict_t *ent)
@@ -1254,7 +1254,7 @@ void Cmd_LoadNodes_f (edict_t *ent)
 
 	LoadGrid();
 
-	gi.cprintf(ent, PRINT_HIGH, "Loading nodes...\n", numnodes);
+	safe_cprintf(ent, PRINT_HIGH, "Loading nodes...\n", numnodes);
 }
 
 //========================================================
@@ -1483,7 +1483,7 @@ void Cmd_ComputeNodes_f (edict_t *ent)
 		return;
 
 	CreateGrid(true);
-	gi.cprintf(ent, PRINT_HIGH, "Computing nodes...\n");
+	safe_cprintf(ent, PRINT_HIGH, "Computing nodes...\n");
 }
 
 void Cmd_ToggleShowGrid (edict_t *ent)

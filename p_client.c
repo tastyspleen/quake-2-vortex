@@ -358,6 +358,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char		*message2;
 	qboolean	ff;
 
+	//JABot [start]
+	//	if (self->ai.is_bot){
+	//		AI_BotObituary (self, inflictor, attacker);
+	//		return;
+	//	} //[end]
+
 	//K03 Begin
 	if (attacker && (attacker->creator) &&(!attacker->client) && (meansOfDeath == MOD_SENTRY || meansOfDeath == MOD_SENTRY_ROCKET))
 		attacker = attacker->creator;
@@ -1667,6 +1673,12 @@ void respawn (edict_t *self)
 		gi.dprintf("respawn()\n");
 	if (deathmatch->value || coop->value)
 	{
+		//JABot[start]
+		if (self->ai.is_bot){
+			BOT_Respawn (self);
+			return;
+		}
+		//JABot[end]
 		// don't let them respawn unless they've been assigned a spawn
 		if (INVASION_OTHERSPAWNS_REMOVED)
 		{
@@ -1684,7 +1696,7 @@ void respawn (edict_t *self)
 		self->svflags &= ~SVF_NOCLIENT;
 
 		if (self->myskills.respawns != self->client->pers.combat_changed)
-			gi.cprintf(self, PRINT_HIGH, "Combat preferences updated.\n");
+			safe_cprintf(self, PRINT_HIGH, "Combat preferences updated.\n");
 		self->myskills.respawns = self->client->pers.combat_changed;//4.5 use changed combat preferences
 		
 		PutClientInServer (self);
@@ -1724,7 +1736,7 @@ void spectator_respawn (edict_t *ent)
 		if (*spectator_password->string && 
 			strcmp(spectator_password->string, "none") && 
 			strcmp(spectator_password->string, value)) {
-			gi.cprintf(ent, PRINT_HIGH, "Spectator password incorrect.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Spectator password incorrect.\n");
 			ent->client->pers.spectator = false;
 			gi.WriteByte (svc_stufftext);
 			gi.WriteString ("spectator 0\n");
@@ -1738,7 +1750,7 @@ void spectator_respawn (edict_t *ent)
 				numspec++;
 
 		if (numspec >= maxspectators->value) {
-			gi.cprintf(ent, PRINT_HIGH, "Server spectator limit is full.");
+			safe_cprintf(ent, PRINT_HIGH, "Server spectator limit is full.");
 			ent->client->pers.spectator = false;
 			// reset his spectator var
 			gi.WriteByte (svc_stufftext);
@@ -1752,7 +1764,7 @@ void spectator_respawn (edict_t *ent)
 		char *value = Info_ValueForKey (ent->client->pers.userinfo, "password");
 		if (*password->string && strcmp(password->string, "none") && 
 			strcmp(password->string, value)) {
-			gi.cprintf(ent, PRINT_HIGH, "Password incorrect.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Password incorrect.\n");
 			ent->client->pers.spectator = true;
 			gi.WriteByte (svc_stufftext);
 			gi.WriteString ("spectator 1\n");
@@ -1985,6 +1997,11 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (ent->s.angles, client->ps.viewangles);
 	VectorCopy (ent->s.angles, client->v_angle);
 
+	//JABot[start]
+	if( ent->ai.is_bot == true )
+		return;
+	//JABot[end]
+
 	ent->client->lowlight = 0; //GHz: clear lowlight flag
 
 	// spawn a spectator
@@ -2088,7 +2105,11 @@ void ClientBeginDeathmatch (edict_t *ent)
 	gi.WriteByte (MZ_LOGIN);
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
-		gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
+	//JABot[start]
+	AI_EnemyAdded(ent);
+	//[end]
+
+	gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
 
 //	gi.centerprintf(ent,ClientMessage);
 
@@ -2114,22 +2135,25 @@ void ClientBegin (edict_t *ent)
 
 	ent->client = game.clients + (ent - g_edicts - 1);
 
-	//[QBS]
-	// set msg mode fully on so zbot would receive text & crash :)
-	gi.WriteByte (svc_stufftext);
-	gi.WriteString ("msg 4\n");
-	gi.unicast(ent, true);
+	if (!ent->ai.is_bot)
+	{
+		//[QBS]
+		// set msg mode fully on so zbot would receive text & crash :)
+		gi.WriteByte (svc_stufftext);
+		gi.WriteString ("msg 4\n");
+		gi.unicast(ent, true);
 
-	//[QBS] RATBOT STOPPER 
-	gi.WriteByte (svc_stufftext);
-	gi.WriteString (".==|please.disconnect.all.bots|==.\n");
-	gi.unicast(ent, true);
-	//[QBS]
+		//[QBS] RATBOT STOPPER 
+		gi.WriteByte (svc_stufftext);
+		gi.WriteString (".==|please.disconnect.all.bots|==.\n");
+		gi.unicast(ent, true);
+		//[QBS]
 
-	gi.WriteByte (svc_stufftext);
-	gi.WriteString ("msg 0\n");
-	gi.unicast(ent, true);
-	//[QBS]end
+		gi.WriteByte (svc_stufftext);
+		gi.WriteString ("msg 0\n");
+		gi.unicast(ent, true);
+		//[QBS]end
+	}
 
 	if (deathmatch->value)
 	{
@@ -2521,6 +2545,10 @@ void ClientDisconnect (edict_t *ent)
 
 	playernum = ent-g_edicts-1;
 	gi.configstring (CS_PLAYERSKINS+playernum, "");
+
+	//JABot[start]
+	AI_EnemyRemoved (ent);
+	//[end]
 }
 
 edict_t	*pm_passent;
@@ -2675,11 +2703,11 @@ void ClientThinkstuff(edict_t *ent)
 	if (ent->cocoon_factor > 0 && level.time > ent->cocoon_time - 5)
 	{
 		if (!(level.framenum % 10))
-			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", ent->cocoon_time - level.time);
+			safe_cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", ent->cocoon_time - level.time);
 
 		if (level.time >= ent->cocoon_time)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wore off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Cocoon bonus wore off\n");
 			ent->cocoon_time = 0;
 			ent->cocoon_factor = 0;
 		}
@@ -2689,17 +2717,17 @@ void ClientThinkstuff(edict_t *ent)
 	if (ent->flags & FL_WORMHOLE)
 	{
 		if (level.time == ent->client->wormhole_time - 10)
-			gi.cprintf(ent, PRINT_HIGH, "You have 10 seconds to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 10 seconds to exit the wormhole.\n");
 		if (level.time == ent->client->wormhole_time - 5)
-			gi.cprintf(ent, PRINT_HIGH, "You have 5 seconds to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 5 seconds to exit the wormhole.\n");
 		if (level.time == ent->client->wormhole_time - 4)
-			gi.cprintf(ent, PRINT_HIGH, "You have 4 seconds to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 4 seconds to exit the wormhole.\n");
 		if (level.time == ent->client->wormhole_time - 3)
-			gi.cprintf(ent, PRINT_HIGH, "You have 3 seconds to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 3 seconds to exit the wormhole.\n");
 		if (level.time == ent->client->wormhole_time - 2)
-			gi.cprintf(ent, PRINT_HIGH, "You have 2 seconds to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 2 seconds to exit the wormhole.\n");
 		if (level.time == ent->client->wormhole_time - 1)
-			gi.cprintf(ent, PRINT_HIGH, "You have 1 second to exit the wormhole.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have 1 second to exit the wormhole.\n");
 
 		// remove wormhole flag and force respawn
 		if (level.time == ent->client->wormhole_time)
@@ -2716,7 +2744,7 @@ void ClientThinkstuff(edict_t *ent)
 		if (level.time < SPREE_TIME + 120)
 		{
 			if (SPREE_TIME + 90 == level.time)
-				gi.cprintf(ent, PRINT_HIGH, "Hurry up! Only 30 seconds remaining...\n");
+				safe_cprintf(ent, PRINT_HIGH, "Hurry up! Only 30 seconds remaining...\n");
 			else if (SPREE_TIME + 110 == level.time)
 				gi.bprintf(PRINT_HIGH, "HURRY! War ends in 10 seconds. %s must die!\n", ent->client->pers.netname);
 		}
@@ -2731,9 +2759,9 @@ void ClientThinkstuff(edict_t *ent)
 
 	if (ent->client->allying && (level.time >= ent->client->ally_time+ALLY_WAIT_TIMEOUT))
 	{
-		gi.cprintf(ent->client->allytarget, PRINT_HIGH, "Alliance request timed out.\n");
+		safe_cprintf(ent->client->allytarget, PRINT_HIGH, "Alliance request timed out.\n");
 		AbortAllyWait(ent->client->allytarget);
-		gi.cprintf(ent, PRINT_HIGH, "Alliance request timed out.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Alliance request timed out.\n");
 		AbortAllyWait(ent);
 	}
 
@@ -2963,7 +2991,7 @@ void ClientThinkstuff(edict_t *ent)
 		if (ent->client->pers.inventory[power_cube_index] == 0)
 		{
 			ent->antigrav = 0;
-			gi.cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
 		}
 	}
 
@@ -3530,7 +3558,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 			//K03 Begin
 			client->chasecam_mode = (client->chasecam_mode == 1) ? 0 : 1;
-			gi.cprintf(ent, PRINT_HIGH, "CHASE CAM MODE: %s\n", (client->chasecam_mode == 1) ? "EYE CAM" : "FOLLOW CAM");
+			safe_cprintf(ent, PRINT_HIGH, "CHASE CAM MODE: %s\n", (client->chasecam_mode == 1) ? "EYE CAM" : "FOLLOW CAM");
 			if (!client->chase_target)
 				GetChaseTarget(ent);
 
@@ -3539,6 +3567,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			Think_Weapon (ent);
 		}
 	}
+
+	//JABot[start]
+	AITools_DropNodes(ent);
+	//JABot[end]
 
 	// double jump reset flag
 	if (ent->groundentity)
@@ -3596,8 +3628,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		int i;
 
 		//alert both players
-		gi.cprintf(ent, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
-		gi.cprintf(ent->trade_with, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
+		safe_cprintf(ent, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
+		safe_cprintf(ent->trade_with, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
 
 		//Clear the trade pointers
 		for (i = 0; i < 3; ++i)

@@ -162,14 +162,19 @@ qboolean dom_pickupflag (edict_t *ent, edict_t *other)
 		PM_RemoveMonster(other);
 
 	// disable movement abilities
-	//jetpack
-	other->client->thrusting = 0;
-	//grapple hook
-	other->client->hook_state = HOOK_READY;
+	if (other->client)
+	{
+		//jetpack
+		other->client->thrusting = 0;
+		//grapple hook
+		other->client->hook_state = HOOK_READY;
+	}
 	// super speed
 	other->superspeed = false;
 	// antigrav
 	other->antigrav = false;
+
+	VortexRemovePlayerSummonables(other);
 
 	// disable scanner
 	if (other->client->pers.scanner_active & 1)

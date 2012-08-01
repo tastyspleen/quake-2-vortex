@@ -720,14 +720,14 @@ void PurchaseRandomRune(edict_t *ent, int runetype)
 	cost = RUNE_COST_BASE + RUNE_COST_ADDON * ent->myskills.level;
 	if (ent->myskills.credits < cost)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need %d credits to purchase a rune.\n", cost);
+		safe_cprintf(ent, PRINT_HIGH, "You need %d credits to purchase a rune.\n", cost);
 		return;
 	}
 
 	slot = V_FindFreeItemSlot(ent);
 	if (!slot)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough inventory space!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough inventory space!\n");
 		return;
 	}
 
@@ -771,8 +771,8 @@ void PurchaseRandomRune(edict_t *ent, int runetype)
 	}
 
 	//send the message to the player
-	gi.cprintf(ent, PRINT_HIGH, "You bought a %s.\n", buf);
-	gi.cprintf(ent, PRINT_HIGH, "You now have %d credits left. \n", ent->myskills.credits);
+	safe_cprintf(ent, PRINT_HIGH, "You bought a %s.\n", buf);
+	safe_cprintf(ent, PRINT_HIGH, "You now have %d credits left. \n", ent->myskills.credits);
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 	//Save the player
@@ -1021,18 +1021,18 @@ void V_EquipItem(edict_t *ent, int index)
 		item_t *slot = V_FindFreeItemSlot(ent);
 		if (slot == NULL)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Not enough room in your stash.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Not enough room in your stash.\n");
 			return;
 		}
 		V_ItemSwap(&ent->myskills.items[index], slot);
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/boots.wav"), 1, ATTN_NORM, 0);
-		gi.cprintf(ent, PRINT_HIGH, "Item successfully placed in your stash.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Item successfully placed in your stash.\n");
 	}
 	//Everyone but admins have a minimum level requirement to use a rune. (easier for rune testing)
 	// vrxchile 2.0: only 999 admins are able to test runes.
 	else if ((ent->myskills.administrator < 999) && (ent->myskills.level < total_pts))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to be level %d to use this rune.\n", total_pts);
+		safe_cprintf(ent, PRINT_HIGH, "You need to be level %d to use this rune.\n", total_pts);
 		return;
 	}
 	else if (index < MAX_VRXITEMS)
@@ -1070,7 +1070,7 @@ void V_EquipItem(edict_t *ent, int index)
 			else gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/amulet.wav"), 1, ATTN_NORM, 0);
 			break;
 		}
-		gi.cprintf(ent, PRINT_HIGH, "Item successfully equipped.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Item successfully equipped.\n");
 	}
 
 	//Reset all rune info
@@ -1118,7 +1118,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 
 	if (!found)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have none in stock.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have none in stock.\n");
 		return;
 	}
 
@@ -1144,11 +1144,11 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 				
 				//Consume a potion
 				slot->quantity--;
-				gi.cprintf(ent, PRINT_HIGH, "You drank a potion. Potions left: %d\n", slot->quantity);
+				safe_cprintf(ent, PRINT_HIGH, "You drank a potion. Potions left: %d\n", slot->quantity);
 				if (slot->quantity < 1)
 					V_ItemClear(slot);
 			}
-			else gi.cprintf(ent, PRINT_HIGH, "You don't need to drink this yet, you have lots of health.\n");
+			else safe_cprintf(ent, PRINT_HIGH, "You don't need to drink this yet, you have lots of health.\n");
 			return;
 
 		}
@@ -1184,12 +1184,12 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 				
 				//Consume a potion
 				slot->quantity--;
-				gi.cprintf(ent, PRINT_HIGH, "You used some holywater. Vials left: %d\n", slot->quantity);
+				safe_cprintf(ent, PRINT_HIGH, "You used some holywater. Vials left: %d\n", slot->quantity);
 				if (slot->quantity < 1)
 					V_ItemClear(slot);
 				
 			}
-			else gi.cprintf(ent, PRINT_HIGH, "You are not cursed, so you don't need to use this yet.\n");
+			else safe_cprintf(ent, PRINT_HIGH, "You are not cursed, so you don't need to use this yet.\n");
 			return;
 		}
 		break;

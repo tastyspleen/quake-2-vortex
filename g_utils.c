@@ -672,7 +672,7 @@ edict_t *G_Spawn (void)
 
 	if (globals.num_edicts == 128 || globals.num_edicts == 129) 
 	{
-		gi.cprintf(NULL, PRINT_HIGH, "");
+		safe_cprintf(NULL, PRINT_HIGH, "");
 	}
 
 	G_InitEdict (e);
@@ -969,18 +969,18 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	// poltergeist cannot use abilities in human form
 	if (ent->myskills.class_num == CLASS_POLTERGEIST && !ent->mtype && !PM_PlayerHasMonster(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use abilities in human form!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't use abilities in human form!\n");
 		return false;
 	}
 	// enforce special rules on flag carrier in CTF mode
 	if (ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Flag carrier cannot use abilities.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Flag carrier cannot use abilities.\n");
 		return false;
 	}
 	if (ability_lvl < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have to upgrade to use this ability!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have to upgrade to use this ability!\n");
 		return false;
 	}
 //	if (HasActiveCurse(ent, CURSE_FROZEN))
@@ -990,25 +990,25 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	{
 		if ( invasion->value < 2 ) // invasion hard mode can use abilities in pregame.
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
 			return false;
 		}
 	}
 	if (ent->client->respawn_time > level.time)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
+		safe_cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
 			ent->client->respawn_time-level.time);
 		return false;
 	}
 	if (ent->client->ability_delay > level.time) 
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
+		safe_cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
 			ent->client->ability_delay-level.time);
 		return false;
 	}
 	if (pc_cost && (ent->client->pers.inventory[power_cube_index] < pc_cost))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n",
+		safe_cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n",
 			pc_cost-ent->client->pers.inventory[power_cube_index]);
 		return false;
 	}
@@ -1016,7 +1016,7 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	//3.0 Players cursed by amnesia can't use abilities
 	if (que_findtype(ent->curses, NULL, AMNESIA) != NULL)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have been cursed with amnesia and can't use any abilities!!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have been cursed with amnesia and can't use any abilities!!\n");
 		return false;
 	}
 	return true;

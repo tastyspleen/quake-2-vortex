@@ -412,7 +412,7 @@ void Cmd_HolyFreeze(edict_t *ent)
 	// if we already had an aura on, remove it
 	if (que_typeexists(ent->auras, AURA_HOLYFREEZE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Holy freeze removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Holy freeze removed.\n");
 		AuraRemove(ent, AURA_HOLYFREEZE);
 		return;
 	}
@@ -421,13 +421,13 @@ void Cmd_HolyFreeze(edict_t *ent)
 	// do we have enough power cubes?
 	if (ent->client->pers.inventory[power_cube_index] < DEFAULT_AURA_INIT_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
 			DEFAULT_AURA_INIT_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
 	ent->client->pers.inventory[power_cube_index] -= DEFAULT_AURA_INIT_COST;
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("auras/holywind.wav"), 1, ATTN_NORM, 0);
-	gi.cprintf(ent, PRINT_HIGH, "Now using holy freeze aura.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Now using holy freeze aura.\n");
 	aura_holyfreeze(ent);
 }
 
@@ -523,7 +523,7 @@ void Cmd_Salvation(edict_t *ent)
 			&& slot->ent->owner->inuse && slot->ent->owner == ent)
 		{
 			AuraRemove(ent, AURA_SALVATION);
-			gi.cprintf(ent, PRINT_HIGH, "Salvation removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Salvation removed.\n");
 			return;
 		}
 
@@ -534,13 +534,13 @@ void Cmd_Salvation(edict_t *ent)
 	// do we have enough power cubes?
 	if (ent->client->pers.inventory[power_cube_index] < DEFAULT_AURA_INIT_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
 			DEFAULT_AURA_INIT_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
 	ent->client->pers.inventory[power_cube_index] -= DEFAULT_AURA_INIT_COST;
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("auras/salvation.wav"), 1, ATTN_NORM, 0);
-	gi.cprintf(ent, PRINT_HIGH, "Now using salvation aura.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Now using salvation aura.\n");
 	aura_salvation(ent);
 }
 /*
@@ -690,7 +690,7 @@ void Cmd_HolyShock(edict_t *ent)
 	// if we already had an aura on, remove it
 	if (que_typeexists(ent->auras, AURA_HOLYSHOCK))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Holy shock removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Holy shock removed.\n");
 		AuraRemove(ent, AURA_HOLYSHOCK);
 		return;
 	}
@@ -698,13 +698,13 @@ void Cmd_HolyShock(edict_t *ent)
 	// do we have enough power cubes?
 	if (ent->client->pers.inventory[power_cube_index] < DEFAULT_AURA_INIT_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n", 
 			DEFAULT_AURA_INIT_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
 	ent->client->pers.inventory[power_cube_index] -= DEFAULT_AURA_INIT_COST;
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);//Play the spell sound!
-	gi.cprintf(ent, PRINT_HIGH, "Now using holy shock aura.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Now using holy shock aura.\n");
 	aura_holyshock(ent);
 }
 */

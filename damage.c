@@ -776,7 +776,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 				temp = 1 + 0.1 * targ->myskills.abilities[RESISTANCE].current_level;
 			// PvP modes are getting frustrating with players that are too resisting
 			else if ( (V_IsPVP() || ffa->value) && targ->myskills.respawns & HOSTILE_PLAYERS )
-				temp = 1 + 0.08 * targ->myskills.abilities[RESISTANCE].current_level;
+				temp = 1 + 0.066 * targ->myskills.abilities[RESISTANCE].current_level;
 
 			//Talent: Improved Resist
 			talentLevel  = getTalentLevel(targ, TALENT_IMP_RESIST);

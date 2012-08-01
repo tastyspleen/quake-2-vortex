@@ -392,7 +392,7 @@ void NotifyAllies (edict_t *ent, int msgtype, char *s)
 		if (msgtype)
 			gi.centerprintf(cl_ent, "%s", s);
 		else
-			gi.cprintf(cl_ent, PRINT_HIGH, "%s", s);
+			safe_cprintf(cl_ent, PRINT_HIGH, "%s", s);
 	}
 }
 
@@ -503,7 +503,7 @@ void ShowAllyInviteMenu_handler (edict_t *ent, int option)
 		AddAlly(ent, e);
 
 		// notify invitee
-		gi.cprintf(ent, PRINT_HIGH, "Ally added.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Ally added.\n");
 
 		// reset wait menu variables
 		AbortAllyWait(ent);
@@ -527,7 +527,7 @@ void ShowAllyInviteMenu_handler (edict_t *ent, int option)
 		if (InMenu(e, 0, ShowAllyWaitMenu_handler))
 			closemenu(e);
 
-		gi.cprintf(e, PRINT_HIGH, "%s declined your offer to ally.\n", ent->client->pers.netname);
+		safe_cprintf(e, PRINT_HIGH, "%s declined your offer to ally.\n", ent->client->pers.netname);
 	}
 }
 
@@ -709,7 +709,7 @@ void ShowRemoveAllyMenu_handler (edict_t *ent, int option)
 	gi.centerprintf(e, "No longer allied with: %s\n", ent->client->pers.netname);
 
 	// notify player
-	gi.cprintf(ent, PRINT_HIGH, "Ally removed.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Ally removed.\n");
 }
 
 void ShowRemoveAllyMenu (edict_t *ent)
@@ -769,14 +769,14 @@ void ShowAllyMenu (edict_t *ent)
 	//Don't bother displaying the menu if alliances are disabled
 	if (!allies->value)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Alliances are disabled.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Alliances are disabled.\n");
 		return;
 	}
 
 	// alliance only work in pvp mode
 	if (!ValidAllyMode())
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Alliances are disabled.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Alliances are disabled.\n");
 		return;
 	}
 
@@ -839,7 +839,7 @@ void PrintAlliedTeams (edict_t *ent)
 
 	for (i=0 ; i<j ; i++)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "%d: %s\n", player[i]->teamnum, player[i]->client->pers.netname);
+		safe_cprintf(ent, PRINT_HIGH, "%d: %s\n", player[i]->teamnum, player[i]->client->pers.netname);
 	}
 
 }

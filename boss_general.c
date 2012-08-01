@@ -439,7 +439,7 @@ void PlayerBossPoints (edict_t *attacker, edict_t *target)
 		cl_ent->myskills.credits += credits;
 		V_AddFinalExp(cl_ent, points);
 
-		gi.cprintf(cl_ent, PRINT_HIGH, "You gained %d experience and %d credits!\n", points, credits);
+		safe_cprintf(cl_ent, PRINT_HIGH, "You gained %d experience and %d credits!\n", points, credits);
 	}
 	*/
 }

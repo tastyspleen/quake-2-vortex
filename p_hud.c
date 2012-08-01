@@ -514,6 +514,9 @@ void PlayerID_SetStats (edict_t *player, edict_t *target, qboolean chasecam)
 	char	name[24], buf[100];
 	int		team_status=0;
 
+	if (player->ai.is_bot)
+		return;
+
 	dist = entdist(player, target);
 	health = target->health;
 	

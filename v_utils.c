@@ -80,15 +80,15 @@ char *GetRandomString (int len)
 void PrintCommands(edict_t *ent)
 {
     //Spam the user with a huge amount of text :)
-	gi.cprintf(ent, PRINT_HIGH, "Vortex Command List:\n\n");
-	gi.cprintf(ent, PRINT_HIGH, va("Version %s\n\n", VRX_VERSION));
+	safe_cprintf(ent, PRINT_HIGH, "Vortex Command List:\n\n");
+	safe_cprintf(ent, PRINT_HIGH, va("Version %s\n\n", VRX_VERSION));
 
-	gi.cprintf(ent, PRINT_HIGH, "== Character abilities ==\n\n    acid\n    airtotem [protect]\n    ammosteal\n    amnesia\n    ampdamage\n    antigrav\n    armorbomb\n    aura_holyfreeze\n    aura_salvation\n    autocannon\n    balancespirit\n    beam_off\n    beam_on\n    berserker\n    bless\n    blessedhammer\n    bombspell\n    boomerang\n    boost\n    brain\n    cacodemon\n    caltrop\n    chainlightning\n    cocoon\n    convert\n    ");
-	gi.cprintf(ent, PRINT_HIGH, "cripple\n    curse\n    darknesstotem\n    deathray\n    deflect\n    detector\n    detonatebody\n    detpipe\n    earthtotem\n    emp\n    explode\n    fireball\n    firetotem\n    flyer\n    forcewall\n    forcewall_off\n    frostnova\n    gasser\n    heal\n    healer\n    healray\n    hellspawn\n    holyfreeze\n    holyground\n    icebolt\n    laser\n    laser\n    laserplatform\n    lasertrap\n    lifedrain\n    lightningstorm\n    lowerresist\n    magicbolt\n    magmine\n    manashield\n    medic\n    meditate\n    meteor\n    minisentry\n    mirv\n    monster\n    mutant\n    napalm\n    naturetotem\n    nosspeed\n    nova\n    obstacle\n    overload\n    parasite\n    plasmabolt\n    proxy\n    purge\n    salvation\n    scanner\n    sentry\n    shieldoff\n    shieldon\n    spell_bomb\n    spell_boost\n    spell_corpse\n    spell_stealammo\n    spike\n    spikegrenade\n    spiker\n    spore\n    sprintoff\n    sprinton\n    sspeed\n    supplystation\n    tank\n    teleport_fwd\n    totem [remove]\n    unholyground\n    watertotem\n    weaken\n    wormhole\n    yang\n    yin\n");
-    gi.cprintf(ent, PRINT_HIGH, "\n\n== General commands ==\n\n    abilityindex\n    ally\n    allyinfo\n    combat\n    flashlight\n    gravjump \n    lasersight\n    masterpw\n    mute\n    owner\n    rune\n    speech\n    team\n    togglesecondary\n    trade\n    transfercredits\n    update\n    vrxhelp\n    vrxid\n    vrxmenu\n    whois\n    yell\n");
+	safe_cprintf(ent, PRINT_HIGH, "== Character abilities ==\n\n    acid\n    airtotem [protect]\n    ammosteal\n    amnesia\n    ampdamage\n    antigrav\n    armorbomb\n    aura_holyfreeze\n    aura_salvation\n    autocannon\n    balancespirit\n    beam_off\n    beam_on\n    berserker\n    bless\n    blessedhammer\n    bombspell\n    boomerang\n    boost\n    brain\n    cacodemon\n    caltrop\n    chainlightning\n    cocoon\n    convert\n    ");
+	safe_cprintf(ent, PRINT_HIGH, "cripple\n    curse\n    darknesstotem\n    deathray\n    deflect\n    detector\n    detonatebody\n    detpipe\n    earthtotem\n    emp\n    explode\n    fireball\n    firetotem\n    flyer\n    forcewall\n    forcewall_off\n    frostnova\n    gasser\n    heal\n    healer\n    healray\n    hellspawn\n    holyfreeze\n    holyground\n    icebolt\n    laser\n    laser\n    laserplatform\n    lasertrap\n    lifedrain\n    lightningstorm\n    lowerresist\n    magicbolt\n    magmine\n    manashield\n    medic\n    meditate\n    meteor\n    minisentry\n    mirv\n    monster\n    mutant\n    napalm\n    naturetotem\n    nosspeed\n    nova\n    obstacle\n    overload\n    parasite\n    plasmabolt\n    proxy\n    purge\n    salvation\n    scanner\n    sentry\n    shieldoff\n    shieldon\n    spell_bomb\n    spell_boost\n    spell_corpse\n    spell_stealammo\n    spike\n    spikegrenade\n    spiker\n    spore\n    sprintoff\n    sprinton\n    sspeed\n    supplystation\n    tank\n    teleport_fwd\n    totem [remove]\n    unholyground\n    watertotem\n    weaken\n    wormhole\n    yang\n    yin\n");
+    safe_cprintf(ent, PRINT_HIGH, "\n\n== General commands ==\n\n    abilityindex\n    ally\n    allyinfo\n    combat\n    flashlight\n    gravjump \n    lasersight\n    masterpw\n    mute\n    owner\n    rune\n    speech\n    team\n    togglesecondary\n    trade\n    transfercredits\n    update\n    vrxhelp\n    vrxid\n    vrxmenu\n    whois\n    yell\n");
     
     if (ent->myskills.administrator)
-        gi.cprintf(ent, PRINT_HIGH, "\n\n== Admin commands ==\n\n    addnode\n    admincmd\n    bbox\n    checkclientsettings\n    computenode\n    deleteallnode\n    deletenode\n    loadnode\n    lockon_crosshair\n    lockon_off\n    lockon_on\n    navipos\n    savenode\n    showgrid\n    spawnpos\n    teleport_rnd\n    writepos\n");
+        safe_cprintf(ent, PRINT_HIGH, "\n\n== Admin commands ==\n\n    addnode\n    admincmd\n    bbox\n    checkclientsettings\n    computenode\n    deleteallnode\n    deletenode\n    loadnode\n    lockon_crosshair\n    lockon_off\n    lockon_on\n    navipos\n    savenode\n    showgrid\n    spawnpos\n    teleport_rnd\n    writepos\n");
 }
 
 //************************************************************************************************
@@ -970,7 +970,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 			&& (ability_index != MEDIC) && (ability_index != BLOOD_SUCKER) && (ability_index != TANK) && (ability_index != BERSERK))
 		{
 			if (print_msg)
-				gi.cprintf(ent, PRINT_HIGH, "You can't use abilities in human form!\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't use abilities in human form!\n");
 			return false;
 		}
 	}
@@ -978,7 +978,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ent->myskills.abilities[ability_index].current_level < 1)
 	{
 		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "You have to upgrade to use this ability!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have to upgrade to use this ability!\n");
 		return false;
 	}
 
@@ -986,7 +986,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 	{
 		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "Flag carrier cannot use abilities.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Flag carrier cannot use abilities.\n");
 		return false;
 	}
 
@@ -998,7 +998,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 		if (invasion->value < 2)  // allow use of abilities in invasion hard mode.
 		{
 			if (print_msg)
-				gi.cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
 			return false;
 		}
 	}
@@ -1007,7 +1007,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ent->client->respawn_time > level.time)
 	{
 		if (print_msg)
-			gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
+			safe_cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
 				ent->client->respawn_time-level.time);
 		return false;
 	}
@@ -1015,7 +1015,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ent->client->ability_delay > level.time) 
 	{
 		if (print_msg)
-			gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
+			safe_cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
 				ent->client->ability_delay-level.time);
 		return false;
 	}
@@ -1023,7 +1023,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ent->myskills.abilities[ability_index].delay > level.time)
 	{
 		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "You can't use this ability for another %2.1f seconds.\n",
+			safe_cprintf(ent, PRINT_HIGH, "You can't use this ability for another %2.1f seconds.\n",
 				ent->myskills.abilities[ability_index].delay-level.time);
 		return false;
 	}
@@ -1032,7 +1032,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ability_cost && (ent->client->pers.inventory[power_cube_index] < ability_cost))
 	{
 		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n",
+			safe_cprintf(ent, PRINT_HIGH, "You need more %d power cubes to use this ability.\n",
 				ability_cost-ent->client->pers.inventory[power_cube_index]);
 		return false;
 	}
@@ -1041,7 +1041,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (que_findtype(ent->curses, NULL, AMNESIA) != NULL)
 	{
 		if (print_msg)
-			gi.cprintf(ent, PRINT_HIGH, "You have been cursed with amnesia and can't use any abilities!!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You have been cursed with amnesia and can't use any abilities!!\n");
 		return false;
 	}
 	return true;
@@ -1459,13 +1459,13 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		if (msgtype == CHANGECLASS_MSG_CHANGE)
 		{
 			//Notify everyone
-			gi.cprintf(NULL, PRINT_HIGH, "%s's class was changed to %s (%d).\n", playername,  GetClassString(newclass), newclass);
+			safe_cprintf(NULL, PRINT_HIGH, "%s's class was changed to %s (%d).\n", playername,  GetClassString(newclass), newclass);
 			WriteToLogfile(player, va("Class was changed to %s (%d).\n", gi.argv(3), newclass));
 			gi.dprintf("%s's class was changed to %s (%d).\n", playername, gi.argv(3), newclass);
 		}
 		else if (msgtype == CHANGECLASS_MSG_RESET)
 		{
-			gi.cprintf(player, PRINT_HIGH, "Your ability and weapon upgrades have been reset!\n");
+			safe_cprintf(player, PRINT_HIGH, "Your ability and weapon upgrades have been reset!\n");
 			WriteToLogfile(player, "Character data was reset.\n");
 			gi.dprintf("%s's character data was reset.\n", playername);
 		}
@@ -1592,6 +1592,14 @@ void V_RestoreMorphed (edict_t *ent, int refund)
 {
 	//gi.dprintf("V_RestoreMorphed()\n");
 
+	if (hw->value && ent->client && ent->myskills.class_num == CLASS_POLTERGEIST
+		&& ent->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
+	{
+		// This is painful but... sorry polts. -az
+		gi.cprintf(ent, PRINT_HIGH, "You can't unmorph while carrying the halo!\n");
+		return;
+	}
+
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/morph.wav") , 1, ATTN_NORM, 0);
 
 	if (ent->myskills.class_num == CLASS_POLTERGEIST)
@@ -1692,13 +1700,13 @@ void V_UpdatePlayerAbilities (edict_t *ent)
 	for (i = 0; i < 3; ++i)
 		V_ApplyRune(ent, &ent->myskills.items[i]);
 
-	gi.cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");
 	
 	// have points been refunded?
 	if (refunded > 0)
 	{
 		ent->myskills.speciality_points += old_abilities[i].level;
-		gi.cprintf(ent, PRINT_HIGH, "%d ability points have been refunded.\n", refunded);
+		safe_cprintf(ent, PRINT_HIGH, "%d ability points have been refunded.\n", refunded);
 	}
 }
 
@@ -2140,7 +2148,7 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 	if (cl_ent)
 	{
 		// CTF/Domination/PtR/PvM mode effects
-		if (ctf->value || domination->value || ptr->value || pvm->value)
+		if (ctf->value || domination->value || ptr->value || pvm->value || hw->value)
 		{
 			// flag effects for clients
 			if (ent->client)
@@ -2175,6 +2183,17 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 						ent->s.effects |= EF_FLAG2;
 						ent->s.renderfx |= RF_SHELL_BLUE;
 					}
+				}
+				
+				if (ent->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
+				{
+					// Red shell for the saint.
+					ent->s.effects |= EF_FLAG1;
+					ent->s.renderfx |= RF_SHELL_RED;
+					ent->s.effects |= EF_COLOR_SHELL;
+				}else
+				{
+					ent->s.effects |= EF_SPHERETRANS;
 				}
 			}
 			

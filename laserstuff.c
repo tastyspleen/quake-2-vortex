@@ -125,7 +125,7 @@ void target_laser_def_think (edict_t *self)
 	if (self->creator && ((level.time+10) >= self->creator->nextthink))
 	{
 		if ((level.time+10) == self->creator->nextthink)
-			gi.cprintf(self->activator, PRINT_HIGH, "A laser is about to expire.\n");
+			safe_cprintf(self->activator, PRINT_HIGH, "A laser is about to expire.\n");
 		if ((level.framenum % 5) == 0)
 		{
 			self->s.skinnum = laser_colour[LASER_DEFENSE_WARNING];
@@ -250,7 +250,7 @@ void	PlaceLaser (edict_t *ent)
 
 	if ((deathmatch->value) && (level.time < pregame_time->value)) {
 		if (ent->client)
-			gi.cprintf(ent, PRINT_HIGH, "You cannot use this ability in pre-game!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You cannot use this ability in pre-game!\n");
 		return;
 	}
 
@@ -268,18 +268,18 @@ void	PlaceLaser (edict_t *ent)
 
 	if (ent->myskills.abilities[BUILD_LASER].current_level < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't make lasers due to not training in it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't make lasers due to not training in it!\n");
 		return;
 	}
 	// cells for laser ?
 	if (ent->client->pers.inventory[power_cube_index] < LASER_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough Power Cubes for laser.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough Power Cubes for laser.\n");
 		return;
 	}
 
 	if (ent->client->ability_delay > level.time) {
-		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", ent->client->ability_delay - level.time);
+		safe_cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", ent->client->ability_delay - level.time);
 		return;
 	}
 	
@@ -289,7 +289,7 @@ void	PlaceLaser (edict_t *ent)
 	
 	// GHz: Reached max number allowed ?
 	if (ent->num_lasers >= MAX_LASERS) {
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the max of %d lasers\n", MAX_LASERS);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the max of %d lasers\n", MAX_LASERS);
 		return;
 	}
 
@@ -310,7 +310,7 @@ void	PlaceLaser (edict_t *ent)
 	// Line complete ? (ie. no collision)
 	if (tr.fraction == 1.0)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Too far from wall.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Too far from wall.\n");
 		return;
 	}
 
@@ -332,14 +332,14 @@ void	PlaceLaser (edict_t *ent)
 		  || (!strcmp(blip->classname, "misc_teleporter_dest") )
 		  || (!strcmp(blip->classname, "info_teleport_destination") ) )
 		 {
-		  	gi.cprintf (ent, PRINT_HIGH, "Laser is too close to a spawnpoint or flag.\n");
+		  	safe_cprintf (ent, PRINT_HIGH, "Laser is too close to a spawnpoint or flag.\n");
 		  	return ;
 		 }
 	}
 */
 
 	// Ok, lets stick one on then ...
-	gi.cprintf (ent, PRINT_HIGH, "Laser attached.\n");
+	safe_cprintf (ent, PRINT_HIGH, "Laser attached.\n");
 /*
 	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
 	{
@@ -428,7 +428,7 @@ void	PlaceLaser (edict_t *ent)
 		  || (!strcmp(blip->classname, "misc_teleporter_dest") )
 		  || (!strcmp(blip->classname, "info_teleport_destination") ) )
 		 {
-		  	gi.cprintf (ent, PRINT_HIGH, "Laser is too close to a spawnpoint or flag.\nLaser Removed.\n");
+		  	safe_cprintf (ent, PRINT_HIGH, "Laser is too close to a spawnpoint or flag.\nLaser Removed.\n");
 			G_FreeEdict(laser);
 			G_FreeEdict(grenade);
 		  	return ;
@@ -471,16 +471,16 @@ void    pre_target_laser_think (edict_t *self)
 
 void Use_Lasers (edict_t *ent, gitem_t *item) 
 {
-	gi.cprintf(ent, PRINT_HIGH, "Use the command \"laser\" instead.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Use the command \"laser\" instead.\n");
 	return;
 /*	if (ent->myskills.build_lasers < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't make lasers due to not training in it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't make lasers due to not training in it!\n");
 		return;
 	}
 	if (ent->client->pers.inventory[ITEM_INDEX(FindItem("Lasers"))] < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You are out of lasers to place.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You are out of lasers to place.\n");
 		return;
 	}
 

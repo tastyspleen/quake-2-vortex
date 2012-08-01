@@ -89,7 +89,7 @@ void p_medic_reanimate (edict_t *ent, edict_t *target)
 			target->monsterinfo.stand(target);
 
 			ent->num_monsters += target->monsterinfo.control_cost;
-			gi.cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", 
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", 
 				target->classname, ent->num_monsters, MAX_MONSTERS);
 		}
 	}
@@ -152,7 +152,7 @@ void p_medic_reanimate (edict_t *ent, edict_t *target)
 
 		ent->num_monsters += e->monsterinfo.control_cost;
 
-		gi.cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", 
+		safe_cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", 
 			ent->num_monsters, MAX_MONSTERS);
 	}
 	else if (!strcmp(target->classname, "spiker") && ent->num_spikers + 1 <= SPIKER_MAX_COUNT)
@@ -490,7 +490,7 @@ void Cmd_PlayerToMedic_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -510,7 +510,7 @@ void Cmd_PlayerToMedic_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 
@@ -520,7 +520,7 @@ void Cmd_PlayerToMedic_f (edict_t *ent)
 	tr = gi.trace(ent->s.origin, boxmin, boxmax, ent->s.origin, ent, MASK_SHOT);
 	if (tr.fraction<1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
 		return;
 	}
 	

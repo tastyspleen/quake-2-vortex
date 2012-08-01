@@ -128,7 +128,7 @@ void Add_credits(edict_t *ent, int targ_level)
 
 	if (ent->myskills.credits+credit_points > MAX_CREDITS)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Maximum credits reached!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Maximum credits reached!\n");
 		ent->myskills.credits = MAX_CREDITS;
 	}
 	else
@@ -172,6 +172,10 @@ void check_for_levelup (edict_t *ent)
 	int plateau_points = 50000;
 	qboolean levelup = false;
 	char *message;
+
+	if (ent->ai.is_bot) // bots don't level up -az
+		return;
+
 	while (ent->myskills.experience >= ent->myskills.next_level)
 	{
 		levelup = true;
@@ -345,7 +349,7 @@ void VortexSpreeAbilities (edict_t *attacker)
 int V_AddFinalExp (edict_t *player, int exp)
 {
 	float	mod, playtime_minutes;
-	
+
 	// reduce experience as play time increases
 	playtime_minutes = player->myskills.playingtime/60.0;
 	if (playtime_minutes > PLAYTIME_MIN_MINUTES)
@@ -369,7 +373,10 @@ int V_AddFinalExp (edict_t *player, int exp)
 	}
 
 	if (player->myskills.level < 30) // hasn't reached the cap
-		player->myskills.experience += exp;
+	{
+		if (!player->ai.is_bot) // not a bot? have exp
+			player->myskills.experience += exp;
+	}
 	player->client->resp.score += exp;
 	check_for_levelup(player);
 
@@ -778,7 +785,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	// award experience to non-allied players
 		exp_points = V_AddFinalExp(attacker, max_points);
 
-	gi.cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
+	safe_cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
 		damage, (dmgmod * 100), '%', name, clevel, exp_points, credits);
 
 	return exp_points;
@@ -808,6 +815,12 @@ void VortexAddExp(edict_t *attacker, edict_t *targ)
 	if (ctf->value)
 	{
 		CTF_AwardFrag(attacker, targ);
+		return;
+	}
+
+	if (hw->value)
+	{
+		hw_deathcleanup(targ, attacker);
 		return;
 	}
 
@@ -980,7 +993,7 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 				SPREE_DUDE = attacker;
 				SPREE_WAR = true;
 				SPREE_TIME = level.time;
-				gi.cprintf(attacker, PRINT_HIGH, "You have 2 minutes to war. Get as many frags as you can!\n");
+				safe_cprintf(attacker, PRINT_HIGH, "You have 2 minutes to war. Get as many frags as you can!\n");
 			}
 
 			if (attacker == SPREE_DUDE)

@@ -2079,7 +2079,8 @@ qboolean drone_boss_stuff (edict_t *self)
 	// bosses teleport away from danger when they are weakened
 	if (self->activator && !self->activator->client && (self->monsterinfo.control_cost >= 100)
 		&& (level.time > self->sentrydelay) && (self->health < (0.3*self->max_health))
-		&& self->enemy && visible(self, self->enemy))
+		&& self->enemy && visible(self, self->enemy)
+		&& invasion->value != 1) // easy modo invasion doesn't allow bosses to escape. :p
 	{
 		gi.bprintf(PRINT_HIGH, "Boss teleported away.\n");
 
@@ -2171,7 +2172,7 @@ void drone_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->activator && self->activator->inuse && self->activator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);	
 	}
 

@@ -52,7 +52,7 @@ void minisentry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int d
 	//gi.dprintf("minisentry_die()\n");
 
 	if (self->creator && self->creator->inuse)
-		gi.cprintf(self->creator, PRINT_HIGH, "Your mini-sentry was destroyed.\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "Your mini-sentry was destroyed.\n");
 
 	minisentry_remove(self);
 }
@@ -67,7 +67,7 @@ void minisentry_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 
 	if (other && other->inuse && (other == self->creator) && (level.time > self->random))
 	{
-		gi.cprintf(self->creator, PRINT_HIGH, "Rotating sentry gun 45 degrees.\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "Rotating sentry gun 45 degrees.\n");
 
 		VectorCopy(self->move_angles, self->s.angles); // reset angles to default
 		self->s.angles[YAW]+=45;
@@ -336,7 +336,7 @@ void minisentry_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->creator && self->creator->inuse && self->creator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);	
 	}
 
@@ -720,13 +720,13 @@ void Cmd_MiniSentry_f (edict_t *ent)
 
 	if (ent->num_sentries >= MAX_MINISENTRIES)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the max of %d sentries\n", MAX_MINISENTRIES);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the max of %d sentries\n", MAX_MINISENTRIES);
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 

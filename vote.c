@@ -35,6 +35,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "50"); // vrxchile 2.5: less time per round (more dynamic pvp)
 			gi.cvar_set("timelimit", "0");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//gi.cvar_set("dm_monsters", "0");				
 		}
 		break;
@@ -49,6 +50,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//if (dm_monsters->value < 8)
 			//	gi.cvar_set("dm_monsters", "8");
 			//else
@@ -66,6 +68,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -80,6 +83,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -94,6 +98,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "100");
 			gi.cvar_set("timelimit", "21");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//if (dm_monsters->value < 4)
 			//	gi.cvar_set("dm_monsters", "4");
 			//else
@@ -111,6 +116,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("timelimit", "21");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//gi.cvar_set("dm_monsters", "4");
 		}
 		break;
@@ -125,12 +131,12 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("timelimit", "31");
 			gi.cvar_set("trading", "0");
+			gi.cvar_set("hw", "0");
 			//gi.cvar_set("dm_monsters", "4");
 		}
 		break;
 		case MAPMODE_TRA:
 		{
-			// player versus monsters
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
 			gi.cvar_set("ctf", "0");
@@ -139,8 +145,22 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("fraglimit", "0");
 			gi.cvar_set("trading", "1");
 			gi.cvar_set("timelimit", "0");
+			gi.cvar_set("hw", "0");
 			break;
 		}
+		case MAPMODE_VHW: // vortex holy wars
+			{
+				gi.cvar_set("ffa", "0");
+				gi.cvar_set("domination", "0");
+				gi.cvar_set("ctf", "0");
+				gi.cvar_set("pvm", "0");
+				gi.cvar_set("invasion", "0");
+				gi.cvar_set("fraglimit", "0");
+				gi.cvar_set("trading", "0");
+				gi.cvar_set("timelimit", "15");
+				gi.cvar_set("hw", "1");
+				break;
+			}
 		break;
 	}
 
@@ -176,6 +196,7 @@ v_maplist_t *GetMapList(int mode)
 	case MAPMODE_INV:	return &maplist_INV;
 	case MAPMODE_TRA:   return &maplist_TRA; // vrxchile 2.5: trading mode maplist
 	case MAPMODE_INH:	return &maplist_INH; // vrxchile 2.6: invasion hard mode
+	case MAPMODE_VHW:	return &maplist_VHW; // vrxchile 3.0: vortex holy wars mode
 	default:
 		gi.dprintf("ERROR in GetMapList(). Incorrect map mode. (%d)\n", mode);
 		return 0;
@@ -240,13 +261,13 @@ votes_t *FindVote(edict_t *ent)
 		
 		if (Q_stricmp(votes[i].ip, ent->client->pers.current_ip) == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
 			return &votes[i];
 		}
 		
 		if (Q_strcasecmp(votes[i].name, ent->client->pers.netname) == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
 			return &votes[i];
 		}
 
@@ -341,6 +362,7 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_INV:	Com_sprintf (tempBuffer, 1024, "%sInvasion ", tempBuffer); break;
 			case MAPMODE_TRA:	Com_sprintf (tempBuffer, 1024, "%sTrading ", tempBuffer); break;
 			case MAPMODE_INH:	Com_sprintf (tempBuffer, 1024, "%sInvasion (Hard mode) ", tempBuffer); break;
+			case MAPMODE_VHW:	Com_sprintf (tempBuffer, 1024, "%sVortex HolyWars ", tempBuffer); break;
 		}
 		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
 
@@ -625,7 +647,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 		}
 		else if (!strcmp(maplist->maps[mapnum-1].name, level.mapname))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Can't vote for current map!\n");
+			safe_cprintf(ent, PRINT_HIGH, "Can't vote for current map!\n");
 			return;
 		}
 		else
@@ -831,7 +853,7 @@ void ShowVoteModeMenu(edict_t *ent)
 	// don't allow non-admin voting during pre-game to allow players time to connect
 	if (!ent->myskills.administrator && (level.time < 15.0)) // allow 15 seconds for players to connect
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Please allow time for other players to connect.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Please allow time for other players to connect.\n");
 		return;
 	}
 	if (ent->client->resp.VoteTimeout > level.time)
@@ -840,13 +862,13 @@ void ShowVoteModeMenu(edict_t *ent)
 	if (cmd2[0] == 'y' || cmd2[0] == 'Y')
 	{
 		if (!currentVote.mode)
-			gi.cprintf(ent, PRINT_HIGH, "There is no vote taking place at this time.\n");
+			safe_cprintf(ent, PRINT_HIGH, "There is no vote taking place at this time.\n");
 		else
 		{
 			// Did we already vote?
 			if (ent->client->resp.HasVoted)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You already placed your vote.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You already placed your vote.\n");
 				return; // GTFO PLZ
 			}
 			ent->client->resp.HasVoted = true;
@@ -859,13 +881,13 @@ void ShowVoteModeMenu(edict_t *ent)
 	else if (cmd2[0] == 'n' || cmd2[0] == 'N')
 	{
 		if (!currentVote.mode)
-			gi.cprintf(ent, PRINT_HIGH, "There is no vote taking place at this time.\n");
+			safe_cprintf(ent, PRINT_HIGH, "There is no vote taking place at this time.\n");
 		else
 		{
 			// Did we already vote?
 			if (ent->client->resp.HasVoted)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You already placed your vote.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You already placed your vote.\n");
 				return; // GTFO PLZ
 			}
 			ent->client->resp.HasVoted = true;
@@ -889,8 +911,6 @@ void ShowVoteModeMenu(edict_t *ent)
 	addlinetomenu(ent, "Vote for game mode:", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
 
-	addlinetomenu(ent, " Player vs. Player", MAPMODE_PVP);
-	addlinetomenu(ent, " Free For All", MAPMODE_FFA);
 //GHz START
 	players = total_players();
 	// pvm and invasion are only available when there are few players on the server
@@ -902,6 +922,11 @@ void ShowVoteModeMenu(edict_t *ent)
 #else
 		min_players = maxclients->value;
 #endif
+
+	if (players > 1) // how could you ever play pvp alone? -az (bots not functional yet)
+		addlinetomenu(ent, " Player vs. Player", MAPMODE_PVP);
+
+	addlinetomenu(ent, " Free For All", MAPMODE_FFA);
 	/*4.5
 	if (players < min_players)
 	{*/
@@ -938,10 +963,12 @@ void ShowVoteModeMenu(edict_t *ent)
 		addlinetomenu(ent, " Domination", MAPMODE_DOM);
 		lastline++;
 	}
-	// CTF available when there are at least 6 players
+	// CTF and vhw available when there are at least 4 players
 	if (players >= 4)
 	{
 		addlinetomenu(ent, " CTF", MAPMODE_CTF);
+		lastline++;
+		addlinetomenu(ent, " Vortex Holywars", MAPMODE_VHW);
 		lastline++;
 	}
 //GHz END

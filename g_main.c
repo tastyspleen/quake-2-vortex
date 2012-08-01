@@ -121,6 +121,7 @@ cvar_t *tradingmode_enabled;
 cvar_t *ptr;
 cvar_t *ffa;
 cvar_t *domination;
+cvar_t *hw; // vrxchile 3.0
 cvar_t *ctf;
 cvar_t *invasion;
 cvar_t *nolag;
@@ -805,6 +806,11 @@ void ExitLevel (void)
 	int		i;
 	edict_t	*ent;
 	char	command [256];
+	
+	//JABot[start] (Disconnect all bots before changing map)
+	BOT_RemoveBot("all");
+	//[end]
+
 //GHz START
 	VortexEndLevel();
 //GHz END
@@ -921,6 +927,12 @@ void G_RunFrame (void)
 		if (i > 0 && i <= maxclients->value && !(ent->svflags & SVF_MONSTER))
 		{
 			ClientBeginServerFrame (ent);
+
+			// JABot[start]
+			if (ent->ai.is_bot)
+				G_RunEntity(ent);
+			//[end]
+
 			continue;
 		}
 
@@ -935,6 +947,10 @@ void G_RunFrame (void)
 
 	// build the playerstate_t structures for all players
 	ClientEndServerFrames ();
+
+	//JABot[start]
+	AITools_Frame();
+	//[end]
 
     //3.0 Remove votes by players who left the server
 	//Every 5 minutes
@@ -958,7 +974,7 @@ void G_RunFrame (void)
 			//	if (ent->client->disconnect_time > 0)
 					//continue;
 
-				gi.cprintf(ent, PRINT_HIGH, "You will not be able to access the Armory in the game\n");
+				safe_cprintf(ent, PRINT_HIGH, "You will not be able to access the Armory in the game\n");
 			}
 		}
 		if (level.time == pregame_time->value-10)
@@ -979,10 +995,12 @@ void G_RunFrame (void)
 		if (level.time == pregame_time->value) {
 			gi.bprintf(PRINT_HIGH, "Game commences!\n");
 
-			if (!invasion->value)
+			if (!invasion->value && !hw->value)
 				gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/fight.wav"), 1, ATTN_NONE, 0);
-			else
+			else if (invasion->value)
 				gi.sound(ent, CHAN_VOICE, gi.soundindex("invasion/fight_invasion.wav"), 1, ATTN_NONE, 0);
+			else if (hw->value)
+				gi.sound(ent, CHAN_VOICE, gi.soundindex("hw/hw_spawn.wav"), 1, ATTN_NONE, 0);
 
 			tech_spawnall();
 
@@ -1008,10 +1026,18 @@ void G_RunFrame (void)
 
 	if (domination->value && (level.time == pregame_time->value))
 		dom_init();
+
 	if (ctf->value && (level.time == pregame_time->value))
 		CTF_Init();
+
+	if (hw->value && (level.time == pregame_time->value))
+		hw_init();
+
 	if (domination->value && (level.time > pregame_time->value))
 		dom_awardpoints();
+
+	if (hw->value && (level.time > pregame_time->value))
+		hw_awardpoints();
 
 	PTRCheckJoinedQue();
 	INV_SpawnPlayers();

@@ -292,6 +292,8 @@ typedef struct
 //ZOID
 #define IT_TECH			64
 //ZOID
+#define IT_FLAG			128
+#define IT_HEALTH		256
 
 // gitem_t->weapmodel for weapons indicates model index
 #define WEAP_BLASTER			1 
@@ -306,6 +308,9 @@ typedef struct
 #define WEAP_RAILGUN			10
 #define WEAP_BFG				11
 #define WEAP_PHALANX			12
+
+#define WEAP_TOTAL				12
+
 #define WEAP_BOOMER				13
 
 #define WEAP_DISRUPTOR			12		// PGM
@@ -348,12 +353,11 @@ typedef struct gitem_s
 	char		*ammo;			// for weapons
 	int			flags;			// IT_* flags
 
-//	int			weapmodel;		// weapon model index (for weapons)
-
 	void		*info;
 	int			tag;
 
 	char		*precaches;		// string of all models, sounds, and images this item will use
+	int			weapmodel;		// weapon model index (for weapons)
 } gitem_t;
 
 
@@ -470,6 +474,7 @@ typedef struct
 	float		maxyaw;
 	float		minpitch;
 	float		maxpitch;
+	float		weight;
 } spawn_temp_t;
 
 
@@ -866,6 +871,7 @@ extern cvar_t *check_dupename;
 extern cvar_t *newbie_protection;
 extern cvar_t *debuginfo;
 extern cvar_t *pvm;
+extern cvar_t *hw;
 extern cvar_t *trading;
 extern cvar_t *tradingmode_enabled;
 extern cvar_t *ptr;
@@ -1328,6 +1334,9 @@ void ChasePrev(edict_t *ent);
 void GetChaseTarget(edict_t *ent);
 //============================================================================
 
+//jabot
+#include "ai/ai.h"
+
 // client_t->anim_priority
 #define	ANIM_BASIC		0		// stand / run
 #define	ANIM_WAVE		1
@@ -1766,6 +1775,9 @@ struct edict_s
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
 
+	// jabot (vrxcl/newvrx)
+	ai_handle_t ai; 
+
 	// RAFAEL
 	int			orders;
 
@@ -1961,6 +1973,7 @@ v_maplist_t maplist_FFA;
 v_maplist_t maplist_INV;
 v_maplist_t maplist_TRA;
 v_maplist_t maplist_INH;
+v_maplist_t maplist_VHW;
 //end new map lists
 
 // teamplay stuff
@@ -2270,4 +2283,11 @@ do { \
 
 //az begin
 void SaveAllPlayers();
+
+// 3.0 new holy vortex mode
+void hw_init();
+void hw_awardpoints (void);
+void hw_dropflag (edict_t *ent, gitem_t *item);
+qboolean hw_pickupflag (edict_t *ent, edict_t *other);
+void hw_spawnflag (void);
 //az end

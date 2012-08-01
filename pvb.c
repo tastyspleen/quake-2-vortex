@@ -272,7 +272,7 @@ void AwardBossKill (edict_t *boss)
 		player->myskills.credits += credits;
 		V_AddFinalExp(player, exp_points);
 
-		gi.cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
+		safe_cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
 	}
 }
 

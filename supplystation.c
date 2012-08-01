@@ -382,7 +382,7 @@ void supplystation_explode (edict_t *self, char *message)
 {
 	if (self->creator && self->creator->inuse)
 	{
-		gi.cprintf(self->creator, PRINT_HIGH, message);
+		safe_cprintf(self->creator, PRINT_HIGH, message);
 		self->creator->supplystation = NULL;
 		T_RadiusDamage(self, self->creator, 150, self, 150, MOD_SUPPLYSTATION);
 	}
@@ -453,7 +453,7 @@ void BuildSupplyStation (edict_t *ent, int cost, float skill_mult, float delay_m
 	tr = gi.trace(end, station->mins, station->maxs, end, NULL, MASK_SHOT);
 	if (tr.contents & MASK_SHOT)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Can't build supply station there.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Can't build supply station there.\n");
 		G_FreeEdict(station);
 		return;
 	}
@@ -473,7 +473,7 @@ void supplystation_remove (edict_t *self)
 	{
 		if (self->creator && self->creator->inuse)
 		{
-			gi.cprintf(self->creator, PRINT_HIGH, "Supply station successfully removed.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "Supply station successfully removed.\n");
 			self->creator->client->pers.inventory[power_cube_index] += STATION_COST;
 		}
 		G_FreeEdict(self);
@@ -521,9 +521,9 @@ void depot_remove (edict_t *self, edict_t *owner, qboolean effect)
 void depot_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	if (attacker->client)
-		gi.cprintf(self->creator, PRINT_HIGH, "Your supply station was destroyed by %s.\n", attacker->client->pers.netname);
+		safe_cprintf(self->creator, PRINT_HIGH, "Your supply station was destroyed by %s.\n", attacker->client->pers.netname);
 	else
-		gi.cprintf(self->creator, PRINT_HIGH, "Your supply station was destroyed.\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "Your supply station was destroyed.\n");
 	depot_remove(self, NULL, true);
 }
 
@@ -690,7 +690,7 @@ void depot_give_inventory (edict_t *self, edict_t *other)
 	result += depot_give_item(self, other, rocket_index);
 	result += depot_give_item(self, other, slug_index);
 
-	gi.cprintf(other, PRINT_HIGH, "Depot has %d armor, %d bullets, %d cells, %d shells, %d grenades, %d rockets, %d slugs\n", 
+	safe_cprintf(other, PRINT_HIGH, "Depot has %d armor, %d bullets, %d cells, %d shells, %d grenades, %d rockets, %d slugs\n", 
 		self->packitems[body_armor_index], self->packitems[bullet_index], self->packitems[cell_index], 
 		self->packitems[shell_index], self->packitems[grenade_index], self->packitems[rocket_index], 
 		self->packitems[slug_index]);
@@ -779,7 +779,7 @@ void Cmd_CreateSupplyStation_f (edict_t *ent)
 	depot = BuildDepot(ent, skill_mult, delay_mult);
 	if (!G_GetSpawnLocation(ent, 100, depot->mins, depot->maxs, start))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to spawn supply station.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to spawn supply station.\n");
 		ent->supplystation = NULL;
 		G_FreeEdict(depot);
 		return;

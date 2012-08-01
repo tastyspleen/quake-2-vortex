@@ -139,7 +139,7 @@ void __cdecl OpenPlayerThread(void *arg)
 	memset(&ent->myskills,0,sizeof(skills_t));
 	if(openPlayer(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "File found! Entering the game.\n");
+		safe_cprintf(ent, PRINT_HIGH, "File found! Entering the game.\n");
         ent->threadReturnVal = 0;		//success
 	}
 	else	ent->threadReturnVal = -1;	//failure

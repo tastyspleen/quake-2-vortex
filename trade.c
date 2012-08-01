@@ -61,8 +61,8 @@ void TradeItems(edict_t *player1, edict_t *player2)
 	//Is the trade ready to go?
 	if (!cantrade)
 	{
-		gi.cprintf(player1, PRINT_HIGH, "Not enough room to make a full trade. Re-arrange your items and try again.\n");
-		gi.cprintf(player2, PRINT_HIGH, "Not enough room to make a full trade. Re-arrange your items and try again.\n");
+		safe_cprintf(player1, PRINT_HIGH, "Not enough room to make a full trade. Re-arrange your items and try again.\n");
+		safe_cprintf(player2, PRINT_HIGH, "Not enough room to make a full trade. Re-arrange your items and try again.\n");
 		return;
 	}
 	
@@ -88,8 +88,8 @@ void TradeItems(edict_t *player1, edict_t *player2)
 	}
 
 	//Alert players involved of a successful trade
-    gi.cprintf(player1, PRINT_HIGH, "Trade completed. Check your items.\n");
-	gi.cprintf(player2, PRINT_HIGH, "Trade completed. Check your items.\n");
+    safe_cprintf(player1, PRINT_HIGH, "Trade completed. Check your items.\n");
+	safe_cprintf(player2, PRINT_HIGH, "Trade completed. Check your items.\n");
 
 	//Close menus
 	closemenu(player1);
@@ -349,7 +349,7 @@ void TradeInventoryMenu_handler(edict_t *ent, int option)
 				// don't allow trade of 1-up (it's broken)
 				if (item->itemtype == 1032)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Can't trade this item.\n");
+					safe_cprintf(ent, PRINT_HIGH, "Can't trade this item.\n");
 					return;
 				}
 
@@ -451,7 +451,7 @@ void ShowTradeMenu_handler(edict_t *ent, int option)
 		//Make sure this player isn't already trading
 		if(trade_with->trade_with != NULL)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "This player is trading with someone else.\n");
+			safe_cprintf(ent, PRINT_HIGH, "This player is trading with someone else.\n");
 			closemenu(ent);
 			return;
 		}
@@ -485,7 +485,7 @@ void ShowTradeMenu(edict_t *ent)
 	//Blocking trades?
 	if (ent->client->trade_off)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have disabled trading. Turn it on again with cmd: \"trade on\".\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have disabled trading. Turn it on again with cmd: \"trade on\".\n");
 		return;
 	}
 
@@ -513,7 +513,7 @@ void ShowTradeMenu(edict_t *ent)
 	//If nobody is on the list, don't bother showing the menu
 	if (j == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Nobody found close enough to trade with.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Nobody found close enough to trade with.\n");
 		closemenu(ent);
 		return;
 	}

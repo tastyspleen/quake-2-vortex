@@ -181,32 +181,32 @@ qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg)
 
 		if (strcmp(item->pickup_name, "Sword") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Normal firing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Normal firing\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Blaster") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Normal firing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Normal firing\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Railgun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Normal firing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Normal firing\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Grenade Launcher") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Normal firing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Normal firing\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Machinegun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Full automatic\n");
+				safe_cprintf(ent, PRINT_HIGH, "Full automatic\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Chaingun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Normal firing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Normal firing\n");
 			return true;
 		}
 	}
@@ -214,32 +214,32 @@ qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg)
 	{
 		if (strcmp(item->pickup_name, "Sword") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Lance mode\n");
+				safe_cprintf(ent, PRINT_HIGH, "Lance mode\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Blaster") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Blast mode\n");
+				safe_cprintf(ent, PRINT_HIGH, "Blast mode\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Railgun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Sniper mode\n");
+				safe_cprintf(ent, PRINT_HIGH, "Sniper mode\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Grenade Launcher") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Pipebomb mode\n");
+				safe_cprintf(ent, PRINT_HIGH, "Pipebomb mode\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Machinegun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Burst fire\n");
+				safe_cprintf(ent, PRINT_HIGH, "Burst fire\n");
 			return true;
 		}
 		if (strcmp(item->pickup_name, "Chaingun") == 0) {
 			if (printmsg)
-				gi.cprintf(ent, PRINT_HIGH, "Assault cannon\n");
+				safe_cprintf(ent, PRINT_HIGH, "Assault cannon\n");
 			return true;
 		}
 	}
@@ -474,13 +474,13 @@ void Use_Weapon (edict_t *ent, gitem_t *item)
 
 		if (!ent->client->pers.inventory[ammo_index])
 		{
-			if(!(ent->svflags & SVF_MONSTER)) gi.cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
+			if(!(ent->svflags & SVF_MONSTER)) safe_cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
 
 		if (ent->client->pers.inventory[ammo_index] < item->quantity)
 		{
-			if(!(ent->svflags & SVF_MONSTER)) gi.cprintf (ent, PRINT_HIGH, "Not enough %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
+			if(!(ent->svflags & SVF_MONSTER)) safe_cprintf (ent, PRINT_HIGH, "Not enough %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
 	}
@@ -510,7 +510,7 @@ void Use_Weapon2 (edict_t *ent, gitem_t *item)
 		ammo_index = ITEM_INDEX(ammo_item);
 		if (!ent->client->pers.inventory[ammo_index] && !g_select_empty->value)
 		{
-			gi.cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
+			safe_cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
 	}
@@ -536,7 +536,7 @@ void Drop_Weapon (edict_t *ent, gitem_t *item)
 	// see if we're already using it
 	if ( ((item == ent->client->pers.weapon) || (item == ent->client->newweapon))&& (ent->client->pers.inventory[index] == 1) )
 	{
-		if(!(ent->svflags & SVF_MONSTER)) gi.cprintf (ent, PRINT_HIGH, "Can't drop current weapon\n");
+		if(!(ent->svflags & SVF_MONSTER)) safe_cprintf (ent, PRINT_HIGH, "Can't drop current weapon\n");
 		return;
 	}
 
@@ -1454,7 +1454,7 @@ void Weapon_Blaster_Fire (edict_t *ent)
 	ent->monsterinfo.lefty -= ammo; // decrement ammo counter
 
 	if (ent->client->weapon_mode)
-		gi.cprintf(ent, PRINT_HIGH, "%d damage blaster bolt fired (%.1fx).\n", damage, temp);
+		safe_cprintf(ent, PRINT_HIGH, "%d damage blaster bolt fired (%.1fx).\n", damage, temp);
 
 	Blaster_Fire (ent, vec3_origin, damage, false, effect, speed);
 	ent->client->ps.gunframe++;
@@ -2399,7 +2399,7 @@ void weapon_20mm_fire (edict_t *ent)
 	if (!ent->groundentity && !ent->waterlevel){
 		ent->client->ps.gunframe = 5;
 		if (ent->client && !(ent->svflags & SVF_MONSTER))
-			gi.cprintf(ent, PRINT_HIGH, "You must be stepping on the ground or in water to fire the 20mm cannon.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You must be stepping on the ground or in water to fire the 20mm cannon.\n");
 		return;
 	}
 

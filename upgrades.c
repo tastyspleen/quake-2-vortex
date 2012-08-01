@@ -59,8 +59,8 @@ void upgradeSpecialMenu_handler(edict_t *ent, int option)
 	{
 		//You need 1 points? let's fix that:
 		if (cost > 1)
-			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
-		else gi.cprintf(ent, PRINT_HIGH, va("You need %d point to upgrade this ability.\n", cost));
+			safe_cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
+		else safe_cprintf(ent, PRINT_HIGH, va("You need %d point to upgrade this ability.\n", cost));
 		return;
 	}
 	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || ent->myskills.administrator)
@@ -71,7 +71,7 @@ void upgradeSpecialMenu_handler(edict_t *ent, int option)
 	}
 	else 
 	{
-		gi.cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
+		safe_cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
 			ent->myskills.abilities[option-1].max_level));
 		return;
 	}
@@ -230,8 +230,8 @@ void UpgradeAbility(edict_t *ent, int ability_index)
 	{
 		//You need 1 points? let's fix that:
 		if (cost > 1)
-			gi.cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
-		else gi.cprintf(ent, PRINT_HIGH, va("You need one point to upgrade this ability.\n"));
+			safe_cprintf(ent, PRINT_HIGH, va("You need %d points to upgrade this ability.\n", cost));
+		else safe_cprintf(ent, PRINT_HIGH, va("You need one point to upgrade this ability.\n"));
 		return;
 	}
 	if (ent->myskills.abilities[ability_index].level < ent->myskills.abilities[ability_index].max_level || ent->myskills.administrator > 999)
@@ -242,7 +242,7 @@ void UpgradeAbility(edict_t *ent, int ability_index)
 	}
 	else 
 	{
-		gi.cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
+		safe_cprintf(ent, PRINT_HIGH, va("You have already reached the maximum level in this skill. (%d)\n", 
 			ent->myskills.abilities[ability_index].max_level));
 		// doon't close the menu. -az
 		//return;

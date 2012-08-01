@@ -23,7 +23,7 @@ void DeleteMenu_handler(edict_t *ent, int option)
 		for (i = 0; i < 3; ++i)
 			V_ApplyRune(ent, &ent->myskills.items[i]);
 
-		gi.cprintf(ent, PRINT_HIGH, "Item deleted.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Item deleted.\n");
 	}
 	else if (option - 666 > 0)
 	{

@@ -292,14 +292,14 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		// as of version 3.13, we can only handle up to 65,535 (unsigned int) credits
 		// if we have much more than this, then the player's credits probably got corrupted
 		gi.dprintf("WARNING: Cmd_Armory_f corrected invalid player credits\n");
-		gi.cprintf(ent, PRINT_HIGH, "Your credits were fixed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Your credits were fixed.\n");
 		ent->myskills.credits = 0;
 		return;
 	}
 
 	if (cur_credits < price)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need at least %d credits to buy this item.\n", price);
+		safe_cprintf(ent, PRINT_HIGH, "You need at least %d credits to buy this item.\n", price);
 		return;
 	}
 
@@ -307,7 +307,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 	{
 		if (ent->myskills.level < 5)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't buy points until level 5.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't buy points until level 5.\n");
 			return;
 		}
 	}
@@ -317,13 +317,13 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 	if ((selection < 11) && (selection > 0))
 	{
 		ent->client->pers.inventory[ITEM_INDEX(item)] = 1;
-		gi.cprintf(ent, PRINT_HIGH, "You bought a %s.\n", item->pickup_name);
+		safe_cprintf(ent, PRINT_HIGH, "You bought a %s.\n", item->pickup_name);
 	}
 	//If ammo was purchased (or T-Balls)
 	else if (selection < 18)
 	{
 		ent->client->pers.inventory[ITEM_INDEX(item)] = qty;
-		gi.cprintf(ent, PRINT_HIGH, "You bought %d %s.\n", qty, item->pickup_name);
+		safe_cprintf(ent, PRINT_HIGH, "You bought %d %s.\n", qty, item->pickup_name);
 	}
 	//Something else was selected
 	else
@@ -334,22 +334,22 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			{
 				if (ent->health >= ent->max_health)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "You don't need health.\n");
+					safe_cprintf(ent, PRINT_HIGH, "You don't need health.\n");
 					return;
 				}
 				ent->health = ent->max_health;
-				gi.cprintf(ent, PRINT_HIGH, "You bought %d health.\n", qty);
+				safe_cprintf(ent, PRINT_HIGH, "You bought %d health.\n", qty);
 			}
 			break;
 		case 19:	//Power Cubes
 			{
 				if (qty < 1)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "You don't need power cubes.\n");
+					safe_cprintf(ent, PRINT_HIGH, "You don't need power cubes.\n");
 					return;
 				}
 				ent->client->pers.inventory[ITEM_INDEX(Fdi_POWERCUBE)] += qty;
-				gi.cprintf(ent, PRINT_HIGH, "You bought %d power cubes.\n", qty);
+				safe_cprintf(ent, PRINT_HIGH, "You bought %d power cubes.\n", qty);
 			}
 			break;
 		case 20:	//armor
@@ -359,11 +359,11 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 					ent->client->pers.inventory[ITEM_INDEX(item)] += 100;
 					if (ent->client->pers.inventory[ITEM_INDEX(item)] > MAX_ARMOR(ent))
 						ent->client->pers.inventory[ITEM_INDEX(item)] = MAX_ARMOR(ent);
-					gi.cprintf(ent, PRINT_HIGH, "You bought some armor.\n");
+					safe_cprintf(ent, PRINT_HIGH, "You bought some armor.\n");
 				}
 				else
 				{
-					gi.cprintf(ent, PRINT_HIGH, "You are maxed out on armor already.\n");
+					safe_cprintf(ent, PRINT_HIGH, "You are maxed out on armor already.\n");
 					return;
 				}
 			}
@@ -378,14 +378,14 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			{
 				if (slot == NULL)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Not enough inventory space.\n");
+					safe_cprintf(ent, PRINT_HIGH, "Not enough inventory space.\n");
 					return;
 				}
 
 				//4.0 Players can't buy too many stackable items
 				if(V_ItemCount(ent, type) >= ARMORY_MAX_CONSUMABLES)
 				{
-					gi.cprintf(ent, PRINT_HIGH, va("You can't buy more than %d of these items.\n", ARMORY_MAX_CONSUMABLES));
+					safe_cprintf(ent, PRINT_HIGH, va("You can't buy more than %d of these items.\n", ARMORY_MAX_CONSUMABLES));
 					return;
 				}
 
@@ -398,11 +398,11 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 				//Tell the user what they bought
                 switch(selection)
 				{
-				case 21:	gi.cprintf(ent, PRINT_HIGH, "You bought %d health potions.\n", qty);		break;
-				case 22:	gi.cprintf(ent, PRINT_HIGH, "You bought %d vials of holy water.\n", qty);	break;
-				case 23:	gi.cprintf(ent, PRINT_HIGH, "You bought a pair of anti-gravity boots.\n");	break;
-				case 24:	gi.cprintf(ent, PRINT_HIGH, "You bought some fire resistant clothing.\n");	break;
-				case 25:	gi.cprintf(ent, PRINT_HIGH, "You bought an Auto-Tball.\n");	break;
+				case 21:	safe_cprintf(ent, PRINT_HIGH, "You bought %d health potions.\n", qty);		break;
+				case 22:	safe_cprintf(ent, PRINT_HIGH, "You bought %d vials of holy water.\n", qty);	break;
+				case 23:	safe_cprintf(ent, PRINT_HIGH, "You bought a pair of anti-gravity boots.\n");	break;
+				case 24:	safe_cprintf(ent, PRINT_HIGH, "You bought some fire resistant clothing.\n");	break;
+				case 25:	safe_cprintf(ent, PRINT_HIGH, "You bought an Auto-Tball.\n");	break;
 				}
 			}
 			break;
@@ -411,18 +411,18 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 		case 29:
 			ent->myskills.speciality_points += 1;
-			gi.cprintf(ent, PRINT_HIGH, "You bought an ability point - you now have %d.\n", ent->myskills.speciality_points);
+			safe_cprintf(ent, PRINT_HIGH, "You bought an ability point - you now have %d.\n", ent->myskills.speciality_points);
 			break;
 		case 30:
 			ent->myskills.weapon_points += 2;
-			gi.cprintf(ent, PRINT_HIGH, "You bought two weapon points - you now have %d.\n", ent->myskills.weapon_points);
+			safe_cprintf(ent, PRINT_HIGH, "You bought two weapon points - you now have %d.\n", ent->myskills.weapon_points);
 			break;
 		}
 	}
 
 	//spend the credits
 	ent->myskills.credits -= price;
-	gi.cprintf(ent, PRINT_HIGH, "%d credits left. \n", ent->myskills.credits);
+	safe_cprintf(ent, PRINT_HIGH, "%d credits left. \n", ent->myskills.credits);
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 }
@@ -548,7 +548,7 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 
 		//Delete item
 		memset(slot, 0, sizeof(item_t));
-		gi.cprintf(ent, PRINT_HIGH, "Item Sold for %d credits.\n", value);
+		safe_cprintf(ent, PRINT_HIGH, "Item Sold for %d credits.\n", value);
 
 		//Re-apply equipment
 		V_ResetAllStats(ent);
@@ -557,7 +557,7 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 
 		//refund some credits
 		ent->myskills.credits += value;
-		gi.cprintf(ent, PRINT_HIGH, "You now have %d credits.\n", ent->myskills.credits);
+		safe_cprintf(ent, PRINT_HIGH, "You now have %d credits.\n", ent->myskills.credits);
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 		//save the player file
@@ -681,7 +681,7 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 		rune = &((firstItem + selection)->rune);
 		if (rune->itemtype == ITEM_NONE)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Sorry, someone else has purchased this rune.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Sorry, someone else has purchased this rune.\n");
 			closemenu(ent);
 			return;
 		}
@@ -690,12 +690,12 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 		//Do we have enough credits?
 		if (ent->myskills.credits < cost)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You need %d more credits to buy this item.\n", cost - ent->myskills.credits);
+			safe_cprintf(ent, PRINT_HIGH, "You need %d more credits to buy this item.\n", cost - ent->myskills.credits);
 		}
 		//Check for free space
 		else if (slot == NULL)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Not enough room in inventory.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Not enough room in inventory.\n");
 		}
 		else
 		{
@@ -716,7 +716,7 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 			else if (savemethod->value == 1)
 				savePlayer(ent);
 
-			gi.cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
+			safe_cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 		}
 

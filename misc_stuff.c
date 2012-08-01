@@ -1013,7 +1013,7 @@ void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text)
 
 	if (G_IsSpectator(speaker))
 	{
-		gi.cprintf(listener, PRINT_CHAT, "(Spectator) %s", text);
+		safe_cprintf(listener, PRINT_CHAT, "(Spectator) %s", text);
 		return;
 	}
 
@@ -1021,7 +1021,7 @@ void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text)
 	// if they have a title, print it
 	if (strcmp(speaker->myskills.title, ""))
 		Com_sprintf (temp, sizeof(temp), "%s ", speaker->myskills.title);
-		//gi.cprintf(listener, PRINT_HIGH, "%s ", speaker->myskills.title);
+		//safe_cprintf(listener, PRINT_HIGH, "%s ", speaker->myskills.title);
 
 	if (ctf->value && speaker->teamnum)
 	{
@@ -1030,20 +1030,20 @@ void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text)
 		{
 			if (groupnum == GROUP_ATTACKERS)
 				Com_sprintf (temp, sizeof(temp), "%s(Offense) ", temp);
-				//gi.cprintf(listener, PRINT_CHAT, "(Offense) ");
+				//safe_cprintf(listener, PRINT_CHAT, "(Offense) ");
 			else if (groupnum == GROUP_DEFENDERS)
 				Com_sprintf (temp, sizeof(temp), "%s(Defense) ", temp);
-//				gi.cprintf(listener, PRINT_CHAT, "(Defense) ");
+//				safe_cprintf(listener, PRINT_CHAT, "(Defense) ");
 		}
 		else
 		{
 			Com_sprintf (temp, sizeof(temp), "%s(%s) ", temp, CTF_GetTeamString(speaker->teamnum));
-			//gi.cprintf(listener, PRINT_CHAT, "(%s) ", CTF_GetTeamString(speaker->teamnum));
+			//safe_cprintf(listener, PRINT_CHAT, "(%s) ", CTF_GetTeamString(speaker->teamnum));
 		}
 	}
 	Com_sprintf (temp, sizeof(temp), "%s%s", temp, text);
 
-	gi.cprintf (listener, PRINT_CHAT, "%s", temp);
+	safe_cprintf (listener, PRINT_CHAT, "%s", temp);
 }
 
 char *V_GetClassSkin (edict_t *ent)

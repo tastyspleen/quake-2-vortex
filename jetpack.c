@@ -39,13 +39,13 @@ void ApplyThrust (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
 		return;
 	}
 
 	if (ent->client->snipertime >= level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use jetpack while trying to snipe!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't use jetpack while trying to snipe!\n");
 		return;
 	}
 

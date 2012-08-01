@@ -290,7 +290,7 @@ void cmd_Spirit(edict_t *ent, int type)
 	{
 		G_FreeEdict(ent->spirit);
 		ent->spirit = NULL;
-		gi.cprintf(ent, PRINT_HIGH, "Spirit removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Spirit removed.\n");
 		return;
 	}
 	else
@@ -309,14 +309,14 @@ void cmd_Spirit(edict_t *ent, int type)
 		case M_BALANCESPIRIT:
 			if(getTalentLevel(ent, TALENT_BALANCESPIRIT) < 1)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You do not have this talent.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You do not have this talent.\n");
 				return;
 			}
 
 			if((!V_CanUseAbilities(ent, YIN, SPIRIT_COST, false) 
 				&& !V_CanUseAbilities(ent, YANG, SPIRIT_COST, false)))
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You must upgrade either yin or yang before you can use this talent.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You must upgrade either yin or yang before you can use this talent.\n");
 				return;				
 			}				
 			break;
@@ -354,17 +354,17 @@ void cmd_Spirit(edict_t *ent, int type)
 		case M_YINSPIRIT:
 			spirit->classname = "yin spirit";
 			spirit->s.renderfx |= RF_SHELL_BLUE | RF_SHELL_GREEN | RF_SHELL_RED;
-			gi.cprintf(ent, PRINT_HIGH, "Yin spirit summoned.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Yin spirit summoned.\n");
 			break;
 		case M_YANGSPIRIT:
 			spirit->classname = "yang spirit";
             spirit->s.renderfx |= RF_SHELL_YELLOW;
-			gi.cprintf(ent, PRINT_HIGH, "Yang spirit summoned.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Yang spirit summoned.\n");
 			break;
 		case M_BALANCESPIRIT:
 			spirit->classname = "balance spirit";
 			spirit->s.renderfx |= RF_SHELL_CYAN;
-			gi.cprintf(ent, PRINT_HIGH, "Balance spirit summoned.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Balance spirit summoned.\n");
 			break;
 		}
 	}

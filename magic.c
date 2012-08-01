@@ -9,7 +9,7 @@ void cmd_mjump(edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
 		return;
 	}
 
@@ -46,14 +46,14 @@ void cmd_mjump(edict_t *ent)
 			int count = 0;
 			V_ItemClear(&ent->myskills.items[i]);
 			//Alert the player
-            gi.cprintf(ent, PRINT_HIGH, "Your anti-gravity boots have broken!\n");
+            safe_cprintf(ent, PRINT_HIGH, "Your anti-gravity boots have broken!\n");
 			gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/itembreak.wav"), 1, ATTN_NORM, 0);
 
 			//Check for more boots (backup items)
 			for (i = 3; i < MAX_VRXITEMS; ++i)
 				if (ent->myskills.items[i].itemtype & ITEM_GRAVBOOTS)
 					++count;
-			gi.cprintf(ent, PRINT_HIGH, "Boots left: %d.\n", count);
+			safe_cprintf(ent, PRINT_HIGH, "Boots left: %d.\n", count);
 
 		}
 		else gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/gravjump.wav"), 1, ATTN_NORM, 0);
@@ -133,8 +133,8 @@ void Cmd_AmmoStealer_f(edict_t *ent)
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("spells/telekinesis.wav"), 1, ATTN_NORM, 0);
 
 		//Notify the two clients
-		gi.cprintf(other, PRINT_HIGH, "%s just stole some of your ammo!\n", ent->client->pers.netname);
-		gi.cprintf(ent, PRINT_HIGH, "You just stole %d%% of %s's ammo!\n", (int)(steal_base * 100), other->client->pers.netname);
+		safe_cprintf(other, PRINT_HIGH, "%s just stole some of your ammo!\n", ent->client->pers.netname);
+		safe_cprintf(ent, PRINT_HIGH, "You just stole %d%% of %s's ammo!\n", (int)(steal_base * 100), other->client->pers.netname);
 
 		// calling entity made a sound, used to alert monsters
 		ent->lastsound = level.framenum;
@@ -178,13 +178,13 @@ void Cmd_BoostPlayer(edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
 		return;
 	}
 
 	if (ent->client->snipertime >= level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use boost while trying to snipe!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't use boost while trying to snipe!\n");
 		return;
 	}
 
@@ -289,7 +289,7 @@ void Cmd_CorpseExplode(edict_t *ent)
 {
 	int		damage, min_dmg, max_dmg, slvl;
 	float	fraction, radius;
-	vec3_t	start, end, forward, right, offset;
+	vec3_t	start, end, forward, right, offset, up;
 	trace_t	tr;
 	edict_t *e=NULL;
 
@@ -347,7 +347,24 @@ void Cmd_CorpseExplode(edict_t *ent)
 		gi.sound(e, CHAN_ITEM, gi.soundindex("spells/corpseexplodecast.wav"), 1, ATTN_NORM, 0);
 		ent->client->pers.inventory[power_cube_index] -= COST_FOR_CORPSEEXPLODE;
 		ent->client->ability_delay = level.time + DELAY_CORPSEEXPLODE;
-		gi.cprintf(ent, PRINT_HIGH, "Corpse exploded for %d damage!\n", damage);
+		safe_cprintf(ent, PRINT_HIGH, "Corpse exploded for %d damage!\n", damage);
+
+		//decino: explosion effect
+		gi.WriteByte (svc_temp_entity);
+		gi.WriteByte (TE_GRENADE_EXPLOSION);
+		gi.WritePosition (e->s.origin);
+		gi.multicast (e->s.origin, MULTICAST_PVS);
+
+		//decino: shoot 6 gibs that deal damage
+		//az: todo, more copypaste.
+		/*for (i = 0; i < 10; i++)
+		{
+			e->s.angles[YAW] += 36;
+			AngleCheck(&e->s.angles[YAW]);
+
+			AngleVectors(e->s.angles, forward, NULL, up);
+			fire_gib(ent, e->s.origin, forward, dmg, 0, 1000);
+		}*/
 
 		// calling entity made a sound, used to alert monsters
 		ent->lastsound = level.framenum;
@@ -467,7 +484,7 @@ void TeleportForward (edict_t *ent)
 		return;
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
 		return;
 	}
 
@@ -1058,11 +1075,11 @@ void Cmd_FrostNova_f (edict_t *ent, float skill_mult, float cost_mult)
 			Cmd_Nova_f(ent, talent->upgradeLevel, skill_mult, cost_mult);
 			talent->delay = level.time + 4.0;	//4 second recharge.
 		}
-		else gi.cprintf(ent, PRINT_HIGH, va("You can't cast another frost nova for %0.1f seconds.\n", talent->delay - level.time));
+		else safe_cprintf(ent, PRINT_HIGH, va("You can't cast another frost nova for %0.1f seconds.\n", talent->delay - level.time));
 	}
 	else 
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must upgrade frost nova before you can use it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You must upgrade frost nova before you can use it.\n");
 	}	
 }
 
@@ -1112,7 +1129,7 @@ void DetonateArmor (edict_t *self)
 	// reduce armor count
 	self->owner->num_armor--;
 
-	gi.cprintf(self->owner, PRINT_HIGH, "Exploding armor did %d damage! (%d/%d)\n", 
+	safe_cprintf(self->owner, PRINT_HIGH, "Exploding armor did %d damage! (%d/%d)\n", 
 		self->dmg, self->owner->num_armor, EXPLODING_ARMOR_MAX_COUNT);
 
 	T_RadiusDamage(self, self->owner, self->dmg, NULL, self->dmg_radius, MOD_EXPLODINGARMOR);
@@ -1202,7 +1219,7 @@ void explodingarmor_think (edict_t *self)
 			self->owner->num_armor--;
 
 		gi.dprintf("INFO: Removed exploding armor from solid object.\n");
-		gi.cprintf(self->owner, PRINT_HIGH, "Your armor was removed from a solid object.\n");
+		safe_cprintf(self->owner, PRINT_HIGH, "Your armor was removed from a solid object.\n");
 		G_FreeEdict(self);
 		return;
 	}
@@ -1290,7 +1307,7 @@ void SpawnExplodingArmor (edict_t *ent, int time)
 	
 	ent->num_armor++; // 3.5 keep track of number of armor bombs
 
-	gi.cprintf(ent, PRINT_HIGH, "Your armor will detonate in %d seconds. Move away! (%d/%d)\n", 
+	safe_cprintf(ent, PRINT_HIGH, "Your armor will detonate in %d seconds. Move away! (%d/%d)\n", 
 		time, ent->num_armor, EXPLODING_ARMOR_MAX_COUNT);
 
 	// calling entity made a sound, used to alert monsters
@@ -1305,7 +1322,7 @@ void Cmd_ExplodingArmor_f (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		RemoveExplodingArmor(ent);
-		gi.cprintf(ent, PRINT_HIGH, "All armor bombs removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All armor bombs removed.\n");
 		return;
 	}
 
@@ -1315,12 +1332,12 @@ void Cmd_ExplodingArmor_f (edict_t *ent)
 		return;
 	if (ent->client->pers.inventory[body_armor_index] < EXPLODING_ARMOR_AMOUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need at least %d armor to use this ability.\n", EXPLODING_ARMOR_AMOUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You need at least %d armor to use this ability.\n", EXPLODING_ARMOR_AMOUNT);
 		return;
 	}
 	if (ent->num_armor >= EXPLODING_ARMOR_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Maximum count of %d reached.\n", EXPLODING_ARMOR_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "Maximum count of %d reached.\n", EXPLODING_ARMOR_MAX_COUNT);
 		return;
 	}
 
@@ -1495,7 +1512,7 @@ void proxy_remove (edict_t *self, qboolean print)
 		self->creator->num_proxy--;
 
 		if (print)
-			gi.cprintf(self->creator, PRINT_HIGH, "%d/%d proxy grenades remaining.\n",
+			safe_cprintf(self->creator, PRINT_HIGH, "%d/%d proxy grenades remaining.\n",
 				self->creator->num_proxy, PROXY_MAX_COUNT);
 	}
 }
@@ -1505,7 +1522,7 @@ void proxy_explode (edict_t *self)
 	if (self->style)//4.4 proxy needs to be rearmed
 		return;
 
-	gi.cprintf(self->creator, PRINT_HIGH, "Proxy detonated.\n");
+	safe_cprintf(self->creator, PRINT_HIGH, "Proxy detonated.\n");
 
 	T_RadiusDamage_Players(self, self->creator, self->dmg, self, self->dmg_radius, MOD_PROXY);
 	T_RadiusDamage_Nonplayers(self, self->creator, self->dmg * 1.5, self, self->dmg_radius * 1.5, MOD_PROXY);
@@ -1609,7 +1626,7 @@ void proxy_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *sur
 		ent->style = 0;// change status to armed
 		ent->health = ent->max_health;// restore health
 		other->client->pers.inventory[power_cube_index] -= 5;
-		gi.cprintf(other, PRINT_HIGH, "Proxy repaired and re-armed.\n");
+		safe_cprintf(other, PRINT_HIGH, "Proxy repaired and re-armed.\n");
 		gi.sound(other, CHAN_VOICE, gi.soundindex("weapons/repair.wav"), 1, ATTN_NORM, 0);
 		ent->monsterinfo.regen_delay1 = level.framenum + 20;// delay before we can rearm
 		ent->nextthink = level.time + 2.0;// delay before arming again
@@ -1618,7 +1635,7 @@ void proxy_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *sur
 
 void proxy_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	gi.cprintf(self->creator, PRINT_HIGH, "Proxy grenade destroyed.\n");
+	safe_cprintf(self->creator, PRINT_HIGH, "Proxy grenade destroyed.\n");
 	proxy_remove(self, true);
 }
 
@@ -1654,13 +1671,13 @@ void SpawnProxyGrenade (edict_t *self, int cost, float skill_mult, float delay_m
 
 	if (tr.fraction == 1)
 	{
-		gi.cprintf(self, PRINT_HIGH, "Too far from wall.\n");
+		safe_cprintf(self, PRINT_HIGH, "Too far from wall.\n");
 		return;
 	}
 
 	if (NearbyLasers(self, tr.endpos))
 	{
-		gi.cprintf(self, PRINT_HIGH, "Too close to a laser.\n");
+		safe_cprintf(self, PRINT_HIGH, "Too close to a laser.\n");
 		return;
 	}
 
@@ -1706,7 +1723,7 @@ void SpawnProxyGrenade (edict_t *self, int cost, float skill_mult, float delay_m
 	self->holdtime = level.time + PROXY_BUILD_TIME * delay_mult;
 	self->client->ability_delay = level.time + PROXY_BUILD_TIME * delay_mult;
 
-	gi.cprintf(self, PRINT_HIGH, "Proxy grenade built (%d/%d).\n", 
+	safe_cprintf(self, PRINT_HIGH, "Proxy grenade built (%d/%d).\n", 
 		self->num_proxy, PROXY_MAX_COUNT);
 }
 
@@ -1734,7 +1751,7 @@ void Cmd_BuildProxyGrenade (edict_t *ent)
 
 	if (Q_strcasecmp (gi.args(), "count") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have %d/%d proxy grenades.\n",
+		safe_cprintf(ent, PRINT_HIGH, "You have %d/%d proxy grenades.\n",
 			ent->num_proxy, PROXY_MAX_COUNT);
 		return;
 	}
@@ -1742,7 +1759,7 @@ void Cmd_BuildProxyGrenade (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		RemoveProxyGrenades(ent);
-		gi.cprintf(ent, PRINT_HIGH, "All proxy grenades removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All proxy grenades removed.\n");
 		return;
 	}
 
@@ -1769,13 +1786,13 @@ void Cmd_BuildProxyGrenade (edict_t *ent)
 
 	if (ent->num_proxy >= PROXY_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build any more proxy grenades.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build any more proxy grenades.\n");
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -1905,7 +1922,7 @@ void napalm_remove (edict_t *self, qboolean print)
 		self->owner->num_napalm--;
 
 		if (print)
-			gi.cprintf(self->owner, PRINT_HIGH, "%d/%d napalm grenades remaining.\n",
+			safe_cprintf(self->owner, PRINT_HIGH, "%d/%d napalm grenades remaining.\n",
 				self->owner->num_napalm, NAPALM_MAX_COUNT);
 	}
 }
@@ -2024,7 +2041,7 @@ void Cmd_Napalm_f (edict_t *ent)
 
 	if (Q_strcasecmp (gi.args(), "count") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have %d/%d napalm grenades.\n",
+		safe_cprintf(ent, PRINT_HIGH, "You have %d/%d napalm grenades.\n",
 			ent->num_napalm, NAPALM_MAX_COUNT);
 		return;
 	}
@@ -2032,7 +2049,7 @@ void Cmd_Napalm_f (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		RemoveNapalmGrenades(ent);
-		gi.cprintf(ent, PRINT_HIGH, "All napalm grenades removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All napalm grenades removed.\n");
 		return;
 	}
 
@@ -2044,7 +2061,7 @@ void Cmd_Napalm_f (edict_t *ent)
 
 	if (ent->num_napalm >= NAPALM_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't throw any more napalm grenades.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't throw any more napalm grenades.\n");
 		return;
 	}
 
@@ -2278,14 +2295,14 @@ void MeteorAttack (edict_t *ent, int damage, int radius, int speed, float skill_
 
 	if (tr.fraction == 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Too far from target.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Too far from target.\n");
 		return;
 	}
 
 	VectorCopy(tr.endpos, end);
 
 	if (distance(end, ent->s.origin) < radius+32)
-		gi.cprintf(ent, PRINT_HIGH, "***** WARNING: METEOR TARGET TOO CLOSE! *****\n");
+		safe_cprintf(ent, PRINT_HIGH, "***** WARNING: METEOR TARGET TOO CLOSE! *****\n");
 
 	/*
 	
@@ -2317,7 +2334,7 @@ void MeteorAttack (edict_t *ent, int damage, int radius, int speed, float skill_
 
 	if (fabs(start[2]-end[2]) < 64)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to spawn meteor.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to spawn meteor.\n");
 		G_FreeEdict(meteor);
 		return;
 	}
@@ -2616,7 +2633,7 @@ void autocannon_remove (edict_t *self, char *message)
 		self->creator->num_autocannon--; // decrement counter
 
 		if (self->creator->inuse && message)
-			gi.cprintf(self->creator, PRINT_HIGH, message);
+			safe_cprintf(self->creator, PRINT_HIGH, message);
 	}
 
 	// mark for removal
@@ -2870,9 +2887,9 @@ void autocannon_think (edict_t *self)
 	if (!(level.framenum%50))
 	{
 	if (self->light_level < 1)
-		gi.cprintf(self->creator, PRINT_HIGH, "***AutoCannon is out of ammo. Re-arm with more shells.***\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "***AutoCannon is out of ammo. Re-arm with more shells.***\n");
 	else if (self->light_level < 2)
-		gi.cprintf(self->creator, PRINT_HIGH, "AutoCannon is low on ammo. Re-arm with more shells.\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "AutoCannon is low on ammo. Re-arm with more shells.\n");
 	}
 
 //	M_Regenerate(self, AUTOCANNON_REGEN_FRAMES, 10, true, false, false);
@@ -2935,7 +2952,7 @@ void autocannon_buildthink (edict_t *self)
 
 void autocannon_status (edict_t *self, edict_t *other)
 {
-	gi.cprintf(other, PRINT_HIGH, "AutoCannon Status: Health (%d/%d) Ammo (%d/%d)\n", self->health, 
+	safe_cprintf(other, PRINT_HIGH, "AutoCannon Status: Health (%d/%d) Ammo (%d/%d)\n", self->health, 
 		self->max_health, self->light_level, self->count);
 
 	self->sentrydelay = level.time + AUTOCANNON_TOUCH_DELAY;
@@ -3090,7 +3107,7 @@ void CreateAutoCannon (edict_t *ent, int cost, float skill_mult, float delay_mul
 	tr = gi.trace(start, cannon->mins, cannon->maxs, start, NULL, MASK_SHOT);
 	if (tr.contents & MASK_SHOT)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Can't build autocannon there.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Can't build autocannon there.\n");
 		G_FreeEdict(cannon);
 		return;
 	}
@@ -3105,7 +3122,7 @@ void CreateAutoCannon (edict_t *ent, int cost, float skill_mult, float delay_mul
 	ent->client->pers.inventory[power_cube_index] -= cost;
 	ent->num_autocannon++; // increment counter
 
-	gi.cprintf(ent, PRINT_HIGH, "Built %d/%d autocannons.\n", ent->num_autocannon, AUTOCANNON_MAX_UNITS);
+	safe_cprintf(ent, PRINT_HIGH, "Built %d/%d autocannons.\n", ent->num_autocannon, AUTOCANNON_MAX_UNITS);
 }
 
 #define AUTOCANNON_AIM_NEAREST	0
@@ -3191,7 +3208,7 @@ void Cmd_AutoCannonAim_f (edict_t *ent, int option)
 		}
 	}
 
-	gi.cprintf(ent, PRINT_HIGH, "Aiming autocannon...\n");
+	safe_cprintf(ent, PRINT_HIGH, "Aiming autocannon...\n");
 }
 
 void Cmd_AutoCannon_f (edict_t *ent)
@@ -3240,7 +3257,7 @@ void Cmd_AutoCannon_f (edict_t *ent)
 
 	if (ent->num_autocannon >= AUTOCANNON_MAX_UNITS)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build any more autocannons.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build any more autocannons.\n");
 		return;
 	}
 
@@ -3864,7 +3881,7 @@ void ThrowCaltrops (edict_t *self, vec3_t start, vec3_t forward, int slevel, flo
 	self->client->ability_delay = level.time + CALTROPS_DELAY;
 	self->num_caltrops++;
 
-	gi.cprintf(self, PRINT_HIGH, "Caltrops deployed: %d/%d\n", self->num_caltrops, CALTROPS_MAX_COUNT);
+	safe_cprintf(self, PRINT_HIGH, "Caltrops deployed: %d/%d\n", self->num_caltrops, CALTROPS_MAX_COUNT);
 
 	//  entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
@@ -3877,7 +3894,7 @@ void Cmd_Caltrops_f (edict_t *ent)
 	if (!Q_strcasecmp(gi.args(), "remove"))
 	{
 		caltrops_removeall(ent);
-		gi.cprintf(ent, PRINT_HIGH, "All caltrops removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All caltrops removed.\n");
 		return;
 	}
 
@@ -3886,7 +3903,7 @@ void Cmd_Caltrops_f (edict_t *ent)
 
 	if (ent->num_caltrops >= CALTROPS_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You've reached the maximum number of caltrops (%d).\n", CALTROPS_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You've reached the maximum number of caltrops (%d).\n", CALTROPS_MAX_COUNT);
 		return;
 	}
 
@@ -3914,7 +3931,7 @@ void spikegren_remove (edict_t *self)
 	if (self->owner && self->owner->inuse)
 	{
 		self->owner->num_spikegrenades--;
-		gi.cprintf(self->owner, PRINT_HIGH, "%d/%d spike grenades remaining\n", self->owner->num_spikegrenades, SPIKEGRENADE_MAX_COUNT);
+		safe_cprintf(self->owner, PRINT_HIGH, "%d/%d spike grenades remaining\n", self->owner->num_spikegrenades, SPIKEGRENADE_MAX_COUNT);
 	}
 
 	G_FreeEdict(self);
@@ -4063,7 +4080,7 @@ void spikegren_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	gi.WritePosition (self->s.origin);
 	gi.multicast (self->s.origin, MULTICAST_PVS);
 
-	gi.cprintf(self->owner, PRINT_HIGH, "Spike grenade destroyed.\n");
+	safe_cprintf(self->owner, PRINT_HIGH, "Spike grenade destroyed.\n");
 
 	spikegren_remove(self);
 }
@@ -4117,7 +4134,7 @@ void Cmd_SpikeGrenade_f (edict_t *ent)
 
 	if (ent->num_spikegrenades >= SPIKEGRENADE_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You've reached the maximum number of spike grenades (%d)\n", SPIKEGRENADE_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You've reached the maximum number of spike grenades (%d)\n", SPIKEGRENADE_MAX_COUNT);
 		return;
 	}
 
@@ -4164,7 +4181,7 @@ void detector_remove (edict_t *self)
 	if (self->owner && self->owner->inuse)
 	{
 		self->owner->num_detectors--;
-		gi.cprintf(self->owner, PRINT_HIGH, "%d/%d detectors remaining\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
+		safe_cprintf(self->owner, PRINT_HIGH, "%d/%d detectors remaining\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
 	}
 
 	self->think = G_FreeEdict;
@@ -4321,7 +4338,7 @@ void detector_think (edict_t *self)
 	if (expired || !G_EntIsAlive(self->owner))
 	{
 		if (expired && self->owner && self->owner->inuse)
-			gi.cprintf(self->owner, PRINT_HIGH, "A detector timed-out. (%d/%d)\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
+			safe_cprintf(self->owner, PRINT_HIGH, "A detector timed-out. (%d/%d)\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
 
 		detector_remove(self);
 		return;
@@ -4364,7 +4381,7 @@ void detector_think (edict_t *self)
 
 void detector_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	gi.cprintf(self->owner, PRINT_HIGH, "A detector was destroyed. (%d/%d)\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
+	safe_cprintf(self->owner, PRINT_HIGH, "A detector was destroyed. (%d/%d)\n", self->owner->num_detectors, DETECTOR_MAX_COUNT);
 	detector_remove(self);
 }
 
@@ -4425,7 +4442,7 @@ void BuildDetector (edict_t *self, vec3_t start, vec3_t forward, int slvl, float
 	if (tr.fraction == 1)
 	{
 		G_FreeEdict(detector);
-		gi.cprintf(self, PRINT_HIGH, "Too far from wall.\n");
+		safe_cprintf(self, PRINT_HIGH, "Too far from wall.\n");
 		return;
 	}
 
@@ -4508,7 +4525,7 @@ void lasertrap_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 
 	lasertrap_remove(self);
 
-	gi.cprintf(self->activator, PRINT_HIGH, "A laser trap was destroyed (%d remain).\n", self->activator->num_detectors);
+	safe_cprintf(self->activator, PRINT_HIGH, "A laser trap was destroyed (%d remain).\n", self->activator->num_detectors);
 
 }
 
@@ -4564,7 +4581,7 @@ void lasertrap_firelaser (edict_t *self, vec3_t dir)
 		{
 			lasertrap_remove(self);
 			if (self->activator && self->activator->inuse)
-				gi.cprintf(self->activator, PRINT_HIGH, "Lasertrap self-destructed. Too close to wall.\n");
+				safe_cprintf(self->activator, PRINT_HIGH, "Lasertrap self-destructed. Too close to wall.\n");
 			return;
 		}
 	}
@@ -4708,7 +4725,7 @@ void lasertrap_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 	{
 		ent->health = ent->max_health;// restore health
 		other->client->pers.inventory[power_cube_index] -= 5;
-		gi.cprintf(other, PRINT_HIGH, "Laser trap repaired (%d/%dh).\n", ent->health, ent->max_health);
+		safe_cprintf(other, PRINT_HIGH, "Laser trap repaired (%d/%dh).\n", ent->health, ent->max_health);
 		gi.sound(other, CHAN_VOICE, gi.soundindex("weapons/repair.wav"), 1, ATTN_NORM, 0);
 		ent->monsterinfo.regen_delay1 = level.framenum + 20;// delay before we can rearm
 	}
@@ -4774,7 +4791,7 @@ void Cmd_Detector_f (edict_t *ent)
 
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "All detectors removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All detectors removed.\n");
 		detector_removeall(ent);
 		lasertrap_removeall(ent, true);//4.4 Talent: Alarm
 		return;
@@ -4798,13 +4815,13 @@ void Cmd_Detector_f (edict_t *ent)
 
 	if (ent->num_detectors >= DETECTOR_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You've reached the maximum number of detectors (%d)\n", DETECTOR_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You've reached the maximum number of detectors (%d)\n", DETECTOR_MAX_COUNT);
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -4822,7 +4839,7 @@ void Cmd_LaserTrap_f (edict_t *ent)
 
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "All detectors and laser traps removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All detectors and laser traps removed.\n");
 		detector_removeall(ent);
 		lasertrap_removeall(ent, false);
 		return;
@@ -4833,13 +4850,13 @@ void Cmd_LaserTrap_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade laser trap before you can use it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade laser trap before you can use it.\n");
 		return;
 	}
 
 	if (ent->num_detectors >= DETECTOR_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You've reached the maximum number of laser traps.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You've reached the maximum number of laser traps.\n");
 		return;
 	}
 	
@@ -4892,14 +4909,14 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (other->monsterinfo.bonus_flags)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "Can't convert champion and unique monsters\n");
+				safe_cprintf(ent, PRINT_HIGH, "Can't convert champion and unique monsters\n");
 			return false;
 		}
 
 		if (ent->num_monsters + other->monsterinfo.control_cost > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "Insufficient monster slots for conversion\n");
+				safe_cprintf(ent, PRINT_HIGH, "Insufficient monster slots for conversion\n");
 			return false;
 		}
 
@@ -4932,7 +4949,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->skull && ent->skull->inuse)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You already have a hellspawn\n");
+				safe_cprintf(ent, PRINT_HIGH, "You already have a hellspawn\n");
 			return false;
 		}
 
@@ -4955,7 +4972,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_sentries + 2 > max_num + 1)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the sentry limit\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the sentry limit\n");
 			return false;
 		}
 
@@ -4978,7 +4995,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_sentries + 1 > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the sentry limit\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the sentry limit\n");
 			return false;
 		}
 
@@ -5001,7 +5018,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_spikeball + 1 > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spores\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spores\n");
 			return false;
 		}
 
@@ -5022,7 +5039,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_spikers + 1 > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spikers\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spikers\n");
 			return false;
 		}
 
@@ -5042,7 +5059,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_gasser + 1 > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of gassers\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of gassers\n");
 			return false;
 		}
 
@@ -5062,7 +5079,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 		if (ent->num_obstacle + 1 > max_num)
 		{
 			if (print && ent->client)
-				gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of obstacles\n");
+				safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of obstacles\n");
 			return false;
 		}
 
@@ -5096,11 +5113,11 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 	if (print)
 	{
 		if (old_owner->client)
-			gi.cprintf(old_owner, PRINT_HIGH, "Your %s was converted by %s (%d/%d)\n", 
+			safe_cprintf(old_owner, PRINT_HIGH, "Your %s was converted by %s (%d/%d)\n", 
 				V_GetMonsterName(other), ent->client->pers.netname, current_num, max_num);
 
 		if (ent->client)
-			gi.cprintf(ent, PRINT_HIGH, "A level %d %s was converted to your side for %.0f seconds\n", other->monsterinfo.level, V_GetMonsterName(other), duration);
+			safe_cprintf(ent, PRINT_HIGH, "A level %d %s was converted to your side for %.0f seconds\n", other->monsterinfo.level, V_GetMonsterName(other), duration);
 	}
 
 	if (duration > 0)
@@ -5156,7 +5173,7 @@ void Cmd_Conversion_f (edict_t *ent)
 		if ((chance > r) && ConvertOwner(ent, e, duration, true))
 			gi.sound(e, CHAN_ITEM, gi.soundindex("spells/conversion.wav"), 1, ATTN_NORM, 0);
 		else
-			gi.cprintf(ent, PRINT_HIGH, "Conversion failed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Conversion failed.\n");
 
 		ent->client->ability_delay = level.time + CONVERSION_DELAY;
 		ent->client->pers.inventory[power_cube_index] -= CONVERSION_COST;
@@ -5447,7 +5464,7 @@ void mirrored_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	if (self->activator && self->activator->inuse && self->deadflag != DEAD_DEAD)
 	{
 		if (self->activator->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your decoy was killed.\n");
+			safe_cprintf(self->activator, PRINT_HIGH, "Your decoy was killed.\n");
 		mirrored_removeall(self->activator);
 	}
 }
@@ -5505,7 +5522,7 @@ void Cmd_Antigrav_f (edict_t *ent)
 
 	if (ent->antigrav == true)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Antigrav disabled.\n");
 		ent->antigrav = false;
 		return;
 	}
@@ -5515,7 +5532,7 @@ void Cmd_Antigrav_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
 		return;
 	}
 
@@ -5523,7 +5540,7 @@ void Cmd_Antigrav_f (edict_t *ent)
 	if (que_findtype(ent->curses, NULL, AMNESIA) != NULL)
 		return;
 
-	gi.cprintf(ent, PRINT_HIGH, "Antigrav enabled.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Antigrav enabled.\n");
 	ent->antigrav= true;
 }
 
@@ -5819,7 +5836,7 @@ void Cmd_IceBolt_f (edict_t *ent, float skill_mult, float cost_mult)
 	// talent isn't upgraded
 	if (slvl < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must upgrade ice bolt before you can use it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You must upgrade ice bolt before you can use it.\n");
 		return;
 	}
 
@@ -6478,11 +6495,11 @@ void healer_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your healer was killed by %s\n", attacker->client->pers.netname);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your healer was killed by %s\n", attacker->client->pers.netname);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your healer was killed by a %s\n", V_GetMonsterName(attacker));
+			safe_cprintf(self->activator, PRINT_HIGH, "Your healer was killed by a %s\n", V_GetMonsterName(attacker));
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your healer was killed by a %s\n", attacker->classname);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your healer was killed by a %s\n", attacker->classname);
 	}
 
 	if (self->health <= self->gib_health || organ_explode(self))
@@ -6546,7 +6563,7 @@ void Cmd_Healer_f (edict_t *ent)
 	if (ent->healer && ent->healer->inuse)
 	{
 		organ_remove(ent->healer, true);
-		gi.cprintf(ent, PRINT_HIGH, "Healer removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Healer removed\n");
 		return;
 	}
 
@@ -6625,11 +6642,11 @@ void spiker_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spiker was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
 	}
 
 	if (self->health <= self->gib_health || organ_explode(self))
@@ -6746,7 +6763,7 @@ void spiker_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->activator && self->activator->inuse && self->activator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);	
 	}
 
@@ -6882,14 +6899,14 @@ void Cmd_Spiker_f (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "spiker", true);
-		gi.cprintf(ent, PRINT_HIGH, "Spikers removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Spikers removed\n");
 		ent->num_spikers = 0;
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -6903,7 +6920,7 @@ void Cmd_Spiker_f (edict_t *ent)
 
 	if (ent->num_spikers >= SPIKER_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spikers (%d)\n", SPIKER_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spikers (%d)\n", SPIKER_MAX_COUNT);
 		return;
 	}
 
@@ -6921,7 +6938,7 @@ void Cmd_Spiker_f (edict_t *ent)
 	spiker->monsterinfo.attack_finished = level.time + 2.0;
 	spiker->monsterinfo.cost = cost;
 
-	gi.cprintf(ent, PRINT_HIGH, "Spiker created (%d/%d)\n", ent->num_spikers, SPIKER_MAX_COUNT);
+	safe_cprintf(ent, PRINT_HIGH, "Spiker created (%d/%d)\n", ent->num_spikers, SPIKER_MAX_COUNT);
 
 	ent->client->ability_delay = level.time + SPIKER_DELAY;
 	ent->client->pers.inventory[power_cube_index] -= cost;
@@ -6932,9 +6949,9 @@ void Cmd_Spiker_f (edict_t *ent)
 }
 
 #define OBSTACLE_INITIAL_HEALTH			0		
-#define OBSTACLE_ADDON_HEALTH			200
+#define OBSTACLE_ADDON_HEALTH			145
 #define OBSTACLE_INITIAL_DAMAGE			0
-#define OBSTACLE_ADDON_DAMAGE			50	
+#define OBSTACLE_ADDON_DAMAGE			40	
 #define OBSTACLE_COST					25
 #define OBSTACLE_DELAY					0.5
 
@@ -6974,11 +6991,11 @@ void obstacle_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your obstacle was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
 	}
 
 	if (self->health <= self->gib_health || organ_explode(self))
@@ -7192,14 +7209,14 @@ void Cmd_Obstacle_f (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "obstacle", true);
-		gi.cprintf(ent, PRINT_HIGH, "Obstacles removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Obstacles removed\n");
 		ent->num_obstacle = 0;
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -7213,7 +7230,7 @@ void Cmd_Obstacle_f (edict_t *ent)
 
 	if (ent->num_obstacle >= OBSTACLE_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of obstacles (%d)\n", OBSTACLE_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of obstacles (%d)\n", OBSTACLE_MAX_COUNT);
 		return;
 	}
 
@@ -7230,7 +7247,7 @@ void Cmd_Obstacle_f (edict_t *ent)
 	gi.linkentity(obstacle);
 	obstacle->monsterinfo.cost = cost;
 
-	gi.cprintf(ent, PRINT_HIGH, "Obstacle created (%d/%d)\n", ent->num_obstacle,OBSTACLE_MAX_COUNT);
+	safe_cprintf(ent, PRINT_HIGH, "Obstacle created (%d/%d)\n", ent->num_obstacle,OBSTACLE_MAX_COUNT);
 
 	ent->client->pers.inventory[power_cube_index] -= cost;
 	ent->client->ability_delay = level.time + OBSTACLE_DELAY;
@@ -7618,11 +7635,11 @@ void gasser_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by %s (%d/%d remain)\n", attacker->client->pers.netname, cur, max);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by a %s (%d/%d remain)\n", V_GetMonsterName(attacker), cur, max);
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your gasser was killed by a %s (%d/%d remain)\n", attacker->classname, cur, max);
 	}
 
 	if (self->health <= self->gib_health || organ_explode(self))
@@ -7696,14 +7713,14 @@ void Cmd_Gasser_f (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "gasser", true);
-		gi.cprintf(ent, PRINT_HIGH, "Gassers removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Gassers removed\n");
 		ent->num_gasser = 0;
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -7717,7 +7734,7 @@ void Cmd_Gasser_f (edict_t *ent)
 
 	if (ent->num_gasser >= GASSER_MAX_COUNT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of gassers (%d)\n", GASSER_MAX_COUNT);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of gassers (%d)\n", GASSER_MAX_COUNT);
 		return;
 	}
 
@@ -7735,7 +7752,7 @@ void Cmd_Gasser_f (edict_t *ent)
 	gasser->monsterinfo.attack_finished = level.time + 1.0;
 	gasser->monsterinfo.cost = cost;
 
-	gi.cprintf(ent, PRINT_HIGH, "Gasser created (%d/%d)\n", ent->num_gasser, GASSER_MAX_COUNT);
+	safe_cprintf(ent, PRINT_HIGH, "Gasser created (%d/%d)\n", ent->num_gasser, GASSER_MAX_COUNT);
 
 	ent->client->pers.inventory[power_cube_index] -= cost;
 	ent->client->ability_delay = level.time + GASSER_DELAY;
@@ -7790,11 +7807,11 @@ void cocoon_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by %s\n", attacker->client->pers.netname);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by %s\n", attacker->client->pers.netname);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by a %s\n", V_GetMonsterName(attacker));
+			safe_cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by a %s\n", V_GetMonsterName(attacker));
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by a %s\n", attacker->classname);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your cocoon was killed by a %s\n", attacker->classname);
 	}
 
 	// restore cocooned entity
@@ -7884,7 +7901,7 @@ void cocoon_attack (edict_t *self)
 		self->enemy->cocoon_factor = factor;
 
 		if (self->enemy->client)
-			gi.cprintf(self->enemy, PRINT_HIGH, "You have gained a damage/defense bonus of +%.0f%c for %.0f seconds\n", 
+			safe_cprintf(self->enemy, PRINT_HIGH, "You have gained a damage/defense bonus of +%.0f%c for %.0f seconds\n", 
 				(factor * 100) - 100, '%', duration); 
 		
 		//4.4 give some health
@@ -7913,7 +7930,7 @@ void cocoon_attack (edict_t *self)
 	}
 
 	if (!(level.framenum % 10) && self->enemy->client)
-		gi.cprintf(self->enemy, PRINT_HIGH, "You will emerge from the cocoon in %d second(s)\n", 
+		safe_cprintf(self->enemy, PRINT_HIGH, "You will emerge from the cocoon in %d second(s)\n", 
 			(int)((self->monsterinfo.nextattack - level.framenum) / 10));
 
 	time = level.time + FRAMETIME;
@@ -7996,7 +8013,7 @@ void cocoon_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	other->flags |= FL_COCOONED;//4.4
 
 	if (other->client)
-		gi.cprintf(other, PRINT_HIGH, "You have been cocooned for %d seconds\n", (int)(frames / 10));
+		safe_cprintf(other, PRINT_HIGH, "You have been cocooned for %d seconds\n", (int)(frames / 10));
 }
 
 void cocoon_think (edict_t *self)
@@ -8112,7 +8129,7 @@ void Cmd_Cocoon_f (edict_t *ent)
 	if (ent->cocoon && ent->cocoon->inuse)
 	{
 		organ_remove(ent->cocoon, true);
-		gi.cprintf(ent, PRINT_HIGH, "Cocoon removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Cocoon removed\n");
 		return;
 	}
 
@@ -8132,7 +8149,7 @@ void Cmd_Cocoon_f (edict_t *ent)
 	gi.linkentity(cocoon);
 	cocoon->monsterinfo.cost = COCOON_COST;
 
-	gi.cprintf(ent, PRINT_HIGH, "Cocoon created\n");
+	safe_cprintf(ent, PRINT_HIGH, "Cocoon created\n");
 	gi.sound(cocoon, CHAN_VOICE, gi.soundindex("organ/organe3.wav"), 1, ATTN_STATIC, 0);
 
 	ent->client->pers.inventory[power_cube_index] -= COCOON_COST;
@@ -8294,13 +8311,13 @@ void Cmd_CreateLaserPlatform_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade laser platform talent before you can use it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade laser platform talent before you can use it.\n");
 		return;
 	}
 
 	if (*cubes < LASERPLATFORM_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need %d more power cubes to use this ability.\n", (int)(LASERPLATFORM_COST - *cubes));
+		safe_cprintf(ent, PRINT_HIGH, "You need %d more power cubes to use this ability.\n", (int)(LASERPLATFORM_COST - *cubes));
 		return;
 	}
 
@@ -8520,24 +8537,24 @@ void Cmd_HolyGround_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
 		return;
 	}
 	if (ent->holyground && ent->holyground->inuse)
 	{
 		holyground_remove(ent, ent->holyground);
-		gi.cprintf(ent, PRINT_HIGH, "Holy ground removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Holy ground removed.\n");
 		return;
 	}
 	if (ent->client->ability_delay > level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
 			ent->client->ability_delay-level.time);
 		return;
 	}
 	if (ent->client->pers.inventory[power_cube_index] < HOLYGROUND_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
 			HOLYGROUND_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
@@ -8553,24 +8570,24 @@ void Cmd_UnHolyGround_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
 		return;
 	}
 	if (ent->holyground && ent->holyground->inuse)
 	{
 		holyground_remove(ent, ent->holyground);
-		gi.cprintf(ent, PRINT_HIGH, "Un-holy ground removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Un-holy ground removed.\n");
 		return;
 	}
 	if (ent->client->ability_delay > level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
 			ent->client->ability_delay-level.time);
 		return;
 	}
 	if (ent->client->pers.inventory[power_cube_index] < HOLYGROUND_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
 			HOLYGROUND_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
@@ -8589,25 +8606,25 @@ void Cmd_Purge_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade this talent before you can use it!\n");
 		return;
 	}
 	
 	if (ent->client->ability_delay > level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You must wait %.1f seconds before you can use this talent.\n", 
 			ent->client->ability_delay-level.time);
 		return;
 	}
 	if (ent->client->pers.inventory[power_cube_index] < PURGE_COST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "You need %d cubes before you can use this talent.\n", 
 			PURGE_COST-ent->client->pers.inventory[power_cube_index]);
 		return;
 	}
 
 	//Give them a short period of total immunity
-	ent->client->invincible_framenum = level.framenum + 4*talentLevel; //up to 2 seconds at level 5
+	ent->client->invincible_framenum = level.framenum + 3*talentLevel; //up to 2 seconds at level 5
 
 	//Give them a short period of curse immunity
 	ent->holywaterProtection = level.time + talentLevel; //up to 5 seconds at level 5

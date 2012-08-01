@@ -3075,7 +3075,7 @@ void spikeball_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->activator && self->activator->inuse && self->activator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);	
 	}
 
@@ -3105,11 +3105,11 @@ void spikeball_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 			attacker = attacker->owner;
 
 		if (attacker->client)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spore was killed by %s (%d remain)\n", attacker->client->pers.netname, cur);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spore was killed by %s (%d remain)\n", attacker->client->pers.netname, cur);
 		else if (attacker->mtype)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spore was killed by a %s (%d remain)\n", V_GetMonsterName(attacker), cur);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spore was killed by a %s (%d remain)\n", V_GetMonsterName(attacker), cur);
 		else
-			gi.cprintf(self->activator, PRINT_HIGH, "Your spore was killed by a %s (%d remain)\n", attacker->classname, cur);
+			safe_cprintf(self->activator, PRINT_HIGH, "Your spore was killed by a %s (%d remain)\n", attacker->classname, cur);
 	}
 
 	organ_remove(self, false);
@@ -3191,12 +3191,12 @@ void Cmd_TossSpikeball (edict_t *ent)
 		if (ent->spikeball_follow)
 		{
 			ent->spikeball_follow = false;
-			gi.cprintf(ent, PRINT_HIGH, "Spores will follow targets\n");
+			safe_cprintf(ent, PRINT_HIGH, "Spores will follow targets\n");
 		}
 		else
 		{
 			ent->spikeball_follow = true;
-			gi.cprintf(ent, PRINT_HIGH, "Spores will follow your crosshairs\n");
+			safe_cprintf(ent, PRINT_HIGH, "Spores will follow your crosshairs\n");
 		}
 		return;
 	}
@@ -3207,26 +3207,26 @@ void Cmd_TossSpikeball (edict_t *ent)
 		if (ent->spikeball_recall)
 		{
 			ent->spikeball_recall = false;
-			gi.cprintf(ent, PRINT_HIGH, "Spores recall disabled\n");
+			safe_cprintf(ent, PRINT_HIGH, "Spores recall disabled\n");
 		}
 		else
 		{
 			ent->spikeball_recall = true;
-			gi.cprintf(ent, PRINT_HIGH, "Spores recall enabled\n");
+			safe_cprintf(ent, PRINT_HIGH, "Spores recall enabled\n");
 		}
 		return;
 	}
 */
 	if (Q_strcasecmp (gi.args(), "help") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "syntax: spore [move|remove]\n");
+		safe_cprintf(ent, PRINT_HIGH, "syntax: spore [move|remove]\n");
 		return;
 	}
 
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "spikeball", true);
-		gi.cprintf(ent, PRINT_HIGH, "Spores removed\n");
+		safe_cprintf(ent, PRINT_HIGH, "Spores removed\n");
 		ent->num_spikeball = 0;
 		return;
 	}
@@ -3248,7 +3248,7 @@ void Cmd_TossSpikeball (edict_t *ent)
 
 	if (ent->num_spikeball >= max_count)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spores (%d)\n", ent->num_spikeball);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum amount of spores (%d)\n", ent->num_spikeball);
 		return;
 	}
 

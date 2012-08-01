@@ -163,7 +163,7 @@ void magmine_think (edict_t *self)
 	if (gi.pointcontents(self->s.origin) & CONTENTS_SOLID)
 	{
 		gi.dprintf("WARNING: A mag mine was removed from map due to invalid position.\n");
-		gi.cprintf(self->creator, PRINT_HIGH, "Your mag mine was removed.\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "Your mag mine was removed.\n");
 		self->creator->magmine = NULL;
 		G_FreeEdict(self);
 		return;
@@ -201,7 +201,7 @@ void magmine_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: magmine_die()\n");
 
-	gi.cprintf(self->creator, PRINT_HIGH, "Your mag mine was destroyed.\n");
+	safe_cprintf(self->creator, PRINT_HIGH, "Your mag mine was destroyed.\n");
 	self->creator->magmine = NULL;
 	//BecomeExplosion1(self);
 
@@ -294,7 +294,7 @@ void Cmd_SpawnMagmine_f (edict_t *ent)
 
 	if (ent->magmine && ent->magmine->inuse)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Removed mag mine.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Removed mag mine.\n");
 		BecomeExplosion1(ent->magmine);
 		ent->magmine = NULL;
 		return;
@@ -331,7 +331,7 @@ void brain_fire_beam (edict_t *self)
 	if (!V_CanUseAbilities(self, BEAM, BRAIN_BEAM_COST, false) // can we still use abilities?
 		|| (self->myskills.abilities[BEAM].charge < BRAIN_BEAM_COST)) // enough charge?
 	{
-		gi.cprintf(self, PRINT_HIGH, "Insufficient power.\n");
+		safe_cprintf(self, PRINT_HIGH, "Insufficient power.\n");
 		self->client->firebeam = false;
 		return;
 	}
@@ -388,7 +388,7 @@ void Cmd_FireBeam_f (edict_t *ent, int toggle)
 	if (ent->myskills.abilities[BEAM].charge >= BRAIN_BEAM_COST)
 		ent->client->firebeam = true;
 	else
-		gi.cprintf(ent, PRINT_HIGH, "Insufficient power.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Insufficient power.\n");
 }
 
 qboolean tentacle_findtarget (edict_t *self)
@@ -570,7 +570,7 @@ void Cmd_PlayerToBrain_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -590,7 +590,7 @@ void Cmd_PlayerToBrain_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 

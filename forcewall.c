@@ -106,7 +106,7 @@ void forcewall_regenerate (edict_t *self)
 	if ((self->health < self->max_health) && self->activator->client->pers.inventory[power_cube_index])
 	{
 		if ((self->health < 0.25*self->max_health) && !(level.framenum%20))
-			gi.cprintf(self->activator, PRINT_HIGH, "Wall is low on hp: %d/%d\n", self->health, self->max_health);
+			safe_cprintf(self->activator, PRINT_HIGH, "Wall is low on hp: %d/%d\n", self->health, self->max_health);
 		self->health += regen;
 		if (self->health > self->max_health)
 			self->health = self->max_health;
@@ -128,7 +128,7 @@ void forcewall_think(edict_t *self)
 	if ((self->removetime > 0) && (level.time > self->removetime))
 	{
 		if (self->activator && self->activator->inuse)
-			gi.cprintf(self->activator, PRINT_HIGH, "Your wall was removed from enemy territory.\n");
+			safe_cprintf(self->activator, PRINT_HIGH, "Your wall was removed from enemy territory.\n");
 		self->think = BecomeTE;
 		self->nextthink = level.time + FRAMETIME;
 		return;
@@ -138,7 +138,7 @@ void forcewall_think(edict_t *self)
 	if (!G_EntIsAlive(self->activator) || (level.framenum > self->count))
 	{
 		if (G_EntExists(self->activator))
-			gi.cprintf(self->activator, PRINT_HIGH, "Your wall faded away.\n");
+			safe_cprintf(self->activator, PRINT_HIGH, "Your wall faded away.\n");
 		BecomeTE(self);
 		return;
 	}
@@ -163,7 +163,7 @@ void forcewall_think(edict_t *self)
 		{
 			if (tr.ent->client && (tr.ent->client->respawn_time == level.time))
 			{
-				gi.cprintf(self->activator, PRINT_HIGH, "Your wall faded away because it was too close to a spawnpoint!\n");
+				safe_cprintf(self->activator, PRINT_HIGH, "Your wall faded away because it was too close to a spawnpoint!\n");
 				BecomeTE(self);
 				return;
 			}
@@ -176,7 +176,7 @@ void forcewall_think(edict_t *self)
 			self->health -= dmg;
 			if (self->health < 0)
 			{
-				gi.cprintf(self->activator, PRINT_HIGH, "Your wall has expired.\n");
+				safe_cprintf(self->activator, PRINT_HIGH, "Your wall has expired.\n");
 				self->think = BecomeTE;
 				self->nextthink = level.time + FRAMETIME;
 				return;
@@ -187,7 +187,7 @@ void forcewall_think(edict_t *self)
 	}
 
 	if (self->delay-10 == level.time)
-		gi.cprintf(self->activator, PRINT_HIGH, "Your wall will time-out in 10 seconds.\n");
+		safe_cprintf(self->activator, PRINT_HIGH, "Your wall will time-out in 10 seconds.\n");
 
 	self->nextthink = level.time + FRAMETIME;
 }
@@ -242,7 +242,7 @@ void wall_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	if (self->deadflag == DEAD_DEAD)
 		return;
 	if (G_EntExists(self->activator))
-		gi.cprintf(self->activator, PRINT_HIGH, "Your wall was destroyed.\n");
+		safe_cprintf(self->activator, PRINT_HIGH, "Your wall was destroyed.\n");
 	self->deadflag = DEAD_DEAD;
 	self->think = G_FreeEdict;
 	self->nextthink = level.time + FRAMETIME;
@@ -295,7 +295,7 @@ void SpawnForcewall(edict_t *player, int type)
 			|| (!strcmp(tr.ent->classname, "misc_teleporter_dest"))
 			|| (!strcmp(tr.ent->classname, "info_teleport_destination")))
 		{
-		  	gi.cprintf(player, PRINT_HIGH, "Forcewall is too close to a spawnpoint or flag.\nForcewall removed.\n");
+		  	safe_cprintf(player, PRINT_HIGH, "Forcewall is too close to a spawnpoint or flag.\nForcewall removed.\n");
 			G_FreeEdict(wall);
 		  	return;
 		}
@@ -331,7 +331,7 @@ void SpawnForcewall(edict_t *player, int type)
 			|| (!strcmp(tr.ent->classname, "misc_teleporter_dest"))
 			|| (!strcmp(tr.ent->classname, "info_teleport_destination")))
 		{
-		  	gi.cprintf (player, PRINT_HIGH, "Forcewall is too close to a spawnpoint or flag.\nForcewall removed.\n");
+		  	safe_cprintf (player, PRINT_HIGH, "Forcewall is too close to a spawnpoint or flag.\nForcewall removed.\n");
 			G_FreeEdict(wall);
 		  	return ;
 		 }
@@ -410,12 +410,12 @@ void ForcewallOff(edict_t *player)
   tr = gi.trace(start,NULL,NULL,point,player,MASK_SHOT);
   if(Q_stricmp(tr.ent->classname, "forcewall"))
   {
-    gi.cprintf(player,PRINT_HIGH,"Not a forcewall!\n");
+    safe_cprintf(player,PRINT_HIGH,"Not a forcewall!\n");
     return;
   }
   if(tr.ent->activator != player)
   {
-    gi.cprintf(player,PRINT_HIGH,"You don't own this forcewall, bub!\n");
+    safe_cprintf(player,PRINT_HIGH,"You don't own this forcewall, bub!\n");
     return;
   }
   G_FreeEdict(tr.ent);
@@ -439,7 +439,7 @@ void Cmd_Forcewall(edict_t *ent)
 	while((scan = G_Find(scan, FOFS(classname), "Forcewall")) != NULL) {
 		if (scan && scan->activator && scan->activator->client && (scan->activator == ent)) {
 			G_FreeEdict(scan);
-			gi.cprintf(ent, PRINT_HIGH, "Your forcewall was removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Your forcewall was removed.\n");
 			return;
 		} 
 	}
