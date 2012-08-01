@@ -83,7 +83,7 @@ void laser_remove (edict_t *self)
 	if (self->activator && self->activator->inuse)
 	{
 		self->activator->num_lasers--;
-		gi.cprintf(self->activator, PRINT_HIGH, "Laser destroyed. %d/%d remaining.\n", 
+		safe_cprintf(self->activator, PRINT_HIGH, "Laser destroyed. %d/%d remaining.\n", 
 			self->activator->num_lasers, MAX_LASERS);
 	}
 }
@@ -146,7 +146,7 @@ void laser_beam_think (edict_t *self)
 		// remove lasers near spawn positions
 		if (tr.ent->client && (tr.ent->client->respawn_time-1.5 > level.time))
 		{
-			gi.cprintf(self->activator, PRINT_HIGH, "Laser touched respawning player, so it was removed. (%d/%d remain)\n", self->activator->num_lasers, MAX_LASERS);
+			safe_cprintf(self->activator, PRINT_HIGH, "Laser touched respawning player, so it was removed. (%d/%d remain)\n", self->activator->num_lasers, MAX_LASERS);
 			laser_remove(self->creator);
 			return;
 		}
@@ -177,7 +177,7 @@ void laser_beam_think (edict_t *self)
 	if (damage && self->health < 1)
 	{
 		self->health = 0;
-		gi.cprintf(self->activator, PRINT_HIGH, "Laser emitter burned out.\n");
+		safe_cprintf(self->activator, PRINT_HIGH, "Laser emitter burned out.\n");
 	}
 
 	//gi.dprintf("%d/%d\n", self->health, self->max_health);
@@ -199,7 +199,7 @@ void laser_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *sur
 		other->client->pers.inventory[power_cube_index] -= 5;
 		ent->creator->monsterinfo.regen_delay1 = level.framenum + 20;
 		gi.sound(other, CHAN_VOICE, gi.soundindex("weapons/repair.wav"), 1, ATTN_NORM, 0);
-		gi.cprintf(other, PRINT_HIGH, "Emitter repaired. Maximum output: %d/%d damage.\n", ent->creator->health, ent->creator->max_health);
+		safe_cprintf(other, PRINT_HIGH, "Emitter repaired. Maximum output: %d/%d damage.\n", ent->creator->health, ent->creator->max_health);
 	}
 
 }
@@ -255,19 +255,19 @@ void SpawnLaser (edict_t *ent, int cost, float skill_mult, float delay_mult)
 
 	if (tr.fraction == 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Too far from wall.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Too far from wall.\n");
 		return;
 	}
 
 	if (NearbyLasers(ent, tr.endpos))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Too close to another laser.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Too close to another laser.\n");
 		return;
 	}
 
 	if (NearbyProxy(ent, tr.endpos))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Too close to a proxy grenade.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Too close to a proxy grenade.\n");
 		return;
 	}
 
@@ -340,7 +340,7 @@ void SpawnLaser (edict_t *ent, int cost, float skill_mult, float delay_mult)
 		cost *= 2;
 
 	ent->num_lasers++;
-	gi.cprintf(ent, PRINT_HIGH, "Laser built. You have %d/%d lasers.\n", ent->num_lasers, MAX_LASERS);
+	safe_cprintf(ent, PRINT_HIGH, "Laser built. You have %d/%d lasers.\n", ent->num_lasers, MAX_LASERS);
 	ent->client->pers.inventory[power_cube_index] -= cost;
 	ent->client->ability_delay = level.time + 0.5 * delay_mult;
 	ent->holdtime = level.time + 0.5 * delay_mult;
@@ -359,7 +359,7 @@ void Cmd_BuildLaser (edict_t *ent)
 	if (Q_strcasecmp (gi.args(), "remove") == 0)
 	{
 		RemoveLasers(ent);
-		gi.cprintf(ent, PRINT_HIGH, "All lasers removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "All lasers removed.\n");
 		return;
 	}
 
@@ -386,13 +386,13 @@ void Cmd_BuildLaser (edict_t *ent)
 
 	if (ent->num_lasers >= MAX_LASERS)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build any more lasers.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build any more lasers.\n");
 		return;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 

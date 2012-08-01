@@ -75,7 +75,7 @@ int p_berserk_melee (edict_t *self, vec3_t forward, vec3_t dir, int damage, int 
 	//gi.multicast (start, MULTICAST_PHS);
 	gi.unicast(self, true);
 
-	//gi.cprintf(self, PRINT_HIGH, "Attack\n");
+	//safe_cprintf(self, PRINT_HIGH, "Attack\n");
 
 	if (G_EntExists(tr.ent))
 	{
@@ -89,7 +89,7 @@ int p_berserk_melee (edict_t *self, vec3_t forward, vec3_t dir, int damage, int 
 		{
 			curse_add(tr.ent, self, BLEEDING, self->myskills.abilities[BERSERK].current_level, 10.0);
 			if (tr.ent->client)
-				gi.cprintf(tr.ent, PRINT_HIGH, "You are bleeding!\n");
+				safe_cprintf(tr.ent, PRINT_HIGH, "You are bleeding!\n");
 		}
 
 		return MELEE_HIT_ENT; // hit a damageable ent
@@ -314,7 +314,7 @@ void Cmd_PlayerToBerserk_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -331,7 +331,7 @@ void Cmd_PlayerToBerserk_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 

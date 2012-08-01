@@ -261,7 +261,7 @@ void BombArea (edict_t *ent, float skill_mult, float cost_mult)
 	// 3.5 don't allow bomb area to prevent lag
 	if (nolag->value)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Bomb area is temporarily disabled to prevent lag.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Bomb area is temporarily disabled to prevent lag.\n");
 		return;
 	}
 #endif
@@ -284,7 +284,7 @@ void BombArea (edict_t *ent, float skill_mult, float cost_mult)
 	}
 	else if (angles[PITCH] != CEILING_PITCH)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must look at a ceiling or floor to cast this spell.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You must look at a ceiling or floor to cast this spell.\n");
 		return;
 	}
 
@@ -367,7 +367,7 @@ void BombPerson (edict_t *target, edict_t *owner, float skill_mult)
 
 	gi.sound(target, CHAN_ITEM, gi.soundindex("spells/meteorlaunch.wav"), 1, ATTN_NORM, 0);
 	if ((target->client) && !(target->svflags & SVF_MONSTER))
-		gi.cprintf(target, PRINT_HIGH, "SOMEONE SET UP US THE BOMB !!\n");
+		safe_cprintf(target, PRINT_HIGH, "SOMEONE SET UP US THE BOMB !!\n");
 	//target->cursed |= CURSE_BOMBS;
 
 	bomb=G_Spawn();

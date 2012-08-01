@@ -406,7 +406,7 @@ void Cmd_Decoy_f (edict_t *ent)
 
 	if (MirroredEntitiesExist(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You already have decoys out!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You already have decoys out!\n");
 		return;
 	}
 

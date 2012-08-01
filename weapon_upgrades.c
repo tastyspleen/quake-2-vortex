@@ -86,7 +86,7 @@ void generalWeaponMenu_handler(edict_t *ent, int option)
 
     if (!(ent->myskills.weapons[WeaponIndex].mods[ModIndex].level < ent->myskills.weapons[WeaponIndex].mods[ModIndex].soft_max))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the maximum upgrade level in %s %s (%d).\n",
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum upgrade level in %s %s (%d).\n",
 			GetWeaponString(WeaponIndex), GetModString(WeaponIndex,ModIndex), 
 			ent->myskills.weapons[WeaponIndex].mods[ModIndex].soft_max);
 		return;
@@ -94,7 +94,7 @@ void generalWeaponMenu_handler(edict_t *ent, int option)
 
 	if (ent->myskills.weapon_points < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You are out of weapon points.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You are out of weapon points.\n");
 		closemenu(ent);
 		return;
 	}
@@ -103,7 +103,7 @@ void generalWeaponMenu_handler(edict_t *ent, int option)
 	ent->myskills.weapons[WeaponIndex].mods[ModIndex].level++;
 	ent->myskills.weapon_points--;
 
-	gi.cprintf(ent, PRINT_HIGH, "%s %s upgraded to level %d.\n",	GetWeaponString(WeaponIndex),GetModString(WeaponIndex,ModIndex), 
+	safe_cprintf(ent, PRINT_HIGH, "%s %s upgraded to level %d.\n",	GetWeaponString(WeaponIndex),GetModString(WeaponIndex,ModIndex), 
 		ent->myskills.weapons[WeaponIndex].mods[ModIndex].current_level);
     
     //Refresh the menu
@@ -180,7 +180,7 @@ void OpenWeaponUpgradeMenu (edict_t *ent, int lastline)
 
 	if (ent->myskills.class_num == CLASS_POLTERGEIST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't upgrade weapons.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't upgrade weapons.\n");
 		return;
 	}
 

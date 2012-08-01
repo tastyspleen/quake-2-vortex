@@ -191,7 +191,7 @@ void Cmd_PlayerToCacodemon_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -201,7 +201,7 @@ void Cmd_PlayerToCacodemon_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 
@@ -220,7 +220,7 @@ void Cmd_PlayerToCacodemon_f (edict_t *ent)
 	tr = gi.trace(ent->s.origin, mins, maxs, ent->s.origin, ent, MASK_SHOT);
 	if (tr.fraction < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to morph.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to morph.\n");
 		return;
 	}
 
@@ -356,7 +356,7 @@ void EatCorpses (edict_t *ent)
 			{
 				curse_add(tr.ent, ent, BLEEDING, 30, 10.0);
 				if (tr.ent->client)
-					gi.cprintf(tr.ent, PRINT_HIGH, "You have been fatally wounded!\n");
+					safe_cprintf(tr.ent, PRINT_HIGH, "You have been fatally wounded!\n");
 			}
 		}
 

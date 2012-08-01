@@ -586,7 +586,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 			}
 
 			if (ent->client && printMsg)
-				gi.cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", target->classname, 
+				safe_cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", target->classname, 
 					ent->num_monsters, MAX_MONSTERS);
 		}
 	}
@@ -661,7 +661,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		}
 
 		if (ent->client && printMsg)
-			gi.cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", ent->num_monsters, MAX_MONSTERS);
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", ent->num_monsters, MAX_MONSTERS);
 	}
 	else if (!strcmp(target->classname, "spiker"))
 	{
@@ -691,7 +691,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		organ_remove(target, false);
 
 		if (ent->client && printMsg)
-			gi.cprintf(ent, PRINT_HIGH, "Resurrected a spiker. (%d/%d)\n", ent->num_spikers, SPIKER_MAX_COUNT);
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected a spiker. (%d/%d)\n", ent->num_spikers, SPIKER_MAX_COUNT);
 	}
 	else if (!strcmp(target->classname, "obstacle"))
 	{
@@ -721,7 +721,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		organ_remove(target, false);
 
 		if (ent->client && printMsg)
-			gi.cprintf(ent, PRINT_HIGH, "Resurrected an obstacle. (%d/%d)\n", ent->num_obstacle, OBSTACLE_MAX_COUNT);
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected an obstacle. (%d/%d)\n", ent->num_obstacle, OBSTACLE_MAX_COUNT);
 	}
 	else if (!strcmp(target->classname, "gasser"))
 	{
@@ -751,7 +751,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		organ_remove(target, false);
 
 		if (ent->client && printMsg)
-			gi.cprintf(ent, PRINT_HIGH, "Resurrected a gasser. (%d/%d)\n", ent->num_gasser, GASSER_MAX_COUNT);
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected a gasser. (%d/%d)\n", ent->num_gasser, GASSER_MAX_COUNT);
 	}
 		
 }

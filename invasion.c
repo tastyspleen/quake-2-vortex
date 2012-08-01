@@ -180,7 +180,7 @@ void INV_AwardPlayers (void)
 		{
 			int fexp = V_AddFinalExp(player, points);
 			player->myskills.credits += credits;
-			gi.cprintf(player, PRINT_MEDIUM, "Earned %d exp and %d credits!\n", fexp, credits);
+			safe_cprintf(player, PRINT_MEDIUM, "Earned %d exp and %d credits!\n", fexp, credits);
 
 			if (player->client && player->client->pers.score) // we've been here for a while at least
 				num_winners++;
@@ -849,8 +849,8 @@ void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 		exp_points = V_AddFinalExp(player, exp_points);
 		player->myskills.credits += credits;
 
-		//gi.cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
-		gi.cprintf(player, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
+		//safe_cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
+		safe_cprintf(player, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
 			damage, (dmgmod * 100), '%', V_GetMonsterName(target), target->monsterinfo.level, exp_points, credits);
 	}
 }

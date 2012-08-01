@@ -471,8 +471,8 @@ void FindIdleObserver (edict_t *scanent)
 
 			if (!player->client->disconnect_time){
 				player->client->disconnect_time = level.time + 30;
-				gi.cprintf(player, PRINT_HIGH, "WARNING: Server is nearly full. Idle-timeout restrictions are in effect.\n");
-				gi.cprintf(player, PRINT_HIGH, "You have 30 seconds to start your reign.\n");
+				safe_cprintf(player, PRINT_HIGH, "WARNING: Server is nearly full. Idle-timeout restrictions are in effect.\n");
+				safe_cprintf(player, PRINT_HIGH, "You have 30 seconds to start your reign.\n");
 				break;
 			}
 
@@ -646,6 +646,11 @@ int LowestLevelPlayer(void)
 
 		if (!player->inuse)
 			continue;
+	
+		//decino: don't check for bot levels because this also calculates theirs!
+		if (player->ai.is_bot)
+			continue;
+
 		if (G_IsSpectator(player))
 			continue;
 		if (player->myskills.boss)
@@ -743,6 +748,10 @@ int AveragePlayerLevel (void)
 			continue;
 		if (player->myskills.boss)
 			continue;
+
+		if (player->ai.is_bot) // az: heheh
+			continue;
+
 		players++;
 		levels += player->myskills.level;
 	//	gi.dprintf("%s level %d added, total %d\n", player->client->pers.netname,

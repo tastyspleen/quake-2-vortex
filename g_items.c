@@ -789,7 +789,7 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 
 	if (pslevel < 1)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You need to upgrade Power Armor!\n");
+		safe_cprintf (ent, PRINT_HIGH, "You need to upgrade Power Armor!\n");
 		return;
 	}
 
@@ -803,7 +803,7 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 		index = ITEM_INDEX(FindItem("cells"));
 		if (!ent->client->pers.inventory[index])
 		{
-			gi.cprintf (ent, PRINT_HIGH, "No cells for power armor.\n");
+			safe_cprintf (ent, PRINT_HIGH, "No cells for power armor.\n");
 			return;
 		}
 		ent->flags |= FL_POWER_ARMOR;
@@ -959,27 +959,27 @@ qboolean CanTball (edict_t *ent, qboolean print)
 	if (ctf->value)
 	{
 		if (print)
-			gi.cprintf(ent, PRINT_HIGH, "Tball is disabled in CTF mode.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Tball is disabled in CTF mode.\n");
 		return false;
 	}
 
 	if (level.time < pregame_time->value) 
 	{
 		if (print)
-			gi.cprintf(ent, PRINT_HIGH, "You can't use this ability in pre-game!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't use this ability in pre-game!\n");
 		return false;
 	}
 
 	if (que_typeexists(ent->curses, 0))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use tballs while cursed!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't use tballs while cursed!\n");
 		return false;
 	}
 
 	if (level.time < ent->client->tball_delay) 
 	{
 		if (print)
-			gi.cprintf(ent, PRINT_HIGH, "You can't use tballs for another %2.1f seconds\n", 
+			safe_cprintf(ent, PRINT_HIGH, "You can't use tballs for another %2.1f seconds\n", 
 				(ent->client->tball_delay - level.time));
 		return false;
 	}
@@ -987,14 +987,14 @@ qboolean CanTball (edict_t *ent, qboolean print)
 	if (!pvm->value && !invasion->value && !V_MatchPlayerPrefs(ent, 1, 0)&& (ent->myskills.streak >= SPREE_START))
 	{
 		if (print)
-			gi.cprintf (ent, PRINT_HIGH, "You can't use tballs when you're on a spree\n");
+			safe_cprintf (ent, PRINT_HIGH, "You can't use tballs when you're on a spree\n");
 		return false;
 	}
 
 	if (HasFlag(ent))
 	{
 		if (print)
-			gi.cprintf(ent, PRINT_HIGH, "You can't use tballs while carrying the flag\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't use tballs while carrying the flag\n");
 		return false;
 	}
 
@@ -1111,7 +1111,7 @@ void Use_Tball_Self(edict_t *ent, gitem_t *item)
 	if (ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)] < 1)
 	{
 		if (!(ent->svflags & SVF_MONSTER))
-			gi.cprintf (ent, PRINT_HIGH, "Out of item: tball\n");
+			safe_cprintf (ent, PRINT_HIGH, "Out of item: tball\n");
 		return;
 	}
 
@@ -1123,7 +1123,7 @@ void Use_Tball_Self(edict_t *ent, gitem_t *item)
 	ent->myskills.inventory[ITEM_INDEX(Fdi_TBALL)] = ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)];
 	
 	if (!(ent->svflags & SVF_MONSTER))
-		gi.cprintf(ent, PRINT_HIGH, "You have %d tballs left.\n", ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)]);
+		safe_cprintf(ent, PRINT_HIGH, "You have %d tballs left.\n", ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)]);
 
 	//ent->client->tball_delay = level.time + 4.0;
 	Tball_Aura(ent, ent->s.origin);
@@ -1141,14 +1141,14 @@ void Use_Tball(edict_t *ent, gitem_t *item)
 	if (ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)] < 1)
 	{
 		if (!(ent->svflags & SVF_MONSTER))
-			gi.cprintf (ent, PRINT_HIGH, "Out of item: tball\n");
+			safe_cprintf (ent, PRINT_HIGH, "Out of item: tball\n");
 		return;
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ent->myskills.inventory[ITEM_INDEX(Fdi_TBALL)] = ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)];
 
-	gi.cprintf(ent, PRINT_HIGH, "You have %d tballs left.\n", ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)]);
+	safe_cprintf(ent, PRINT_HIGH, "You have %d tballs left.\n", ent->client->pers.inventory[ITEM_INDEX(Fdi_TBALL)]);
 
 	VectorSet(offset, 8, 8, ent->viewheight-8);
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
@@ -1174,7 +1174,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	if (pm && (other->mtype != BOSS_TANK) && (other->mtype != BOSS_MAKRON))
 		other = other->activator;
 //GHz END
-	if (strcmp(other->classname, "player"))
+	if (strcmp(other->classname, "player") && strcmp(other->classname, "dmbot"))
 		return;
 	if (ent->classname[0] == 'R')
 	{
@@ -1918,10 +1918,10 @@ always owned, never in the world
 		0,
 		NULL,
 		IT_WEAPON,
-//		WEAP_BLASTER,
 		NULL,
 		0,
-/* precache */ "weapons/blastf1a.wav misc/lasfly.wav a_blaster_hud"
+/* precache */ "weapons/blastf1a.wav misc/lasfly.wav a_blaster_hud",
+		WEAP_BLASTER
 	},
 
 /*QUAKED weapon_shotgun (.3 .3 1) (-16 -16 -16) (16 16 16)	7
@@ -1941,10 +1941,10 @@ always owned, never in the world
 		1,
 		"Shells",
 		IT_WEAPON,
-//		WEAP_SHOTGUN,
 		NULL,
 		0,
-/* precache */ "weapons/shotgf1b.wav weapons/shotgr1b.wav a_shells_hud"
+/* precache */ "weapons/shotgf1b.wav weapons/shotgr1b.wav a_shells_hud",
+		WEAP_SHOTGUN
 	},
 
 /*QUAKED weapon_supershotgun (.3 .3 1) (-16 -16 -16) (16 16 16)	8
@@ -1964,10 +1964,10 @@ always owned, never in the world
 		2,
 		"Shells",
 		IT_WEAPON,
-//		WEAP_SUPERSHOTGUN,
 		NULL,
 		0,
-/* precache */ "weapons/sshotf1b.wav a_shells_hud"
+/* precache */ "weapons/sshotf1b.wav a_shells_hud",
+		WEAP_SUPERSHOTGUN
 	},
 
 /*QUAKED weapon_machinegun (.3 .3 1) (-16 -16 -16) (16 16 16)	9
@@ -1987,10 +1987,10 @@ always owned, never in the world
 		1,
 		"Bullets",
 		IT_WEAPON,
-//		WEAP_MACHINEGUN,
 		NULL,
 		0,
-/* precache */ "weapons/machgf1b.wav weapons/machgf2b.wav weapons/machgf3b.wav weapons/machgf4b.wav weapons/machgf5b.wav a_bullets_hud"
+/* precache */ "weapons/machgf1b.wav weapons/machgf2b.wav weapons/machgf3b.wav weapons/machgf4b.wav weapons/machgf5b.wav a_bullets_hud",
+		WEAP_MACHINEGUN
 	},
 
 /*QUAKED weapon_chaingun (.3 .3 1) (-16 -16 -16) (16 16 16)	10
@@ -2010,10 +2010,10 @@ always owned, never in the world
 		1,
 		"Bullets",
 		IT_WEAPON,
-//		WEAP_CHAINGUN,
 		NULL,
 		0,
-/* precache */ "weapons/chngnu1a.wav weapons/chngnl1a.wav weapons/machgf3b.wav` weapons/chngnd1a.wav a_bullets_hud"
+/* precache */ "weapons/chngnu1a.wav weapons/chngnl1a.wav weapons/machgf3b.wav` weapons/chngnd1a.wav a_bullets_hud",
+		WEAP_CHAINGUN
 	},
 
 /*QUAKED weapon_grenadelauncher (.3 .3 1) (-16 -16 -16) (16 16 16)	11
@@ -2035,7 +2035,8 @@ always owned, never in the world
 		IT_WEAPON,
 		NULL,
 		0,
-/* precache */ "models/objects/grenade/tris.md2 weapons/grenlf1a.wav weapons/grenlr1b.wav weapons/grenlb1b.wav a_grenades_hud"
+/* precache */ "models/objects/grenade/tris.md2 weapons/grenlf1a.wav weapons/grenlr1b.wav weapons/grenlb1b.wav a_grenades_hud",
+		WEAP_GRENADES
 	},
 
 /*QUAKED weapon_rocketlauncher (.3 .3 1) (-16 -16 -16) (16 16 16)	12
@@ -2081,7 +2082,8 @@ always owned, never in the world
 		IT_WEAPON,
 		NULL,
 		0,
-/* precache */ "weapons/hyprbu1a.wav weapons/hyprbl1a.wav weapons/hyprbf1a.wav weapons/hyprbd1a.wav misc/lasfly.wav a_cells_hud"
+/* precache */ "weapons/hyprbu1a.wav weapons/hyprbl1a.wav weapons/hyprbf1a.wav weapons/hyprbd1a.wav misc/lasfly.wav a_cells_hud",
+		WEAP_HYPERBLASTER
 	},
 // END 14-APR-98
 
@@ -2106,7 +2108,8 @@ always owned, never in the world
 		IT_WEAPON,
 		NULL,
 		0,
-/* precache */ "weapons/rg_hum.wav a_slugs_hud"
+/* precache */ "weapons/rg_hum.wav a_slugs_hud",
+		WEAP_RAILGUN
 	},
 
 	{
@@ -2126,7 +2129,8 @@ always owned, never in the world
 		IT_WEAPON,
 		NULL,
 		0,
-		"weapons/sgun1.wav a_shells_hud"
+		"weapons/sgun1.wav a_shells_hud",
+		WEAP_20MM
 	},
 
 /*QUAKED weapon_bfg (.3 .3 1) (-16 -16 -16) (16 16 16)	15
@@ -2149,7 +2153,8 @@ always owned, never in the world
 
 		NULL,
 		0,
-/* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav a_cells_hud"
+/* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav a_cells_hud",
+		WEAP_BFG
 	},
 
 	//K03 Begin
@@ -2174,8 +2179,8 @@ always owned, never in the world
      IT_WEAPON|IT_STAY_COOP,
      NULL,
      0,
-      "misc/power1.wav misc/fhit3.wav" //The sound of the blaster
-                                                         //This is precached
+      "misc/power1.wav misc/fhit3.wav", //The sound of the blaster
+	WEAP_SWORD                         //This is precached
      },
 	 //K03 End
 
@@ -2850,7 +2855,7 @@ warehouse circuits
 /* width */		3,
 		0,
 		NULL,
-		0,
+		IT_HEALTH,
 		NULL,
 		0,
 /* precache */ ""
@@ -2930,7 +2935,7 @@ warehouse circuits
 /* width */		2,
 		0,
 		NULL,
-		0,
+		IT_FLAG,
 		NULL,
 		0,
 /* precache */ "ctf/flagcap.wav"
@@ -2949,7 +2954,7 @@ warehouse circuits
 /* width */		2,
 		0,
 		NULL,
-		0,
+		IT_FLAG,
 		NULL,
 		0,
 /* precache */ "ctf/flagcap.wav"
@@ -2968,12 +2973,30 @@ warehouse circuits
 /* width */		2,
 		0,
 		NULL,
-		0,
+		IT_FLAG,
 		NULL,
 		0,
 /* precache */ "ctf/flagcap.wav"
 	},
-
+	{
+		"item_flaghw",
+		hw_pickupflag,
+		NULL,
+		hw_dropflag,
+		NULL,
+		NULL,//"world/klaxon2.wav",
+		"models/halo/tris.md2", EF_PLASMA,
+		NULL,
+/* icon */		"k_redkey",
+/* pickup */	"Halo",
+/* width */		2,
+		0,
+		NULL,
+		IT_FLAG,
+		NULL,
+		0,
+/* precache */ "ctf/flagcap.wav"
+	},
 	{
 		"tech_resistance",								// classname
 		tech_pickup,									// pick-up function
@@ -2988,7 +3011,7 @@ warehouse circuits
 		2,												// width
 		0,												// respawn delay
 		NULL,
-		0,
+		IT_TECH,
 		NULL,
 		0,
 		"ctf/tech1.wav"									// precache sound
@@ -3008,7 +3031,7 @@ warehouse circuits
 		2,												// width
 		0,												// respawn delay
 		NULL,
-		0,
+		IT_TECH,
 		NULL,
 		0,
 		"ctf/tech2.wav"									// precache sound
@@ -3028,7 +3051,7 @@ warehouse circuits
 		2,												// width
 		0,												// respawn delay
 		NULL,
-		0,
+		IT_TECH,
 		NULL,
 		0,
 		"ctf/tech4.wav"									// precache sound
@@ -3048,7 +3071,7 @@ warehouse circuits
 		2,												// width
 		0,												// respawn delay
 		NULL,
-		0,
+		IT_TECH,
 		NULL,
 		0,
 		"ctf/tech3.wav"									// precache sound

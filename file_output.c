@@ -27,6 +27,9 @@ void SaveCharacter (edict_t *ent)
 	if (!ent || !ent->inuse || !ent->client || G_IsSpectator(ent))
 		return;
 
+	if (ent->ai.is_bot) // don't save bots lol
+		return;
+
 	if (debuginfo->value)
 		gi.dprintf("%s just called SaveMyCharacter()\n", ent->client->pers.netname);
 

@@ -5,6 +5,12 @@ void InitializeGDS(void);
 //#define LOCK_DEFAULTS 1
 //K03 End
 
+cvar_t				*bot_showpath;
+cvar_t				*bot_showcombat;
+cvar_t				*bot_showsrgoal;
+cvar_t				*bot_showlrgoal;
+cvar_t				*bot_debugmonster;
+
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
@@ -56,7 +62,8 @@ field_t fields[] = {
 	{"maxyaw", STOFS(maxyaw), F_FLOAT, FFL_SPAWNTEMP},
 	{"minpitch", STOFS(minpitch), F_FLOAT, FFL_SPAWNTEMP},
 	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
-	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP}
+	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
+	//{"weight", STOFS(weight), F_INT, FFL_SPAWNTEMP}//JABot
 };
 
 // -------- just for savegames ----------
@@ -256,6 +263,8 @@ void InitGame (void)
 	killboxspawn = gi.cvar("killboxatspawn", "1", 0);
 	save_path = gi.cvar("save_path", va("%s\\characters", gamedir->string), CVAR_LATCH);
 	particles = gi.cvar ("particles", "0", 0);
+	// az 3.0
+	hw = gi.cvar("hw", "0", CVAR_LATCH);
 
 	sentry_lev1_model = gi.cvar ("sentry_lev1_model", "models/sentry/turret1/tris.md2", CVAR_LATCH);
 	sentry_lev2_model = gi.cvar ("sentry_lev2_model", "models/sentry/turret2/tris.md2", CVAR_LATCH);
@@ -337,23 +346,23 @@ void InitGame (void)
 	gds_path = gi.cvar ("gds_path", "0", CVAR_LATCH);
 	gds_exe = gi.cvar ("gds_exe", "0", CVAR_LATCH);
 	game_path = gi.cvar ("game_path", "0", CVAR_LATCH);
-	pregame_time = gi.cvar ("pregame_time", "60.0", CVAR_SERVERINFO);
+	pregame_time = gi.cvar ("pregame_time", "60.0", 0);
 #ifndef LOCK_DEFAULTS
 	nextlevel_mult = gi.cvar("nextlevel_mult","1.5",CVAR_LATCH);
 	if (nextlevel_mult->value < 1.5)
 		nextlevel_mult->value = 1.5;
 
-	start_level = gi.cvar("start_level","0",CVAR_SERVERINFO | CVAR_LATCH);
+	start_level = gi.cvar("start_level","0", CVAR_LATCH);
 	start_nextlevel = gi.cvar("start_nextlevel","1000",CVAR_LATCH);
 
-	invasion_enabled = gi.cvar ("invasion_enabled", "1", CVAR_SERVERINFO | CVAR_LATCH);
+	invasion_enabled = gi.cvar ("invasion_enabled", "1", CVAR_LATCH);
 	vrx_pointmult = gi.cvar ("vrx_pointmult", "1.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
 	vrx_pvppointmult = gi.cvar ("vrx_pvppointmult", "1.0", 0); // 1.5 is TOO much.
 	vrx_pvmpointmult = gi.cvar ("vrx_pvmpointmult", "1.0", 0);
 	vrx_sub10mult = gi.cvar ("vrx_sub10mult", "1.5", 0);
 	vrx_over10mult = gi.cvar ("vrx_over10mult", "0.75", 0);
 
-	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_SERVERINFO/* | CVAR_LATCH*/);
+	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", 0/* | CVAR_LATCH*/);
 	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "3.0", 0);
 	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "1.0", 0);
 	adminpass = gi.cvar ("adminpass", "", CVAR_ARCHIVE);
@@ -404,7 +413,7 @@ void InitGame (void)
 	//3.0 Load the custom map lists
 	if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) && v_LoadMapList(MAPMODE_INV)
 		&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) && v_LoadMapList(MAPMODE_FFA)
-		&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH))
+		&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH) && v_LoadMapList(MAPMODE_VHW))
 		gi.dprintf("INFO: Vortex Custom Map Lists loaded successfully\n");
 	else
 		gi.dprintf("WARNING: Error loading custom map lists\n");
@@ -417,6 +426,8 @@ void InitGame (void)
 
 	MonstersInUse=false; // Set this value here..
 	InitializeTeamNumbers(); // for allies
+
+	AI_Init();
 
 	//K03 End
 

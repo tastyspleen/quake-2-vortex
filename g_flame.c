@@ -41,14 +41,14 @@ void fire_think (edict_t *self)
 			if(self->enemy->myskills.items[i].quantity == 0)
 			{
 				int count = 0;
-				gi.cprintf(self->enemy, PRINT_HIGH, "Your burn resistant clothing has been destroyed!\n");
+				safe_cprintf(self->enemy, PRINT_HIGH, "Your burn resistant clothing has been destroyed!\n");
 				//erase the item
 				V_ItemClear(&self->enemy->myskills.items[i]);
 				//Tell the user if they have any left
 				for (i = 3; i < MAX_VRXITEMS; ++i)
 					if (self->enemy->myskills.items[i].itemtype & ITEM_FIRE_RESIST)
 						count++;
-				if (count) gi.cprintf(self->enemy, PRINT_HIGH, "You have %d left.\n", count);
+				if (count) safe_cprintf(self->enemy, PRINT_HIGH, "You have %d left.\n", count);
 			}
 		}
 		//water did it, so play a hissing dound

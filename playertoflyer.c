@@ -422,7 +422,7 @@ void Cmd_PlayerToFlyer_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -441,7 +441,7 @@ void Cmd_PlayerToFlyer_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 

@@ -688,7 +688,7 @@ void p_tank_spawn (edict_t *ent, int cost)
 	tr = gi.trace(ent->s.origin, boxmin, boxmax, ent->s.origin, ent, MASK_SHOT);
 	if (tr.fraction<1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
 		return;
 	}
 
@@ -800,9 +800,9 @@ void Cmd_PlayerToTank_f (edict_t *ent)
 		if (que_typeexists(ent->curses, 0))
 		{
 			if (ent->client) // send message directly to client
-				gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			else if (ent->owner && ent->owner->inuse && ent->owner->client) // send message to pilot
-				gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -832,7 +832,7 @@ void Cmd_PlayerToTank_f (edict_t *ent)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 

@@ -109,17 +109,17 @@ void GDS_LoadPlayer (edict_t *ent)
 	{
 		// certain characters have special meaning with Windows programs, and cannot be used
 		// FIXME: update V_FormatFileName() with these invalid characters!
-		gi.cprintf(ent, PRINT_HIGH, "Name contains invalid character(s). Please change your name.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Name contains invalid character(s). Please change your name.\n");
 		return;
 	}
 
 	if (ent->client->resp.gds_downloading || ent->client->resp.gds_testing)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Please wait for GDS.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Please wait for GDS.\n");
 		return;
 	}
 
-	gi.cprintf(ent, PRINT_HIGH, "Testing GDS connection...\n");
+	safe_cprintf(ent, PRINT_HIGH, "Testing GDS connection...\n");
 	GDS_GetTestFile();
 	ent->client->resp.gds_testing = true;
 	ent->client->resp.gds_timeout = level.time + GDS_TIMEOUT;
@@ -131,7 +131,7 @@ void GDS_GetPlayerFile (edict_t *ent)
 	//gi.dprintf("INFO: Downloading %s\n", V_FormatFileName(ent->client->pers.netname));
 	GDS_FileExists(V_FormatFileName(ent->client->pers.netname), true);
 
-	gi.cprintf(ent, PRINT_HIGH, "Loading character file from GDS...\n");
+	safe_cprintf(ent, PRINT_HIGH, "Loading character file from GDS...\n");
 	GDS_FileIO(V_FormatFileName(ent->client->pers.netname), 1);
 	ent->client->resp.gds_downloading = true;
 }
@@ -200,7 +200,7 @@ void GDS_CheckPlayer (edict_t *ent)
 	{
 		if (level.time > ent->client->resp.gds_timeout)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Unable to connect to GDS. Try again later.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Unable to connect to GDS. Try again later.\n");
 			gi.dprintf("WARNING: GDS download timed out\n");
 
 			// let them try again later

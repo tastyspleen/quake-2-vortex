@@ -970,7 +970,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 						gi.sound(targ, CHAN_ITEM, gi.soundindex("spells/blue3.wav"), 1, ATTN_NORM, 0);
 					
 					if (targ->client)
-						gi.cprintf(targ, PRINT_HIGH, "You have been chilled for 10 seconds\n");
+						safe_cprintf(targ, PRINT_HIGH, "You have been chilled for 10 seconds\n");
 				}
 
 				targ->dim_vision_delay = level.framenum + 10;
@@ -1156,7 +1156,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 				float duration = FURY_DURATION_BASE + FURY_DURATION_BONUS * ability->current_level;
 
 				if(attacker->client)
-					gi.cprintf(attacker, PRINT_HIGH, "For the next %0.1f seconds you will become the fury.\n", duration);
+					safe_cprintf(attacker, PRINT_HIGH, "For the next %0.1f seconds you will become the fury.\n", duration);
 
 				gi.sound (attacker, CHAN_AUTO, gi.soundindex("ctf/tech2x.wav"), 1, ATTN_NORM, 0);
 

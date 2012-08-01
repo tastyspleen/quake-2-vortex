@@ -45,7 +45,7 @@ int melee_attack (edict_t *self, int damage, int range)
 		{
 			curse_add(tr.ent, self, BLEEDING, self->myskills.abilities[MUTANT].current_level, 10.0);
 			if (tr.ent->client)
-				gi.cprintf(tr.ent, PRINT_HIGH, "You are bleeding!\n");
+				safe_cprintf(tr.ent, PRINT_HIGH, "You are bleeding!\n");
 		}
 
 		return MELEE_HIT_ENT; // hit a damageable ent
@@ -278,7 +278,7 @@ void Cmd_PlayerToMutant_f (edict_t *ent)
 
 		if (que_typeexists(ent->curses, 0))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't morph while cursed!\n");
 			return;
 		}
 
@@ -297,7 +297,7 @@ void Cmd_PlayerToMutant_f (edict_t *ent)
 /*
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
 	}
 */
@@ -308,7 +308,7 @@ void Cmd_PlayerToMutant_f (edict_t *ent)
 	tr = gi.trace(ent->s.origin, boxmin, boxmax, ent->s.origin, ent, MASK_SHOT);
 	if (tr.fraction<1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Not enough room to morph!\n");
 		return;
 	}
 

@@ -482,7 +482,7 @@ void skull_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->activator && self->activator->inuse && self->activator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);
 	}
 
@@ -652,7 +652,7 @@ void skull_attackcmd (edict_t *self)
 	{
 		self->enemy = tr.ent;
 		self->monsterinfo.search_frames = 0;
-		gi.cprintf(self->activator, PRINT_HIGH, "Skull will attack target.\n");
+		safe_cprintf(self->activator, PRINT_HIGH, "Skull will attack target.\n");
 	}
 
 }
@@ -675,12 +675,12 @@ void Cmd_HellSpawn_f (edict_t *ent)
 		// toggle
 		if (!ent->skull->lockon)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Hellspawn recall enabled.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Hellspawn recall enabled.\n");
 			ent->skull->lockon = 1;
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Hellspawn recall disabled.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Hellspawn recall disabled.\n");
 			ent->skull->lockon = 0;
 		}
 		return;
@@ -695,11 +695,11 @@ void Cmd_HellSpawn_f (edict_t *ent)
 			if (ent->skull->health >= ent->skull->max_health)
 				ent->client->pers.inventory[power_cube_index] += ent->skull->monsterinfo.cost;
 			RemoveHellspawn(ent);
-			gi.cprintf(ent, PRINT_HIGH, "Hell spawn removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Hell spawn removed.\n");
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Conversion removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Conversion removed.\n");
 		}
 		return;
 	}
@@ -716,7 +716,7 @@ void Cmd_HellSpawn_f (edict_t *ent)
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 

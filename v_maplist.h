@@ -13,6 +13,7 @@
 #define MAPMODE_INV			6
 #define MAPMODE_TRA			7 // vrx chile 2.5 trading mode
 #define MAPMODE_INH			8 // vrxchile 2.6 invasion hard mode
+#define MAPMODE_VHW			9 // vrxchile 3.0 vortex holywars
 
 #define ML_ROTATE_SEQ          0
 #define ML_ROTATE_RANDOM       1

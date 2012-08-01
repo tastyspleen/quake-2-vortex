@@ -109,11 +109,11 @@ void sentrygun_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	}		
 
 	//If someone else destroyed your sentry gun
-	gi.cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun has been destroyed");
+	safe_cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun has been destroyed");
 	if (attacker->client)
-		gi.cprintf(self->creator, PRINT_HIGH, " by %s!\n", attacker->client->pers.netname);
+		safe_cprintf(self->creator, PRINT_HIGH, " by %s!\n", attacker->client->pers.netname);
 	else
-		gi.cprintf(self->creator, PRINT_HIGH, "!\n");
+		safe_cprintf(self->creator, PRINT_HIGH, "!\n");
 	sentrygun_remove(self);
 }
 
@@ -381,20 +381,20 @@ void checkAmmo(edict_t *self)
 	{
 	case M_SENTRY:
 		if(self->light_level < SENTRY_BULLETCOST)
-			gi.cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of bullets.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of bullets.\n");
 		else if(self->light_level < 50)	//Less than 50 bullets left
-			gi.cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on bullets.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on bullets.\n");
 		
 		if(self->style < SENTRY_ROCKETCOST)
-			gi.cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of rockets.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of rockets.\n");
 		else if(self->style < 10)		//Less than 10 rockets left
-			gi.cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on rockets.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on rockets.\n");
 		break;
 	case M_BFG_SENTRY:
 		if(self->count < SENTRY_BFG_AMMOCOST)
-			gi.cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of cells.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun is out of cells.\n");
 		else if(self->count < SENTRY_BFG_AMMOCOST * 2 + 1)	//If only 2 shots left
-			gi.cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on cells.\n");
+			safe_cprintf(self->creator, PRINT_HIGH, "WARNING: Your sentry gun is low on cells.\n");
 		break;
 	}
 }
@@ -634,16 +634,16 @@ qboolean sentReload(edict_t *self, edict_t *other)
 
 void statusUpdate(edict_t *self, edict_t *player)
 {
-	gi.cprintf(player, PRINT_HIGH, "Health:(%d/%d) ",self->health, self->monsterinfo.power_armor_power);
-	gi.cprintf(player, PRINT_HIGH, "Ammo:");
+	safe_cprintf(player, PRINT_HIGH, "Health:(%d/%d) ",self->health, self->monsterinfo.power_armor_power);
+	safe_cprintf(player, PRINT_HIGH, "Ammo:");
 	switch (self->mtype)
 	{
 	case M_SENTRY:
-		gi.cprintf(player, PRINT_HIGH, "(%d/%d)\n",self->light_level, self->style);
+		safe_cprintf(player, PRINT_HIGH, "(%d/%d)\n",self->light_level, self->style);
 		break;
 		/*
 	case M_BFG_SENTRY:
-		gi.cprintf(player, PRINT_HIGH, "(%d)\n",self->count);
+		safe_cprintf(player, PRINT_HIGH, "(%d)\n",self->count);
 		*/
 	}
 }
@@ -682,7 +682,7 @@ void sentUpgrade(edict_t *self, edict_t *other)
 {
 	if (other->client->pers.inventory[power_cube_index] < SENTRY_UPGRADE_COST)
 	{
-		gi.cprintf(other, PRINT_HIGH, "Not enough cubes to upgrade sentry.\n");
+		safe_cprintf(other, PRINT_HIGH, "Not enough cubes to upgrade sentry.\n");
 		return;
 	}
 
@@ -798,7 +798,7 @@ void sentrygun_think (edict_t *self)
 		// warn the converted monster's current owner
 		else if (converted && self->creator && self->creator->inuse && self->creator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
-				gi.cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
+				safe_cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
 					V_GetMonsterName(self), self->removetime-level.time);	
 	}
 
@@ -848,7 +848,7 @@ void sentrygun_think (edict_t *self)
 	if ( !(level.framenum % 50) )
 	{
 		checkAmmo(self);
-		if (damaged) gi.cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun needs repairs!\n");
+		if (damaged) safe_cprintf(self->creator, PRINT_HIGH, "ALERT: Your sentry gun needs repairs!\n");
 	}
 
 	if(damaged)
@@ -922,11 +922,11 @@ void SentryGun_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 	if(Repaired_Reloaded)	//Tell user he has repaired/reloaded his sentry
 	{
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("plats/pt1_strt.wav"), 1, ATTN_STATIC, 0);
-		gi.cprintf(other, PRINT_HIGH, "Sentry gun repaired/reloaded. ");
+		safe_cprintf(other, PRINT_HIGH, "Sentry gun repaired/reloaded. ");
 	}
 	else	//Just print gun status to user
 	{
-		gi.cprintf(other, PRINT_HIGH, "SENTRY GUN STATUS: ");
+		safe_cprintf(other, PRINT_HIGH, "SENTRY GUN STATUS: ");
 	}
 
 	statusUpdate(ent, other);
@@ -1106,7 +1106,7 @@ void SpawnSentry1 (edict_t *ent, int sentryType, int cost, float skill_mult, flo
 	tr = gi.trace(end, sentry->mins, sentry->maxs, end, NULL, MASK_SHOT);
 	if (tr.contents & MASK_SHOT)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Failed to spawn sentrygun.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Failed to spawn sentrygun.\n");
 		G_FreeEdict(sentry);
 		return;
 	}
@@ -1185,13 +1185,13 @@ qboolean canBuildSentry(edict_t *ent, int cost)
 	//Check if player has too many sentries already
 	if ( !(ent->num_sentries < SENTRY_MAXIMUM) )
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You have reached the max of %d sentry gun(s).\n", SENTRY_MAXIMUM);
+		safe_cprintf(ent, PRINT_HIGH, "You have reached the max of %d sentry gun(s).\n", SENTRY_MAXIMUM);
 		return false;
 	}
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return false;
 	}
 	return true;
@@ -1236,7 +1236,7 @@ void rotateSentry (edict_t *ent)
 	AngleCheck(&sentry->ideal_yaw);
 	sentry->wait = 0;
 
-	gi.cprintf(ent, PRINT_HIGH, "Rotating sentrygun...\n");
+	safe_cprintf(ent, PRINT_HIGH, "Rotating sentrygun...\n");
 }
 
 /**********

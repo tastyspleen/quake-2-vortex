@@ -193,41 +193,41 @@ void upgradeTalent(edict_t *ent, int talentID)
 	// check for conflicting talents
 	if (talentID == TALENT_RAPID_ASSEMBLY && getTalentLevel(ent, TALENT_PRECISION_TUNING) > 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Rapid Assembly can't be combined with Precision Tuning.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Rapid Assembly can't be combined with Precision Tuning.\n");
 		return;
 	}
 	if (talentID == TALENT_PRECISION_TUNING && getTalentLevel(ent, TALENT_RAPID_ASSEMBLY) > 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Precision Tuning can't be combined with Rapid Assembly.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Precision Tuning can't be combined with Rapid Assembly.\n");
 		return;
 	}
 	if (talentID == TALENT_CORPULENCE && getTalentLevel(ent, TALENT_LIFE_TAP) > 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Corpulence can't be combined with Life Tap.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Corpulence can't be combined with Life Tap.\n");
 		return;
 	}
 	if (talentID == TALENT_LIFE_TAP && getTalentLevel(ent, TALENT_CORPULENCE) > 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Life Tap can't be combined with Corpulence.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Life Tap can't be combined with Corpulence.\n");
 		return;
 	}
 
 	if(talent->upgradeLevel == talent->maxLevel)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can not upgrade this talent any further.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can not upgrade this talent any further.\n");
 		return;
 	}
 	if(ent->myskills.talents.talentPoints < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You do not have enough talent points.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You do not have enough talent points.\n");
 		return;
 	}
 
     //We can upgrade.
 	talent->upgradeLevel++;
 	ent->myskills.talents.talentPoints--;
-	gi.cprintf(ent, PRINT_HIGH, va("%s upgraded to level %d/%d.\n", GetTalentString(talent->id), talent->upgradeLevel, talent->maxLevel));
-	gi.cprintf(ent, PRINT_HIGH, va("Talent points remaining: %d\n", ent->myskills.talents.talentPoints));
+	safe_cprintf(ent, PRINT_HIGH, va("%s upgraded to level %d/%d.\n", GetTalentString(talent->id), talent->upgradeLevel, talent->maxLevel));
+	safe_cprintf(ent, PRINT_HIGH, va("Talent points remaining: %d\n", ent->myskills.talents.talentPoints));
 	//savePlayer(ent);
 }
 

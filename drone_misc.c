@@ -713,16 +713,16 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 
 		if (ent->client->pers.inventory[power_cube_index] < drone->monsterinfo.cost)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You need more power cubes to use this ability.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You need more power cubes to use this ability.\n");
 			G_FreeEdict(drone);
 			return NULL;
 		}
 		if (ent->num_monsters+drone->monsterinfo.control_cost > MAX_MONSTERS)
 		{
 			if (ent->num_monsters == MAX_MONSTERS)
-				gi.cprintf(ent, PRINT_HIGH, "All available monster slots in use.\n");
+				safe_cprintf(ent, PRINT_HIGH, "All available monster slots in use.\n");
 			else
-				gi.cprintf(ent, PRINT_HIGH, "Insufficient monster slots.\n");
+				safe_cprintf(ent, PRINT_HIGH, "Insufficient monster slots.\n");
 			G_FreeEdict(drone);
 			return NULL;
 		}
@@ -817,11 +817,11 @@ void RemoveDrone (edict_t *ent)
 		// try to convert back to previous owner
 		if (RestorePreviousOwner(tr.ent))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Conversion removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Conversion removed.\n");
 			return;
 		}
 
-		gi.cprintf(ent, PRINT_HIGH, "Monster removed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Monster removed.\n");
 		DroneRemoveSelected(ent, tr.ent);
 		M_Remove(tr.ent, true, true);
 		return;
@@ -843,7 +843,7 @@ void RemoveDrone (edict_t *ent)
 	// clear all slots
 	DroneRemoveSelected(ent, NULL);
 	ent->num_monsters = 0;
-	gi.cprintf(ent, PRINT_HIGH, "All monsters removed.\n");
+	safe_cprintf(ent, PRINT_HIGH, "All monsters removed.\n");
 
 }
 
@@ -1016,8 +1016,8 @@ void DroneSelect (edict_t *ent)
 	}
 	else
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You must be looking at a monster to select it.\n");
-		gi.cprintf(ent, PRINT_HIGH, "Once selected, you can give a monster orders.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You must be looking at a monster to select it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Once selected, you can give a monster orders.\n");
 	}
 }
 
@@ -1594,7 +1594,7 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 	if (*cubes < upkeep_cost)
 	{
 		// owner can't pay upkeep, so we're dead :(
-		gi.cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of %s - Removing!\n", 
+		safe_cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of %s - Removing!\n", 
 			GetMonsterKindString(self->mtype));
 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, 100000, 0, 0, 0);
 		return false;
@@ -1759,7 +1759,7 @@ void M_Notify (edict_t *monster)
 	if (monster->activator->num_monsters < 0)
 		monster->activator->num_monsters = 0;
 
-	gi.cprintf(monster->activator, PRINT_HIGH, "You lost a %s! (%d/%d)\n", 
+	safe_cprintf(monster->activator, PRINT_HIGH, "You lost a %s! (%d/%d)\n", 
 		GetMonsterKindString(monster->mtype), monster->activator->num_monsters, MAX_MONSTERS);
 
 	monster->monsterinfo.slots_freed = true;
@@ -2284,9 +2284,9 @@ void Cmd_Drone_f (edict_t *ent)
 
 	if (!Q_strcasecmp(s, "help"))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Available monster commands:\n");
-		//gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster select\nmonster move\nmonster remove\nmonster hunt\nmonster count\n");
-		gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster gladiator\nmonster command\nmonster follow me\nmonster remove\nmonster count\n");
+		safe_cprintf(ent, PRINT_HIGH, "Available monster commands:\n");
+		//safe_cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster select\nmonster move\nmonster remove\nmonster hunt\nmonster count\n");
+		safe_cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster gladiator\nmonster command\nmonster follow me\nmonster remove\nmonster count\n");
 		return;
 	}
 
@@ -2298,7 +2298,7 @@ void Cmd_Drone_f (edict_t *ent)
 
 	if (ctf->value && (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -2325,7 +2325,7 @@ void Cmd_Drone_f (edict_t *ent)
 	else if (!Q_strcasecmp(s, "infantry") && ent->myskills.administrator > 999)
 		SpawnDrone(ent, 11, false);
 	else
-		gi.cprintf(ent, PRINT_HIGH, "Additional parameters required.\nType 'monster help' for a list of commands.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Additional parameters required.\nType 'monster help' for a list of commands.\n");
 	//gi.dprintf("%d\n", CTF_GetNumSummonable("drone", ent->teamnum));
 }
 

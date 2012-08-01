@@ -33,7 +33,7 @@ void totem_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 	if(self->activator && self->activator->client)
 	{
 		//self->activator->client->ability_delay = level.time + 2.5;
-		gi.cprintf(self->activator, PRINT_HIGH, "*** Your totem was destroyed ***\n");
+		safe_cprintf(self->activator, PRINT_HIGH, "*** Your totem was destroyed ***\n");
 	}
 
 	RemoveTotem(self);
@@ -427,7 +427,7 @@ void SpawnTotem(edict_t *ent, int abilityID)
 	if (ctf->value && abilityID == FIRE_TOTEM 
 		&& (CTF_DistanceFromBase(ent, NULL, CTF_GetEnemyTeam(ent->teamnum)) < CTF_BASE_DEFEND_RANGE))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't build in enemy base!\n");
 		return;
 	}
 
@@ -449,13 +449,13 @@ void SpawnTotem(edict_t *ent, int abilityID)
 		//Can't have more than one totem without the talent.
 		/*if(getTalentLevel(ent, TALENT_TOTEM) < 1)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You already have a totem active.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You already have a totem active.\n");
 			return;
 		}
 		//Can't have more than two totems.
 		else*/ if(ent->totem2)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You already have two totems active.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You already have two totems active.\n");
 			return;
 		}
 		//Can't have two totems of opposite alignment.
@@ -473,12 +473,12 @@ void SpawnTotem(edict_t *ent, int abilityID)
 			}
 			if(totemType == opposite)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You can't create two totems of opposite elemental alignment.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't create two totems of opposite elemental alignment.\n");
 				return;
 			}
 			else if(totemType == ent->totem1->mtype)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "You can't create totems of the same type.\n");
+				safe_cprintf(ent, PRINT_HIGH, "You can't create totems of the same type.\n");
 				return;
 			}
 		}

@@ -448,7 +448,7 @@ void StartGame (edict_t *ent)
 		gi.bprintf(PRINT_HIGH, "A level %d mini-boss known as %s begins their domination.\n", 
 		ent->myskills.level, ent->client->pers.netname);
 		gi.bprintf(PRINT_HIGH, "Kill %s, and every non-boss gets a reward!\n", ent->client->pers.netname);
-		gi.cprintf(ent, PRINT_HIGH, "You are currently a mini-boss. You will receive no point loss, but cannot war.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You are currently a mini-boss. You will receive no point loss, but cannot war.\n");
 	}
 	else
 	{
@@ -531,7 +531,7 @@ void OpenCombatMenu (edict_t *ent, int lastline)
 {
 	if ((V_IsPVP() || pvm->value || invasion->value) && ent->myskills.administrator < 9 && !ent->client->resp.spectator)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You're disallowed to modify combat settings on this mode.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You're disallowed to modify combat settings on this mode.\n");
 		return;
 	}
 
@@ -591,37 +591,37 @@ void JoinTheGame (edict_t *ent)
 	switch(returned)
 	{
 	case -1:	//bad password
-		gi.cprintf(ent, PRINT_HIGH, "Access denied. Incorrect password.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Access denied. Incorrect password.\n");
 		return;
 	case -2:	//below minimum level
-		gi.cprintf(ent, PRINT_HIGH, "You have to be at least level %d to play on this server.\n", ((int)min_level->value));
+		safe_cprintf(ent, PRINT_HIGH, "You have to be at least level %d to play on this server.\n", ((int)min_level->value));
 		return;
 	case -3:	//above maximum level
-		gi.cprintf(ent, PRINT_HIGH, "You have to be level %d or below to play here.\n", ((int)max_level->value));
+		safe_cprintf(ent, PRINT_HIGH, "You have to be level %d or below to play here.\n", ((int)max_level->value));
 		if (strcmp(reconnect_ip->string, "0") != 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You are being sent to an alternate server where you can play.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You are being sent to an alternate server where you can play.\n");
 			stuffcmd(ent, va("connect %s\n", reconnect_ip->string));
 		}
 		return;
 	case -4:	//invalid player name
-		gi.cprintf(ent, PRINT_HIGH, "Your name must be greater than 2 characters long.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Your name must be greater than 2 characters long.\n");
 		return;
 	case -5:	//playing too much
-		gi.cprintf(ent, PRINT_HIGH, "Can't join: %d hour play-time limit reached.\n", MAX_HOURS);
-		gi.cprintf(ent, PRINT_HIGH, "Please try a different character, or try again tommorow.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't join: %d hour play-time limit reached.\n", MAX_HOURS);
+		safe_cprintf(ent, PRINT_HIGH, "Please try a different character, or try again tommorow.\n");
 		return;
 	case -6:	//newbie basher can't play
-		gi.cprintf(ent, PRINT_HIGH, "Unable to join: The current maximum level is %d.\n", NEWBIE_BASHER_MAX);
-		gi.cprintf(ent, PRINT_HIGH, "Please return at a later time, or try a different character.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Unable to join: The current maximum level is %d.\n", NEWBIE_BASHER_MAX);
+		safe_cprintf(ent, PRINT_HIGH, "Please return at a later time, or try a different character.\n");
 		gi.dprintf("INFO: %s exceeds maximum level allowed by server (level %d)!", ent->client->pers.netname, NEWBIE_BASHER_MAX);
 		return;
 	case -7:	//boss can't play
-		gi.cprintf(ent, PRINT_HIGH, "Unable to join: Bosses are not allowed unless the server is at least half capacity.\n");
-		gi.cprintf(ent, PRINT_HIGH, "Please come back at a later time, or try a different character.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Unable to join: Bosses are not allowed unless the server is at least half capacity.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Please come back at a later time, or try a different character.\n");
 		return;
 	case -8: // stupid name
-		gi.cprintf(ent, PRINT_HIGH, "Unable to join with default name \"Player\" - Don't use this name. We won't be able to know who are you.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Unable to join with default name \"Player\" - Don't use this name. We won't be able to know who are you.\n");
 		return;
 	default:	//passed every check
 		break;
@@ -656,8 +656,8 @@ void JoinTheGame (edict_t *ent)
 	/*
 	if (ent->myskills.inuse)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "WARNING: Your character file is marked as already being open!\n");
-		gi.cprintf(ent, PRINT_HIGH, "Logging into a server twice is not permitted. A message will be sent to an administrator.\n");
+		safe_cprintf(ent, PRINT_HIGH, "WARNING: Your character file is marked as already being open!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Logging into a server twice is not permitted. A message will be sent to an administrator.\n");
 		//gi.dprintf("WARNING: %s's file is marked as already open at %s on %s.\n", ent->client->pers.netname, CURRENT_TIME, CURRENT_DATE);
 	}
 	ent->myskills.inuse = 1;
@@ -684,7 +684,7 @@ void joinmenu_handler (edict_t *ent, int option)
 			JoinTheGame(ent);
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Attempting to find your character file. Do not disconnect.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Attempting to find your character file. Do not disconnect.\n");
 			createOpenPlayerThread(ent);
 		}
 		break;
@@ -801,13 +801,13 @@ void OpenRespawnWeapMenu(edict_t *ent)
 
 	if(ent->myskills.class_num == CLASS_KNIGHT)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Knights are restricted to a sabre.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Knights are restricted to a sabre.\n");
 		return;
 	}
 
 	if(ent->myskills.class_num == CLASS_POLTERGEIST)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't pick a respawn weapon.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't pick a respawn weapon.\n");
 		return;
 	}
 
@@ -872,7 +872,7 @@ void classmenu_handler (edict_t *ent, int option)
 	{
 		if (start_level->value > 1)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Can't join in the middle of a CTF game.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Can't join in the middle of a CTF game.\n");
 			return;
 		}
 
@@ -1078,7 +1078,7 @@ void OpenWhoisMenu (edict_t *ent)
 
 	if ((player = FindPlayerByName(gi.argv(1))) == NULL)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Couldn't find player \"%s\".\n", gi.argv(1));
+		safe_cprintf(ent, PRINT_HIGH, "Couldn't find player \"%s\".\n", gi.argv(1));
 		return;
 	}
 

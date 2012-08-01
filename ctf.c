@@ -1190,13 +1190,13 @@ void flagbase_think (edict_t *self)
 		if (!strcmp(e->classname, "proxygrenade"))
 		{
 			proxy_remove(e, false);
-			gi.cprintf(cl, PRINT_HIGH, "Your proxy was removed because it is too close to the flag base.\n");
+			safe_cprintf(cl, PRINT_HIGH, "Your proxy was removed because it is too close to the flag base.\n");
 		}
 		// remove laser
 		else if (!strcmp(e->classname, "emitter"))
 		{
 			laser_remove(e);
-			gi.cprintf(cl, PRINT_HIGH, "Your laser was removed because it is too close to the flag base.\n");
+			safe_cprintf(cl, PRINT_HIGH, "Your laser was removed because it is too close to the flag base.\n");
 		}
 		// remove magmine
 		else if (!strcmp(e->classname, "magmine"))
@@ -1207,7 +1207,7 @@ void flagbase_think (edict_t *self)
 			e->nextthink = level.time + FRAMETIME;
 			cl->magmine = NULL;
 
-			gi.cprintf(cl, PRINT_HIGH, "Your mag mine was removed because it is too close to the flag base.\n");
+			safe_cprintf(cl, PRINT_HIGH, "Your mag mine was removed because it is too close to the flag base.\n");
 		}
 	}
 
@@ -1316,7 +1316,7 @@ void CTF_WriteFlagPosition (edict_t *ent)
 		 fprintf(fptr, "%f,%f,%f\n", ent->s.origin[0],ent->s.origin[1], ent->s.origin[2]); 
          fclose(fptr); 
 
-		 gi.cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n", 
+		 safe_cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n", 
 			 CTF_GetTeamString(teamnum), level.mapname);
          return;  
      }  

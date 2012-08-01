@@ -371,25 +371,25 @@ void CurseMessage (edict_t *caster, edict_t *target, int type, float duration, q
 	//Notify the target
 	if ((target->client) && !(target->svflags & SVF_MONSTER))
 	{
-		gi.cprintf(target, PRINT_HIGH, "**You have been %s with %s for %0.1f second(s)**\n", typeName, curseName, duration);
+		safe_cprintf(target, PRINT_HIGH, "**You have been %s with %s for %0.1f second(s)**\n", typeName, curseName, duration);
 		if (caster && caster->client)
-			gi.cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->myskills.player_name, curseName, duration);
+			safe_cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->myskills.player_name, curseName, duration);
 	}
 	else if (target->mtype)
 	{
 		if (PM_MonsterHasPilot(target))
 		{
-			gi.cprintf(target->activator, PRINT_HIGH, "**You have been %s with %s for %0.1f second(s)**\n", typeName, curseName, duration);
+			safe_cprintf(target->activator, PRINT_HIGH, "**You have been %s with %s for %0.1f second(s)**\n", typeName, curseName, duration);
 			if (caster && caster->client)
-				gi.cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->activator->client->pers.netname, curseName, duration);
+				safe_cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->activator->client->pers.netname, curseName, duration);
 			return;
 		}
 
 		if (caster && caster->client)
-			gi.cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, V_GetMonsterName(target), curseName, duration);
+			safe_cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, V_GetMonsterName(target), curseName, duration);
 	}
 	else if (caster && caster->client)
-		gi.cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->classname, curseName, duration);
+		safe_cprintf(caster, PRINT_HIGH, "%s %s with %s for %0.1f second(s)\n", typeName, target->classname, curseName, duration);
 }
 
 void CurseRadiusAttack (edict_t *caster, int type, int range, int radius, float duration, qboolean isCurse)
@@ -797,12 +797,12 @@ void Cmd_Amnesia(edict_t *ent)
 		//Notify the target
 		if ((target->client) && !(target->svflags & SVF_MONSTER))
 		{
-			gi.cprintf(target, PRINT_HIGH, "YOU HAVE BEEN CURSED WITH AMNESIA!! (%0.1f seconds)\n", duration);
-			gi.cprintf(ent, PRINT_HIGH, "Cursed %s with amnesia for %0.1f seconds.\n", target->myskills.player_name, duration);
+			safe_cprintf(target, PRINT_HIGH, "YOU HAVE BEEN CURSED WITH AMNESIA!! (%0.1f seconds)\n", duration);
+			safe_cprintf(ent, PRINT_HIGH, "Cursed %s with amnesia for %0.1f seconds.\n", target->myskills.player_name, duration);
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Cursed %s with amnesia for %0.1f seconds.\n", target->classname, duration);
+			safe_cprintf(ent, PRINT_HIGH, "Cursed %s with amnesia for %0.1f seconds.\n", target->classname, duration);
 		}
 		//Play the spell sound!
 		gi.sound(target, CHAN_ITEM, gi.soundindex("curses/amnesia.wav"), 1, ATTN_NORM, 0);
@@ -836,7 +836,7 @@ void Cmd_Healing(edict_t *ent)
 	{
 		if (!curse_add(ent, ent, HEALING, 0, duration))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
 			return;
 		}
 		target = ent;
@@ -863,16 +863,16 @@ void Cmd_Healing(edict_t *ent)
 		//Notify the target
 		if (target == ent)
 		{
-			gi.cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED WITH %0.1f seconds OF HEALING!!\n", duration);
+			safe_cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED WITH %0.1f seconds OF HEALING!!\n", duration);
 		}
 		else if ((target->client) && !(target->svflags & SVF_MONSTER))
 		{
-			gi.cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED WITH %0.1f seconds OF HEALING!!\n", duration);
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s with healing for %0.1f seconds.\n", target->myskills.player_name, duration);
+			safe_cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED WITH %0.1f seconds OF HEALING!!\n", duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s with healing for %0.1f seconds.\n", target->myskills.player_name, duration);
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s with healing for %0.1f seconds.\n", target->classname, duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s with healing for %0.1f seconds.\n", target->classname, duration);
 		}
 		//Play the spell sound!
 		gi.sound(target, CHAN_ITEM, gi.soundindex("curses/prayer.wav"), 1, ATTN_NORM, 0);
@@ -909,13 +909,13 @@ void Cmd_Bless(edict_t *ent)
 	{
 		if (HasFlag(ent))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
+			safe_cprintf(ent, PRINT_HIGH, "Can't use this while carrying the flag!\n");
 			return;
 		}
 
 		if (!curse_add(ent, ent, BLESS, 0, duration))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
 			return;
 		}
 		target = ent;
@@ -950,16 +950,16 @@ void Cmd_Bless(edict_t *ent)
 		//Notify the target
 		if (target == ent)
 		{
-			gi.cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED FOR %0.1f seconds!!\n", duration);
+			safe_cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED FOR %0.1f seconds!!\n", duration);
 		}
 		else if ((target->client) && !(target->svflags & SVF_MONSTER))
 		{
-			gi.cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED FOR %0.1f seconds!!\n", duration);
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s for %0.1f seconds.\n", target->myskills.player_name, duration);
+			safe_cprintf(target, PRINT_HIGH, "YOU HAVE BEEN BLESSED FOR %0.1f seconds!!\n", duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s for %0.1f seconds.\n", target->myskills.player_name, duration);
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s for %0.1f seconds.\n", target->classname, duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s for %0.1f seconds.\n", target->classname, duration);
 		}
 		//Play the spell sound!
 		gi.sound(target, CHAN_ITEM, gi.soundindex("curses/bless.wav"), 1, ATTN_NORM, 0);
@@ -983,7 +983,7 @@ void deflect_think (edict_t *self)
 	if (!slot || !que_valident(slot))
 	{
 		if (player && level.time >= self->monsterinfo.selected_time)
-			gi.cprintf(player, PRINT_HIGH, "Deflect has expired\n");
+			safe_cprintf(player, PRINT_HIGH, "Deflect has expired\n");
 
 		que_removeent(self->enemy->curses, self, true);
 		return;
@@ -991,7 +991,7 @@ void deflect_think (edict_t *self)
 
 	// warn player that deflect is about to expire
 //	if (player && !(level.framenum % 10) && (level.time >= slot->time - 5))
-//		gi.cprintf(player, PRINT_HIGH, "Deflect will expire in %.0f seconds\n", slot->time - level.time);
+//		safe_cprintf(player, PRINT_HIGH, "Deflect will expire in %.0f seconds\n", slot->time - level.time);
 
 	//Stick with the target
 	VectorCopy(self->enemy->s.origin, self->s.origin);
@@ -1023,7 +1023,7 @@ void Cmd_Deflect_f(edict_t *ent)
 	{
 		if (!curse_add(target, ent, DEFLECT, 0, duration))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Unable to bless self.\n");
 			return;
 		}
 		//target = ent;
@@ -1056,16 +1056,16 @@ void Cmd_Deflect_f(edict_t *ent)
 		//Notify the target
 		if (target == ent)
 		{
-			gi.cprintf(target, PRINT_HIGH, "You have been blessed with deflect for %0.1f seconds!\n", duration);
+			safe_cprintf(target, PRINT_HIGH, "You have been blessed with deflect for %0.1f seconds!\n", duration);
 		}
 		else if ((target->client) && !(target->svflags & SVF_MONSTER))
 		{
-			gi.cprintf(target, PRINT_HIGH, "You have been blessed with deflect for %0.1f seconds!\n\n", duration);
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s with deflect for %0.1f seconds.\n", target->myskills.player_name, duration);
+			safe_cprintf(target, PRINT_HIGH, "You have been blessed with deflect for %0.1f seconds!\n\n", duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s with deflect for %0.1f seconds.\n", target->myskills.player_name, duration);
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Blessed %s with deflect for %0.1f seconds.\n", V_GetMonsterName(target), duration);
+			safe_cprintf(ent, PRINT_HIGH, "Blessed %s with deflect for %0.1f seconds.\n", V_GetMonsterName(target), duration);
 		}
 
 		//Play the spell sound!

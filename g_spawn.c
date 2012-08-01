@@ -750,6 +750,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 //	gi.dprintf ("%i entities inhibited\n", inhibit);
 
+	AI_NewMap();//JABot
+
 
 	G_FindTeams ();
 

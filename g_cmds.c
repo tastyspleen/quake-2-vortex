@@ -75,7 +75,7 @@ void Cmd_SuperSpeed_f (edict_t *ent, int toggle)
 
 	if (HasFlag(ent))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Can't use this ability while carrying the flag!\n");
 		return;
 	}
 
@@ -84,20 +84,20 @@ void Cmd_SuperSpeed_f (edict_t *ent, int toggle)
 		return;
 
 	if (ent->myskills.abilities[SUPER_SPEED].current_level < 1) {
-		gi.cprintf(ent, PRINT_HIGH, "You can not use Super Speed due to not training in it!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can not use Super Speed due to not training in it!\n");
 		return;
 	}
 
 	if (ent->client->snipertime >= level.time)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You can't use superspeed while trying to snipe!\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't use superspeed while trying to snipe!\n");
 		return;
 	}
 
 	if( (ent->client->weapon_mode) && ent->client->pers.weapon
 		&& (Q_strcasecmp(ent->client->pers.weapon->pickup_name, "chaingun") == 0))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Holding the assult cannon prevents you from using superspeed.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Holding the assult cannon prevents you from using superspeed.\n");
 		return;
 	}
 
@@ -304,7 +304,6 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	if (G_IsSpectator(ent1) || G_IsSpectator(ent2))
 		return 0;
 
-
 	ent1_boss = IsBossTeam(ent1);//IsABoss(ent1);
 	ent2_boss = IsBossTeam(ent2);//IsABoss(ent2);
 
@@ -384,6 +383,15 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	if ((!ent1->client) || (!ent2->client))
 		return result;
 
+	if (hw->value)
+	{
+		int hw_index = ITEM_INDEX(FindItem("Halo"));
+		if (ent1->client->pers.inventory[hw_index] || ent2->client->pers.inventory[hw_index])
+			return 0; // one of them has the halo. They're not friends.
+		else
+			return 1;
+	}
+
 	// check for allies
 	if (allies->value && IsAlly(ent1, ent2))
 		return 2;
@@ -397,6 +405,7 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	strcpy (ent2Team, ClientTeam(ent2));
 	if (strcmp(ent1Team, ent2Team) == 0)
 		return 2;
+
 	return 0;
 }
 
@@ -511,7 +520,7 @@ void Cmd_Give_f (edict_t *ent)
 /*
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
 		return;
 	}
 */
@@ -687,7 +696,7 @@ void Cmd_God_f (edict_t *ent)
 		gi.bprintf(PRINT_HIGH, "%s enabled god mode\n", ent->client->pers.netname);
 		msg = "godmode ON\n";
 	}
-	gi.cprintf (ent, PRINT_HIGH, msg);
+	safe_cprintf (ent, PRINT_HIGH, msg);
 }
 
 /*
@@ -702,7 +711,7 @@ void Cmd_Notarget_f (edict_t *ent)
 	char	*msg;
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
 		return;
 	}
 	ent->flags ^= FL_NOTARGET;
@@ -710,7 +719,7 @@ void Cmd_Notarget_f (edict_t *ent)
 		msg = "notarget OFF\n";
 	else
 		msg = "notarget ON\n";
-	gi.cprintf (ent, PRINT_HIGH, msg);
+	safe_cprintf (ent, PRINT_HIGH, msg);
 }
 
 /*
@@ -725,7 +734,7 @@ void Cmd_Noclip_f (edict_t *ent)
 /*
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
 		return;
 	}
 */
@@ -743,7 +752,7 @@ void Cmd_Noclip_f (edict_t *ent)
 		ent->movetype = MOVETYPE_NOCLIP;
 		msg = "noclip ON\n";
 	}
-	gi.cprintf (ent, PRINT_HIGH, msg);
+	safe_cprintf (ent, PRINT_HIGH, msg);
 }
 
 //K03 Begin
@@ -910,12 +919,12 @@ void Cmd_Use_f (edict_t *ent)
 	it = FindItem (s);
 	if (!it)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
 		return;
 	}
 	if (!it->use)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
 		return;
 	}
 
@@ -933,7 +942,7 @@ void Cmd_Use_f (edict_t *ent)
 	index = ITEM_INDEX(it);
 	if (!ent->client->pers.inventory[index]  && (it != FindItem("tball self")))//K03 tball self exception
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
 		return;
 	}
 	it->use (ent, it);
@@ -983,26 +992,26 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 
 	if (domination->value && (Q_strcasecmp(gi.argv(1), "flag") == 0))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
 		return;
 	}
 	if (ctf->value && ctf_enable_balanced_fc->value 
 		&& (Q_strcasecmp(gi.argv(2), "flag") == 0))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
+		safe_cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
 		return;
 	}
 	if ((Q_strcasecmp(gi.argv(1), "power") == 0) && (Q_strcasecmp(gi.argv(2), "cube") == 0)) 
 	{
 		if (NumPowercubes(ent) >= 5)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't drop any more power cubes!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't drop any more power cubes!\n");
 			return;
 		}
 		/*
 		if (level.time < pregame_time->value)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You can't drop power cubes in pregame!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You can't drop power cubes in pregame!\n");
 			return;
 		}
 		*/
@@ -1013,10 +1022,10 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 		if (!it)
 			return;
 		if (ent->client->pers.inventory[ITEM_INDEX(it)] < count) {
-			gi.cprintf(ent, PRINT_HIGH, "You don't have that many power cubes!\n");
+			safe_cprintf(ent, PRINT_HIGH, "You don't have that many power cubes!\n");
 			return;
 		}
-		gi.cprintf(ent, PRINT_HIGH, "Dropping %d power cubes\n", count);
+		safe_cprintf(ent, PRINT_HIGH, "Dropping %d power cubes\n", count);
 		it->quantity = count;
 		it->drop (ent, it);
 		it->quantity = 5;
@@ -1036,7 +1045,7 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 			if (ent->myskills.items[i].itemtype == ITEM_POTION)
 				memset(&ent->myskills.items[i], 0, sizeof(item_t));
 		}
-		gi.cprintf(ent, PRINT_HIGH, "You have discarded all of your potions.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have discarded all of your potions.\n");
 		return;
 	}
 	else if (Q_strcasecmp(s, "holywater") == 0)
@@ -1048,24 +1057,24 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 			if (ent->myskills.items[i].itemtype == ITEM_ANTIDOTE)
 				memset(&ent->myskills.items[i], 0, sizeof(item_t));
 		}
-		gi.cprintf(ent, PRINT_HIGH, "You have discarded all of your holy water.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You have discarded all of your holy water.\n");
 		return;
 	}
 
 	if (!it)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
 		return;
 	}
 	if (!it->drop)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Item is not dropable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Item is not dropable.\n");
 		return;
 	}
 	index = ITEM_INDEX(it);
 	if (!ent->client->pers.inventory[index])
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
 		return;
 	}
 	it->drop (ent, it);
@@ -1133,13 +1142,13 @@ void Cmd_InvUse_f (edict_t *ent)
 	ValidateSelectedItem (ent);
 	if (ent->client->pers.selected_item == -1)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "No item to use.\n");
+		safe_cprintf (ent, PRINT_HIGH, "No item to use.\n");
 		return;
 	}
 	it = &itemlist[ent->client->pers.selected_item];
 	if (!it->use)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
 		return;
 	}
 
@@ -1325,13 +1334,13 @@ void Cmd_InvDrop_f (edict_t *ent)
 	ValidateSelectedItem (ent);
 	if (ent->client->pers.selected_item == -1)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "No item to drop.\n");
+		safe_cprintf (ent, PRINT_HIGH, "No item to drop.\n");
 		return;
 	}
 	it = &itemlist[ent->client->pers.selected_item];
 	if (!it->drop)
 	{
-		gi.cprintf (ent, PRINT_HIGH, "Item is not dropable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "Item is not dropable.\n");
 		return;
 	}
 	it->drop (ent, it);
@@ -1469,7 +1478,7 @@ void Cmd_Players_f (edict_t *ent)
 		strcat (largeq2, smallq2);
 	}
 
-	gi.cprintf (ent, PRINT_HIGH, "%s\n%i players\n", largeq2, count);
+	safe_cprintf (ent, PRINT_HIGH, "%s\n%i players\n", largeq2, count);
 }
 
 /*
@@ -1501,28 +1510,28 @@ void Cmd_Wave_f (edict_t *ent)
 	switch (i)
 	{
 	case 0:
-		gi.cprintf (ent, PRINT_HIGH, "flipoff\n");
+		safe_cprintf (ent, PRINT_HIGH, "flipoff\n");
 		ent->s.frame = FRAME_flip01-1;
 		ent->client->anim_end = FRAME_flip12;
 		break;
 	case 1:
-		gi.cprintf (ent, PRINT_HIGH, "salute\n");
+		safe_cprintf (ent, PRINT_HIGH, "salute\n");
 		ent->s.frame = FRAME_salute01-1;
 		ent->client->anim_end = FRAME_salute11;
 		break;
 	case 2:
-		gi.cprintf (ent, PRINT_HIGH, "taunt\n");
+		safe_cprintf (ent, PRINT_HIGH, "taunt\n");
 		ent->s.frame = FRAME_taunt01-1;
 		ent->client->anim_end = FRAME_taunt17;
 		break;
 	case 3:
-		gi.cprintf (ent, PRINT_HIGH, "wave\n");
+		safe_cprintf (ent, PRINT_HIGH, "wave\n");
 		ent->s.frame = FRAME_wave01-1;
 		ent->client->anim_end = FRAME_wave11;
 		break;
 	case 4:
 	default:
-		gi.cprintf (ent, PRINT_HIGH, "point\n");
+		safe_cprintf (ent, PRINT_HIGH, "point\n");
 		ent->s.frame = FRAME_point01-1;
 		ent->client->anim_end = FRAME_point12;
 		break;
@@ -1607,13 +1616,13 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		// check for valid input
 		if ((len < 4) || (len > 23) || strstr(p, "@"))
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Master password rejected. It must be between 4 and 23 characters.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Master password rejected. It must be between 4 and 23 characters.\n");
 			stuffcmd(ent, "messagemode\n");
 			return;
 		}
 
 		strcpy(ent->myskills.email, p);
-		gi.cprintf(ent, PRINT_HIGH, "Master password has been set to %s.\n", ent->myskills.email);
+		safe_cprintf(ent, PRINT_HIGH, "Master password has been set to %s.\n", ent->myskills.email);
 		closemenu(ent);
 		return;
 	}
@@ -1633,7 +1642,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	if (flood_msgs->value) {
 		cl = ent->client;
         if (level.time < cl->flood_locktill) {
-			gi.cprintf(ent, PRINT_HIGH, "You can't talk for %d more seconds\n",
+			safe_cprintf(ent, PRINT_HIGH, "You can't talk for %d more seconds\n",
 				(int)(cl->flood_locktill - level.time));
             return;
         }
@@ -1643,7 +1652,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		if (cl->flood_when[i] && 
 			level.time - cl->flood_when[i] < flood_persecond->value) {
 			cl->flood_locktill = level.time + flood_waitdelay->value;
-			gi.cprintf(ent, PRINT_CHAT, "Flood protection:  You can't talk for %d seconds.\n",
+			safe_cprintf(ent, PRINT_CHAT, "Flood protection:  You can't talk for %d seconds.\n",
 				(int)flood_waitdelay->value);
             return;
         }
@@ -1656,7 +1665,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	if (dedicated->value)
 	{
 		//if (strcmp(ent->myskills.title, "") != 0 && ent->solid != SOLID_NOT)
-		//	gi.cprintf(NULL, PRINT_HIGH, "%s ", ent->myskills.title);
+		//	safe_cprintf(NULL, PRINT_HIGH, "%s ", ent->myskills.title);
 		V_PrintSayPrefix(ent, NULL, text);
 	}
 	//GHz END
@@ -1698,7 +1707,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		if (dedicated->value)
 		{
 			//if ((strcmp(ent->myskills.title, "") != 0) && (ent->solid != SOLID_NOT))
-				//gi.cprintf(other, PRINT_HIGH, "%s ", ent->myskills.title);
+				//safe_cprintf(other, PRINT_HIGH, "%s ", ent->myskills.title);
 			V_PrintSayPrefix(ent, other, text);
 		}
 		//GHz END
@@ -1732,7 +1741,7 @@ void Cmd_Yell (edict_t *ent, int soundnum)
 	case 11:
 		gi.sound (ent, CHAN_VOICE, gi.soundindex("speech/yell/thisway.wav"), 1, ATTN_NORM, 0);break;
 	default:
-		gi.cprintf(ent, PRINT_HIGH, "Unknown sound.\n");return;
+		safe_cprintf(ent, PRINT_HIGH, "Unknown sound.\n");return;
 	}
 
 	gi.WriteByte (svc_temp_entity);
@@ -1770,7 +1779,7 @@ void Cmd_Speech (edict_t *ent, int soundnum)
 	case 11:
 		gi.sound (ent, CHAN_VOICE, gi.soundindex("speech/threat.wav"), 1, ATTN_NORM, 0);break;
 	default:
-		gi.cprintf(ent, PRINT_HIGH, "Unknown sound.\n");return;
+		safe_cprintf(ent, PRINT_HIGH, "Unknown sound.\n");return;
 	}	
 
 }
@@ -1798,19 +1807,19 @@ void Cmd_MakeAdmin(edict_t *ent)
 
 	if (strcmp(cmd1, adminpass->string) == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Administrator flag enabled.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Administrator flag enabled.\n");
 		ent->myskills.administrator = 10;
 	}
 	else if (strcmp(cmd1, "off") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Administrator flag was reset.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Administrator flag was reset.\n");
 		ent->myskills.administrator = 0;
 	}
 	else if (strcmp(cmd1, "lag") == 0)
 	{
 		if (!ent->myskills.administrator)
 			return;
-		gi.cprintf(ent, PRINT_HIGH, "Adding fake lag to client.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Adding fake lag to client.\n");
 		ent->myskills.administrator = 11;
 	}
 }
@@ -1825,7 +1834,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_GL_MODULATE:
 		if (value > 3)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server only allows maximum gl_modulate setting of 3.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server only allows maximum gl_modulate setting of 3.\n");
 			stuffcmd(ent, "set gl_modulate 3\n");
 			break;
 		}
@@ -1833,7 +1842,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_GL_DYNAMIC:
 		if (value < 1)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires gl_dynamic to be turned on.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires gl_dynamic to be turned on.\n");
 			stuffcmd(ent, "set gl_dynamic 1\n");
 			break;
 		}
@@ -1841,7 +1850,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_SW_DRAWFLAT:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that sw_drawflat is turned off.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that sw_drawflat is turned off.\n");
 			stuffcmd(ent, "set sw_drawflat 0\n");
 			break;
 		}
@@ -1849,7 +1858,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_GL_SHOWTRIS:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that gl_showtris is turned off.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that gl_showtris is turned off.\n");
 			stuffcmd(ent, "set gl_showtris 0\n");
 			break;
 		}
@@ -1857,7 +1866,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_R_FULLBRIGHT:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that r_fullbright is turned off.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that r_fullbright is turned off.\n");
 			stuffcmd(ent, "set r_fullbright 0\n");
 			break;
 		}
@@ -1865,7 +1874,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_TIMESCALE:
 		if (value > 1)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Timescale cheaters are not allowed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Timescale cheaters are not allowed.\n");
 			stuffcmd(ent, "set timescale 1\n");
 			break;
 		}
@@ -1873,7 +1882,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_GL_LIGHTMAP:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that gl_lightmap is turned off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that gl_lightmap is turned off\n");
 			stuffcmd(ent, "set gl_lightmap 0\n");
 			break;
 		}
@@ -1881,7 +1890,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_GL_SATURATELIGHTING:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that gl_saturatelighting is turned off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that gl_saturatelighting is turned off\n");
 			stuffcmd(ent, "set gl_saturatelighting 0\n");
 			break;
 		}
@@ -1889,7 +1898,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_R_DRAWFLAT:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that r_drawflat is turned off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that r_drawflat is turned off\n");
 			stuffcmd(ent, "set r_drawflat 0\n");
 			break;
 		}
@@ -1897,7 +1906,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_CL_TESTLIGHTS:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that cl_testlights is turned off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that cl_testlights is turned off\n");
 			stuffcmd(ent, "set cl_testlights 0\n");
 			break;
 		}
@@ -1905,7 +1914,7 @@ void VortexCheckClientSettings(edict_t *ent, int setting, int value)
 	case CLIENT_FIXEDTIME:
 		if (value > 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Server requires that fixedtime is turned off\n");
+			safe_cprintf(ent, PRINT_HIGH, "Server requires that fixedtime is turned off\n");
 			stuffcmd(ent, "set fixedtime 0\n");
 			break;
 		}
@@ -1938,11 +1947,11 @@ void Cmd_IdentifyPlayer (edict_t *ent)
 	{
 		VectorSubtract (tr.ent->s.origin, ent->s.origin, v);
 		range = VectorLength(v);
-		gi.cprintf(ent, PRINT_HIGH, "%s is standing %d units away from you.\n", tr.ent->client->pers.netname, range);
+		safe_cprintf(ent, PRINT_HIGH, "%s is standing %d units away from you.\n", tr.ent->client->pers.netname, range);
 		ent->client->ability_delay = level.time + 1.0;
 	}
 	else
-		gi.cprintf(ent, PRINT_HIGH, "No player found.\n");
+		safe_cprintf(ent, PRINT_HIGH, "No player found.\n");
 }
 
 /*
@@ -1970,7 +1979,7 @@ void cmd_PlayerMute(edict_t *ent, char *playername, int time)
 		{
 			if (other->myskills.administrator)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Administrators can not be muted.\n");
+				safe_cprintf(ent, PRINT_HIGH, "Administrators can not be muted.\n");
 				return;
 			}
 			//Toggle if player is muted or not
@@ -1978,18 +1987,18 @@ void cmd_PlayerMute(edict_t *ent, char *playername, int time)
 			{
 				ent->myskills.mutelist[i].player = other;
 				ent->myskills.mutelist[i].time = time;
-				gi.cprintf(ent, PRINT_HIGH, "%s has been muted.\n",other->client->pers.netname);
+				safe_cprintf(ent, PRINT_HIGH, "%s has been muted.\n",other->client->pers.netname);
 			}
 			else 
 			{
 				ent->myskills.mutelist[i].player = NULL;
 				ent->myskills.mutelist[i].time = 0;
-				gi.cprintf(ent, PRINT_HIGH, "%s is no longer muted.\n",other->client->pers.netname);
+				safe_cprintf(ent, PRINT_HIGH, "%s is no longer muted.\n",other->client->pers.netname);
 			}
 			return;
 		}
 	}
-	gi.cprintf(ent, PRINT_HIGH, "No player matches the name %s.\n",playername);
+	safe_cprintf(ent, PRINT_HIGH, "No player matches the name %s.\n",playername);
 }
 
 //Archer end	(PlayerMute)
@@ -2116,23 +2125,23 @@ s = gi.argv(1);
 
 	if (strcmp(ent->myskills.email, ""))
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Your email address is %s, and can't be changed!\n",
+		safe_cprintf(ent, PRINT_HIGH, "Your email address is %s, and can't be changed!\n",
 			ent->myskills.email);
 		return;
 	}
 	else if (strlen(s) < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Email has not yet been set.\nCommand: email <address>\n");
+		safe_cprintf(ent, PRINT_HIGH, "Email has not yet been set.\nCommand: email <address>\n");
 		return;
 	}
 	if (strlen(s) >= 64)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Email address must be less than 64 characters.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Email address must be less than 64 characters.\n");
 		return;
 	}
 	strcpy(ent->myskills.email, s);
-	gi.cprintf(ent, PRINT_HIGH, "Email address has been set to %s.\n", ent->myskills.email);
-	gi.cprintf(ent, PRINT_HIGH, "If you lose your password, contact ghz@planetquake.com, and your password will be sent to the email address you provided.\n");
+	safe_cprintf(ent, PRINT_HIGH, "Email address has been set to %s.\n", ent->myskills.email);
+	safe_cprintf(ent, PRINT_HIGH, "If you lose your password, contact ghz@planetquake.com, and your password will be sent to the email address you provided.\n");
 	*/
 }
 
@@ -2142,21 +2151,21 @@ void Cmd_SetOwner_f (edict_t *ent)
 	s = gi.argv(1);
 	if (strlen(ent->myskills.owner) > 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "%s has already been claimed by %s.\n", ent->myskills.player_name, ent->myskills.owner);
+		safe_cprintf(ent, PRINT_HIGH, "%s has already been claimed by %s.\n", ent->myskills.player_name, ent->myskills.owner);
 		return;
 	}
 	else if (strlen(s) < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "%s has not yet been claimed.\nCommand: owner <name>\n", ent->myskills.player_name);
+		safe_cprintf(ent, PRINT_HIGH, "%s has not yet been claimed.\nCommand: owner <name>\n", ent->myskills.player_name);
 		return;
 	}
 	if (strlen(s) >= 24)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Owner string must be less than 24 characters long.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Owner string must be less than 24 characters long.\n");
 		return;
 	}
 	strcpy(ent->myskills.owner, s);
-	gi.cprintf(ent, PRINT_HIGH, "%s now belongs to %s.\n", ent->myskills.player_name, ent->myskills.owner);
+	safe_cprintf(ent, PRINT_HIGH, "%s now belongs to %s.\n", ent->myskills.player_name, ent->myskills.owner);
 }
 
 void cmd_whois(edict_t *ent, char *playername)
@@ -2169,11 +2178,11 @@ void cmd_whois(edict_t *ent, char *playername)
 		if (!temp || !temp->inuse || !temp->client) continue;
 		if(Q_strcasecmp(temp->myskills.player_name, playername) == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "%s belongs to %s.\n", playername, temp->myskills.owner);
+			safe_cprintf(ent, PRINT_HIGH, "%s belongs to %s.\n", playername, temp->myskills.owner);
 			return;
 		}
 	}
-	gi.cprintf(ent, PRINT_HIGH, "Can't find %s.\n", playername);
+	safe_cprintf(ent, PRINT_HIGH, "Can't find %s.\n", playername);
 }
 
 void node_think (edict_t *self)
@@ -2265,7 +2274,7 @@ void Cmd_MapSize_f (edict_t *ent)
 	if (tr.fraction < 1)
 		gi.dprintf("solid\n");
 
-	gi.cprintf(ent, PRINT_HIGH, "Map capacity is %.0f 64x64 units.\n", size);
+	safe_cprintf(ent, PRINT_HIGH, "Map capacity is %.0f 64x64 units.\n", size);
 	gi.dprintf("Map capacity is %.0f 64x64 units.\n", size);
 	free(nodes);
 }
@@ -2279,7 +2288,7 @@ void Cmd_AdminCmd (edict_t *ent)
 
 	if (!ent->myskills.administrator)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Access denied. You must be an administrator to issue commands.\n");
+		safe_cprintf(ent, PRINT_HIGH, "Access denied. You must be an administrator to issue commands.\n");
 		return;
 	}
 	cmd1 = gi.argv(1);
@@ -2288,7 +2297,7 @@ void Cmd_AdminCmd (edict_t *ent)
 
 	if (Q_stricmp(cmd1, "reset_player") == 0 && ent->myskills.administrator > 9)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Resetting %s's character data...\n", cmd2);
+		safe_cprintf(ent, PRINT_HIGH, "Resetting %s's character data...\n", cmd2);
 
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
@@ -2298,8 +2307,40 @@ void Cmd_AdminCmd (edict_t *ent)
 			message = LoPrint(message);
 		}
 		else
-			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
+			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 
+	}
+
+	if (!Q_stricmp(cmd1, "bot"))
+	{
+		if( !Q_stricmp (cmd2, "addbot") )
+		{ 
+			if(ctf->value) // name, skin, team
+				BOT_SpawnBot ( gi.argv(3), gi.argv(4), gi.argv(5), NULL );
+			else // name, skin
+				BOT_SpawnBot ( NULL, cmd3, gi.argv(4), NULL );
+		}	
+		// removebot
+		else if( !Q_stricmp (cmd2, "removebot") )
+			BOT_RemoveBot(gi.argv(3));
+
+		else if( !Q_stricmp (cmd2, "editnodes") )
+			AITools_InitEditnodes();
+
+		else if( !Q_stricmp (cmd2, "makenodes") )
+			AITools_InitMakenodes();
+
+		else if( !Q_stricmp (cmd2, "savenodes") )
+			AITools_SaveNodes();
+
+		else if( !Q_stricmp (cmd2, "addbotroam") )
+			AITools_AddBotRoamNode();
+
+		else if( !Q_stricmp (cmd2, "addmonster") )
+			M_default_Spawn ();
+
+		else
+			return false;
 	}
 
 	if (!Q_stricmp(cmd1, "debugsound"))
@@ -2316,7 +2357,7 @@ void Cmd_AdminCmd (edict_t *ent)
 
 	/*else if (Q_stricmp(cmd1, "upgrade_ability") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Upgrading ability #%d for %s...\n", atoi(cmd3), cmd2);
+		safe_cprintf(ent, PRINT_HIGH, "Upgrading ability #%d for %s...\n", atoi(cmd3), cmd2);
 
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
@@ -2330,12 +2371,12 @@ void Cmd_AdminCmd (edict_t *ent)
 			message = LoPrint(message);
 		}
 		else
-			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
+			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 	}*/
 	else if (Q_stricmp(cmd1, "boss") == 0)
 
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Editing boss level for %s...\n", cmd2);
+		safe_cprintf(ent, PRINT_HIGH, "Editing boss level for %s...\n", cmd2);
 
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
@@ -2346,11 +2387,11 @@ void Cmd_AdminCmd (edict_t *ent)
 			message = LoPrint(message);
 		}
 		else
-			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
+			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 	}
 	else if (Q_stricmp(cmd1, "addexp") == 0 && ent->myskills.administrator > 9)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Adding exp for %s...\n", cmd2);
+		safe_cprintf(ent, PRINT_HIGH, "Adding exp for %s...\n", cmd2);
 
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
@@ -2364,7 +2405,7 @@ void Cmd_AdminCmd (edict_t *ent)
 			message = LoPrint(message);
 		}
 		else
-			gi.cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
+			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 	}
 	else if (Q_stricmp(cmd1, "srune") == 0)
 	{
@@ -2391,7 +2432,7 @@ void Cmd_AdminCmd (edict_t *ent)
 	else if (Q_stricmp(cmd1, "incinv") == 0)
 	{
 		invasion_difficulty_level++;
-		gi.cprintf(ent, PRINT_HIGH, "invasion level now %d\n", invasion_difficulty_level);
+		safe_cprintf(ent, PRINT_HIGH, "invasion level now %d\n", invasion_difficulty_level);
 	}
 	else if (Q_stricmp(cmd1, "title") == 0)
 	{
@@ -2399,18 +2440,18 @@ void Cmd_AdminCmd (edict_t *ent)
 		{
 			if (!strcmp(cmd3, ""))
 			{
-				gi.cprintf(ent, PRINT_HIGH, "%s's title was reset\n", player->client->pers.netname);
+				safe_cprintf(ent, PRINT_HIGH, "%s's title was reset\n", player->client->pers.netname);
 				player->myskills.title[0] = 0;
 			}
 			else
 			{
 				if (strlen(cmd3) >= 24)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Title variable must be less than 24 characters.\n");
+					safe_cprintf(ent, PRINT_HIGH, "Title variable must be less than 24 characters.\n");
 				}
 				else
 				{
-					gi.cprintf(ent, PRINT_HIGH, "%s's title is now %s\n", player->client->pers.netname, cmd3);
+					safe_cprintf(ent, PRINT_HIGH, "%s's title is now %s\n", player->client->pers.netname, cmd3);
 					strcpy(player->myskills.title, cmd3);
 				}
 			}
@@ -2423,12 +2464,12 @@ void Cmd_AdminCmd (edict_t *ent)
 			if (player->myskills.administrator)
 			{
 				player->myskills.administrator = 0;
-				gi.cprintf(ent, PRINT_HIGH, "%s's admin flag was reset\n", player->client->pers.netname);
+				safe_cprintf(ent, PRINT_HIGH, "%s's admin flag was reset\n", player->client->pers.netname);
 			}
 			else
 			{
 				player->myskills.administrator = 1;
-				gi.cprintf(ent, PRINT_HIGH, "%s's admin flag is enabled\n", player->client->pers.netname);
+				safe_cprintf(ent, PRINT_HIGH, "%s's admin flag is enabled\n", player->client->pers.netname);
 			}
 		}
 	}
@@ -2438,10 +2479,10 @@ void Cmd_AdminCmd (edict_t *ent)
 	}
 	else if (Q_stricmp(cmd1, "compass") == 0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Position = {%f, %f, %f}\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		safe_cprintf(ent, PRINT_HIGH, "Position = {%f, %f, %f}\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
 	}
 	else
-		gi.cprintf(ent, PRINT_HIGH, "Level %d access granted for %s.\n", ent->myskills.administrator, ent->client->pers.netname);
+		safe_cprintf(ent, PRINT_HIGH, "Level %d access granted for %s.\n", ent->myskills.administrator, ent->client->pers.netname);
 }
 
 // az begin
@@ -2458,13 +2499,13 @@ void Cmd_TransCredits(edict_t *ent)
 		return;
 
 	if (gi.argc() < 3)
-		gi.cprintf(ent, PRINT_HIGH, "transfercredits <player> <amount>\n");
+		safe_cprintf(ent, PRINT_HIGH, "transfercredits <player> <amount>\n");
 	cmd1 = gi.argv(1);
 	cmd2 = gi.argv(2);
 	creditval = atoi(cmd2);
 
 	if (creditval < 0)
-		gi.cprintf(ent, PRINT_HIGH, "You can't really /give/ that amount of credits, you know.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You can't really /give/ that amount of credits, you know.\n");
 
 	if ( (player = FindPlayerByName(cmd1)) && 
 			!G_IsSpectator(player))
@@ -2473,18 +2514,18 @@ void Cmd_TransCredits(edict_t *ent)
 		{
 			player->myskills.credits += creditval;
 			ent->myskills.credits -= creditval;
-			gi.cprintf(player, PRINT_MEDIUM, "%s transfered %d credits to you.\n", ent->myskills.player_name, creditval);
-			gi.cprintf(ent, PRINT_MEDIUM, "You transfer %d credits to %s. (%d left)\n", creditval, player->myskills.player_name, ent->myskills.credits);
+			safe_cprintf(player, PRINT_MEDIUM, "%s transfered %d credits to you.\n", ent->myskills.player_name, creditval);
+			safe_cprintf(ent, PRINT_MEDIUM, "You transfer %d credits to %s. (%d left)\n", creditval, player->myskills.player_name, ent->myskills.credits);
 
 			WriteToLogFile(ent->myskills.player_name, va("Transfers %d credits to %s. %d left\n", 
 				creditval, player->myskills.player_name, ent->myskills.credits));
 			WriteToLogFile(player->myskills.player_name, va("Got %d credits from %s. (%d after transfer)\n",
 				creditval, ent->myskills.player_name, player->myskills.credits));
 		}else
-			gi.cprintf(ent, PRINT_HIGH, "Not enough credits. (Got %d, need %d, you need %d more.\n)", 
+			safe_cprintf(ent, PRINT_HIGH, "Not enough credits. (Got %d, need %d, you need %d more.\n)", 
 			ent->myskills.credits, creditval,  creditval - ent->myskills.credits);
 	}else
-		gi.cprintf(ent, PRINT_HIGH, "Player \"%s\" not found.\n", cmd1);
+		safe_cprintf(ent, PRINT_HIGH, "Player \"%s\" not found.\n", cmd1);
 }
 // az end
 
@@ -2601,7 +2642,7 @@ void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, floa
 	*cost_mult = (float)cubes / cost;
 	if (*cost_mult < 1.5 || *cost_mult > 3.0)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
 			floattoint(1.5 * cost), floattoint(3.0 * cost));
 		return;
 	}
@@ -2621,7 +2662,7 @@ qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, 
 
 	if (*cost_mult < 1.2 || *cost_mult > max_multiplier)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
+		safe_cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
 			floattoint(1.2 * cost), floattoint(max_multiplier * cost));
 		return false;
 	}
@@ -2640,7 +2681,7 @@ void Cmd_Overload_f (edict_t *ent)
 
 	if (talentLevel < 1)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "You need to upgrade overload talent before you can use it.\n");
+		safe_cprintf(ent, PRINT_HIGH, "You need to upgrade overload talent before you can use it.\n");
 		return;
 	}
 
@@ -2690,7 +2731,7 @@ void Cmd_Overload_f (edict_t *ent)
 			Cmd_BombPlayer(ent, skill_mult, cost_mult);
 	}
 	else
-		gi.cprintf(ent, PRINT_HIGH, "syntax: overload <# cubes> <spell command>\n");
+		safe_cprintf(ent, PRINT_HIGH, "syntax: overload <# cubes> <spell command>\n");
 }
 
 void Cmd_DeathRay_f (edict_t *ent, qboolean heal)
@@ -2755,7 +2796,7 @@ void Cmd_WritePos_f (edict_t *ent)
 				(int)pos[0], (int)pos[1], (int)pos[2]));
 			WriteStr(fptr, "}\n");
 
-			gi.cprintf(ent, PRINT_HIGH, "Added defenderspawn to file.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Added defenderspawn to file.\n");
 		}
 		else if (!Q_strcasecmp(gi.argv(1), "monsterspawn"))
 		{
@@ -2769,7 +2810,7 @@ void Cmd_WritePos_f (edict_t *ent)
 				(int)pos[0], (int)pos[1], (int)pos[2]));
 			WriteStr(fptr, "}\n");
 
-			gi.cprintf(ent, PRINT_HIGH, "Added monsterspawn to file.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Added monsterspawn to file.\n");
 		}
 		else if (!Q_strcasecmp(gi.argv(1), "playerspawn"))
 		{
@@ -2782,14 +2823,14 @@ void Cmd_WritePos_f (edict_t *ent)
 				(int)pos[0], (int)pos[1], (int)pos[2]));
 			WriteStr(fptr, "}\n");
 
-			gi.cprintf(ent, PRINT_HIGH, "Added playerspawn to file.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Added playerspawn to file.\n");
 		}
 		else
-			gi.cprintf(ent, PRINT_HIGH, "Entity type not recognized.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Entity type not recognized.\n");
 		fclose(fptr);
 	}
 	else
-		gi.cprintf(ent, PRINT_HIGH, "Unable to append to file: %s\n", filename);
+		safe_cprintf(ent, PRINT_HIGH, "Unable to append to file: %s\n", filename);
 }
 
 // az rune manipulation
@@ -2809,14 +2850,14 @@ void Cmd_Rune_f(edict_t *ent)
 				int index = atoi(gi.argv(2));
 				if (index < 0)
 				{
-					gi.cprintf(ent, PRINT_LOW, "Very funny.\n");
+					safe_cprintf(ent, PRINT_LOW, "Very funny.\n");
 					return;
 				}else if (index < MAX_VRXITEMS)
 				{
 					V_EquipItem(ent, index);
 					return;
 				}
-				gi.cprintf(ent, PRINT_LOW, "Nope. Out of bounds.\n");
+				safe_cprintf(ent, PRINT_LOW, "Nope. Out of bounds.\n");
 				return;
 			}
 		}
@@ -2831,9 +2872,9 @@ void Cmd_Rune_f(edict_t *ent)
 				if (index < 3) // Equiped rune
 				{
 					if (index > 0) 
-						gi.cprintf(ent, PRINT_LOW, "You can't move equipped runes. Unequip them first!\n");
+						safe_cprintf(ent, PRINT_LOW, "You can't move equipped runes. Unequip them first!\n");
 					else // Negative index?
-						gi.cprintf(ent, PRINT_LOW, "Nope.\n");
+						safe_cprintf(ent, PRINT_LOW, "Nope.\n");
 					return;
 				}else if (index < MAX_VRXITEMS) // index in bounds.
 				{
@@ -2841,11 +2882,11 @@ void Cmd_Rune_f(edict_t *ent)
 					if (moveto > 0 && moveto < MAX_VRXITEMS) // moveto in bounds
 					{
 						V_ItemSwap(&ent->myskills.items[index], &ent->myskills.items[moveto]);
-						gi.cprintf(ent, PRINT_LOW, "Items swapped successfully.\n");
+						safe_cprintf(ent, PRINT_LOW, "Items swapped successfully.\n");
 						return;
 					}else
 					{
-						gi.cprintf(ent, PRINT_LOW, "Out of bounds.\n");
+						safe_cprintf(ent, PRINT_LOW, "Out of bounds.\n");
 						return;
 					}
 
@@ -2854,7 +2895,7 @@ void Cmd_Rune_f(edict_t *ent)
 			} // endif (swap)
 		} //endif (argc 4)
 	}
-	gi.cprintf(ent, PRINT_LOW, "rune [[manip/swap] [rune index [rune swap index]]]\n");
+	safe_cprintf(ent, PRINT_LOW, "rune [[manip/swap] [rune index [rune swap index]]]\n");
 	
 }
 
@@ -2983,7 +3024,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "detpipes") == 0)
 		Cmd_DetPipes_f (ent);
 	else if (Q_stricmp (cmd, "monsters") == 0)
-		gi.cprintf(ent, PRINT_HIGH, "Monsters: %d/%d\n", ent->num_monsters, MAX_MONSTERS);
+		safe_cprintf(ent, PRINT_HIGH, "Monsters: %d/%d\n", ent->num_monsters, MAX_MONSTERS);
 	else if ((Q_strcasecmp(cmd, "spell_corpseexplode") == 0) || (Q_strcasecmp(cmd, "detonatebody") == 0))
 	    Cmd_CorpseExplode (ent);
 	else if (Q_stricmp (cmd, "sspeed") == 0)
@@ -3012,7 +3053,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "speech") == 0)
 		Cmd_Speech (ent, atoi(gi.argv(1)));
 	else if (Q_stricmp (cmd, "lasers") == 0)
-		gi.cprintf(ent, PRINT_HIGH, "Lasers: %d/%d\n", ent->num_lasers, MAX_LASERS);
+		safe_cprintf(ent, PRINT_HIGH, "Lasers: %d/%d\n", ent->num_lasers, MAX_LASERS);
 	else if (Q_stricmp (cmd, "admincmd") == 0)
 		Cmd_AdminCmd(ent);
 	else if (Q_stricmp (cmd, "transfercredits") == 0)
@@ -3060,12 +3101,12 @@ void ClientCommand (edict_t *ent)
 		char *opt = gi.argv(1);
 		if (Q_strcasecmp(opt, "on") == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Trading is enabled.\nPlayers may now trade with you.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Trading is enabled.\nPlayers may now trade with you.\n");
 			ent->client->trade_off = false;
 		}
 		else if (Q_strcasecmp(opt, "off") == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Trading is disabled.\nPlayers are now unable to trade with you.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Trading is disabled.\nPlayers are now unable to trade with you.\n");
 			ent->client->trade_off = true;
 		}
 		else ShowTradeMenu(ent);
@@ -3096,22 +3137,22 @@ void ClientCommand (edict_t *ent)
 			{
 				if (ent->client->weapon_mode==3)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Rocket Mode\n");
+					safe_cprintf(ent, PRINT_HIGH, "Rocket Mode\n");
 					ent->client->weapon_mode=0;
 				}
 				else if (ent->client->weapon_mode==2)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Blaster Mode\n");
+					safe_cprintf(ent, PRINT_HIGH, "Blaster Mode\n");
 					ent->client->weapon_mode=3;
 				}
 				else if (ent->client->weapon_mode==1)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Bullet Mode\n");
+					safe_cprintf(ent, PRINT_HIGH, "Bullet Mode\n");
 					ent->client->weapon_mode=2;
 				}
 				else
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Punch Mode\n");
+					safe_cprintf(ent, PRINT_HIGH, "Punch Mode\n");
 					ent->client->weapon_mode=1;
 				}
 				return;
@@ -3129,12 +3170,12 @@ void ClientCommand (edict_t *ent)
 		{
 			if (ent->client->weapon_mode)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Blaster\n");
+				safe_cprintf(ent, PRINT_HIGH, "Blaster\n");
 				ent->client->weapon_mode = 0;
 			}
 			else
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Smart rockets\n");
+				safe_cprintf(ent, PRINT_HIGH, "Smart rockets\n");
 				ent->client->weapon_mode = 1;
 			}
 			return;
@@ -3144,26 +3185,26 @@ void ClientCommand (edict_t *ent)
 		{
 			if (ent->client->weapon_mode==2)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
+				safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
 				ent->client->weapon_mode=0;
 			}
 			else if (ent->client->weapon_mode==1)
 			{
 				if (ent->myskills.abilities[MORPH_MASTERY].current_level > 0)
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Blaster Bolt\n");
+					safe_cprintf(ent, PRINT_HIGH, "Blaster Bolt\n");
 					ent->client->weapon_mode=2;
 				}
 				else
 				{
-					gi.cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
+					safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
 					ent->client->weapon_mode=0;
 				}
 
 			}
 			else
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Healing\n");
+				safe_cprintf(ent, PRINT_HIGH, "Healing\n");
 				ent->client->weapon_mode=1;
 			}
 			return;
@@ -3173,17 +3214,17 @@ void ClientCommand (edict_t *ent)
 		{
 			if (ent->client->weapon_mode == 2)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Punch\n");
+				safe_cprintf(ent, PRINT_HIGH, "Punch\n");
 				ent->client->weapon_mode = 0;
 			}
 			else if (ent->client->weapon_mode == 1)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Crush\n");
+				safe_cprintf(ent, PRINT_HIGH, "Crush\n");
 				ent->client->weapon_mode = 2;
 			}
 			else
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Slash\n");
+				safe_cprintf(ent, PRINT_HIGH, "Slash\n");
 				ent->client->weapon_mode = 1;
 			}
 			return;
@@ -3251,14 +3292,14 @@ void ClientCommand (edict_t *ent)
 		{
 			if (numAllies(ent) && !ent->client->show_allyinfo)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Showing ally statusbars\n");
+				safe_cprintf(ent, PRINT_HIGH, "Showing ally statusbars\n");
 				ent->client->show_allyinfo = true;
 				ent->client->showscores = true;
 				ent->client->showinventory = false;
 			}
 			else
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Ally statusbars disabled\n");
+				safe_cprintf(ent, PRINT_HIGH, "Ally statusbars disabled\n");
 				ent->client->show_allyinfo = false;
 				ent->client->showscores = false;
 				ent->client->showinventory = false;
@@ -3274,11 +3315,11 @@ void ClientCommand (edict_t *ent)
 
 		if (!ent->teamnum)
 		{
-            gi.cprintf(ent, PRINT_HIGH, "You are not on a team.\n");
+            safe_cprintf(ent, PRINT_HIGH, "You are not on a team.\n");
 			return;
 		}
 
-		gi.cprintf(ent, PRINT_HIGH, "**************************\n**You are on the %s team**\n**************************\n   Team members:\n", TeamName(ent));
+		safe_cprintf(ent, PRINT_HIGH, "**************************\n**You are on the %s team**\n**************************\n   Team members:\n", TeamName(ent));
 		for(i = 0; i < game.maxclients; ++i)
 		{
 			edict_t *e = g_edicts + i;
@@ -3286,9 +3327,9 @@ void ClientCommand (edict_t *ent)
 				continue;
 			if (e->client->resp.spectator || e->client->pers.spectator || (e->teamnum != ent->teamnum))
 				continue;
-            gi.cprintf(ent, PRINT_HIGH, "      %s", e->myskills.player_name);
+            safe_cprintf(ent, PRINT_HIGH, "      %s", e->myskills.player_name);
 		}
-		gi.cprintf(ent, PRINT_HIGH, "\n");
+		safe_cprintf(ent, PRINT_HIGH, "\n");
 	}
 	else if (Q_stricmp (cmd, "gravjump") == 0)	//3.0 matrix jump command
 	{
@@ -3305,8 +3346,8 @@ void ClientCommand (edict_t *ent)
 		//Return string of ability at that index
 		int index = atoi(gi.argv(1));
 		if ((index < 0) || (index > MAX_ABILITIES))
-			gi.cprintf(ent, PRINT_HIGH, "Bad Ability index: %d\n", index);
-		else gi.cprintf(ent, PRINT_HIGH, "Ability number %d = %s\n", index, GetAbilityString(index));
+			safe_cprintf(ent, PRINT_HIGH, "Bad Ability index: %d\n", index);
+		else safe_cprintf(ent, PRINT_HIGH, "Ability number %d = %s\n", index, GetAbilityString(index));
 	}
 	//3.0 curse commands
 	else if (Q_strcasecmp(cmd, "curse") == 0)
@@ -3354,7 +3395,7 @@ void ClientCommand (edict_t *ent)
 	{
 		int time = atoi(gi.argv(2));		
 		if (time > 0) cmd_PlayerMute(ent, gi.argv(1), time);
-		else gi.cprintf(ent, PRINT_HIGH, "Invalid mute duration.\n  Command: mute <playername> <seconds>\n");
+		else safe_cprintf(ent, PRINT_HIGH, "Invalid mute duration.\n  Command: mute <playername> <seconds>\n");
 	}
 	else if (Q_stricmp (cmd, "bbox") == 0)
 	{
@@ -3383,12 +3424,12 @@ void ClientCommand (edict_t *ent)
 
 			//TODO: add a mana shield graphical effect?
 
-			if(ent->manashield) gi.cprintf(ent, PRINT_HIGH, "Manashield enabled.\n");
-			else				gi.cprintf(ent, PRINT_HIGH, "Manashield disabled.\n");
+			if(ent->manashield) safe_cprintf(ent, PRINT_HIGH, "Manashield enabled.\n");
+			else				safe_cprintf(ent, PRINT_HIGH, "Manashield disabled.\n");
 		}
 		else
 		{
-			gi.cprintf(ent, PRINT_HIGH, "You must upgrade manashield before you can use it.\n");
+			safe_cprintf(ent, PRINT_HIGH, "You must upgrade manashield before you can use it.\n");
 		}
 	}
 	else if (!Q_stricmp(cmd, "armorbomb"))
@@ -3416,7 +3457,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if(Q_strcasecmp(gi.argv(1), "remove") == 0)
 		{
-			gi.cprintf(ent, PRINT_HIGH, "Totems removed.\n");
+			safe_cprintf(ent, PRINT_HIGH, "Totems removed.\n");
 			if(ent->totem2)		RemoveTotem(ent->totem2);
 			if(ent->totem1)		RemoveTotem(ent->totem1);
 		}
@@ -3438,12 +3479,12 @@ void ClientCommand (edict_t *ent)
 
 			if (totem && totem->style == 1)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Air totem will protect others.\n");
+				safe_cprintf(ent, PRINT_HIGH, "Air totem will protect others.\n");
 				totem->style = 0;
 			}
 			else if (totem)
 			{
-				gi.cprintf(ent, PRINT_HIGH, "Air totem will protect only you.\n");
+				safe_cprintf(ent, PRINT_HIGH, "Air totem will protect only you.\n");
 				totem->style = 1;
 			}
 
@@ -3537,7 +3578,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "writepos") == 0)
 		Cmd_WritePos_f(ent);
 	//K03 End
-	else gi.cprintf(ent, PRINT_HIGH, "Unknown client command: %s\n", cmd);
+	else safe_cprintf(ent, PRINT_HIGH, "Unknown client command: %s\n", cmd);
 	/*
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
