@@ -186,6 +186,7 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	float	temp;
 	que_t	*slot = NULL;
 	qboolean physicalDamage;
+	edict_t *dclient;
 	int talentLevel;
 
 	dtype = G_DamageType(mod, dflags);
@@ -193,6 +194,18 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	// cripple does not get any damage bonuses, as it is already very powerful (% health)
 	if (mod == MOD_CRIPPLE)
 		return damage;
+
+	dclient = G_GetClient(targ);
+	if (dclient)
+	{
+		if (hw->value)
+		{
+			if (dclient->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
+			{
+				damage *= 2.5;
+			}
+		}
+	}
 
 	// spirits shoot a blaster, but it should be (D_MAGICAL | D_ENERGY)
 	if (attacker->mtype == M_YANGSPIRIT)	
@@ -476,13 +489,15 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	float	temp;
 	que_t	*aura=NULL;
 	int talentLevel;
-	edict_t *activator;
+	edict_t *activator, *dclient;
 	qboolean invasion_friendlyfire = false;
 
 	//gi.dprintf("G_SubDamage()\n");
 	//gi.dprintf("%d damage before G_SubDamage() modification\n", damage);
 
 	dtype = G_DamageType(mod, dflags);
+
+	dclient = G_GetClient(targ);
 
 	if (dflags & DAMAGE_NO_PROTECTION)
 		return damage;
@@ -811,8 +826,17 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (temp < 0.25)
 				temp = 0.25;
 
-			if (random() >= temp)
-				return 0;
+			if (!hw->value)
+			{
+				if (random() >= temp)
+					return 0;
+			}else
+			{
+				// Doesn't have the halo? Have ghost.
+				if (dclient && !dclient->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
+					if (random() >= temp)
+						return 0;
+			}
 
 			//Talent: Second Chance
 			if(talentSlot != -1)

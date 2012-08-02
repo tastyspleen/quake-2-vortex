@@ -524,6 +524,13 @@ void EndDMLevel (void)
 					changing = true;
 				}
 				break;
+			case MAPMODE_VHW:
+				if (!hw->value)
+				{
+					gi.bprintf(PRINT_HIGH, "Switching to Vortex Holywars!\n");
+					changing = true;
+				}
+				break;
 			}
 
 			level.modechange = changing;
@@ -567,6 +574,8 @@ void EndDMLevel (void)
 				mode = MAPMODE_CTF;
 			else if (ffa->value)
 				mode = MAPMODE_FFA;
+			else if (hw->value)
+				mode = MAPMODE_VHW;
 
 			else mode = MAPMODE_PVP;
 

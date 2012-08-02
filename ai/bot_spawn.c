@@ -316,6 +316,8 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	ent->svflags &= ~SVF_NOCLIENT;
 	ent->client->ps.gunindex = 0;
 
+	PutClientInServer(ent);
+
 	if (!KillBox (ent))
 	{	// could't spawn in?
 	}
