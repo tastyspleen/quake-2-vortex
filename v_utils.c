@@ -2191,7 +2191,9 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 					ent->s.effects |= EF_FLAG1;
 					ent->s.renderfx |= RF_SHELL_RED;
 					ent->s.effects |= EF_COLOR_SHELL;
-				}else
+				}
+				
+				if (hw->value && !ent->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
 				{
 					ent->s.effects |= EF_SPHERETRANS;
 				}

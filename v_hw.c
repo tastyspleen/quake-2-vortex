@@ -120,10 +120,6 @@ qboolean hw_pickupflag (edict_t *ent, edict_t *other)
 	if (!other || !other->inuse || !other->client || G_IsSpectator(other))
 		return false;
 
-	// Non-morphed polts can't pickup flag.
-	if (other->client && other->myskills.class_num == CLASS_POLTERGEIST && !other->mtype)
-		return false;
-
 	// disable movement abilities
 	if (other->client)
 	{
