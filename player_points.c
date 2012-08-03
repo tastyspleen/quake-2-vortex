@@ -481,7 +481,11 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 	player->client->idle_frames = 0;
 
 	// increment spree
-	//if (pvm->value)
+	if (pvm->value)
+	{
+		player->myskills.streak++;
+		VortexSpreeAbilities(player);
+	}
 	if ((player->myskills.respawns & HOSTILE_MONSTERS) //4.5 PvM preference players only
 		&& !(player->myskills.respawns & HOSTILE_PLAYERS))
 	{
