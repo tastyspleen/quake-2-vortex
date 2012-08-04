@@ -2340,7 +2340,7 @@ void Cmd_AdminCmd (edict_t *ent)
 			M_default_Spawn ();
 
 		else
-			return false;
+			return;
 	}
 
 	if (!Q_stricmp(cmd1, "debugsound"))
