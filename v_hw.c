@@ -10,7 +10,9 @@
 
 int hw_index = 0;
 
-edict_t *hw_deathcleanup(edict_t *targ, edict_t *attacker)
+int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target);
+
+void hw_deathcleanup(edict_t *targ, edict_t *attacker)
 {
 	edict_t *clienttarg, *clientattacker, *player;
 	int i;
@@ -48,6 +50,7 @@ edict_t *hw_deathcleanup(edict_t *targ, edict_t *attacker)
 		
 		PVP_AwardKill(player, targ, targ);
 	}
+
 }
 
 edict_t *hw_flagcarrier()
@@ -69,7 +72,7 @@ edict_t *hw_flagcarrier()
 
 void hw_awardpoints (void)
 {
-	int		i, points, credits;
+	int		points, credits;
 	edict_t	*carrier;
 
 	if (!(carrier = hw_flagcarrier()))
@@ -115,7 +118,6 @@ void hw_laserthink (edict_t *self)
 qboolean hw_pickupflag (edict_t *ent, edict_t *other)
 {
 	int		i;
-	edict_t *cl_ent;
 
 	if (!other || !other->inuse || !other->client || G_IsSpectator(other))
 		return false;

@@ -610,6 +610,8 @@ void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
 	}
 }
 
+void hw_deathcleanup(edict_t *targ, edict_t *attacker);
+
 int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 {
 	int			max_points, clevel, base_exp;
