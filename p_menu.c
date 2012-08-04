@@ -49,13 +49,28 @@ void setHardMax(edict_t *ent, int index)
 			// Special cases for the non-general ability mode.
 
 		case REGENERATION:
-		case STRENGTH:
-		case RESISTANCE: 
 			if (!generalabmode->value)
 			{
 				if (ent->myskills.abilities[index].general_skill)
 					ent->myskills.abilities[index].hard_max = 15;
 				break;
+			}
+
+		case STRENGTH:
+		case RESISTANCE:
+			if (!generalabmode->value)
+			{
+				if (ent->myskills.abilities[index].general_skill && 
+					!ent->myskills.class_num == CLASS_SOLDIER)
+				{					
+					ent->myskills.abilities[index].hard_max = 15;
+					
+				}
+				else
+				{
+					ent->myskills.abilities[index].hard_max = 25;					
+				}	
+				break;			
 			}
 
 		//Everything else

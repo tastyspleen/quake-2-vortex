@@ -481,11 +481,7 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 	player->client->idle_frames = 0;
 
 	// increment spree
-	if (pvm->value)
-	{
-		player->myskills.streak++;
-		VortexSpreeAbilities(player);
-	}
+	//if (pvm->value)
 	if ((player->myskills.respawns & HOSTILE_MONSTERS) //4.5 PvM preference players only
 		&& !(player->myskills.respawns & HOSTILE_PLAYERS))
 	{
@@ -755,7 +751,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 		clevel = targ->monsterinfo.level;
 
 		// increment spree counter in invasion mode or if the attacker has PvM combat preferences in FFA mode
-		if (invasion->value || (ffa->value && V_MatchPlayerPrefs(attacker, 1, 0)))
+		if (invasion->value || (ffa->value && V_MatchPlayerPrefs(attacker, 1, 0)) || pvm->value )
 		{
 			attacker->myskills.streak++;
 			VortexSpreeAbilities(attacker);
