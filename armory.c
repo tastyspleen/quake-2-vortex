@@ -5,6 +5,7 @@
 void OpenPurchaseMenu (edict_t *ent, int page_num, int lastline);
 void OpenBuyRuneMenu(edict_t *ent, int page_num, int lastline);
 void OpenSellMenu (edict_t *ent, int lastline);
+void Cmd_Armory_f(edict_t *ent, int selection);
 
 int V_ItemCount(edict_t *ent, int itemType)
 {
@@ -138,6 +139,57 @@ void GiveRuneToArmory(item_t *rune)
 	}
 	//else item is discarded.
 
+}
+
+void buyPoint(edict_t *ent, int itemindex)
+{
+	if (itemindex > 0)
+		Cmd_Armory_f(ent, itemindex);
+	else
+		OpenPurchaseMenu(ent, 1, 0);
+}
+
+void armoryConfirmOption(edict_t *ent, int selection)
+{
+	char* selectionc = "";
+	if (selection == 29 || selection == 30)
+	{
+		if (ent->myskills.level < 5)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "You can't buy points until level 5.\n");
+			return;
+		}
+	}
+
+	if (!ShowMenu(ent))
+		return;
+	clearmenu(ent);
+
+
+	addlinetomenu(ent, "Confirm Selection", MENU_GREEN_CENTERED);
+	addlinetomenu(ent, " ", 0);
+
+	switch (selection)
+	{
+	case 28: selectionc = "a reset"; break;
+	case 29: selectionc = "an ability point"; break;
+	case 30: selectionc = "two weapon points"; break;
+	}
+
+	addlinetomenu(ent, "Are you sure you " , MENU_WHITE_CENTERED);
+	addlinetomenu(ent, "want to buy", MENU_WHITE_CENTERED);
+	addlinetomenu(ent, va("%s?\n", selectionc), MENU_WHITE_CENTERED);
+	addlinetomenu(ent, " ", 0);
+	addlinetomenu(ent, " ", 0);
+	addlinetomenu(ent, " ", 0);
+	addlinetomenu(ent, " ", 0);
+
+	addlinetomenu(ent, "Yes", selection);
+	addlinetomenu(ent, "No", -1);
+
+	setmenuhandler(ent, buyPoint);
+
+	showmenu(ent);
 }
 
 //************************************************************************************************
@@ -303,16 +355,6 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		return;
 	}
 
-	if (selection == 29 || selection == 30)
-	{
-		if (ent->myskills.level < 5)
-		{
-			safe_cprintf(ent, PRINT_HIGH, "You can't buy points until level 5.\n");
-			return;
-		}
-	}
-
-
 	//If a weapon was purchased
 	if ((selection < 11) && (selection > 0))
 	{
@@ -457,7 +499,13 @@ void PurchaseMenu_handler (edict_t *ent, int option)
 	}
 
 	//Try to buy it
-	Cmd_Armory_f(ent, option);
+	if (option > 27) // reset, ab pt, weap pt
+	{
+		armoryConfirmOption(ent, option);
+		return;
+	}
+	else 
+		Cmd_Armory_f(ent, option);
 
 	/*
 	This next bit of code fixes a logic error in the menu, where

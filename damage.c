@@ -798,7 +798,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (!V_IsPVP() || !ffa->value)
 				temp = 1 + 0.1 * targ->myskills.abilities[RESISTANCE].current_level;
 			// PvP modes are getting frustrating with players that are too resisting
-			else if ( (V_IsPVP() || ffa->value) && targ->myskills.respawns & HOSTILE_PLAYERS )
+			else if ( (!pvm->value && !invasion->value) && targ->myskills.respawns & HOSTILE_PLAYERS )
 				temp = 1 + 0.066 * targ->myskills.abilities[RESISTANCE].current_level;
 
 			//Talent: Improved Resist
@@ -868,28 +868,28 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		{
 			if(!targ->myskills.abilities[SPLASH_RESIST].disable)
 			{
-				Resistance = min(Resistance, 0.66);
+				Resistance = min(Resistance, 0.4);
 			}
 		}
 		else if ((dtype & D_PIERCING) && (targ->myskills.abilities[PIERCING_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[PIERCING_RESIST].disable)
-				Resistance = min(Resistance, 0.66);
+				Resistance = min(Resistance, 0.4);
 		}
 		else if ((dtype & D_ENERGY) && (targ->myskills.abilities[ENERGY_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[ENERGY_RESIST].disable)
-				Resistance = min(Resistance, 0.66);
+				Resistance = min(Resistance, 0.4);
 		}
 		else if ((dtype & D_SHELL) && (targ->myskills.abilities[SHELL_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[SHELL_RESIST].disable)
-				Resistance = min(Resistance, 0.66);
+				Resistance = min(Resistance, 0.4);
 		}
 		else if ((dtype & D_BULLET) && (targ->myskills.abilities[BULLET_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[BULLET_RESIST].disable)
-				Resistance = min(Resistance, 0.66);
+				Resistance = min(Resistance, 0.4);
 		}
 
 		//Talent: Manashield   

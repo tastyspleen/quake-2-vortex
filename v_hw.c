@@ -22,7 +22,7 @@ void hw_deathcleanup(edict_t *targ, edict_t *attacker)
 
 	if (clienttarg->client->pers.inventory[hw_index])
 	{
-		hw_dropflag(targ, FindItem("Halo")); // DROP IT WUB WUB
+		hw_dropflag(clienttarg, FindItem("Halo")); // DROP IT WUB WUB
 
 		gi.bprintf(PRINT_HIGH, "%s killed the saint!\n", 
 			clientattacker ? clientattacker->client->pers.netname : "Nobody (?)");
@@ -62,7 +62,7 @@ edict_t *hw_flagcarrier()
 	{
 		cl = &g_edicts[i+1];
 
-		if (cl->client->pers.inventory[hw_index])
+		if (cl->client && cl->client->pers.inventory[hw_index])
 		{
 			return cl; // got our carrier
 		}
