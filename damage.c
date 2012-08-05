@@ -491,6 +491,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	int talentLevel;
 	edict_t *activator, *dclient;
 	qboolean invasion_friendlyfire = false;
+	float Resistance = 1.0; // We find the highest resist value and only use THAT.
 
 	//gi.dprintf("G_SubDamage()\n");
 	//gi.dprintf("%d damage before G_SubDamage() modification\n", damage);
@@ -569,7 +570,9 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		return 0;
 
 	if (invasion_friendlyfire)
-		damage *= 0.5;
+	{
+		Resistance = min(Resistance, 0.5);
+	}
 
 	//Talent: Bombardier - reduces self-inflicted grenade damage
 	if (PM_GetPlayer(targ) == PM_GetPlayer(attacker) 
@@ -577,47 +580,47 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	{
 		talentLevel = getTalentLevel(targ, TALENT_BOMBARDIER);
 		if (mod == MOD_EMP)
-			damage *= 1.0 - 0.16 * talentLevel;
+			Resistance = min(Resistance, 1.0 - 0.16 * talentLevel);
 		else
-			damage *= 1.0 - 0.12 * talentLevel; // damage reduced to 20% at talent level 5 (explosive damage already reduced 50% in t_radiusdamage)
+			Resistance = min(Resistance, 1.0 - 0.12 * talentLevel); // damage reduced to 20% at talent level 5 (explosive damage already reduced 50% in t_radiusdamage)
 	}
 
 	// hellspawn gets extra resistance against other summonables
 	if ((targ->mtype == M_SKULL) && (attacker->mtype != M_SKULL) && !attacker->client && !PM_MonsterHasPilot(attacker))
 	{
 		if (pvm->value || invasion->value)
-			damage *= 0.5;
+			Resistance = min(Resistance, 0.5);
 		else
-			damage *= 0.66;
+			Resistance = min(Resistance, 0.66);
 	}
 
 	// spores get extra resistance to other summonables
 	if ((targ->mtype == M_SPIKEBALL) && (attacker->mtype != M_SPIKEBALL) && !attacker->client && !PM_MonsterHasPilot(attacker))
 	{
 		if (pvm->value || invasion->value)
-			damage *= 0.5;
+			Resistance = min(Resistance, 0.5);
 		else
-			damage *= 0.66;
+			Resistance = min(Resistance, 0.66);
 	}
 
 	// detector is super-resistant to non-client attacks
 	if ((targ->mtype == M_DETECTOR) && !attacker->client)
-		damage *= 0.5;
+		Resistance = min(Resistance, 0.5);
 
 	// resistance tech
 	if (targ->client && targ->client->pers.inventory[resistance_index])
 	{
 		if (targ->myskills.level <= 5)
-			damage /= 2;
+			Resistance = min(Resistance, 0.5);
 		else if (targ->myskills.level <= 10)
-			damage /= 1.5;
+			Resistance = min(Resistance, 0.66);
 		else
-			damage /= 1.25;
+			Resistance = min(Resistance, 0.8);
 	}
 
 	// cocoon bonus
 	if (targ->cocoon_time > level.time)
-		damage /= targ->cocoon_factor;
+		Resistance = min(Resistance, 1.0/targ->cocoon_factor);
 
 	// player tank
 	if (targ->mtype == P_TANK)
@@ -634,18 +637,18 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		// Talent: Pack Animal
 		temp *= getPackModifier(targ);
 
-		damage /= temp;
+		Resistance = min(Resistance, 1/temp);
 
 		// resistance tech
 		if (targ->owner && targ->owner->inuse && targ->owner->client 
 			&& targ->owner->client->pers.inventory[resistance_index])
 		{
 			if (targ->owner->myskills.level <= 5)
-				damage /= 2;
+				Resistance = min(Resistance, 0.5);
 			else if (targ->owner->myskills.level <= 10)
-				damage /= 1.5;
+				Resistance = min(Resistance, 0.66);
 			else
-				damage /= 1.25;
+				Resistance = min(Resistance, 0.8);
 		}
 
 		// resistance effect (for tanks, lessened)
@@ -667,11 +670,11 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (temp < 1.0)
 				temp = 1.0;
 
-			damage /= temp;
+			Resistance = min(Resistance, 1/temp);
 		}
 
 		if (attacker->svflags & SVF_MONSTER) // monsters inflict only 3/4s damage to tanks
-			damage *= 0.75;
+			Resistance = min(Resistance, 0.75);
 	}
 
 	// morphed players
@@ -688,11 +691,13 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		// Talent: Pack Animal
 		temp *= getPackModifier(targ);
 
-		damage /= temp;
+		Resistance = min(Resistance, 1/temp);
 	}
 
 	if (IsABoss(targ) && ((mod == MOD_BURN) || (mod == MOD_LASER_DEFENSE)))
-		damage *= 0.33; // boss takes less damage from burn and lasers
+	{
+		Resistance = min(Resistance, 0.33);; // boss takes less damage from burn and lasers
+	}
 
 	// corpse explosion does not damage other corpses
 	if ((targ->deadflag == DEAD_DEAD) && (inflictor->deadflag == DEAD_DEAD)
@@ -706,7 +711,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		edict_t *totem = NextNearestTotem(targ, TOTEM_AIR, NULL, true);
 		if(totem != NULL)
 		{
-			int take = damage = 0.5*damage;
+			int take = 0.5*damage;
 			vec3_t normal;
 
 			//Talent: Wind. Totems have a chance to ghost an attack.
@@ -714,6 +719,8 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 				return 0;
 			
 			VectorSubtract(targ->s.origin, totem->s.origin, normal);
+
+			Resistance = min(Resistance, 0.5);
 
 			//Half of the damage goes to the totem, reisted by its skill level.
 			take /= AIRTOTEM_RESIST_BASE + AIRTOTEM_RESIST_MULT * totem->monsterinfo.level;
@@ -731,7 +738,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		else 
 			bonus = BLESS_BONUS;
 
-		damage /= bonus;
+		Resistance = min(Resistance, 1/bonus);
 	}
 
 	//Check for salvation
@@ -743,7 +750,8 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			temp = 1 + 0.15*aura->ent->owner->myskills.abilities[SALVATION].current_level;
 		else // it's a player doing the damage
 			temp = 1 + 0.066*aura->ent->owner->myskills.abilities[SALVATION].current_level;
-		damage /= temp;
+
+		Resistance = min(Resistance, 1/temp);
 	}
 
 	if (targ->client)
@@ -807,7 +815,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (temp < 1.0)
 				temp = 1.0;
 
-			damage /= temp;
+			Resistance = min(Resistance, 1/temp);
 		}
 
 		//Talent: Combat Experience
@@ -859,27 +867,29 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		if ((dtype & D_EXPLOSIVE) && (targ->myskills.abilities[SPLASH_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[SPLASH_RESIST].disable)
-				damage *= 0.66;
+			{
+				Resistance = min(Resistance, 0.66);
+			}
 		}
 		else if ((dtype & D_PIERCING) && (targ->myskills.abilities[PIERCING_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[PIERCING_RESIST].disable)
-				damage *= 0.66;
+				Resistance = min(Resistance, 0.66);
 		}
 		else if ((dtype & D_ENERGY) && (targ->myskills.abilities[ENERGY_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[ENERGY_RESIST].disable)
-				damage *= 0.66;
+				Resistance = min(Resistance, 0.66);
 		}
 		else if ((dtype & D_SHELL) && (targ->myskills.abilities[SHELL_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[SHELL_RESIST].disable)
-				damage *= 0.66;
+				Resistance = min(Resistance, 0.66);
 		}
 		else if ((dtype & D_BULLET) && (targ->myskills.abilities[BULLET_RESIST].current_level > 0))
 		{
 			if(!targ->myskills.abilities[BULLET_RESIST].disable)
-				damage *= 0.66;
+				Resistance = min(Resistance, 0.66);
 		}
 
 		//Talent: Manashield   
@@ -913,11 +923,13 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			temp = FURY_INITIAL_FACTOR + (FURY_ADDON_FACTOR * attacker->myskills.abilities[FURY].current_level);
 			if (temp > FURY_FACTOR_MAX)
 				temp = FURY_FACTOR_MAX;
-			damage /= temp;
+			Resistance = min(Resistance, 1/temp);
 		}
 	}
 
-//	gi.dprintf("%d damage after G_SubDamage() modification\n", damage);
+	damage *= Resistance;
+
+	// gi.dprintf("%f damage after G_SubDamage() modification (%f resistance mult)\n", damage, Resistance);
 
 	return damage;
 }

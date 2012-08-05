@@ -187,7 +187,7 @@ void INV_AwardPlayers (void)
 		}
 	}
 	
-	if (!num_winners)
+	if (num_winners)
 		gi.bprintf(PRINT_HIGH, "Humans win! Players were awarded a bonus.\n");
 }
 

@@ -79,7 +79,6 @@ char *LoadEntities(char *mapname, char *entities)
 {
 	char	entfilename[MAX_QPATH] = "";
 	char	*newentities;
-	int		i; //, islefn;
 	
 	doentityfilename(entfilename, mapname, true); // try giving me a inv. hard mode entity.
 

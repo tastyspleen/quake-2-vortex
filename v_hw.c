@@ -117,8 +117,6 @@ void hw_laserthink (edict_t *self)
 
 qboolean hw_pickupflag (edict_t *ent, edict_t *other)
 {
-	int		i;
-
 	if (!other || !other->inuse || !other->client || G_IsSpectator(other))
 		return false;
 

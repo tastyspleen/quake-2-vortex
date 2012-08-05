@@ -522,9 +522,10 @@ int V_AttemptModeChange(qboolean endlevel)
 
 	return 0;
 #else
-	int max_players, players = total_players();
 
 #if FORCE_PVP_WITH_A_LOT_OF_PLAYERS
+	int max_players, players = total_players();
+
 	//4.4 forcibly switch to PvP if we are in Invasion/PvM and there are many players
 	max_players = 0.25 * maxclients->value;
 	if (max_players < 4)

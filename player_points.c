@@ -388,7 +388,7 @@ int V_AddFinalExp (edict_t *player, int exp)
 
 void AddMonsterExp (edict_t *player, edict_t *monster)
 {
-	int		base_exp, exp_points, max_exp, control_cost;
+	int		base_exp, exp_points, control_cost;
 	float	level_diff, bonus;
 	edict_t	*e;
 
@@ -622,7 +622,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	float		bonus			= 1;
 	float		dmgmod			= 1;
 	float		damage;
-	char		*message, name[50];
+	char		name[50];
 	int			minimum_points	= 1;
 	qboolean	is_mini=false;
 	
@@ -787,8 +787,9 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	// award experience to non-allied players
 		exp_points = V_AddFinalExp(attacker, max_points);
 
-	safe_cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
-		damage, (dmgmod * 100), '%', name, clevel, exp_points, credits);
+	if (!attacker->ai.is_bot)
+		gi.cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
+			damage, (dmgmod * 100), '%', name, clevel, exp_points, credits);
 
 	return exp_points;
 }
