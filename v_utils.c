@@ -2052,6 +2052,7 @@ void V_ResetPlayerState (edict_t *ent)
 		dom_dropflag(ent, FindItem("Flag"));
 		CTF_DropFlag(ent, FindItem("Red Flag"));
 		CTF_DropFlag(ent, FindItem("Blue Flag"));	
+		hw_dropflag(ent, FindItem("Halo"));
 	}
 
 	// drop all techs
