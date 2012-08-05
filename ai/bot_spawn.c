@@ -98,7 +98,6 @@ edict_t *BOT_FindFreeClient (void)
 ///////////////////////////////////////////////////////////////////////
 void BOT_SetName(edict_t *bot, char *name, char *skin, char *team)
 {
-	float rnd;
 	char userinfo[MAX_INFO_STRING];
 	char bot_skin[MAX_INFO_STRING];
 	char bot_name[MAX_INFO_STRING];

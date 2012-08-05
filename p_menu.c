@@ -468,7 +468,7 @@ void StartGame (edict_t *ent)
 	else
 	{
 		gi.bprintf(PRINT_HIGH, "%s starts their reign.\n", ent->client->pers.netname);
-		stuffcmd(ent, va("update"));
+		V_UpdatePlayerAbilities(ent);
 	}
 
 	//Set the player's name

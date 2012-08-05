@@ -114,7 +114,7 @@ void AI_UpdateNodeEdge( int from, int to )
 	//Com_Printf("Link: %d -> %d. ", from, to);
 	//Com_Printf("%s\n", AI_LinkString(link) );
 	//if( sv_cheats->value )
-		Com_Printf("Link: %d -> %d. %s\n", from, to, AI_LinkString(link) );
+	//	Com_Printf("Link: %d -> %d. %s\n", from, to, AI_LinkString(link) );
 }
 
 

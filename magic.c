@@ -173,7 +173,7 @@ void Cmd_BoostPlayer(edict_t *ent)
 	if (ent->lasthurt+DAMAGE_ESCAPE_DELAY > level.time)
 		return;
 
-	if (!G_CanUseAbilities (ent, ent->myskills.abilities[BOOST_SPELL].current_level, COST_FOR_BOOST))
+	if (!V_CanUseAbilities (ent, BOOST_SPELL, COST_FOR_BOOST, true))
 		return;
 
 	if (HasFlag(ent))
@@ -3785,7 +3785,7 @@ void Cmd_WormHole_f (edict_t *ent)
 	if (ent->flags & FL_WORMHOLE)
 		SpawnWormhole(ent, 0);
 
-	if (!G_CanUseAbilities(ent, ent->myskills.abilities[BLACKHOLE].current_level, BLACKHOLE_COST))
+	if (!V_CanUseAbilities(ent, BLACKHOLE, BLACKHOLE_COST, true))
 		return;
 	if (ent->myskills.abilities[BLACKHOLE].disable)
 		return;

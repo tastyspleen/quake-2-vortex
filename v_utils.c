@@ -955,6 +955,9 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (!G_EntIsAlive(ent))
 		return false;
 
+	if (ent->myskills.abilities[ability_index].general_skill == 2 && pregame_time->value > level.time) // mobility in pregame
+		return true;
+
 	if (ent->myskills.abilities[ability_index].disable)
 		return false;
 	

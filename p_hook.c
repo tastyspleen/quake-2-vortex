@@ -227,7 +227,7 @@ void fire_hook (edict_t *owner, vec3_t start, vec3_t forward)
 
         hook = G_Spawn();
 
-		hook->monsterinfo.level = owner->myskills.abilities[GRAPPLE_HOOK].current_level;
+		hook->monsterinfo.level = max(owner->myskills.abilities[GRAPPLE_HOOK].current_level, 1);
 
 		//4.2 allow free hook in CTF mode
 		if (ctf->value && (hook->monsterinfo.level < 2))
@@ -288,7 +288,7 @@ void hook_fire (edict_t *ent) {
 			return;
 
 		//4.0 better hook check.
-		if (!G_CanUseAbilities (ent, ent->myskills.abilities[GRAPPLE_HOOK].current_level, COST_FOR_HOOK))
+		if (!V_CanUseAbilities (ent, GRAPPLE_HOOK, COST_FOR_HOOK, true))
 			return;
 	}
 	else if (ent->flags & FL_WORMHOLE)

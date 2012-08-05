@@ -966,6 +966,7 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	//4.2 can't use abilities while in wormhole/noclip
 	if (ent->flags & FL_WORMHOLE)
 		return false;
+
 	// poltergeist cannot use abilities in human form
 	if (ent->myskills.class_num == CLASS_POLTERGEIST && !ent->mtype && !PM_PlayerHasMonster(ent))
 	{
