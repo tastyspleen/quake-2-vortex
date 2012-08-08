@@ -29,12 +29,14 @@ char *LoPrint(char *text)
 char *HiPrint(char *text)
 {
 	int i;
+	char* ReturnVal;
+	ReturnVal = gi.TagMalloc(strlen(text)*2, TAG_LEVEL);
 
 	if (!text)
 		return NULL;
-	for (i=0; i<strlen(text) ; i++)
-		if ((byte)text[i] <= 127)
-			text[i]=(byte)text[i]+128;
+	for (i=0; i<strlen(ReturnVal) ; i++)
+		if ((byte)ReturnVal[i] <= 127)
+			ReturnVal[i]=(byte)text[i]+128;
 	return text;
 }
 

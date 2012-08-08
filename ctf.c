@@ -1304,11 +1304,7 @@ void CTF_WriteFlagPosition (edict_t *ent)
 	if (!teamnum)
 		return;
 
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\Settings\\loc\\%s_%d.loc", game_path->string, level.mapname, teamnum);
-	#else
-		sprintf(path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
-	#endif 
+	sprintf(path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
 
      if ((fptr = fopen(path, "w")) != NULL) // write text to file
      {  

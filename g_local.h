@@ -2291,3 +2291,10 @@ void hw_dropflag (edict_t *ent, gitem_t *item);
 qboolean hw_pickupflag (edict_t *ent, edict_t *other);
 void hw_spawnflag (void);
 //az end
+
+#ifndef min
+#define min(a,b) ((a) > (b) ? (b) : (a))
+#endif
+#ifndef max
+#define max(a,b) ((a) > (b) ? (a) : (b))
+#endif

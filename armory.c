@@ -1026,11 +1026,7 @@ void LoadArmory()	//Call this during InitGame()
 	FILE *fptr;
 
 	//get path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\%s", game_path->string, "Settings\\ArmoryItems.dat");
-	#else
-		sprintf(filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
-	#endif
+	sprintf(filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{
