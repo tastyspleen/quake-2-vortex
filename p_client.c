@@ -3822,6 +3822,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		char *message = HiPrint(va("%s got a %dfer.", ent->client->pers.netname, ent->nfer));
 		gi.bprintf(PRINT_HIGH, "%s\n", message);
+		gi.TagFree(message);
 		ent->nfer = 0;
 	}
 		
