@@ -394,6 +394,7 @@ void PlayerBossPoints (edict_t *attacker, edict_t *target)
 
 	message = HiPrint(va("%s wastes a boss!", attacker->client->pers.netname));
 	gi.bprintf(PRINT_HIGH, "%s\n", message);
+	gi.TagFree(message);
 
 	//if (pvm->value)
 	//{

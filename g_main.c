@@ -782,7 +782,9 @@ void CheckDMRules (void)
 			if (voting->value && (cl->resp.frags >= (fraglimit->value-5)) &&
 			(maplist.warning_given == false))
 			{
-				gi.bprintf (PRINT_HIGH,(va("%s\n", HiPrint("***** 5 Frags Remaining: Type 'vote' to place your vote for the next map and game type *****"))) );
+				char* message = HiPrint("***** 5 Frags Remaining: Type 'vote' to place your vote for the next map and game type *****");
+				gi.bprintf (PRINT_LOW, "%s\n", message );
+				gi.TagFree(message);
 				maplist.warning_given = true;
 			}
 			//K03 End

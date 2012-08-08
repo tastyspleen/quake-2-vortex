@@ -30,14 +30,14 @@ char *HiPrint(char *text)
 {
 	int i;
 	char* ReturnVal;
-	ReturnVal = gi.TagMalloc(strlen(text)*2, TAG_LEVEL);
+	ReturnVal = gi.TagMalloc(strlen(text), TAG_LEVEL);
 
 	if (!text)
 		return NULL;
 	for (i=0; i<strlen(ReturnVal) ; i++)
 		if ((byte)ReturnVal[i] <= 127)
-			ReturnVal[i]=(byte)text[i]+128;
-	return text;
+			ReturnVal[i]=(byte)ReturnVal[i]+128;
+	return ReturnVal;
 }
 
 // this needs to match UpdateFreeAbilities() in v_utils.c
