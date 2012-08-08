@@ -194,8 +194,8 @@ void FL_think (edict_t *self)
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(TE_FLASHLIGHT);
 	gi.WritePosition(self->s.origin);
-	gi.WriteShort(self - world);
-	gi.multicast(self->s.origin, MULTICAST_ALL);
+	gi.WriteShort(self->owner - world);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
     gi.linkentity(self);
     self->nextthink = level.time + FRAMETIME;

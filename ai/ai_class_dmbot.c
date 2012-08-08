@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "..\g_local.h"
+#include "../g_local.h"
 #include "ai_local.h"
 
 //ACE
@@ -339,6 +339,9 @@ qboolean BOT_DMclass_CheckShot(edict_t *ent, vec3_t	point)
 	if (tr.fraction < 0.3) //just enough to prevent self damage (by now)
 		return false;
 
+	if (tr.surface && !tr.ent) // we hit solid. we're blocked
+		return false;
+
 	return true;
 }
 
@@ -355,6 +358,7 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 	float		bestweight = 99999;
 	float		weight;
 	vec3_t		dist;
+	trace_t tr;
 
 	// we already set up an enemy this frame (reacting to attacks)
 	if(self->enemy != NULL)
@@ -377,9 +381,9 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 		if (OnSameTeam(AIEnemies[i], self)) // vortex chile 3.0
 			continue;
 
-		if( !AIEnemies[i]->deadflag && visible(self, AIEnemies[i]) &&
+		if( !AIEnemies[i]->deadflag/* && visible(self, AIEnemies[i]) &&
 			//trap_inPVS (self->s.origin, players[i]->s.origin))
-			gi.inPVS(self->s.origin, AIEnemies[i]->s.origin))
+			gi.inPVS(self->s.origin, AIEnemies[i]->s.origin)*/)
 		{
 			//(weight enemies from fusionbot) Is enemy visible, or is it too close to ignore 
 			VectorSubtract(self->s.origin, AIEnemies[i]->s.origin, dist);
@@ -388,8 +392,17 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 			//modify weight based on precomputed player weights
 			weight *= (1.0 - self->ai.status.playersWeights[i]);
 
-			if( infront( self, AIEnemies[i] ) ||
-				(weight < 300 ) )
+			// wall between me and my potential enemy?
+			tr = gi.trace(self->s.origin, NULL, NULL, AIEnemies[i]->s.origin, NULL, MASK_PLAYERSOLID);
+
+			if (tr.fraction != 1.0)
+			{
+				weight = 299; // Low weight.
+				continue;
+			}
+
+			if( /*infront( self, AIEnemies[i] ) ||*/ // does not need to be "infront"
+				(weight < 500 ) )
 			{
 				// Check if best target, or better than current target
 				if (weight < bestweight)
@@ -624,6 +637,9 @@ void BOT_DMclass_WeightPlayers(edict_t *self)
 			{
 				//being at enemy team gives a small weight, but weight afterall
 				self->ai.status.playersWeights[i] = 0.2;
+
+				if (!AIEnemies[i]->client)
+					continue;
 
 				//enemy has redflag
 				if( redflag && AIEnemies[i]->client->pers.inventory[ITEM_INDEX(redflag)]

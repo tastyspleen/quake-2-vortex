@@ -34,7 +34,7 @@ int GetTeamColor (int teamnum)
 
 qboolean ValidAllyMode (void)
 {
-	if (pvm->value || domination->value || ctf->value || invasion->value)
+	if (pvm->value || domination->value || ctf->value || invasion->value || hw->value)
 		return false;
 	return true;
 }

@@ -2193,14 +2193,14 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 				{
 					// Red shell for the saint.
 					ent->s.effects |= EF_FLAG1;
-					ent->s.renderfx |= RF_SHELL_RED;
+					ent->s.renderfx |= RF_SHELL_YELLOW;
 					ent->s.effects |= EF_COLOR_SHELL;
 				}
-				
+				/*
 				if (hw->value && !ent->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
 				{
 					ent->s.effects |= EF_SPHERETRANS;
-				}
+				}*/
 			}
 			
 			// if we have an aura or we are morphed/monster, ALWAYS apply a shell
@@ -2212,8 +2212,11 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 					ent->s.renderfx |= RF_SHELL_RED;
 				// default blue shell (blue team and PvM aura or morphed/monster)
 				else
-					ent->s.renderfx |= RF_SHELL_BLUE;
+				{
+					if (!hw->value || !V_IsPVP()) // not holywars or not pvp gives default shell.
+						ent->s.renderfx |= RF_SHELL_BLUE;
 				}
+			}
 		}
 		// set hostile/non-hostile colors in PvP/FFA modes
 		else
@@ -2233,7 +2236,10 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 						ent->s.renderfx |= (RF_SHELL_GREEN);
 					}
 					else
-						ent->s.renderfx |= RF_SHELL_RED;
+					{
+						if (!hw->value || !V_IsPVP()) // not holywars or pvp gives default shell.
+							ent->s.renderfx |= RF_SHELL_RED;
+					}
 				}
 				else
 					finalEffects = false; // keep processing effects

@@ -54,10 +54,12 @@ void UpdateChaseCam (edict_t *ent)
 	{
 		old = ent->client->chase_target;
 		ChaseNext(ent); // try to find a new chase target
-		if (ent->client->chase_target == old) {
+		if (ent->client->chase_target == old) 
+		{
 			// switch out of chase-cam mode
 			ent->client->chase_target = NULL;
 			ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
+			ent->client->ps.pmove.pm_flags &= ~PMF_DUCKED; // quit ducked.
 			return;
 		}
 	}
