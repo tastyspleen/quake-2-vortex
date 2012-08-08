@@ -23,7 +23,7 @@ This program is a modification of the ACE Bot, and is therefore
 in NO WAY supported by Steve Yeager.
 */
 
-#include "..\g_local.h"
+#include "../g_local.h"
 #include "ai_local.h"
 
 
@@ -253,6 +253,45 @@ qboolean BOT_JoinCTFTeam (edict_t *ent, char *team_name)
 	return true;
 }
 
+#define skill(sk,cost) if(cost > ent->myskills.speciality_points)\
+	mval = cost;\
+	{\
+		ent->myskills.abilities[sk].level += mval;\
+		ent->myskills.abilities[sk].current_level += mval;\
+		ent->myskills.speciality_points -= mval;\
+	}
+
+void BOT_SoldierAssignSkills(edict_t *ent)
+{
+	int mval = 10;
+	
+	skill(STRENGTH, 5);
+	skill(HASTE, 2);
+	skill(RESISTANCE, 5);
+	skill(VITALITY, 5);
+	skill(GRAPPLE_HOOK, 1);
+
+	skill(HASTE, 2);
+	
+	skill(STRENGTH, 5);
+	skill(VITALITY, 5);
+	skill(RESISTANCE, 5);
+	skill(HASTE, 1);
+	skill(GRAPPLE_HOOK, 2);
+
+	skill(STRENGTH, 5);
+	skill(VITALITY, 5);
+	skill(RESISTANCE, 5);
+}
+
+void BOT_VortexAssignSkills(edict_t *ent)
+{
+	switch (ent->myskills.class_num)
+	{
+	default:
+		BOT_SoldierAssignSkills(ent);
+	}
+}
 
 //==========================================
 // BOT_DMClass_JoinGame
@@ -274,6 +313,7 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	disableAbilities(ent);
 
 	ent->myskills.level = AveragePlayerLevel();
+	ent->myskills.speciality_points = ent->myskills.level * 2;
 
 	s = Info_ValueForKey (ent->client->pers.userinfo, "skin");
 
@@ -287,6 +327,9 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	ent->myskills.class_num = rnd;*/
 	ent->myskills.class_num = CLASS_SOLDIER; 
 	ent->myskills.respawn_weapon = GetRandom(1, 11);
+
+	ent->client->pers.spectator = false;
+	ent->client->resp.spectator = false;
 
 	// Set respawns by default~ VrxChile3.0
 	if (invasion->value || pvm->value)  // vrxchile: default combat modes
@@ -307,7 +350,7 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	setTalents(ent);
 	ent->myskills.streak = 0;
 
-	// az todo: assign a starting weapon etc..
+	BOT_VortexAssignSkills(ent);
 
 	//join game
 	ent->movetype = MOVETYPE_WALK;
@@ -334,6 +377,8 @@ void BOT_StartAsSpectator (edict_t *ent)
 	ent->svflags |= SVF_NOCLIENT;
 	ent->teamnum = CTF_NOTEAM;
 	ent->client->ps.gunindex = 0;
+	ent->client->pers.spectator = true;
+	ent->client->resp.spectator = true;
 	gi.linkentity (ent);
 }
 

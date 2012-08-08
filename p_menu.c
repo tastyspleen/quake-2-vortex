@@ -468,8 +468,9 @@ void StartGame (edict_t *ent)
 	else
 	{
 		gi.bprintf(PRINT_HIGH, "%s starts their reign.\n", ent->client->pers.netname);
-		V_UpdatePlayerAbilities(ent);
 	}
+
+	V_UpdatePlayerAbilities(ent);
 
 	//Set the player's name
 	strcpy(ent->myskills.player_name, ent->client->pers.netname);

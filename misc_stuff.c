@@ -214,6 +214,8 @@ int total_players()
 			  continue;
 		  if (G_IsSpectator(cl_ent))
 			  continue;
+		  if (cl_ent->ai.is_bot)
+			  continue;
           //if (!G_EntExists(cl_ent)) 
            //    continue; 
           total++; 

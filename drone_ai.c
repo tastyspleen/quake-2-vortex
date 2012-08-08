@@ -2208,7 +2208,7 @@ void drone_think (edict_t *self)
 	if (self->groundentity)
 		VectorClear(self->velocity); // don't slide
 
-	drone_togglelight(self);
+	/*drone_togglelight(self);*/
 	drone_dodgeprojectiles(self);
 	
 	// this must come before M_MoveFrame() because a monster's dead

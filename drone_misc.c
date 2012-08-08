@@ -777,6 +777,9 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	VectorCopy (drone->s.origin, drone->s.old_origin);
 	gi.linkentity(drone);
 
+	// Addition to JABot
+	AI_EnemyAdded(drone);
+
 	return drone;
 }
 

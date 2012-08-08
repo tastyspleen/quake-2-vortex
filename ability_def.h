@@ -95,7 +95,6 @@
 #define SCANNER			92
 #define EMP				93
 #define DOUBLE_JUMP		94
-//MISSING ABILITY 96
 #define LOWER_RESIST	95
 #define FIREBALL		96
 #define PLASMA_BOLT		97

@@ -89,6 +89,7 @@ void generalWeaponMenu_handler(edict_t *ent, int option)
 		safe_cprintf(ent, PRINT_HIGH, "You have reached the maximum upgrade level in %s %s (%d).\n",
 			GetWeaponString(WeaponIndex), GetModString(WeaponIndex,ModIndex), 
 			ent->myskills.weapons[WeaponIndex].mods[ModIndex].soft_max);
+		OpenGeneralWeaponMenu(ent, option);
 		return;
 	}
 
