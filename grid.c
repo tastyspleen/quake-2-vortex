@@ -1202,7 +1202,7 @@ void SaveGrid (void)
 	char	filename[255];
 	FILE	*fptr;
 
-	Com_sprintf(filename, sizeof(filename), "%s\\Settings\\grd\\%s.grd", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "wb")) != NULL)
 	{

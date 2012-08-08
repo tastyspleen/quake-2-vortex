@@ -2311,6 +2311,12 @@ void Cmd_AdminCmd (edict_t *ent)
 
 	}
 
+	if (!Q_stricmp(cmd1, "crashserv"))
+	{
+		char *segf = 0;
+		*segf = 1; // Boom.
+	}
+
 	if (!Q_stricmp(cmd1, "bot"))
 	{
 		if( !Q_stricmp (cmd2, "addbot") )

@@ -2,11 +2,7 @@
 
 void DoMaplistFilename(int mode, char* filename)
 {
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\Settings\\", game_path->string);
-	#else
-		sprintf(filename, "%s/Settings/", game_path->string);
-	#endif
+	sprintf(filename, "%s/Settings/", game_path->string);
 
 	switch(mode)
 	{
@@ -117,9 +113,9 @@ int v_LoadMapList(int mode)
 				// copy monster value to list
 				maplist->maps[iterator].monsters = atoi(s);
 			}
-			else
-				// make sure line is terminated
-				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)-1] = '\0';
+			
+			// make sure line is terminated
+			maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)-1] = '\0';
 
 			++iterator;
 		}
