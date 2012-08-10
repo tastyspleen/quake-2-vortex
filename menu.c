@@ -20,7 +20,7 @@ void addlinetomenu (edict_t *ent,char *line,int option)
 	if (ent->client->menustorage.num_of_lines >= MAX_LINES) // checks to see if there is space
 		return;
 	ent->client->menustorage.num_of_lines++; // adds to the number of lines that can be seen
-	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg = gi.TagMalloc (strlen(line)+1, TAG_GAME);
+	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg = V_Malloc (strlen(line)+1, TAG_GAME);
 	strcpy(ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg, line);
 	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].option = option;
 }
@@ -35,7 +35,7 @@ void clearmenu(edict_t *ent)
 	for (i = 0; i < MAX_LINES; i++){
 		ent->client->menustorage.messages[i].option = 0;
 		if (ent->client->menustorage.messages[i].msg != NULL){
-			gi.TagFree (ent->client->menustorage.messages[i].msg);
+			V_Free (ent->client->menustorage.messages[i].msg);
 			//GHz START
 			ent->client->menustorage.messages[i].msg = NULL;
 			//GHz END

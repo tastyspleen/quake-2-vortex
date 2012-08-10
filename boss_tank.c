@@ -257,7 +257,7 @@ void boss_spawn_tank (edict_t *ent)
 	{
 		message = HiPrint(va("%s got bored and left the game.", ent->client->pers.netname));
 		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		gi.TagFree(message);
+		V_Free(message);
 
 		BecomeTE(ent->owner);
 		ent->svflags &= ~SVF_NOCLIENT;

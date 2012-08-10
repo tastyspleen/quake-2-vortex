@@ -193,6 +193,20 @@ void InitGame (void)
 	gi.dprintf("INFO: This version is locked for distribution.\n");
 #endif
 
+	// az begin
+
+	savemethod = gi.cvar ("savemethod", "0", 0);
+	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
+
+	// Before anything else, prepare TagMalloc's mutexes and a mysql connection
+	if (savemethod->value == 2)
+		V_GDS_StartConn(); // start connection to db
+	else
+		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
+
+	Mem_PrepareMutexes();
+	// az end
+
 	//K03 Begin
 	srand((unsigned)time(0));
 
@@ -307,10 +321,6 @@ void InitGame (void)
 	server_email = gi.cvar ("server_email", "ghz@project-vortex.com", CVAR_SERVERINFO);
 	team1_skin = gi.cvar ("team1_skin", "female/ctf_r", 0);
 	team2_skin = gi.cvar ("team2_skin", "male/ctf_b", 0);
-	// az begin
-	savemethod = gi.cvar ("savemethod", "0", 0);
-	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
-	// az end
 
 	// class skins
 	enforce_class_skins = gi.cvar ("enforce_class_skins", "1", CVAR_LATCH);
@@ -398,13 +408,13 @@ void InitGame (void)
 
 	// initialize all entities for this game
 	game.maxentities = maxentities->value;
-	g_edicts =  gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
+	g_edicts =  V_Malloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 	globals.max_edicts = game.maxentities;
 
 	// initialize all clients for this game
 	game.maxclients = maxclients->value;
-	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
+	game.clients = V_Malloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	globals.num_edicts = game.maxclients+1;
 
 	//3.0 Load the custom map lists
@@ -428,12 +438,6 @@ void InitGame (void)
 
 	// az begin
 	AI_Init();
-
-	if (savemethod->value == 2)
-		V_GDS_StartConn(); // start connection to db
-	else
-		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
-	// az end
 }
 
 //=========================================================
@@ -530,7 +534,7 @@ void ReadField (FILE *f, field_t *field, byte *base)
 			*(char **)p = NULL;
 		else
 		{
-			*(char **)p = gi.TagMalloc (len, TAG_LEVEL);
+			*(char **)p = V_Malloc (len, TAG_LEVEL);
 			fread (*(char **)p, len, 1, f);
 		}
 		break;
@@ -540,7 +544,7 @@ void ReadField (FILE *f, field_t *field, byte *base)
 			*(char **)p = NULL;
 		else
 		{
-			*(char **)p = gi.TagMalloc (len, TAG_GAME);
+			*(char **)p = V_Malloc (len, TAG_GAME);
 			fread (*(char **)p, len, 1, f);
 		}
 		break;
@@ -683,11 +687,11 @@ void ReadGame (char *filename)
 		gi.error ("Savegame from an older version.\n");
 	}
 
-	g_edicts =  gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
+	g_edicts =  V_Malloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
 	fread (&game, sizeof(game), 1, f);
-	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
+	game.clients = V_Malloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	for (i=0 ; i<game.maxclients ; i++)
 		ReadClient (f, &game.clients[i]);
 

@@ -65,7 +65,7 @@ char *GetRandomString (int len)
 	int i;
 	char *s;
 
-	s = (char *)  gi.TagMalloc (len*sizeof(char), TAG_GAME);
+	s = (char *)  V_Malloc (len*sizeof(char), TAG_GAME);
 	for (i=0; i<len-1; i++) {
 		s[i] = GetRandomChar();
 	}

@@ -311,7 +311,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		Com_sprintf(entry, sizeof(entry),
 			"xv %i yv %i string \"%s%s %2i %s %5i %3i %3i %3i\" ",
 			cl_ent->client->resp.spectator? -24 : 0,
-			y, cl_ent->client->resp.spectator? "(s)" : "" ,name, 
+			y, cl_ent->client->resp.spectator? "(s)" : "   " ,name, 
 			cl_ent->client->resp.spectator? 0 : cl_ent->myskills.level, 
 			cl_ent->client->resp.spectator? "??" : classname, cl_ent->client->resp.spectator? 0 : cl->resp.score, 
 			cl_ent->client->resp.spectator? 0 : cl->resp.frags, 
@@ -350,7 +350,7 @@ void DeathmatchScoreboard (edict_t *ent)
 		closemenu(ent);
 //GHz END
 	DeathmatchScoreboardMessage (ent, ent->enemy);
-	gi.unicast (ent, true);
+	gi.unicast (ent, false);
 }
 
 

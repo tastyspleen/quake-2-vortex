@@ -248,7 +248,7 @@ void boss_makron_spawn (edict_t *ent)
 	{
 		message = HiPrint(va("%s got bored and left the game.", ent->client->pers.netname));
 		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		gi.TagFree(message);
+		V_Free(message);
 
 		BecomeTE(ent->owner);
 		ent->svflags &= ~SVF_NOCLIENT;
@@ -269,7 +269,7 @@ void boss_makron_spawn (edict_t *ent)
 
 	message = HiPrint(va("A level %d boss known as %s has spawned!", average_player_level, ent->client->pers.netname));
 	gi.bprintf(PRINT_HIGH, "%s\n", message);
-	gi.TagFree(message);
+	V_Free(message);
 
 	// create the tank entity that the player will pilot
 	boss = G_Spawn();

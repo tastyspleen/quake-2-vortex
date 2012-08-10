@@ -58,7 +58,7 @@ stack_t *Stack=NULL;
 void Push(node_t *Node) {
 stack_t *STK;
 
-  STK=(stack_t *)gi.TagMalloc(sizeof(stack_t), TAG_LEVEL);
+  STK=(stack_t *)V_Malloc(sizeof(stack_t), TAG_LEVEL);
   STK->StackPtr=Stack; // NULL at start
   STK->NodePtr=Node;   // Tie the Node
   Stack=STK;           // Set to start of Stack
@@ -74,7 +74,7 @@ stack_t *STK;
   STK=Stack;             // Start of Stack
   tNode=Stack->NodePtr;  // Grab this Node.
   Stack=Stack->StackPtr; // Move Stack Pointer
-  gi.TagFree(STK);       // Free this node
+  V_Free(STK);       // Free this node
 
   return (tNode);
 }
@@ -139,7 +139,7 @@ stack_t *STK;
    while (PathNode) {
     tNode=PathNode;
     PathNode=PathNode->PrevNode;
-	gi.TagFree(tNode); 
+	V_Free(tNode); 
 	//free(tNode);
    NumFreed++;
    }
@@ -148,7 +148,7 @@ stack_t *STK;
   {
     tNode=CLOSED;
     CLOSED=CLOSED->NextNode;
-    gi.TagFree(tNode);
+    V_Free(tNode);
 	//free(tNode);
 	NumFreed++;
   }
@@ -156,7 +156,7 @@ stack_t *STK;
   while (OPEN) {
     tNode=OPEN;
 	OPEN=OPEN->NextNode;
-    gi.TagFree(tNode); 
+    V_Free(tNode); 
 	//free(tNode);
   NumFreed++;
   }
@@ -164,7 +164,7 @@ stack_t *STK;
   while (Stack) {
     STK=Stack;
     Stack=Stack->StackPtr;
-    gi.TagFree(STK); 
+    V_Free(STK); 
 	//free(STK);
   NumFreed++;
   }
@@ -262,7 +262,7 @@ float h;
   // Make Successor a Child of StartNode
   //=======================================
   //Successor=(node_t *)malloc(sizeof(node_t));
-  Successor=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+  Successor=(node_t *)V_Malloc(sizeof(node_t), TAG_LEVEL);
   Successor->nodenum=NodeNumS;
   Successor->g=g=StartNode->g+1;
 
@@ -859,18 +859,18 @@ vec3_t tstart,tdest;
   }
 
   // Allocate OPEN/CLOSED list pointers..
-  OPEN=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+  OPEN=(node_t *)V_Malloc(sizeof(node_t), TAG_LEVEL);
  // OPEN=(node_t *)malloc(sizeof(node_t));
   OPEN->NextNode=NULL;
 
-  CLOSED=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+  CLOSED=(node_t *)V_Malloc(sizeof(node_t), TAG_LEVEL);
   //CLOSED=(node_t *)malloc(sizeof(node_t));
   CLOSED->NextNode=NULL;
 
   //================================================
   // This is our very first NODE!  Our start vector
   //================================================
-  StartNode=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+  StartNode=(node_t *)V_Malloc(sizeof(node_t), TAG_LEVEL);
   //StartNode=(node_t *)malloc(sizeof(node_t));
   StartNode->nodenum=NodeNumS; // starting position nodenum
   StartNode->g=g=0; // we haven't gone anywhere yet
@@ -946,9 +946,9 @@ BestNode->NextNode=NULL; // Must tie this off!
   numpts=i;
 
   //GHz - free old memory
-  //gi.TagFree(Waypoint);
+  //V_Free(Waypoint);
 
-  Waypoint=(int *)gi.TagMalloc(numpts*sizeof(int), TAG_LEVEL);
+  Waypoint=(int *)V_Malloc(numpts*sizeof(int), TAG_LEVEL);
   //Waypoint=(int *)malloc(numpts*sizeof(int));
 
   // Now, we have to assign the nodenum's along
@@ -982,7 +982,7 @@ BestNode->NextNode=NULL; // Must tie this off!
   //GHz: cleanup test/debugging
   //for (i=0;i<NodeCount;i++)
   //{
-//	  gi.TagFree(NodeList[i]);
+//	  V_Free(NodeList[i]);
  // }
  // OPEN = NULL;
   //CLOSED = NULL;
@@ -1463,7 +1463,7 @@ float v0,v1,v2;
 //=====================================================
 /*
   // allocate memory for node array
-  node = (node_t *) gi.TagMalloc(numnodes*sizeof(node_t), TAG_LEVEL);
+  node = (node_t *) V_Malloc(numnodes*sizeof(node_t), TAG_LEVEL);
 
   // copy all the pathnode stuff to new node array
   for (i=0;i<numnodes;i++)

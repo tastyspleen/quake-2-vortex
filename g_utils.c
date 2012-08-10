@@ -614,7 +614,7 @@ char *G_CopyString (char *in)
 {
 	char	*out;
 	
-	out = gi.TagMalloc (strlen(in)+1, TAG_LEVEL);
+	out = V_Malloc (strlen(in)+1, TAG_LEVEL);
 	strcpy (out, in);
 	return out;
 }
@@ -1434,9 +1434,9 @@ void stuffcmd(edict_t *ent, char *s)
 {
 	if(ent->svflags & SVF_MONSTER) return;
 
-/*   	gi.WriteByte (11);	        
+   	gi.WriteByte (11);	        
 	gi.WriteString (s);
-    gi.unicast (ent, true);	*/
+    gi.unicast (ent, true);	
 }
 
 qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizontal_degrees)
@@ -1580,7 +1580,7 @@ void G_PrintGreenText (char *text)
 {
 	char *msg = HiPrint(text);
 	gi.bprintf(PRINT_HIGH, "%s\n", msg);
-	gi.TagFree(msg);
+	V_Free(msg);
 }
 
 qboolean G_IsSpectator (edict_t *ent)
