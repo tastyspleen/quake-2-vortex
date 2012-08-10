@@ -762,7 +762,7 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 				VSF_SaveRunes(ent, path);
 			}
 			else if (savemethod->value == 1)
-				savePlayer(ent);
+				SavePlayer(ent);
 
 			safe_cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);

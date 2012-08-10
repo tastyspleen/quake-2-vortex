@@ -402,7 +402,7 @@ int AI_GravityBoxStep( vec3_t origin, float scale, vec3_t destvec, vec3_t newori
 
 droptofloor:
 
-	while(eternalfall < 20000) 
+	while(eternalfall < 8000) 
 	{
 		if( gi.pointcontents(neworigin) & MASK_WATER ) {
 

@@ -206,10 +206,10 @@ void check_for_levelup (edict_t *ent)
 		ent->myskills.next_level += points_needed;
 
         ent->myskills.speciality_points += 2;
-		if (ent->myskills.class_num != CLASS_WEAPONMASTER)
-			ent->myskills.weapon_points += 4;
-		else
+		if (generalabmode->value && ent->myskills.class_num == CLASS_WEAPONMASTER)
 			ent->myskills.weapon_points += 6;
+		else // 4 points for everyone, only weaponmasters in generalabmode.
+			ent->myskills.weapon_points += 4;
 
 		NewLevel_Addons(ent);//Add any special addons that should be there!
 		modify_max(ent);

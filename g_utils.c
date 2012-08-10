@@ -104,10 +104,13 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
 		prev_rad = VectorLength(eorg);
 	} else
+	{
 		prev_rad = rad + 1;
+		prev_ed = g_edicts;
+	}
 	found_rad = 0;
 
-	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
+	for (from = prev_ed; from < &g_edicts[globals.num_edicts]; from++)
 	{
 		if (!from->inuse)
 			continue;
@@ -1431,9 +1434,9 @@ void stuffcmd(edict_t *ent, char *s)
 {
 	if(ent->svflags & SVF_MONSTER) return;
 
-   	gi.WriteByte (11);	        
+/*   	gi.WriteByte (11);	        
 	gi.WriteString (s);
-    gi.unicast (ent, true);	
+    gi.unicast (ent, true);	*/
 }
 
 qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizontal_degrees)
@@ -1575,7 +1578,9 @@ int floattoint (float input)
 
 void G_PrintGreenText (char *text)
 {
-	gi.bprintf(PRINT_HIGH, "%s\n", HiPrint(text));
+	char *msg = HiPrint(text);
+	gi.bprintf(PRINT_HIGH, "%s\n", msg);
+	gi.TagFree(msg);
 }
 
 qboolean G_IsSpectator (edict_t *ent)

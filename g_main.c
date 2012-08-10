@@ -130,9 +130,6 @@ cvar_t *adminpass;
 cvar_t *team1_skin;
 cvar_t *team2_skin;
 cvar_t *voting;
-cvar_t *gds;
-cvar_t *gds_path;
-cvar_t *gds_exe;
 cvar_t *game_path;
 cvar_t *allies;
 cvar_t *pregame_time;
@@ -209,6 +206,11 @@ void ShutdownGame (void)
 	}
 	//K03 End
 	gi.dprintf ("==== ShutdownGame ====\n");
+
+	#ifndef GDS_NOMULTITHREADING
+	GDS_FinishThread();
+	#endif
+
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);
 }
