@@ -1,5 +1,7 @@
 #include "g_local.h"
 
+qboolean SavePlayer(edict_t *ent);
+
 int OpenConfigFile(edict_t *ent)
 {
 	if (debuginfo->value)
@@ -74,14 +76,13 @@ void SaveCharacter (edict_t *ent)
 
 	if(Q_stricmp(oldPassword, newPassword) != 0)
 	{
-		if (gds->value)		WriteToLogfile(ent, "Changed password.\n");
-		else				WriteToLogfile(ent, va("Changed password from '%s' to '%s'.\n", oldPassword, newPassword));
+		WriteToLogfile(ent, va("Changed password from '%s' to '%s'.\n", oldPassword, newPassword));
 	}
 
 	//Encrypt the password.
 	Q_strncpy (ent->myskills.password, CryptString(newPassword, false), sizeof(ent->myskills.password)-1);
 
 	//3.0 save file
-	if (!savePlayer(ent))
+	if (!SavePlayer(ent))
 		gi.dprintf("ERROR: SaveCharacter() unable to save player: %s", ent->myskills.player_name);
 }

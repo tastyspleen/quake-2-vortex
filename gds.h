@@ -1,3 +1,4 @@
+/*
 #include <sys/stat.h>
 
 #define GDS_FILE_EXISTS			1		// the file we want exists
@@ -21,3 +22,42 @@ typedef struct gdsfiles_s
 	char		filename[100];	// file name to delete
 	float		time;			// time to delete the file
 }gdsfiles_t;
+
+*/
+
+#ifndef MYSQL_GDS
+#define MYSQL_GDS
+
+/* 
+So back then there was a GDS 
+and it had issues.
+
+But now, we're doing it Right!<tm>
+
+So, with a few pointers from KOTS2007
+(ideas borrowed from kots. heheh)
+we're having a MYSQL GDS.
+
+						-az
+
+(this will also work with qfusion)
+*/
+#ifndef NO_GDS
+
+#define GDS_LOAD 1
+#define GDS_SAVE 2
+#define GDS_EXITTHREAD 3
+
+// For Everyone
+// void V_GDS_Load(edict_t *ent);
+qboolean V_GDS_StartConn();
+void V_GDS_Queue_Add(edict_t *ent, int operation);
+qboolean CanUseGDS();
+#ifndef GDS_NOMULTITHREADING
+void GDS_FinishThread();
+void HandleStatus(edict_t *player);
+#endif
+
+#endif //NO_GDS
+
+#endif // MYSQL_GDS

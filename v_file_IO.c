@@ -2,10 +2,18 @@
 #include <sys/stat.h>
 #include "sqlite3.h"
 
+#ifndef NO_GDS
+#include <my_global.h>
+#include <mysql.h>
+#endif
 
 #define SAVE_VERSION "v1.0"
 
 // az begin
+
+#ifdef _WIN32
+#pragma warning ( disable : 4090 ; disable : 4996 )
+#endif
 
 // ===  CVARS  ===
 cvar_t *savemethod;
@@ -89,7 +97,7 @@ const char* SQLITE_VRXSELECT = "SELECT * FROM %s";
 
 //az end
 
-qboolean SavePlayer(edict_t *ent);	//Called by savePlayer(). Don't call this directly.
+qboolean SavePlayer(edict_t *ent);
 
 void VRXGetPath (char* path, edict_t *ent)
 {
@@ -110,90 +118,6 @@ void VRXGetPath (char* path, edict_t *ent)
 	}
 }
 
-#if defined(_WIN32) || defined(WIN32)
-#include <process.h>
-
-/*
-	_beginthread creates threads that automatically terminate when they are finished.
-	This is according to the online documentation. If memory leaks are a problem, 
-	try using _endthread()
-
-	The best part of these thread calls is that windows.h is not required.
-
-	syntax:	_beginthread(func, stacksize, args)
-	func		= thread function. Must have __cdecl identifier.
-	stacksize	= size of stack to use. Ususally set to the default value (0).
-	args		= void pointer to any arguments you want to send the thread.
-
-	syntax: _endthread()
-*/
-
-//Thread function for loading players
-void __cdecl OpenPlayerThread(void *arg)
-{
-	edict_t *ent = (edict_t *)arg;
-
-	if(debuginfo->value)
-		gi.dprintf(va("Threading OpenPlayerThread() for %s.\n", ent->client->pers.netname));
-
-	memset(&ent->myskills,0,sizeof(skills_t));
-	if(openPlayer(ent))
-	{
-		safe_cprintf(ent, PRINT_HIGH, "File found! Entering the game.\n");
-        ent->threadReturnVal = 0;		//success
-	}
-	else	ent->threadReturnVal = -1;	//failure
-
-	ent->hThreadFinishTime = level.time;
-}
-
-//Thread function for saving players
-void __cdecl SavePlayerThread(void *arg)
-{
-	edict_t *ent = (edict_t *)arg;
-
-	if(debuginfo->value)
-		gi.dprintf(va("Threading SavePlayerThread() for %s.\n", ent->client->pers.netname));
-
-	if(SavePlayer(ent))
-		ent->threadReturnVal = 0;		//success
-	else	ent->threadReturnVal = -1;	//failure
-
-	ent->hThreadFinishTime = level.time;
-}
-#endif
-
-//Creates an OpenPlayerThread() for loading a player (GDS)
-void createOpenPlayerThread(edict_t *ent)
-{
-#if defined(_WIN32) || defined(WIN32)
-	ent->isLoading = true;
-	ent->hThread = _beginthread(OpenPlayerThread, 0, ent);
-
-	// Check the return value for success.
-	if (ent->hThread == 0)
-		gi.dprintf("ERROR: Thread not created.\n");
-
-#else
-	gi.dprintf("Multi-threading not supported for non-windows builds.\n");
-#endif
-} 
-
-//Creates an SavePlayerThread() for saving a player (GDS)
-void createSavePlayerThread(edict_t *ent)
-{
-#if defined(_WIN32) || defined(WIN32)
-	ent->isSaving = true;
-	ent->hThread = _beginthread(SavePlayerThread, 0, ent);
-
-	// Check the return value for success.
-	if (ent->hThread == 0)
-		gi.dprintf("ERROR: Thread not created.\n");
-	
-#else
-	gi.dprintf("Multi-threading not supported for non-windows builds.\n");
-#endif
-} 
 
 //Encrypt the player's password
 char *CryptPassword(char *text)
@@ -1182,7 +1106,6 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 //		That should be plenty for vrx	-doomie
 //***********************************************************************
 
-//Called by savePlayer(). Don't call this directly.
 qboolean SavePlayer(edict_t *ent)
 {
 	char	path[100];
@@ -1197,15 +1120,28 @@ qboolean SavePlayer(edict_t *ent)
 		return false;
 	}
 
+	if (G_IsSpectator(ent))
+	{
+		gi.dprintf("Warning: Tried to save a spectator's stats.\n");
+		return false;
+	}
+
 	if(debuginfo->value)
 		gi.dprintf("savePlayer called to save: %s\n", ent->client->pers.netname);
+
+#ifndef NO_GDS
+	if (savemethod->value == 2 && CanUseGDS())
+	{
+		V_GDS_Queue_Add(ent, GDS_SAVE);
+		return true;
+	}
+#endif
 
 	//determine path
 	VRXGetPath(path, ent);
 
 	if (stat (path, &exist) == 0)
 		file_exists = 1;
-	
 
 	//Open file for saving
 	if (savemethod->value == 1)
@@ -1231,20 +1167,6 @@ qboolean SavePlayer(edict_t *ent)
 //***********************************************************************
 //		Save player (via multi-threading or via local access)
 //***********************************************************************
-
-qboolean savePlayer(edict_t *ent)
-{
-	if(gds->value)
-	{
-		//Don't create more than one save thread.
-		if(!ent->isSaving)
-			createSavePlayerThread(ent);
-
-		return true;
-	}
-	
-	return SavePlayer(ent);
-}
 
 qboolean VSF_LoadPlayer(edict_t *player, char* path)
 {
@@ -1629,31 +1551,17 @@ qboolean openPlayer(edict_t *ent)
 	//Reset the player's skills_t
 	memset(&ent->myskills,0,sizeof(skills_t));
 
-	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#else
+	if (savemethod->value == 0)
 		sprintf(path, "%s/%s.vsf", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#endif
+	else if (savemethod->value == 1)
+		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
 	//Open file for loading
 	if ((fread = fopen(path, "rb")) == NULL)
 	{
 		gi.dprintf("INFO: openPlayer can't open %s. This probably means the file does not exist.\n", path);
-		#if defined(_WIN32) || defined(WIN32)
-			sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#else
-			sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-		#endif
-
-		if ((fread = fopen(path, "rb")) == NULL)
-		{
-			gi.dprintf("INFO: openPlayer can't open %s. There are no characters with this name.\n", path);
-			return false;
-		}
-
-	}else
-		loadmode = 1; // do sqlite
+		return false;
+	}
 
 	//disable all abilities
 	for (i = 0; i < MAX_ABILITIES; ++i)
@@ -1661,9 +1569,16 @@ qboolean openPlayer(edict_t *ent)
 		ent->myskills.abilities[i].disable = true;
 	}
 
-	if (loadmode == 1)
+	if (savemethod->value == 0)
 	{
 		return VSF_LoadPlayer(ent, path); // end right here- we're doing sqlite
+	}else if (savemethod->value == 2)
+	{
+		// We can't load characters from mysql THIS way so
+		// what we do is disallow it unless we have
+		// an offline savemethod.
+		gi.dprintf("INFO: Unable to load MYSQL character through this route!\n");
+		return false;
 	}
 
 	// .vrx file format loading ahead (deprecated)

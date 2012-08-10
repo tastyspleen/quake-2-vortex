@@ -2061,12 +2061,24 @@ deathmatch mode, so clear everything out before starting them.
 */
 void ClientBeginDeathmatch (edict_t *ent)
 {
+	static int lastID = 0;
 	if (debuginfo->value > 1)
 		gi.dprintf("ClientBeginDeathmatch()\n");
 
 	G_InitEdict (ent);
 
 	InitClientResp (ent->client);
+
+	// az begin
+	ent->PlayerID = lastID;
+	lastID++;
+
+	if (lastID > 100000000)
+	{
+		gi.dprintf("We seem to have passed a big player ID. Resetting!");
+		lastID = 0;
+	}
+	// az end
 
 	//K03 Begin
 	ent->client->pers.spectator = true;
@@ -2128,7 +2140,6 @@ to be placed into the game.  This will happen every level load.
 */
 void ClientBegin (edict_t *ent)
 {
-	int		i;
 
 	if (debuginfo->value > 1)
 		gi.dprintf("ClientBegin()\n");
@@ -2155,54 +2166,7 @@ void ClientBegin (edict_t *ent)
 		//[QBS]end
 	}
 
-	if (deathmatch->value)
-	{
-		ClientBeginDeathmatch (ent);
-		return;
-	}
-
-	// if there is already a body waiting for us (a loadgame), just
-	// take it, otherwise spawn one from scratch
-	if (ent->inuse == true)
-	{
-		// the client has cleared the client side viewangles upon
-		// connecting to the server, which is different than the
-		// state when the game is saved, so we need to compensate
-		// with deltaangles
-		for (i=0 ; i<3 ; i++)
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->ps.viewangles[i]);
-	}
-	else
-	{
-		// a spawn point will completely reinitialize the entity
-		// except for the persistant data that was initialized at
-		// ClientConnect() time
-		G_InitEdict (ent);
-		ent->classname = "player";
-		InitClientResp (ent->client);
-		PutClientInServer (ent);
-	}
-
-	if (level.intermissiontime)
-	{
-		MoveClientToIntermission (ent);
-	}
-	else
-	{
-		// send effect if in a multiplayer game
-		if (game.maxclients > 1)
-		{
-			gi.WriteByte (svc_muzzleflash);
-			gi.WriteShort (ent-g_edicts);
-			gi.WriteByte (MZ_LOGIN);
-			gi.multicast (ent->s.origin, MULTICAST_PVS);
-
-			gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
-		}
-	}
-
-	// make sure all view stuff is valid
-	ClientEndServerFrame (ent);
+	ClientBeginDeathmatch (ent);
 }
 
 /*
@@ -2331,6 +2295,17 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		gi.dprintf("ClientConnect()\n");
 
 	value = Info_ValueForKey (userinfo, "name");
+
+	if (strlen(value) < 5)
+	{
+		Info_SetValueForKey(userinfo, "rejmsg", "Your nickname must be at least 5 characters long.");
+		return false;
+	}
+
+	// Reset names!
+	memset(ent->client->pers.netname, 0, sizeof(ent->client->pers.netname)-1);
+
+
 	strncpy (ent->client->pers.netname, value, sizeof(ent->client->pers.netname)-1);
 
 	// update current ip
@@ -2516,10 +2491,12 @@ void ClientDisconnect (edict_t *ent)
 	}
 
 	//ent->myskills.inuse = 0;
-	SaveCharacter(ent);
+	if (savemethod->value < 2)
+		SaveCharacter(ent);
+	// else update mysql "Logged in!"
 
 	//GHz: Reset their skills_t to prevent any possibility of duping
-	if(!gds->value)		memset(&ent->myskills,0,sizeof(skills_t));
+	memset(&ent->myskills,0,sizeof(skills_t));
 	//K03 End
 
 	gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/eject.wav"), 1, ATTN_NORM, 0);
@@ -3145,7 +3122,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if (ent->mtype)
 		viewheight = ent->viewheight;
 //GHz END
-	if(impulse == 1) gi.bprintf(PRINT_HIGH,"%f\n",ent->s.origin[2]);
 
 	//K03 Begin
 	if (ent->client->resp.spectator != true)
@@ -3157,57 +3133,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				fire_last = 12;
 			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
 				fire_last = 13;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
-				fire_last = 14;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
-				fire_last = 15;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
-				fire_last = 16;
-			else fire_last = 17;
 		}
-
-		// assault cannon slows you down
-		if(ent->client->pers.weapon && (ent->client->pers.weapon->weaponthink == Weapon_Chaingun) 
-			&& (ent->client->weaponstate == WEAPON_FIRING) && (ent->client->weapon_mode))
-		{
-			ucmd->forwardmove *= 0.33;
-			ucmd->sidemove *= 0.33;
-			ucmd->upmove *= 0.33;
-		}
-		// sniper mode slows you down
-		if (ent->client->snipertime >= level.time)
-		{
-			ucmd->forwardmove *= 0.33;
-			ucmd->sidemove *= 0.33;
-			ucmd->upmove *= 0.33;
-		}
-
-		curse = que_findtype(ent->curses, curse, AURA_HOLYFREEZE);
-		// are we affected by the holy freeze aura?
-		if (curse)
-		{
-			modifier = 1 / (1 + 0.1 * curse->ent->owner->myskills.abilities[HOLY_FREEZE].current_level);
-			if (modifier < 0.25) modifier = 0.25;
-			//gi.dprintf("holyfreeze modifier = %.2f\n", modifier);
-			ucmd->forwardmove *= modifier;
-			ucmd->sidemove *= modifier;
-			ucmd->upmove *= modifier;
-		}
-
-		//Talent: Frost Nova
-		//4.2 Water Totem
-		if(ent->chill_time > level.time)
-		{
-			modifier = 1 / (1 + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * ent->chill_level);
-			if (modifier < 0.25) modifier = 0.25;
-			//gi.dprintf("chill modifier = %.2f\n", modifier);
-			ucmd->forwardmove *= modifier;
-			ucmd->sidemove *= modifier;
-			ucmd->upmove *= modifier;
-		}
-		
-		//if (!ent->client->resp.spectator && VectorLength(ent->velocity) > 10)
-		//	gi.dprintf("vel = %.0f\n", VectorLength(ent->velocity));
 
 		//4.2 caltrops
 		if (ent->slowed_time > level.time)
@@ -3597,21 +3523,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			client->ps.pmove.pm_flags &= ~PMF_JUMP_HELD;
 	}
 
-	/*
-	// update chase cam if being followed
-	for (i = 1; i < globals.num_edicts; i++) {
-		other = g_edicts + i;
-		if (other->inuse && ent->client->chase_target == other)
-			UpdateChaseCam(ent);
-	}*/
 	UpdateChaseCam(ent);
-
-	//if (ent->client->chase_target)
 
 	if (ent->lockon == 1)
 		V_AutoAim(ent);
-
-		//LockOnTarget(ent);
 
 	//K03 Begin
 	if ((client->hook_state == HOOK_ON) && (VectorLength(ent->velocity) < 10)) {
@@ -3683,6 +3598,13 @@ void ClientBeginServerFrame (edict_t *ent)
 	if (level.intermissiontime)
 		return;
 
+#ifndef NO_GDS
+#ifndef GDS_NOMULTITHREADING
+	// az begin
+	HandleStatus(ent);
+	// az end
+#endif
+#endif
 	//GHz START
 	if (G_EntExists(ent) && !(level.framenum%10))
 	{

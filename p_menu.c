@@ -77,7 +77,18 @@ void setHardMax(edict_t *ent, int index)
 		default:
 			if (GetAbilityUpgradeCost(index) < 2)
 			{
-				ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2.5; break;
+				if (!generalabmode->value)
+				{
+					if (ent->myskills.class_num == CLASS_WEAPONMASTER)
+					{
+						ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2; break;
+					}
+					else
+					{
+						ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 4; break;
+					}
+					
+				}
 			}
 			else 
 				ent->myskills.abilities[index].hard_max = 1; break;
@@ -108,13 +119,13 @@ void setClassAbilities (edict_t *ent)
 	switch (ent->myskills.class_num)
 	{
 	case CLASS_SOLDIER:// 78 points
-		enableAbility(ent, STRENGTH, 0, 10, 0);
-		enableAbility(ent, RESISTANCE, 0, 10, 0);
-		enableAbility(ent, HA_PICKUP, 0, 10, 0);
-		enableAbility(ent, NAPALM, 0, 10, 0);
-		enableAbility(ent, SPIKE_GRENADE, 0, 10, 0);
-		enableAbility(ent, EMP, 0, 10, 0);
-		enableAbility(ent, MIRV, 0, 10, 0);
+		enableAbility(ent, STRENGTH, 0, 20, 0);
+		enableAbility(ent, RESISTANCE, 0, 15, 0);
+		enableAbility(ent, HA_PICKUP, 0, 15, 0);
+		enableAbility(ent, NAPALM, 0, 15, 0);
+		enableAbility(ent, SPIKE_GRENADE, 0, 15, 0);
+		enableAbility(ent, EMP, 0, 15, 0);
+		enableAbility(ent, MIRV, 0, 15, 0);
 		enableAbility(ent, CREATE_QUAD, 0, 1, 0);
 		enableAbility(ent, CREATE_INVIN, 0, 1, 0);
 
@@ -122,109 +133,109 @@ void setClassAbilities (edict_t *ent)
 		break;
 	case CLASS_KNIGHT:// 70 points
 		enableAbility(ent, ARMOR_UPGRADE, 0, 10, 0);
-		enableAbility(ent, REGENERATION, 0, 10, 0);
-		enableAbility(ent, POWER_SHIELD, 0, 10, 0);
-		enableAbility(ent, ARMOR_REGEN, 0, 10, 0);
-		enableAbility(ent, EXPLODING_ARMOR, 0, 10, 0);
-		enableAbility(ent, BEAM, 0, 10, 0);
-		enableAbility(ent, PLASMA_BOLT, 0, 10, 0);
+		enableAbility(ent, REGENERATION, 0, 15, 0);
+		enableAbility(ent, POWER_SHIELD, 0, 15, 0);
+		enableAbility(ent, ARMOR_REGEN, 0, 15, 0);
+		enableAbility(ent, EXPLODING_ARMOR, 0, 15, 0);
+		enableAbility(ent, BEAM, 0, 15, 0);
+		enableAbility(ent, PLASMA_BOLT, 0, 15, 0);
 		enableAbility(ent, SHIELD, 1, 1, 0);
 
 		enableAbility(ent, BOOST_SPELL, 1, 1, 2);
 		ent->myskills.respawn_weapon = 1;	//sword only
 		break;
 	case CLASS_VAMPIRE:// 80 points
-		enableAbility(ent, VAMPIRE, 0, 10, 0);
-		enableAbility(ent, GHOST, 0, 10, 0);
-		enableAbility(ent, LIFE_DRAIN, 0, 10, 0);
-		enableAbility(ent, FLESH_EATER, 0, 10, 0);
-		enableAbility(ent, CORPSE_EXPLODE, 0, 10, 0);
-		enableAbility(ent, MIND_ABSORB, 0, 10, 0);
-		enableAbility(ent, AMMO_STEAL, 0, 10, 0);
-		enableAbility(ent, CONVERSION, 0, 10, 0);
+		enableAbility(ent, VAMPIRE, 0, 15, 0);
+		enableAbility(ent, GHOST, 0, 15, 0);
+		enableAbility(ent, LIFE_DRAIN, 0, 15, 0);
+		enableAbility(ent, FLESH_EATER, 0, 15, 0);
+		enableAbility(ent, CORPSE_EXPLODE, 0, 15, 0);
+		enableAbility(ent, MIND_ABSORB, 0, 15, 0);
+		enableAbility(ent, AMMO_STEAL, 0, 15, 0);
+		enableAbility(ent, CONVERSION, 0, 15, 0);
 		enableAbility(ent, CLOAK, 1, 1, 0);
 		break;
 	case CLASS_NECROMANCER:// 80 points
-		enableAbility(ent, MONSTER_SUMMON, 0, 10, 0);
-		enableAbility(ent, HELLSPAWN, 0, 10, 0);
-		enableAbility(ent, PLAGUE, 0, 10, 0);
-		enableAbility(ent, AMP_DAMAGE, 0, 10, 0);
-		enableAbility(ent, CRIPPLE, 0, 10, 0);
-		enableAbility(ent, CURSE, 0, 10, 0);
-		enableAbility(ent, WEAKEN, 0, 10, 0);
-		enableAbility(ent, LOWER_RESIST, 0, 10, 0);
+		enableAbility(ent, MONSTER_SUMMON, 0, 15, 0);
+		enableAbility(ent, HELLSPAWN, 0, 15, 0);
+		enableAbility(ent, PLAGUE, 0, 15, 0);
+		enableAbility(ent, AMP_DAMAGE, 0, 15, 0);
+		enableAbility(ent, CRIPPLE, 0, 15, 0);
+		enableAbility(ent, CURSE, 0, 15, 0);
+		enableAbility(ent, WEAKEN, 0, 15, 0);
+		enableAbility(ent, LOWER_RESIST, 0, 15, 0);
 
 		enableAbility(ent, JETPACK, 1, 1, 2);
 		break;
 	case CLASS_ENGINEER:// 80 points
-		enableAbility(ent, PROXY, 0, 10, 0);
-		enableAbility(ent, BUILD_SENTRY, 0, 10, 0);
-		enableAbility(ent, SUPPLY_STATION, 0, 10, 0);
-		enableAbility(ent, BUILD_LASER, 0, 10, 0);
-		enableAbility(ent, MAGMINE, 0, 10, 0);
-		enableAbility(ent, CALTROPS, 0, 10, 0);
-		enableAbility(ent, AUTOCANNON, 0, 10, 0);
-		enableAbility(ent, DETECTOR, 0, 10, 0);
+		enableAbility(ent, PROXY, 0, 15, 0);
+		enableAbility(ent, BUILD_SENTRY, 0, 15, 0);
+		enableAbility(ent, SUPPLY_STATION, 0, 15, 0);
+		enableAbility(ent, BUILD_LASER, 0, 15, 0);
+		enableAbility(ent, MAGMINE, 0, 15, 0);
+		enableAbility(ent, CALTROPS, 0, 15, 0);
+		enableAbility(ent, AUTOCANNON, 0, 15, 0);
+		enableAbility(ent, DETECTOR, 0, 15, 0);
 
 		enableAbility(ent, ANTIGRAV, 1, 1, 2);
 		break;
 	case CLASS_MAGE:// 80 points
-		enableAbility(ent, MAGICBOLT, 0, 10, 0);
-		enableAbility(ent, NOVA, 0, 10, 0);
-		enableAbility(ent, BOMB_SPELL, 0, 10, 0);
-		enableAbility(ent, FORCE_WALL, 0, 10, 0);
-		enableAbility(ent, LIGHTNING, 0, 10, 0);
-		enableAbility(ent, METEOR, 0, 10, 0);
-		enableAbility(ent, FIREBALL, 0, 10, 0);
-		enableAbility(ent, LIGHTNING_STORM, 0, 10, 0);
+		enableAbility(ent, MAGICBOLT, 0, 15, 0);
+		enableAbility(ent, NOVA, 0, 15, 0);
+		enableAbility(ent, BOMB_SPELL, 0, 15, 0);
+		enableAbility(ent, FORCE_WALL, 0, 15, 0);
+		enableAbility(ent, LIGHTNING, 0, 15, 0);
+		enableAbility(ent, METEOR, 0, 15, 0);
+		enableAbility(ent, FIREBALL, 0, 15, 0);
+		enableAbility(ent, LIGHTNING_STORM, 0, 15, 0);
 
 		enableAbility(ent, TELEPORT, 1, 1, 2);
 		break;
 	case CLASS_CLERIC:// 80 points
-		enableAbility(ent, SALVATION, 0, 10, 0);
-		enableAbility(ent, HOLY_FREEZE, 0, 10, 0);
-		enableAbility(ent, HEALING, 0, 10, 0);
-		enableAbility(ent, BLESS, 0, 10, 0);
-		enableAbility(ent, YIN, 0, 10, 0);
-		enableAbility(ent, YANG, 0, 10, 0);
-		enableAbility(ent, HAMMER, 0, 10, 0);
-		enableAbility(ent, DEFLECT, 0, 10, 0);
+		enableAbility(ent, SALVATION, 0, 15, 0);
+		enableAbility(ent, HOLY_FREEZE, 0, 15, 0);
+		enableAbility(ent, HEALING, 0, 15, 0);
+		enableAbility(ent, BLESS, 0, 15, 0);
+		enableAbility(ent, YIN, 0, 15, 0);
+		enableAbility(ent, YANG, 0, 15, 0);
+		enableAbility(ent, HAMMER, 0, 15, 0);
+		enableAbility(ent, DEFLECT, 0, 15, 0);
 
 		enableAbility(ent, DOUBLE_JUMP, 1, 1, 2);
 		break;
 	case CLASS_POLTERGEIST:// 80 points
-		enableAbility(ent, BERSERK, 1, 10, 0);
-		enableAbility(ent, CACODEMON, 1, 10, 0);
-		enableAbility(ent, BLOOD_SUCKER, 1, 10, 0);
-		enableAbility(ent, BRAIN, 1, 10, 0);
-		enableAbility(ent, FLYER, 1, 10, 0);
-		enableAbility(ent, MUTANT, 1, 10, 0);
-		enableAbility(ent, TANK, 1, 10, 0);
-		enableAbility(ent, MEDIC, 1, 10, 0);
+		enableAbility(ent, BERSERK, 1, 20, 0);
+		enableAbility(ent, CACODEMON, 1, 20, 0);
+		enableAbility(ent, BLOOD_SUCKER, 1, 20, 0);
+		enableAbility(ent, BRAIN, 1, 20, 0);
+		enableAbility(ent, FLYER, 1, 20, 0);
+		enableAbility(ent, MUTANT, 1, 20, 0);
+		enableAbility(ent, TANK, 1, 20, 0);
+		enableAbility(ent, MEDIC, 1, 20, 0);
 		enableAbility(ent, GHOST, 99, 99, 0);
 		enableAbility(ent, MORPH_MASTERY, 1, 1, 0);
 		break;
 	case CLASS_SHAMAN:// 75 points
-		enableAbility(ent, FIRE_TOTEM, 0, 10, 0);
-		enableAbility(ent, WATER_TOTEM, 0, 10, 0);
-		enableAbility(ent, AIR_TOTEM, 0, 10, 0);
-		enableAbility(ent, EARTH_TOTEM, 0, 10, 0);
-		enableAbility(ent, DARK_TOTEM, 0, 10, 0);
-		enableAbility(ent, NATURE_TOTEM, 0, 10, 0);
-		enableAbility(ent, FURY, 0, 10, 0);
+		enableAbility(ent, FIRE_TOTEM, 0, 15, 0);
+		enableAbility(ent, WATER_TOTEM, 0, 15, 0);
+		enableAbility(ent, AIR_TOTEM, 0, 15, 0);
+		enableAbility(ent, EARTH_TOTEM, 0, 15, 0);
+		enableAbility(ent, DARK_TOTEM, 0, 15, 0);
+		enableAbility(ent, NATURE_TOTEM, 0, 15, 0);
+		enableAbility(ent, FURY, 0, 15, 0);
 		enableAbility(ent, HASTE, 0, 5, 0); // lol oops
 		enableAbility(ent, SUPER_SPEED, 1, 1, 0);
 		enableAbility(ent, TOTEM_MASTERY, 1, 1, 0);//4.4
 		break;
 	case CLASS_ALIEN:// 80 points
-		enableAbility(ent, SPIKER, 0, 10, 0);
-		enableAbility(ent, OBSTACLE, 0, 10, 0);
-		enableAbility(ent, GASSER, 0, 10, 0);
-		enableAbility(ent, HEALER, 0, 10, 0);
-		enableAbility(ent, SPORE, 0, 10, 0);
-		enableAbility(ent, ACID, 0, 10, 0);
-		enableAbility(ent, SPIKE, 0, 10, 0);
-		enableAbility(ent, COCOON, 0, 10, 0);
+		enableAbility(ent, SPIKER, 0, 15, 0);
+		enableAbility(ent, OBSTACLE, 0, 15, 0);
+		enableAbility(ent, GASSER, 0, 15, 0);
+		enableAbility(ent, HEALER, 0, 15, 0);
+		enableAbility(ent, SPORE, 0, 15, 0);
+		enableAbility(ent, ACID, 0, 15, 0);
+		enableAbility(ent, SPIKE, 0, 15, 0);
+		enableAbility(ent, COCOON, 0, 15, 0);
 
 		enableAbility(ent, BLACKHOLE, 1, 1, 2);
 		break;
@@ -243,7 +254,7 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, WORLD_RESIST, 0, 1, 1);
 
 	// ammo regen is hard capped at 5
-	enableAbility(ent, AMMO_REGEN, 0, 5, 1);
+	enableAbility(ent, AMMO_REGEN, 0, 10, 1);
 	ent->myskills.abilities[AMMO_REGEN].hard_max = 5;
 
 	// shared
@@ -490,7 +501,11 @@ void StartGame (edict_t *ent)
 	gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 	WriteToLogfile(ent, "Logged in.\n");
 
-	savePlayer(ent);
+#ifndef GDS_NOMULTITHREADING
+	ent->ThreadStatus = 0;
+#endif
+
+	SavePlayer(ent); // Do we need to?
 }
 
 void OpenCombatMenu (edict_t *ent, int lastline);
@@ -592,27 +607,16 @@ void OpenCombatMenu (edict_t *ent, int lastline)
 	showmenu(ent);
 }
 
-void JoinTheGame (edict_t *ent)
+qboolean CanJoinGame(edict_t *ent, int returned)
 {
-	int		returned;
-
-	if (ent->client->menustorage.menu_active)
-	{
-		closemenu(ent);
-		return;
-	}
-
-	/*if(gds->value)	returned = GDS_OpenConfigFile(ent);
-	else			*/returned = OpenConfigFile(ent);
-
 	switch(returned)
 	{
 	case -1:	//bad password
 		safe_cprintf(ent, PRINT_HIGH, "Access denied. Incorrect password.\n");
-		return;
+		return false;
 	case -2:	//below minimum level
 		safe_cprintf(ent, PRINT_HIGH, "You have to be at least level %d to play on this server.\n", ((int)min_level->value));
-		return;
+		return false;
 	case -3:	//above maximum level
 		safe_cprintf(ent, PRINT_HIGH, "You have to be level %d or below to play here.\n", ((int)max_level->value));
 		if (strcmp(reconnect_ip->string, "0") != 0)
@@ -620,30 +624,33 @@ void JoinTheGame (edict_t *ent)
 			safe_cprintf(ent, PRINT_HIGH, "You are being sent to an alternate server where you can play.\n");
 			stuffcmd(ent, va("connect %s\n", reconnect_ip->string));
 		}
-		return;
+		return false;
 	case -4:	//invalid player name
 		safe_cprintf(ent, PRINT_HIGH, "Your name must be greater than 2 characters long.\n");
-		return;
+		return false;
 	case -5:	//playing too much
 		safe_cprintf(ent, PRINT_HIGH, "Can't join: %d hour play-time limit reached.\n", MAX_HOURS);
 		safe_cprintf(ent, PRINT_HIGH, "Please try a different character, or try again tommorow.\n");
-		return;
+		return false;
 	case -6:	//newbie basher can't play
 		safe_cprintf(ent, PRINT_HIGH, "Unable to join: The current maximum level is %d.\n", NEWBIE_BASHER_MAX);
 		safe_cprintf(ent, PRINT_HIGH, "Please return at a later time, or try a different character.\n");
 		gi.dprintf("INFO: %s exceeds maximum level allowed by server (level %d)!", ent->client->pers.netname, NEWBIE_BASHER_MAX);
-		return;
+		return false;
 	case -7:	//boss can't play
 		safe_cprintf(ent, PRINT_HIGH, "Unable to join: Bosses are not allowed unless the server is at least half capacity.\n");
 		safe_cprintf(ent, PRINT_HIGH, "Please come back at a later time, or try a different character.\n");
-		return;
+		return false;
 	case -8: // stupid name
 		safe_cprintf(ent, PRINT_HIGH, "Unable to join with default name \"Player\" - Don't use this name. We won't be able to know who are you.\n");
-		return;
+		return false;
 	default:	//passed every check
-		break;
+		return true;
 	}
+}
 
+void OpenModeMenu(edict_t *ent)
+{
 	if (ptr->value)
 	{
 		OpenPTRJoinMenu(ent);
@@ -669,16 +676,32 @@ void JoinTheGame (edict_t *ent)
 	}
 
 	StartGame(ent);
+}
 
-	/*
-	if (ent->myskills.inuse)
+void JoinTheGame (edict_t *ent)
+{
+	int		returned;
+
+	if (ent->client->menustorage.menu_active)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "WARNING: Your character file is marked as already being open!\n");
-		safe_cprintf(ent, PRINT_HIGH, "Logging into a server twice is not permitted. A message will be sent to an administrator.\n");
-		//gi.dprintf("WARNING: %s's file is marked as already open at %s on %s.\n", ent->client->pers.netname, CURRENT_TIME, CURRENT_DATE);
+		closemenu(ent);
+		return;
 	}
-	ent->myskills.inuse = 1;
-	*/
+
+	if (savemethod->value < 2)
+		returned = OpenConfigFile(ent);
+	else
+	{
+		// We can't use this function.
+		// We instead do it in somewhere else.
+		gi.dprintf("Warning: JoinTheGame Called on MYSQL mode!\n");
+		return; 
+	}
+
+	if (!CanJoinGame(ent, returned))
+		return;
+
+	OpenModeMenu(ent); // This implies the game will start.
 }
 
 qboolean StartClient(edict_t *ent)
@@ -697,12 +720,12 @@ void joinmenu_handler (edict_t *ent, int option)
 	{
 	case 1:
 		//If no GDS is running, join the game right away.
-		if(!gds->value)
+		if(savemethod->value < 2)
 			JoinTheGame(ent);
 		else
 		{
-			safe_cprintf(ent, PRINT_HIGH, "Attempting to find your character file. Do not disconnect.\n");
-			createOpenPlayerThread(ent);
+			gi.centerprintf(ent, "You have been queued for Loading.\n Please wait.\n");
+			V_GDS_Queue_Add(ent, GDS_LOAD);
 		}
 		break;
 	case 2: 

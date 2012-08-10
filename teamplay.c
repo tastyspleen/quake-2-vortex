@@ -410,7 +410,17 @@ qboolean SpawnWaitingPlayers (void)
 	{
 		player = g_edicts+1+i;
 
-		if (!player || !player->inuse || !G_IsSpectator(player) || !player->client->waiting_to_join)
+		if (!player || !player->inuse || !G_IsSpectator(player))
+			continue;
+
+#ifndef NO_GDS
+#ifndef GDS_NOMULTITHREADING
+		if (player->ThreadStatus != 1) // Not loaded?
+			continue; // Can't play
+#endif
+#endif
+
+		if (!player->client->waiting_to_join)
 			continue;
 
 		StartGame(player);

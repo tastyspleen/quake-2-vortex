@@ -77,7 +77,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="winmm.lib odbc32.lib odbccp32.lib libmysql.lib pthreadVC2.lib"
 				ShowProgress="0"
 				OutputFile="D:/q2/vortex/gamex86.dll"
 				LinkIncremental="2"
@@ -3888,6 +3888,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\v_mysql_gds.c"
+				>
 			</File>
 			<File
 				RelativePath="v_shared.h"

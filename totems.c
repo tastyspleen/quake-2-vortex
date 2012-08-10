@@ -221,6 +221,7 @@ void NatureTotem_think(edict_t *self, edict_t *caster)
 {
 	edict_t *target = NULL;
 	qboolean isSomeoneHealed = false;
+	float cdmult = 1.0;
 
 	//Find players in radius and attack them.
 	while ((target = findradius(target, self->s.origin, TOTEM_MAX_RANGE)) != NULL)
@@ -236,7 +237,7 @@ void NatureTotem_think(edict_t *self, edict_t *caster)
 			
 			if (!target->client)
 			{
-				regen_frames = 1500 / self->monsterinfo.level; // full-regeneration in 15 seconds at level 10
+				regen_frames = 1000 / self->monsterinfo.level; // full-regeneration in 15 seconds at level 10
 				M_Regenerate(target, regen_frames, 50, 1.0, true, true, false, &target->monsterinfo.regen_delay2);
 				continue;
 			}
@@ -273,6 +274,9 @@ void NatureTotem_think(edict_t *self, edict_t *caster)
 					*cubes = maxcubes;
 				isSomeoneHealed = true;
 			}
+
+			// We remove curses. -az
+			CurseRemove(target, 0);
 		}
 	}
 
@@ -282,8 +286,13 @@ void NatureTotem_think(edict_t *self, edict_t *caster)
 		gi.sound(self, CHAN_ITEM, gi.soundindex("items/n_health.wav"), 1, ATTN_NORM, 0);
 	}
 
+	cdmult = level.time + NATURETOTEM_REFIRE_BASE + NATURETOTEM_REFIRE_MULT * self->monsterinfo.level;
+
+	if (cdmult <= level.time)
+		cdmult = level.time + 0.1;
+
 	//Next think.
-	self->delay = level.time + NATURETOTEM_REFIRE_BASE + NATURETOTEM_REFIRE_MULT * self->monsterinfo.level;
+	self->delay = cdmult;
 }
 
 void totem_effects (edict_t *self)

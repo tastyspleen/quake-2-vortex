@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include <sys/stat.h>
 
 static int ReadFromFile(FILE *fp, char *buffer)
 {

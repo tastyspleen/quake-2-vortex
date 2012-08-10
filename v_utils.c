@@ -1421,7 +1421,7 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		//Give them some upgrade points.
 		player->myskills.speciality_points = 2 * player->myskills.level;
 
-		if(player->myskills.class_num == CLASS_WEAPONMASTER)
+		if(generalabmode->value && player->myskills.class_num == CLASS_WEAPONMASTER)
 			player->myskills.weapon_points = 6 * player->myskills.level;
 		else
 			player->myskills.weapon_points = 4 * player->myskills.level;
@@ -1477,7 +1477,7 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		modify_max(player);
 
 		//Save the player.
-		savePlayer(player);
+		SavePlayer(player);
 		return;
 	}
 	gi.dprintf("Can't find player: %s\n", playername);
@@ -1543,28 +1543,28 @@ void V_ModifyMorphedHealth (edict_t *ent, int type, qboolean morph)
 	switch (type)
 	{
 	// player-tank has no maximum health multiplier
-	case P_TANK: mult = 2 + 0.1 * ent->myskills.abilities[TANK].current_level; break;
+	case P_TANK: mult = 2 + 0.15 * ent->myskills.abilities[TANK].current_level; break;
 	// 2x health multiplier max
 	case MORPH_BERSERK:
 		mult = 1 + 0.1 * ent->myskills.abilities[BERSERK].current_level; 
 		if (mult > 2)
 			mult = 2;
 		break;
-	// 1.5x health multiplier max
+	// 2x health multiplier max
 	case MORPH_MUTANT:
-		mult = 1 + 0.05 * ent->myskills.abilities[MUTANT].current_level; 
-		if (mult > 1.5)
-			mult = 1.5;
+		mult = 1 + 0.1 * ent->myskills.abilities[MUTANT].current_level; 
+		if (mult > 2)
+			mult = 2;
 		break;
 	case MORPH_CACODEMON:
-		mult = 1 + 0.05 * ent->myskills.abilities[CACODEMON].current_level; 
-		if (mult > 1.5)
-			mult = 1.5;
+		mult = 1 + 0.055 * ent->myskills.abilities[CACODEMON].current_level; 
+		if (mult > 1.75)
+			mult = 1.75;
 		break;
 	case MORPH_MEDIC:
-		mult = 1 + 0.05 * ent->myskills.abilities[MEDIC].current_level; 
-		if (mult > 1.5)
-			mult = 1.5;
+		mult = 1 + 0.1 * ent->myskills.abilities[MEDIC].current_level; 
+		if (mult > 2.2)
+			mult = 2.2;
 		break;
 	case M_MYPARASITE:
 		mult = 1 + 0.05 * ent->myskills.abilities[BLOOD_SUCKER].current_level; 
@@ -1594,14 +1594,6 @@ void V_ModifyMorphedHealth (edict_t *ent, int type, qboolean morph)
 void V_RestoreMorphed (edict_t *ent, int refund)
 {
 	//gi.dprintf("V_RestoreMorphed()\n");
-
-	if (hw->value && ent->client && ent->myskills.class_num == CLASS_POLTERGEIST
-		&& ent->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
-	{
-		// This is painful but... sorry polts. -az
-		gi.cprintf(ent, PRINT_HIGH, "You can't unmorph while carrying the halo!\n");
-		return;
-	}
 
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/morph.wav") , 1, ATTN_NORM, 0);
 
@@ -1956,12 +1948,8 @@ void V_ResetPlayerState (edict_t *ent)
 {
 	if (PM_PlayerHasMonster(ent))
 	{
-		// player's chasing this monster should now chase the player instead
-		PM_UpdateChasePlayers(ent->owner);
-		// remove the monster entity
-		M_Remove(ent->owner, true, false);
 		// restore the player to original state
-		PM_RestorePlayer(ent);
+		V_RestoreMorphed(ent, 0);
 	}
 
 	// restore morphed player state

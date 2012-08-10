@@ -8,6 +8,9 @@ qboolean GiveWeaponMasterUpgrade(edict_t *ent, int WeaponIndex, int ModIndex)
 	weapon_t *weapon;
 	int maxLevel = 40;		//All hard maximums for the weapon master are set to this number.
 
+	if (generalabmode->value == 0) // No weapon master bonuses in non-general ab mode.
+		return false;
+
 	//Point to the correct weapon
 	weapon = &ent->myskills.weapons[WeaponIndex];
 
@@ -149,15 +152,8 @@ void resetWeapons(edict_t *ent)
 					//Sword gets an extra bonus
 					if ((j < 3) || ((j == 3) && (i == WEAPON_SWORD)))
 					{
-						if (ent->myskills.class_num != CLASS_KNIGHT)
-						{
-							ent->myskills.weapons[i].mods[j].soft_max = 10;
-							ent->myskills.weapons[i].mods[j].hard_max = 25;
-						}else // knights get extra upgrade levels
-						{
-							ent->myskills.weapons[i].mods[j].soft_max = 15;
+							ent->myskills.weapons[i].mods[j].soft_max = 20;
 							ent->myskills.weapons[i].mods[j].hard_max = 30;
-						}
 					}
 					else
 					{

@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include <sys/stat.h>
 
 //#if defined(_WIN32) || defined(WIN32)
 //#include <windows.h>
@@ -656,7 +657,7 @@ void SVCmd_DeleteCharacter_f()
 	char		*pname = gi.argv(2);
 	char		*reason = gi.argv(3);
 	char		buf[100];
-	struct		stat file;
+	struct	stat file;
 
 	if (strlen(pname) < 1 || strlen(reason) < 1)
 	{
@@ -791,6 +792,10 @@ void	ServerCommand (void)
 		SVCmd_WriteIP_f ();
 	else if (Q_stricmp (cmd, "maplist") == 0) 
         Cmd_Maplist_f (NULL); 
+	// az begin
+	else if (Q_stricmp (cmd, "connectgds") == 0)
+		V_GDS_StartConn();
+	// az end
 //GHz START
 #if ALLOW_ADMIN
 	else if (Q_stricmp (cmd, "addexp") == 0) 

@@ -342,9 +342,6 @@ void InitGame (void)
 	adminctrl = gi.cvar ("admin_forcevote", "0", CVAR_LATCH);
 
 	voting = gi.cvar ("voting", "1", CVAR_SERVERINFO);
-	gds = gi.cvar ("gds", "0", CVAR_LATCH);
-	gds_path = gi.cvar ("gds_path", "0", CVAR_LATCH);
-	gds_exe = gi.cvar ("gds_exe", "0", CVAR_LATCH);
 	game_path = gi.cvar ("game_path", "0", CVAR_LATCH);
 	pregame_time = gi.cvar ("pregame_time", "60.0", 0);
 #ifndef LOCK_DEFAULTS
@@ -427,10 +424,16 @@ void InitGame (void)
 	MonstersInUse=false; // Set this value here..
 	InitializeTeamNumbers(); // for allies
 
-	AI_Init();
-
 	//K03 End
 
+	// az begin
+	AI_Init();
+
+	if (savemethod->value == 2)
+		V_GDS_StartConn(); // start connection to db
+	else
+		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
+	// az end
 }
 
 //=========================================================

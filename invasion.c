@@ -250,7 +250,7 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 			mhealth = 2 + 0.1 * invasion_difficulty_level;
 	}else if (invasion->value == 2) // hard mode
 	{
-		mhealth = 2.5 + 0.2 * invasion_difficulty_level;
+		mhealth = 1.8 + 0.25 * invasion_difficulty_level;
 	}
 
 	monster->max_health = monster->health = monster->max_health*mhealth;

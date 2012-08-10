@@ -443,7 +443,7 @@ typedef struct
 	int			r_monsters;			//4.5 recommended monster value for this map
 	qboolean	daytime; //GHz: Is the sun going up or down?
 	qboolean    modechange;
-	gdsfiles_t	gdsfiles[MAX_CLIENTS];
+/*	gdsfiles_t	gdsfiles[MAX_CLIENTS];*/
 
 	// experimental monster pathfinding
 	//int			total_nodes;
@@ -902,9 +902,6 @@ extern cvar_t *class10_skin;
 extern cvar_t *class11_skin;
 extern cvar_t *ctf_enable_balanced_fc;
 extern cvar_t *voting;
-extern cvar_t *gds;
-extern cvar_t *gds_path;
-extern cvar_t *gds_exe;
 extern cvar_t *game_path;
 extern cvar_t *allies;
 extern cvar_t *pregame_time;
@@ -1909,11 +1906,22 @@ struct edict_s
 	int			showPathDebug;			// show path debug information (0=off,1=on)
 
 	//4.0 (multithreading support)
+	/*
 	unsigned long	hThread;			//Used for WIN32 multi-threading
 	qboolean		hThreadFinishTime;	//Records when the thread finished execution
 	qboolean		isSaving;
 	qboolean		isLoading;
 	int				threadReturnVal;
+	*/
+
+#ifndef NO_GDS
+
+#ifndef GDS_NOMULTITHREADING
+	volatile int ThreadStatus; // vrxchile 3.0
+	volatile int PlayerID;
+#endif
+
+#endif
 
 	float		removetime; //4.07 time to auto-remove
 	edict_t		*prev_owner; // for conversion
