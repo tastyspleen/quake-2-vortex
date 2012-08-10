@@ -40,7 +40,7 @@ char *ReadTextFile(char *filename) {
 		if (!fp) break;
 
 		i = ReadFromFile(fp, NULL);
-		filestring = gi.TagMalloc(i, TAG_LEVEL);
+		filestring = V_Malloc(i, TAG_LEVEL);
 		if (!filestring)
 			break;
 

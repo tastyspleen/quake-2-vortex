@@ -786,7 +786,7 @@ void CheckDMRules (void)
 			{
 				char* message = HiPrint("***** 5 Frags Remaining: Type 'vote' to place your vote for the next map and game type *****");
 				gi.bprintf (PRINT_LOW, "%s\n", message );
-				gi.TagFree(message);
+				V_Free(message);
 				maplist.warning_given = true;
 			}
 			//K03 End

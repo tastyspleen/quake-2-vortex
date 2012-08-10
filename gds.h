@@ -58,6 +58,12 @@ void GDS_FinishThread();
 void HandleStatus(edict_t *player);
 #endif
 
+void Mem_PrepareMutexes();
+
+// Wrapped, thread save mem allocation.
+void *V_Malloc(int Tag, size_t Size);
+void V_Free (void* mem);
+
 #endif //NO_GDS
 
 #endif // MYSQL_GDS

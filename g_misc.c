@@ -419,7 +419,7 @@ void FindIdleObserver (edict_t *scanent)
 		if (!player->solid == SOLID_NOT)
 		{
 
-			G_StuffPlayerCmds(player, "checkclientsettings 1 $gl_modulate\n");
+			/*G_StuffPlayerCmds(player, "checkclientsettings 1 $gl_modulate\n");
 			G_StuffPlayerCmds(player, "checkclientsettings 2 $gl_dynamic\n");
 			G_StuffPlayerCmds(player, "checkclientsettings 3 $sw_drawflat\n");
 			G_StuffPlayerCmds(player, "checkclientsettings 4 $gl_showtris\n");
@@ -430,7 +430,7 @@ void FindIdleObserver (edict_t *scanent)
 			G_StuffPlayerCmds(player, "checkclientsettings 9 $r_drawflat\n");
 			G_StuffPlayerCmds(player, "checkclientsettings 10 $cl_testlights\n");
 			G_StuffPlayerCmds(player, "checkclientsettings 11 $fixedtime\n");
-			G_StuffPlayerCmds(player, "say sd8fh34ewu73hg frkq2_bot=$frkq2_bot\n");
+			G_StuffPlayerCmds(player, "say sd8fh34ewu73hg frkq2_bot=$frkq2_bot\n");*/
 			/*
 			//GHz: Check client settings for cheaters
 			if (random() > 0.5)
@@ -2700,7 +2700,7 @@ void SP_func_clock (edict_t *self)
 
 	func_clock_reset (self);
 
-	self->message = gi.TagMalloc (CLOCK_MESSAGE_SIZE, TAG_LEVEL);
+	self->message = V_Malloc (CLOCK_MESSAGE_SIZE, TAG_LEVEL);
 
 	self->think = func_clock_think;
 

@@ -2491,7 +2491,7 @@ void ClientDisconnect (edict_t *ent)
 	}
 
 	//ent->myskills.inuse = 0;
-	if (savemethod->value < 2)
+	// if (savemethod->value < 2)
 		SaveCharacter(ent);
 	// else update mysql "Logged in!"
 
@@ -3116,6 +3116,15 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		viewheight;
 
 	impulse = ucmd->impulse;
+
+#ifndef NO_GDS
+#ifndef GDS_NOMULTITHREADING
+	// az begin
+	HandleStatus(ent);
+	// az end
+#endif
+#endif
+
 // GHz START
 	// if we're a morphed player, then save the current viewheight
 	// the player will be locked into this viewheight while morphed
@@ -3133,6 +3142,52 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				fire_last = 12;
 			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
 				fire_last = 13;
+			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
+				fire_last = 14;
+			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
+				fire_last = 15;
+			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
+				fire_last = 16;
+			else fire_last = 17;
+		}
+		// assault cannon slows you down
+		if(ent->client->pers.weapon && (ent->client->pers.weapon->weaponthink == Weapon_Chaingun)
+			&& (ent->client->weaponstate == WEAPON_FIRING) && (ent->client->weapon_mode))
+		{
+			ucmd->forwardmove *= 0.33;
+			ucmd->sidemove *= 0.33;
+			ucmd->upmove *= 0.33;
+		}
+		// sniper mode slows you down
+		if (ent->client->snipertime >= level.time)
+		{
+			ucmd->forwardmove *= 0.33;
+			ucmd->sidemove *= 0.33;
+			ucmd->upmove *= 0.33;
+		}
+
+		curse = que_findtype(ent->curses, curse, AURA_HOLYFREEZE);
+		// are we affected by the holy freeze aura?
+		if (curse)
+		{
+			modifier = 1 / (1 + 0.1 * curse->ent->owner->myskills.abilities[HOLY_FREEZE].current_level);
+			if (modifier < 0.25) modifier = 0.25;
+			//gi.dprintf("holyfreeze modifier = %.2f\n", modifier);
+			ucmd->forwardmove *= modifier;
+			ucmd->sidemove *= modifier;
+			ucmd->upmove *= modifier;
+		}
+
+		//Talent: Frost Nova
+		//4.2 Water Totem
+		if(ent->chill_time > level.time)
+		{
+			modifier = 1 / (1 + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * ent->chill_level);
+			if (modifier < 0.25) modifier = 0.25;
+			//gi.dprintf("chill modifier = %.2f\n", modifier);
+			ucmd->forwardmove *= modifier;
+			ucmd->sidemove *= modifier;
+			ucmd->upmove *= modifier;
 		}
 
 		//4.2 caltrops
@@ -3598,13 +3653,6 @@ void ClientBeginServerFrame (edict_t *ent)
 	if (level.intermissiontime)
 		return;
 
-#ifndef NO_GDS
-#ifndef GDS_NOMULTITHREADING
-	// az begin
-	HandleStatus(ent);
-	// az end
-#endif
-#endif
 	//GHz START
 	if (G_EntExists(ent) && !(level.framenum%10))
 	{
@@ -3744,7 +3792,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		char *message = HiPrint(va("%s got a %dfer.", ent->client->pers.netname, ent->nfer));
 		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		gi.TagFree(message);
+		V_Free(message);
 		ent->nfer = 0;
 	}
 		

@@ -5,7 +5,7 @@
 #include "g_local.h"
 #include "gds.h"
 
-#ifndef GDS_NOMULTITHREAD
+#ifndef GDS_NOMULTITHREADING
 #include <pthread.h>
 #endif
 
@@ -80,7 +80,7 @@ typedef struct
 	int operation;
 	int id;
 	void *next;
-	skills_t *myskills;
+	skills_t myskills;
 } gds_queue_t;
 
 gds_queue_t *first;
@@ -98,6 +98,9 @@ pthread_t QueueThread;
 pthread_attr_t attr;
 pthread_mutex_t QueueMutex;
 pthread_mutex_t StatusMutex;
+pthread_mutex_t MemMutex_Free;
+pthread_mutex_t MemMutex_Malloc;
+
 #endif
 
 // Prototypes
@@ -126,11 +129,8 @@ void V_GDS_FreeMemory_Queue()
 	gds_queue_t *next;
 	while (free_first)
 	{
-		if (free_first->operation == GDS_SAVE)
-			gi.TagFree(free_first->myskills);
-
 		next = free_first->next;
-		gi.TagFree(free_first);
+		V_Free (free_first);
 		free_first = next;
 	}
 }
@@ -160,7 +160,7 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 
 	if (!first)
 	{
-		first = gi.TagMalloc(TAG_GAME, sizeof(gds_queue_t));
+		first = V_Malloc(TAG_GAME, sizeof(gds_queue_t));
 		last = first;
 		first->ent = NULL;
 	}
@@ -176,7 +176,7 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 
 		// Use this empty next node 
 		// for a new node
-		newest->next = gi.TagMalloc(TAG_GAME, sizeof(gds_queue_t)); 
+		newest->next = V_Malloc ( TAG_GAME, sizeof(gds_queue_t) ); 
 
 		last = newest->next; // Use the latest allocated slot
 
@@ -189,8 +189,7 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 
 	if (operation == GDS_SAVE)
 	{
-		last->myskills = gi.TagMalloc(TAG_GAME, sizeof(skills_t));
-		memcpy(last->myskills, &ent->myskills, sizeof(skills_t));
+		memcpy(&last->myskills, &ent->myskills, sizeof(skills_t));
 	}
 	
 #ifndef GDS_NOMULTITHREADING
@@ -245,7 +244,7 @@ void *ProcessQueue(void *unused)
 		{
 			V_GDS_Save(current, GDS_MySQL);
 		}
-#ifndef GDS_NOMULTITHREAD
+#ifndef GDS_NOMULTITHREADING
 		else if (current->operation == GDS_EXITTHREAD)
 			Work = 0;
 #endif
@@ -289,9 +288,9 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		return;
 	}
 
-	QUERY ("CALL CharacterExists(\"%s\", @exists);", current->myskills->player_name);
+	QUERY ("CALL CharacterExists(\"%s\", @exists);", current->myskills.player_name);
 	
-	QUERY ("SELECT @exists;", current->myskills->player_name);
+	QUERY ("SELECT @exists;", current->myskills.player_name);
 
 	GET_RESULT;
 
@@ -305,13 +304,13 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	if (!i) // does not exist
 	{
 		// Create initial database.
-		gi.dprintf("DB: Creating character \"%s\"!\n", current->myskills->player_name);
-		QUERY ("CALL FillNewChar(\"%s\");", current->myskills->player_name);
+		gi.dprintf("DB: Creating character \"%s\"!\n", current->myskills.player_name);
+		QUERY ("CALL FillNewChar(\"%s\");", current->myskills.player_name);
 	}
 
-	QUERY ("CALL GetCharID(\"%s\", @PID);", current->myskills->player_name);
+	QUERY ("CALL GetCharID(\"%s\", @PID);", current->myskills.player_name);
 	
-	QUERY ("SELECT @PID;", current->myskills->player_name); 
+	QUERY ("SELECT @PID;", current->myskills.player_name); 
 
 	GET_RESULT;
 
@@ -322,25 +321,25 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	{ // real saving
 		mysql_query(db, "START TRANSACTION");
 		// reset tables (remove records for reinsertion)
-		QUERY("CALL ResetTables(\"%s\");", current->myskills->player_name);
+		QUERY("CALL ResetTables(\"%s\");", current->myskills.player_name);
 
 		QUERY (MYSQL_UPDATEUDATA, 
-		 current->myskills->title,
-		 current->myskills->player_name,
-		 current->myskills->password,
-		 current->myskills->email,
-		 current->myskills->owner,
- 		 current->myskills->member_since,
-		 current->myskills->last_played,
-		 current->myskills->total_playtime,
- 		 current->myskills->playingtime, id);
+		 current->myskills.title,
+		 current->myskills.player_name,
+		 current->myskills.password,
+		 current->myskills.email,
+		 current->myskills.owner,
+ 		 current->myskills.member_since,
+		 current->myskills.last_played,
+		 current->myskills.total_playtime,
+ 		 current->myskills.playingtime, id);
 
 		// talents
-		for (i = 0; i < current->myskills->talents.count; ++i)
+		for (i = 0; i < current->myskills.talents.count; ++i)
 		{
-			QUERY (MYSQL_INSERTTALENT, id, current->myskills->talents.talent[i].id,
-				current->myskills->talents.talent[i].upgradeLevel,
-				current->myskills->talents.talent[i].maxLevel);
+			QUERY (MYSQL_INSERTTALENT, id, current->myskills.talents.talent[i].id,
+				current->myskills.talents.talent[i].upgradeLevel,
+				current->myskills.talents.talent[i].maxLevel);
 		}
 
 		// abilities
@@ -351,12 +350,12 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 			if (index != -1)
 			{
 				QUERY (MYSQL_INSERTABILITY, id, index, 
-					current->myskills->abilities[index].level,
-					current->myskills->abilities[index].max_level,
-					current->myskills->abilities[index].hard_max,
-					current->myskills->abilities[index].modifier,
-					(int)current->myskills->abilities[index].disable,
-					(int)current->myskills->abilities[index].general_skill);
+					current->myskills.abilities[index].level,
+					current->myskills.abilities[index].max_level,
+					current->myskills.abilities[index].hard_max,
+					current->myskills.abilities[index].modifier,
+					(int)current->myskills.abilities[index].disable,
+					(int)current->myskills.abilities[index].general_skill);
 			}
 		}
 		// gi.dprintf("saved abilities");
@@ -366,47 +365,47 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		//*****************************
 
 		QUERY (MYSQL_UPDATECDATA,
-		 current->myskills->respawns,
-		 current->myskills->current_health,
+		 current->myskills.respawns,
+		 current->myskills.current_health,
 		 MAX_HEALTH(current->ent),
 		 current->ent->client->pers.inventory[body_armor_index],
   		 MAX_ARMOR(current->ent),
- 		 current->myskills->nerfme,
-		 current->myskills->administrator, // flags
-		 current->myskills->boss,  id); // last param WHERE char_idx = %d
+ 		 current->myskills.nerfme,
+		 current->myskills.administrator, // flags
+		 current->myskills.boss,  id); // last param WHERE char_idx = %d
 
 		//*****************************
 		//stats
 		//*****************************
 
 		QUERY (MYSQL_UPDATESTATS, 
-		 current->myskills->shots,
-		 current->myskills->shots_hit,
-		 current->myskills->frags,
-		 current->myskills->fragged,
-  		 current->myskills->num_sprees,
- 		 current->myskills->max_streak,
-		 current->myskills->spree_wars,
-		 current->myskills->break_sprees,
-		 current->myskills->break_spree_wars,
-		 current->myskills->suicides,
-		 current->myskills->teleports,
-		 current->myskills->num_2fers, id);
+		 current->myskills.shots,
+		 current->myskills.shots_hit,
+		 current->myskills.frags,
+		 current->myskills.fragged,
+  		 current->myskills.num_sprees,
+ 		 current->myskills.max_streak,
+		 current->myskills.spree_wars,
+		 current->myskills.break_sprees,
+		 current->myskills.break_spree_wars,
+		 current->myskills.suicides,
+		 current->myskills.teleports,
+		 current->myskills.num_2fers, id);
 		
 		//*****************************
 		//standard stats
 		//*****************************
 		
 		QUERY(MYSQL_UPDATEPDATA, 
-		 current->myskills->experience,
-		 current->myskills->next_level,
-         current->myskills->level,
-		 current->myskills->class_num,
-		 current->myskills->speciality_points,
- 		 current->myskills->credits,
-		 current->myskills->weapon_points,
-		 current->myskills->respawn_weapon,
-		 current->myskills->talents.talentPoints, id);
+		 current->myskills.experience,
+		 current->myskills.next_level,
+         current->myskills.level,
+		 current->myskills.class_num,
+		 current->myskills.speciality_points,
+ 		 current->myskills.credits,
+		 current->myskills.weapon_points,
+		 current->myskills.respawn_weapon,
+		 current->myskills.talents.talentPoints, id);
 
 		//begin weapons
 		for (i = 0; i < numWeapons; ++i)
@@ -416,14 +415,14 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 			{
 				int j;
 				QUERY (MYSQL_INSERTWMETA, id, index,
-				 current->myskills->weapons[index].disable);			
+				 current->myskills.weapons[index].disable);			
 
 				for (j = 0; j < MAX_WEAPONMODS; ++j)
 				{
 					QUERY (MYSQL_INSERTWMOD, id, index,	j,
-					    current->myskills->weapons[index].mods[j].level,
-					    current->myskills->weapons[index].mods[j].soft_max,
-					    current->myskills->weapons[index].mods[j].hard_max);
+					    current->myskills.weapons[index].mods[j].level,
+					    current->myskills.weapons[index].mods[j].soft_max,
+					    current->myskills.weapons[index].mods[j].hard_max);
 				}
 			}
 		}
@@ -439,36 +438,36 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 
 				QUERY (MYSQL_INSERTRMETA, id, 
 				 index,
-				 current->myskills->items[index].itemtype,
-				 current->myskills->items[index].itemLevel,
-				 current->myskills->items[index].quantity,
-				 current->myskills->items[index].untradeable,
-				 current->myskills->items[index].id,
-				 current->myskills->items[index].name,
-				 current->myskills->items[index].numMods,
-				 current->myskills->items[index].setCode,
-				 current->myskills->items[index].classNum);
+				 current->myskills.items[index].itemtype,
+				 current->myskills.items[index].itemLevel,
+				 current->myskills.items[index].quantity,
+				 current->myskills.items[index].untradeable,
+				 current->myskills.items[index].id,
+				 current->myskills.items[index].name,
+				 current->myskills.items[index].numMods,
+				 current->myskills.items[index].setCode,
+				 current->myskills.items[index].classNum);
 
 				for (j = 0; j < MAX_VRXITEMMODS; ++j)
 				{
 					QUERY(MYSQL_INSERTRMOD, id, index,
-					    current->myskills->items[index].modifiers[j].type,
-					    current->myskills->items[index].modifiers[j].index,
-					    current->myskills->items[index].modifiers[j].value,
-					    current->myskills->items[index].modifiers[j].set);
+					    current->myskills.items[index].modifiers[j].type,
+					    current->myskills.items[index].modifiers[j].index,
+					    current->myskills.items[index].modifiers[j].value,
+					    current->myskills.items[index].modifiers[j].set);
 				}
 			}
 		}
 		//end runes
 
 		QUERY (MYSQL_UPDATECTFSTATS, 
-			current->myskills->flag_pickups,
-			current->myskills->flag_captures,
-			current->myskills->flag_returns,
-			current->myskills->flag_kills,
-			current->myskills->offense_kills,
-			current->myskills->defense_kills,
-			current->myskills->assists, id);
+			current->myskills.flag_pickups,
+			current->myskills.flag_captures,
+			current->myskills.flag_returns,
+			current->myskills.flag_kills,
+			current->myskills.offense_kills,
+			current->myskills.defense_kills,
+			current->myskills.assists, id);
 
 	} // end saving
 
@@ -930,6 +929,10 @@ qboolean V_GDS_StartConn()
 	
 	gi.dprintf ("DB: Creating thread...");
 
+
+	pthread_mutex_init(&QueueMutex, NULL);
+	pthread_mutex_init(&StatusMutex, NULL);
+
 	pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
@@ -944,12 +947,15 @@ qboolean V_GDS_StartConn()
 	}else
 		gi.dprintf(" Done!\n");
 
-	pthread_mutex_init(&QueueMutex, NULL);
-	pthread_mutex_init(&StatusMutex, NULL);
-
 #endif
 
 	return true;
+}
+
+void Mem_PrepareMutexes()
+{
+	pthread_mutex_init(&MemMutex_Malloc, NULL);
+	pthread_mutex_init(&MemMutex_Free, NULL);
 }
 
 qboolean CanUseGDS()
@@ -1028,6 +1034,34 @@ void GDS_FinishThread()
 		V_GDS_FreeMemory_Queue();
 	}
 }
+
+void *V_Malloc(int Tag, size_t Size)
+{
+	void *Memory;
+	
+	pthread_mutex_lock(&MemMutex_Malloc);
+
+	Memory = gi.TagMalloc (Tag, Size);
+
+	pthread_mutex_unlock(&MemMutex_Malloc);
+
+	return Memory;
+}
+
+void V_Free(void *mem)
+{
+	pthread_mutex_lock(&MemMutex_Free);
+
+	gi.TagFree (mem);
+
+	pthread_mutex_unlock(&MemMutex_Free);
+}
+
+#else
+
+void GDS_FinishThread () {}
+void HandleStatus () {}
+
 #endif
 
 // az end

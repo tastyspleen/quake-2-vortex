@@ -1917,8 +1917,8 @@ struct edict_s
 #ifndef NO_GDS
 
 #ifndef GDS_NOMULTITHREADING
-	volatile int ThreadStatus; // vrxchile 3.0
-	volatile int PlayerID;
+	/*volatile */int ThreadStatus; // vrxchile 3.0
+	/*volatile */int PlayerID;
 #endif
 
 #endif
