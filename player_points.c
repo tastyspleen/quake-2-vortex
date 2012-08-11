@@ -30,7 +30,7 @@ char *HiPrint(char *text)
 {
 	int i;
 	char* ReturnVal;
-	ReturnVal = V_Malloc(strlen(text), TAG_LEVEL);
+		ReturnVal = V_Malloc(strlen(text)+1, TAG_LEVEL);
 
 	strcpy(ReturnVal, text);
 
