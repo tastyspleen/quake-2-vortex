@@ -18,9 +18,9 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW "c4r1t4"
-#define MYSQL_USER "root"
-#define MYSQL_DBNAME "vrxcltest"
+#define MYSQL_PW "vrxchile2012"
+#define MYSQL_USER "diego"
+#define MYSQL_DBNAME "vrxchile"
 
 /* 
 These are modified versions of the sqlite version
@@ -45,7 +45,7 @@ const char* MYSQL_INSERTTALENT = "INSERT INTO talents VALUES (%d,%d,%d,%d);";
 
 const char* MYSQL_INSERTWMETA = "INSERT INTO weapon_meta VALUES (%d,%d,%d);";
 
-const char* MYSQL_INSERTWMOD = "INSERT INTO weapon_mods VALUES (%d,%d,%d,%d,%d,%d);";
+const char* MYSQL_INSERTWMOD = "INSERT INTO weapon_mods VALUES (%d,%d,%d,%d,%d);";
 
 // runes
 
@@ -113,6 +113,106 @@ int V_GDS_Save(gds_queue_t *myskills, MYSQL* db);
 qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db);
 void V_GDS_SaveQuit(gds_queue_t *current, MYSQL *db);
 int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db);
+
+// Utility Functions
+
+int V_WeaponUpgradeVal_S(skills_t *myskills, int weapnum)
+{
+    //Returns an integer value, usualy from 0-100. Used as a % of maximum upgrades statistic
+
+	int	i;
+	float iMax, iCount;
+	float val;
+	
+	iMax = iCount = 0.0f;
+
+	if ((weapnum >= MAX_WEAPONS) || (weapnum < 0))
+		return -666;	//BAD weapon number
+
+	for (i=0; i<MAX_WEAPONMODS;++i)
+	{
+		iCount += myskills->weapons[weapnum].mods[i].current_level;
+		iMax += myskills->weapons[weapnum].mods[i].soft_max;
+	}
+
+	if (iMax == 0)
+		return 0;
+
+	val = (iCount / iMax) * 100;
+	
+	return (int)val;
+}
+
+int CountWeapons_S(skills_t *myskills)
+{
+	int i;
+	int count = 0;
+	for (i = 0; i < MAX_WEAPONS; ++i)
+	{
+		if (V_WeaponUpgradeVal_S(myskills, i) > 0)
+			count++;
+	}
+	return count;
+}
+
+
+int CountRunes_S(skills_t* myskills)
+{
+	int count = 0;
+	int i;
+
+	for (i = 0; i < MAX_VRXITEMS; ++i)
+	{
+		if (myskills->items[i].itemtype != ITEM_NONE)
+			++count;
+	}
+	return count;
+}
+
+int CountAbilities_S(skills_t *myskills)
+{
+	int i;
+	int count = 0;
+	for (i = 0; i < MAX_ABILITIES; ++i)
+	{
+		if (!myskills->abilities[i].disable)
+			++count;
+	}
+	return count;
+}
+
+int FindAbilityIndex_S(int index, skills_t *myskills)
+{
+    int i;
+	int count = 0;
+	for (i = 0; i < MAX_ABILITIES; ++i)
+	{
+		if (!myskills->abilities[i].disable)
+		{
+			++count;
+			if (count == index)
+				return i;
+		}
+	}
+	return -1;	//just in case something messes up
+}
+
+int FindWeaponIndex_S(int index, skills_t *myskills)
+{
+	int i;
+	int count = 0;
+	for (i = 0; i < MAX_WEAPONS; ++i)
+	{
+		if (V_WeaponUpgradeVal_S(myskills, i) > 0)
+		{
+			count++;
+			if (count == index)
+				return i;
+		}
+	}
+	return -1;	//just in case something messes up
+}
+
 
 // *********************************
 // QUEUE functions
@@ -398,7 +498,7 @@ int V_GDS_GetID(gds_queue_t *current, MYSQL *db)
 // GDS_Save except it only deals with runes.
 int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
 {
-	int numRunes = CountRunes(current->ent);
+	int numRunes = CountRunes_S(&current->myskills);
 	char* format;
 	int id;
 	int i;
@@ -442,9 +542,9 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 {
 	int i;
 	int id; // character ID
-	int numAbilities = CountAbilities(current->ent);
-	int numWeapons = CountWeapons(current->ent);
-	int numRunes = CountRunes(current->ent);
+	int numAbilities = CountAbilities_S(&current->myskills);
+	int numWeapons = CountWeapons_S(&current->myskills);
+	int numRunes = CountRunes_S(&current->myskills);
 	char *format;
 	MYSQL_ROW row;
 	MYSQL_RES *result;
@@ -506,7 +606,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	
 		for (i = 0; i < numAbilities; ++i)
 		{
-			int index = FindAbilityIndex(i+1, current->ent);
+			int index = FindAbilityIndex_S(i+1, &current->myskills);
 			if (index != -1)
 			{
 				QUERY (MYSQL_INSERTABILITY, id, index, 
@@ -570,16 +670,18 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		//begin weapons
 		for (i = 0; i < numWeapons; ++i)
 		{
-			int index = FindWeaponIndex(i+1, current->ent);
+			int index = FindWeaponIndex_S(i+1, &current->myskills);
 			if (index != -1)
 			{
 				int j;
-				QUERY (MYSQL_INSERTWMETA, id, index,
-				 current->myskills.weapons[index].disable);			
+				QUERY (MYSQL_INSERTWMETA, 
+					id, 
+					index,
+				    current->myskills.weapons[index].disable);			
 
 				for (j = 0; j < MAX_WEAPONMODS; ++j)
 				{
-					QUERY (MYSQL_INSERTWMOD, id, index,	j,
+					QUERY (MYSQL_INSERTWMOD, id, index,
 					    current->myskills.weapons[index].mods[j].level,
 					    current->myskills.weapons[index].mods[j].soft_max,
 					    current->myskills.weapons[index].mods[j].hard_max);
@@ -724,7 +826,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if (exists) // Exists? Then is it able to play?
 	{
 		QUERY ("CALL CanPlay(%d, @IsAble);", id);
-		QUERY ("SELECT @IsAble;");
+		mysql_query (db, "SELECT @IsAble;");
 		GET_RESULT;
 
 		if (atoi(row[0]) == 0)
