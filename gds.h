@@ -46,7 +46,9 @@ we're having a MYSQL GDS.
 
 #define GDS_LOAD 1
 #define GDS_SAVE 2
-#define GDS_EXITTHREAD 3
+#define GDS_SAVECLOSE 3
+#define GDS_SAVERUNES 4
+#define GDS_EXITTHREAD 5
 
 // For Everyone
 // void V_GDS_Load(edict_t *ent);
@@ -61,7 +63,7 @@ void HandleStatus(edict_t *player);
 void Mem_PrepareMutexes();
 
 // Wrapped, thread save mem allocation.
-void *V_Malloc(int Tag, size_t Size);
+void *V_Malloc(size_t Size, int Tag);
 void V_Free (void* mem);
 
 #endif //NO_GDS
