@@ -18,9 +18,9 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW "vrxchile2012"
-#define MYSQL_USER "diego"
-#define MYSQL_DBNAME "vrxchile"
+#define MYSQL_PW "c4r1t4"
+#define MYSQL_USER "root"
+#define MYSQL_DBNAME "vrxcltest"
 
 /* 
 These are modified versions of the sqlite version
@@ -105,6 +105,9 @@ pthread_mutex_t QueueMutex;
 pthread_mutex_t StatusMutex;
 pthread_mutex_t MemMutex_Free;
 pthread_mutex_t MemMutex_Malloc;
+pthread_mutex_t ThreadStatusMutex;
+
+qboolean ThreadRunning;
 
 #endif
 
@@ -113,8 +116,29 @@ int V_GDS_Save(gds_queue_t *myskills, MYSQL* db);
 qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db);
 void V_GDS_SaveQuit(gds_queue_t *current, MYSQL *db);
 int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db);
+void CreateProcessQueue();
+qboolean IsThreadRunning();
 
 // Utility Functions
+
+int FindRuneIndex_S(int index, skills_t *myskills)
+{
+	int i;
+	int count = 0;
+
+	for (i = 0; i < MAX_VRXITEMS; ++i)
+	{
+		if (myskills->items[i].itemtype != ITEM_NONE)
+		{
+			++count;
+			if (count == index)
+			{
+				return i;
+			}
+		}
+	}
+	return -1;	//just in case something messes up
+}
 
 int V_WeaponUpgradeVal_S(skills_t *myskills, int weapnum)
 {
@@ -264,6 +288,7 @@ void V_GDS_Queue_Push(gds_queue_t *current, qboolean lock)
 
 void V_GDS_Queue_Add(edict_t *ent, int operation)
 {
+	int createque = 0;
 	if ((!ent || !ent->client) && operation != GDS_EXITTHREAD)
 	{
 		gi.dprintf("V_GDS_Queue_Add: Null Entity or Client!\n");
@@ -294,6 +319,8 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 		first = V_Malloc(sizeof(gds_queue_t), TAG_GAME);
 		last = first;
 		first->ent = NULL;
+		if (!IsThreadRunning())
+			createque = 1; // Create a thread- likely there's nothing processing.
 	}
 	
 	if (first->ent) // warning: we assume first is != NULL!
@@ -318,6 +345,9 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 	{
 		memcpy(&last->myskills, &ent->myskills, sizeof(skills_t));
 	}
+
+	if (createque && !IsThreadRunning()) // double check nothing is getting processed
+		CreateProcessQueue(); // Let's assume the queue is done since there are no elements.
 	
 #ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&QueueMutex);
@@ -421,6 +451,26 @@ gds_queue_t *V_GDS_FindSave(gds_queue_t *current)
 // Database Thread
 // *********************************
 
+qboolean IsThreadRunning()
+{
+	qboolean temp;
+	pthread_mutex_lock(&ThreadStatusMutex);
+
+	temp = ThreadRunning;
+
+	pthread_mutex_unlock(&ThreadStatusMutex);
+	return temp;
+}
+
+void SetThreadRunning(qboolean running)
+{
+	pthread_mutex_lock(&ThreadStatusMutex);
+
+	ThreadRunning = running;
+
+	pthread_mutex_unlock(&ThreadStatusMutex);
+}
+
 void *ProcessQueue(void *unused)
 {
 	gds_queue_t *current = NULL;
@@ -435,7 +485,11 @@ void *ProcessQueue(void *unused)
 		current = V_GDS_Queue_PopFirst();
 
 		if (!current)
+		{
+			SetThreadRunning(false);
+			pthread_exit(NULL);
 			continue;
+		}
 		
 		if (current->operation == GDS_LOAD)
 		{
@@ -508,7 +562,7 @@ int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
 	//begin runes
 	for (i = 0; i < numRunes; ++i)
 	{
-		int index = FindRuneIndex(i+1, current->ent);
+		int index = FindRuneIndex_S(i+1, &current->myskills);
 		if (index != -1)
 		{
 			int j;
@@ -693,7 +747,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		//begin runes
 		for (i = 0; i < numRunes; ++i)
 		{
-			int index = FindRuneIndex(i+1, current->ent);
+			int index = FindRuneIndex_S(i+1, &current->myskills);
 			if (index != -1)
 			{
 				int j;
@@ -826,7 +880,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if (exists) // Exists? Then is it able to play?
 	{
 		QUERY ("CALL CanPlay(%d, @IsAble);", id);
-		mysql_query (db, "SELECT @IsAble;");
+		QUERY ("SELECT @IsAble;");
 		GET_RESULT;
 
 		if (atoi(row[0]) == 0)
@@ -1223,11 +1277,24 @@ void V_GDS_SaveQuit(gds_queue_t *current, MYSQL *db)
 
 // Start Connection to GDS/MySQL
 
+void CreateProcessQueue()
+{
+	int rc;
+
+	// gi.dprintf ("DB: Creating thread...");
+	rc = pthread_create(&QueueThread, &attr, ProcessQueue, NULL);
+	
+	if (rc)
+	{
+		gi.dprintf(" Failure creating thread! %d\n", rc);
+		return;
+	}/*else
+		gi.dprintf(" Done!\n");*/
+	SetThreadRunning(true);
+}
+
 qboolean V_GDS_StartConn()
 {
-#ifndef GDS_NOMULTITHREAD
-	int rc;
-#endif
 	gi.dprintf("DB: Initializing connection... ");
 
 	if (!GDS_MySQL)
@@ -1254,26 +1321,13 @@ qboolean V_GDS_StartConn()
 	gi.dprintf("Success!\n");
 	
 #ifndef GDS_NOMULTITHREAD
-	
-	gi.dprintf ("DB: Creating thread...");
-
 
 	pthread_mutex_init(&QueueMutex, NULL);
 	pthread_mutex_init(&StatusMutex, NULL);
+	pthread_mutex_init(&ThreadStatusMutex, NULL);
 
 	pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-
-	rc = pthread_create(&QueueThread, &attr, ProcessQueue, NULL);
-	
-	if (rc)
-	{
-		gi.dprintf(" Failure creating thread! %d\n", rc);
-		mysql_close(GDS_MySQL);
-		GDS_MySQL = NULL;
-		return false;
-	}else
-		gi.dprintf(" Done!\n");
 
 #endif
 
