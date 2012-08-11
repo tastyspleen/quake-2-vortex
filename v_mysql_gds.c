@@ -45,13 +45,13 @@ const char* MYSQL_INSERTTALENT = "INSERT INTO talents VALUES (%d,%d,%d,%d);";
 
 const char* MYSQL_INSERTWMETA = "INSERT INTO weapon_meta VALUES (%d,%d,%d);";
 
-const char* MYSQL_INSERTWMOD = "INSERT INTO weapon_mods VALUES (%d,%d,%d,%d,%d);";
+const char* MYSQL_INSERTWMOD = "INSERT INTO weapon_mods VALUES (%d,%d,%d,%d,%d,%d);";
 
 // runes
 
 const char* MYSQL_INSERTRMETA = "INSERT INTO runes_meta VALUES (%d,%d,%d,%d,%d,%d,\"%s\",\"%s\",%d,%d,%d);";
 
-const char* MYSQL_INSERTRMOD = "INSERT INTO runes_mods VALUES (%d,%d,%d,%d,%d,%d);";
+const char* MYSQL_INSERTRMOD = "INSERT INTO runes_mods VALUES (%d,%d,%d,%d,%d,%d,%d);";
 
 // update stuff
 
@@ -695,7 +695,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		 current->myskills.respawns,
 		 current->myskills.current_health,
 		 MAX_HEALTH(current->ent),
-		 current->ent->client->pers.inventory[body_armor_index],
+		 current->ent->client ? current->ent->client->pers.inventory[body_armor_index] : 0,
   		 MAX_ARMOR(current->ent),
  		 current->myskills.nerfme,
 		 current->myskills.administrator, // flags
@@ -748,7 +748,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 
 				for (j = 0; j < MAX_WEAPONMODS; ++j)
 				{
-					QUERY (MYSQL_INSERTWMOD, id, index,
+					QUERY (MYSQL_INSERTWMOD, id, index, j,
 					    current->myskills.weapons[index].mods[j].level,
 					    current->myskills.weapons[index].mods[j].soft_max,
 					    current->myskills.weapons[index].mods[j].hard_max);
@@ -779,7 +779,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 
 				for (j = 0; j < MAX_VRXITEMMODS; ++j)
 				{
-					QUERY(MYSQL_INSERTRMOD, id, index,
+					QUERY(MYSQL_INSERTRMOD, id, index, j,
 					    current->myskills.items[index].modifiers[j].type,
 					    current->myskills.items[index].modifiers[j].index,
 					    current->myskills.items[index].modifiers[j].value,
@@ -802,8 +802,9 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 
 	mysql_query(db, "COMMIT;");
 
-	if (current->ent->client->pers.inventory[power_cube_index] > current->ent->client->pers.max_powercubes)
-		current->ent->client->pers.inventory[power_cube_index] = current->ent->client->pers.max_powercubes;
+	if (current->ent->client)
+		if (current->ent->client->pers.inventory[power_cube_index] > current->ent->client->pers.max_powercubes)
+			current->ent->client->pers.inventory[power_cube_index] = current->ent->client->pers.max_powercubes;
 
 #ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&StatusMutex);
@@ -1038,9 +1039,9 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 				for (j = 0; j < MAX_WEAPONMODS; ++j)
 				{
 				
-					player->myskills.weapons[index].mods[j].level = atoi(row[2]);
-					player->myskills.weapons[index].mods[j].soft_max = atoi(row[3]);
-					player->myskills.weapons[index].mods[j].hard_max = atoi(row[4]);
+					player->myskills.weapons[index].mods[atoi(row[2])].level = atoi(row[3]);
+					player->myskills.weapons[index].mods[atoi(row[2])].soft_max = atoi(row[4]);
+					player->myskills.weapons[index].mods[atoi(row[2])].hard_max = atoi(row[5]);
 				
 					row = mysql_fetch_row(result);
 					if (!row)
@@ -1109,10 +1110,10 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 			{
 				for (j = 0; j < MAX_VRXITEMMODS; ++j)
 				{
-					player->myskills.items[index].modifiers[j].type = atoi(row[2]);
-					player->myskills.items[index].modifiers[j].index = atoi(row[3]);
-					player->myskills.items[index].modifiers[j].value = atoi(row[4]);
-					player->myskills.items[index].modifiers[j].set = atoi(row[5]);
+					player->myskills.items[index].modifiers[atoi(row[2])].type = atoi(row[3]);
+					player->myskills.items[index].modifiers[atoi(row[2])].index = atoi(row[4]);
+					player->myskills.items[index].modifiers[atoi(row[2])].value = atoi(row[5]);
+					player->myskills.items[index].modifiers[atoi(row[2])].set = atoi(row[6]);
 
 					row = mysql_fetch_row(result_b);
 					if (!row)
