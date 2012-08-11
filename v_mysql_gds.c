@@ -25,7 +25,12 @@
 /* 
 These are modified versions of the sqlite version
 the difference here is that these include ID insertion
-which is of course, important when you can't create one database per character. -az
+which is of course, important when you can't create one database per character. 
+This does open a small big can of worms though, if a player quickly
+gets in and out of his character before the thread properly updates
+it most likely implies that its character will get either locked
+or played in several servers, etc..
+-az
 */
 
 // abilities
@@ -89,7 +94,7 @@ gds_queue_t *last;
 gds_queue_t *free_first = NULL;
 gds_queue_t *free_last = NULL;
 // CVARS
-cvar_t *gds_debug;
+// cvar_t *gds_debug; // Should I actually use this? -az
 
 // Threading
 #ifndef GDS_NOMULTITHREAD
@@ -104,8 +109,10 @@ pthread_mutex_t MemMutex_Malloc;
 #endif
 
 // Prototypes
-void V_GDS_Save(gds_queue_t *myskills, MYSQL* db);
+int V_GDS_Save(gds_queue_t *myskills, MYSQL* db);
 qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db);
+void V_GDS_SaveQuit(gds_queue_t *current, MYSQL *db);
+int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db);
 
 // *********************************
 // QUEUE functions
@@ -135,6 +142,26 @@ void V_GDS_FreeMemory_Queue()
 	}
 }
 
+void V_GDS_Queue_Push(gds_queue_t *current, qboolean lock)
+{
+#ifndef GDS_NOMULTITHREADING
+	if (lock)
+		pthread_mutex_lock(&QueueMutex);
+#endif
+	
+	if (current)
+	{
+		last->next = current;
+		last = current;
+		last->next = NULL;
+	}
+
+#ifndef GDS_NOMULTITHREADING
+	if (lock)
+		pthread_mutex_unlock(&QueueMutex);
+#endif
+}
+
 void V_GDS_Queue_Add(edict_t *ent, int operation)
 {
 	if ((!ent || !ent->client) && operation != GDS_EXITTHREAD)
@@ -142,9 +169,13 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 		gi.dprintf("V_GDS_Queue_Add: Null Entity or Client!\n");
 	}
 
-	if (operation != GDS_SAVE && operation != GDS_LOAD && operation != GDS_EXITTHREAD)
+	if (operation != GDS_SAVE && 
+		operation != GDS_LOAD && 
+		operation != GDS_SAVECLOSE &&
+		operation != GDS_SAVERUNES &&
+		operation != GDS_EXITTHREAD)
 	{
-		gi.dprintf("V_GDS_Queue_Add: Called with no operation!\n");
+		gi.dprintf("V_GDS_Queue_Add: Called with wrong operation!\n");
 		return;
 	}
 
@@ -160,26 +191,20 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 
 	if (!first)
 	{
-		first = V_Malloc(TAG_GAME, sizeof(gds_queue_t));
+		first = V_Malloc(sizeof(gds_queue_t), TAG_GAME);
 		last = first;
 		first->ent = NULL;
 	}
 	
 	if (first->ent) // warning: we assume first is != NULL!
 	{
-		gds_queue_t *newest = last; // Start by the last slot
-		
-		while (newest->next) // Find a slot that doesn't have a next node.
-		{
-			newest = newest->next;
-		}
+		gds_queue_t *newest; // Start by the last slot
 
 		// Use this empty next node 
 		// for a new node
-		newest->next = V_Malloc ( TAG_GAME, sizeof(gds_queue_t) ); 
+		newest = V_Malloc(sizeof(gds_queue_t), TAG_GAME); 
 
-		last = newest->next; // Use the latest allocated slot
-
+		V_GDS_Queue_Push(newest, false); // false since we're already locked
 	}
 
 	last->ent = ent;
@@ -187,7 +212,9 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 	last->operation = operation;
 	last->id = ent? ent->PlayerID : 0;
 
-	if (operation == GDS_SAVE)
+	if (operation == GDS_SAVE || 
+		operation == GDS_SAVECLOSE ||
+		operation == GDS_SAVERUNES)
 	{
 		memcpy(&last->myskills, &ent->myskills, sizeof(skills_t));
 	}
@@ -217,6 +244,79 @@ gds_queue_t *V_GDS_Queue_PopFirst()
 	return node; 
 }
 
+// Find a latest save operation where the character name = current one
+gds_queue_t *V_GDS_FindSave(gds_queue_t *current)
+{
+	gds_queue_t *iterator, *previous_element = NULL;
+	gds_queue_t *delete_queue_start = NULL, *delete_queue_end = NULL;
+
+#ifndef GDS_NOMULTITHREADING
+	pthread_mutex_lock(&QueueMutex);
+#endif
+
+	/* We can safely assume the first is not already in use. */
+	iterator = first;
+
+	while (iterator) // We got a valid node
+	{
+		if (!strcmp(iterator->ent->client->pers.netname, current->myskills.player_name))
+		{ // The name is the same..
+			if (iterator->operation == GDS_SAVE || iterator->operation == GDS_SAVECLOSE)
+			{ // And the operation is a save- use it and pop it out.
+
+				if (previous_element != NULL) // we got an element that came before us
+				{
+					// set it to what comes after iterator, skipping this node.
+					/* 
+						note to self: if iterator->next is also a save of the same player then what happens?
+						
+						a save node (aka bad node) is left pointing to a node, 
+						while the real first node that doesn't satisfy
+						the condition of being a save of this player is left pointing to this node, or at least
+						a node that should be skipped.
+
+						We should iterate to the last of them, add them to the delete que, and leave
+						previous_element to be the one that comes after the last followed element
+						that is a save.
+
+						It should be so rare that this is good enough. Hopefully. -az
+					*/
+					previous_element->next = iterator->next; 
+				}
+
+				if (!delete_queue_start) // No deleting queue?
+				{
+					delete_queue_start = delete_queue_end = iterator; // Create it using the popped element
+				}else // There's at least one element
+				{
+					delete_queue_end->next = iterator; // Add this last popped element into this queue
+					delete_queue_end = iterator; // assign it to the last popeed element
+				}
+
+			}
+		}
+		
+		previous_element = iterator; // Set "previous element" to the current one
+		iterator = iterator->next; // iterate to next element in queue.
+	}
+
+	if (delete_queue_start != delete_queue_end) // The delete list does exist
+	{
+		gds_queue_t *current = delete_queue_start;
+		while (current != delete_queue_end) // While we iterate through the nodes that are in fact, redundant
+		{
+			V_GDS_FreeQueue_Add(current); // Add this node that is not the one we're returning to the free queue.
+			current = current->next; // iterate through.
+		}
+	}
+
+#ifndef GDS_NOMULTITHREADING
+	pthread_mutex_unlock(&QueueMutex);
+#endif
+
+	return iterator;
+}
+
 // *********************************
 // Database Thread
 // *********************************
@@ -243,6 +343,12 @@ void *ProcessQueue(void *unused)
 		}else if (current->operation == GDS_SAVE)
 		{
 			V_GDS_Save(current, GDS_MySQL);
+		}else if (current->operation == GDS_SAVECLOSE)
+		{
+			V_GDS_SaveQuit(current, GDS_MySQL);
+		}else if (current->operation == GDS_SAVERUNES)
+		{
+			V_GDS_UpdateRunes(current, GDS_MySQL);
 		}
 #ifndef GDS_NOMULTITHREADING
 		else if (current->operation == GDS_EXITTHREAD)
@@ -270,7 +376,69 @@ void *ProcessQueue(void *unused)
 
 #define FREE_RESULT mysql_free_result(result);
 
-void V_GDS_Save(gds_queue_t *current, MYSQL* db)
+int V_GDS_GetID(gds_queue_t *current, MYSQL *db)
+{
+	char *format;
+	MYSQL_ROW row;
+	MYSQL_RES *result;
+	int id;
+
+	QUERY ("CALL GetCharID(\"%s\", @PID);", current->myskills.player_name);
+
+	QUERY ("SELECT @PID;", current->myskills.player_name); 
+
+	GET_RESULT;
+
+	id = atoi(row[0]);
+
+	FREE_RESULT;
+
+	return id;
+}
+// GDS_Save except it only deals with runes.
+int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
+{
+	int numRunes = CountRunes(current->ent);
+	char* format;
+	int id;
+	int i;
+
+	id = V_GDS_GetID(current, db);
+	
+	//begin runes
+	for (i = 0; i < numRunes; ++i)
+	{
+		int index = FindRuneIndex(i+1, current->ent);
+		if (index != -1)
+		{
+			int j;
+
+			QUERY (MYSQL_INSERTRMETA, id, 
+				index,
+				current->myskills.items[index].itemtype,
+				current->myskills.items[index].itemLevel,
+				current->myskills.items[index].quantity,
+				current->myskills.items[index].untradeable,
+				current->myskills.items[index].id,
+				current->myskills.items[index].name,
+				current->myskills.items[index].numMods,
+				current->myskills.items[index].setCode,
+				current->myskills.items[index].classNum);
+			for (j = 0; j < MAX_VRXITEMMODS; ++j)
+			{
+				QUERY(MYSQL_INSERTRMOD, id, index,
+					current->myskills.items[index].modifiers[j].type,
+					current->myskills.items[index].modifiers[j].index,
+					current->myskills.items[index].modifiers[j].value,
+					current->myskills.items[index].modifiers[j].set);
+			}
+		}
+	}
+	//end runes
+	return 0;
+}
+
+int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 {
 	int i;
 	int id; // character ID
@@ -283,9 +451,9 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 
 	if (!db)
 	{
-		if (gds_debug->value)
-			gi.dprintf("DB: NULL database (V_GDS_Save())\n");
-		return;
+/*		if (gds_debug->value)
+			gi.dprintf("DB: NULL database (V_GDS_Save())\n"); */
+		return -1;
 	}
 
 	QUERY ("CALL CharacterExists(\"%s\", @exists);", current->myskills.player_name);
@@ -308,15 +476,7 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		QUERY ("CALL FillNewChar(\"%s\");", current->myskills.player_name);
 	}
 
-	QUERY ("CALL GetCharID(\"%s\", @PID);", current->myskills.player_name);
-	
-	QUERY ("SELECT @PID;", current->myskills.player_name); 
-
-	GET_RESULT;
-
-	id = atoi(row[0]);
-
-	FREE_RESULT;
+	id = V_GDS_GetID(current, db);
 
 	{ // real saving
 		mysql_query(db, "START TRANSACTION");
@@ -476,21 +636,28 @@ void V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	if (current->ent->client->pers.inventory[power_cube_index] > current->ent->client->pers.max_powercubes)
 		current->ent->client->pers.inventory[power_cube_index] = current->ent->client->pers.max_powercubes;
 
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&StatusMutex);
+#endif
 
 	if (current->ent->PlayerID == current->id)
 		current->ent->ThreadStatus = 3;
 
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&StatusMutex);
+#endif
+
+	return id;
 }
 
 qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 {
 	char* format;
 	int numAbilities, numWeapons, numRunes;
-	int i;
+	int i, exists;
 	int id;
 	edict_t *player = current->ent;
+	gds_queue_t *otherq;
 	MYSQL_ROW row;
 	MYSQL_RES *result, *result_b;
 
@@ -500,15 +667,41 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if (player->PlayerID != current->id)
 		return false; // Heh.
 
+	if (otherq = V_GDS_FindSave(current)) // Got a save in the que, use that instead.
+	{ 
+		/* This however implies something- the character disconnects
+		   and if someone else comes in with that same name, 
+		   it go ahead and allow it. Assuming the password is right.*/ 
+		memcpy(&current->ent->myskills, &otherq->myskills, sizeof(skills_t));
+	
+		pthread_mutex_lock(&StatusMutex);
+	
+		if ( (i = canJoinGame(player)) == 0) 
+		{
+			if (player->PlayerID == current->id)
+			{
+				player->ThreadStatus = 1; // You can play.
+				V_GDS_FreeQueue_Add(otherq); // Remove this, now.
+			}
+		}else
+		{
+			V_GDS_Queue_Push(otherq, true); // push back into the que.
+			player->ThreadStatus = i;
+		}
+
+		pthread_mutex_unlock(&StatusMutex);
+		return i == 0; // success.
+	}
+
 	QUERY ("CALL CharacterExists(\"%s\", @Exists);", player->client->pers.netname);
 
 	QUERY ("SELECT @Exists;", current->ent->myskills.player_name); 
 
 	GET_RESULT;
 
-	id = atoi(row[0]);
+	exists = atoi(row[0]);
 
-	if (id == 0)
+	if (exists == 0)
 	{
 		pthread_mutex_lock(&StatusMutex);
 		player->ThreadStatus = 2;
@@ -527,6 +720,24 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	id = atoi(row[0]);
 
 	FREE_RESULT;
+
+	if (exists) // Exists? Then is it able to play?
+	{
+		QUERY ("CALL CanPlay(%d, @IsAble);", id);
+		QUERY ("SELECT @IsAble;");
+		GET_RESULT;
+
+		if (atoi(row[0]) == 0)
+		{
+			pthread_mutex_lock(&StatusMutex);
+			player->ThreadStatus = 4; // Already playing.
+			pthread_mutex_unlock(&StatusMutex);
+			FREE_RESULT;
+			return false;
+		}
+
+		FREE_RESULT;
+	}
 
 	QUERY( "SELECT * FROM userdata WHERE char_idx=%d", id );
 
@@ -882,7 +1093,9 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	player->myskills.inventory[body_armor_index] = player->myskills.current_armor;
 
 	//done
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&StatusMutex);
+#endif
 	
 	if ( (i = canJoinGame(player)) == 0)
 	{
@@ -891,9 +1104,22 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	}else
 		player->ThreadStatus = i;
 
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&StatusMutex);
+#endif
+
 	return true;
 }
+
+void V_GDS_SaveQuit(gds_queue_t *current, MYSQL *db)
+{
+	int id = V_GDS_Save(current, db);
+	char* format;
+	if (id != -1)
+		QUERY ("UPDATE userdata SET isplaying = 0 WHERE char_idx = %d;", id);
+}
+
+// Start Connection to GDS/MySQL
 
 qboolean V_GDS_StartConn()
 {
@@ -921,7 +1147,7 @@ qboolean V_GDS_StartConn()
 		return false;
 	}
 
-	gds_debug = gi.cvar("gds_debug", "0", 0);
+	/*gds_debug = gi.cvar("gds_debug", "0", 0);*/
 
 	gi.dprintf("Success!\n");
 	
@@ -982,7 +1208,9 @@ void HandleStatus(edict_t *player)
 	if (!GDS_MySQL)
 		return;
 
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&StatusMutex);
+#endif
 
 	if (player->ThreadStatus == 0)
 	{
@@ -992,8 +1220,13 @@ void HandleStatus(edict_t *player)
 
 	switch (player->ThreadStatus)
 	{
+	case 4:
+		gi.centerprintf(player, "You seem to be already playing in this or another server.\n\
+								If you're not, wait until tomorrow or ask an admin\n\
+								to free your character.\n");
 	case 3:
-		gi.cprintf(player, PRINT_LOW, "Character saved!\n");
+		/*if (player->inuse)
+			gi.cprintf(player, PRINT_LOW, "Character saved!\n");*/
 		break;
 	case 2: // does not exist?
 		gi.centerprintf(player, "Creating a new Character!\n");
@@ -1011,7 +1244,9 @@ void HandleStatus(edict_t *player)
 	}
 	if (player->ThreadStatus != 1)
 		player->ThreadStatus = 0;
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&StatusMutex);
+#endif
 }
 
 void GDS_FinishThread()
@@ -1035,15 +1270,18 @@ void GDS_FinishThread()
 	}
 }
 
-void *V_Malloc(int Tag, size_t Size)
+void *V_Malloc(size_t Size, int Tag)
 {
 	void *Memory;
-	
+
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&MemMutex_Malloc);
+#endif
+	Memory = gi.TagMalloc (Size, Tag);
 
-	Memory = gi.TagMalloc (Tag, Size);
-
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&MemMutex_Malloc);
+#endif
 
 	return Memory;
 }

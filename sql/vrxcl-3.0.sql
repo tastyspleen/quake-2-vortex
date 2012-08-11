@@ -218,7 +218,31 @@ DROP PROCEDURE IF EXISTS GetCharID; $$
 CREATE PROCEDURE GetCharID(IN pname varchar(64), OUT chidx INT)
 BEGIN
     SELECT (char_idx) INTO chidx FROM userdata WHERE playername = pname;
-END
+END $$
 
+DROP PROCEDURE IF EXISTS CanPlay; $$
+
+CREATE PROCEDURE CanPlay(IN chidx INT, OUT canplay int)
+BEGIN
+
+    DECLARE lp DATE;
+	DECLARE str_lp VARCHAR (128);
+
+	SELECT (last_played) INTO str_lp FROM userdata WHERE char_idx = chidx;
+
+	if str_lp != "" THEN
+		SELECT DATE (str_lp) INTO lp 
+			FROM userdata 
+			WHERE char_idx = chidx;
+	END IF;
+
+	if lp = current_date AND (select (isplaying) FROM userdata WHERE char_idx = chidx) THEN
+		SET canplay = 0;
+	else
+		SET canplay = 1;
+	END IF;
+
+
+END
 -- Saving/Loading procedures are done in-dll, since the code for that is mostly already written. :D
 -- That DOES mean the dll MUST be updated before submitting stuff to the database. And the database as well.
