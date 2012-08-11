@@ -106,11 +106,10 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 	} else
 	{
 		prev_rad = rad + 1;
-		prev_ed = g_edicts;
 	}
 	found_rad = 0;
 
-	for (from = prev_ed; from < &g_edicts[globals.num_edicts]; from++)
+	for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
 	{
 		if (!from->inuse)
 			continue;
