@@ -98,8 +98,9 @@ DROP TABLE IF EXISTS runes_mods;
 CREATE TABLE runes_mods 
 (
   char_idx INTEGER,
-  rindex INTEGER, 
+  rune_index INTEGER, 
   type INTEGER, 
+  mindex INTEGER,
   value INTEGER, 
   rset INTEGER
 );
