@@ -314,7 +314,7 @@ gds_queue_t *V_GDS_FindSave(gds_queue_t *current)
 	pthread_mutex_unlock(&QueueMutex);
 #endif
 
-	return iterator;
+	return delete_queue_end;
 }
 
 // *********************************
