@@ -32,6 +32,8 @@ char *HiPrint(char *text)
 	char* ReturnVal;
 	ReturnVal = V_Malloc(strlen(text), TAG_LEVEL);
 
+	strcpy(ReturnVal, text);
+
 	if (!text)
 		return NULL;
 	for (i=0; i<strlen(ReturnVal) ; i++)

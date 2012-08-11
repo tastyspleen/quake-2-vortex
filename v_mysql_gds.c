@@ -121,6 +121,19 @@ qboolean IsThreadRunning();
 
 // Utility Functions
 
+// va used only in the thread.
+char	*myva(char *format, ...)
+{
+	va_list		argptr;
+	static char		string[1024];
+	
+	va_start (argptr, format);
+	vsprintf (string, format,argptr);
+	va_end (argptr);
+
+	return string;	
+}
+
 int FindRuneIndex_S(int index, skills_t *myskills)
 {
 	int i;
@@ -521,7 +534,7 @@ void *ProcessQueue(void *unused)
 // MYSQL functions
 // *********************************
 
-#define QUERY(a, ...) format = strdup(va(a, __VA_ARGS__));\
+#define QUERY(a, ...) format = strdup(myva(a, __VA_ARGS__));\
 	mysql_query(db, format);\
 	free (format);
 
@@ -880,7 +893,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if (exists) // Exists? Then is it able to play?
 	{
 		QUERY ("CALL CanPlay(%d, @IsAble);", id);
-		QUERY ("SELECT @IsAble;");
+		mysql_query (db, "SELECT @IsAble;");
 		GET_RESULT;
 
 		if (atoi(row[0]) == 0)
