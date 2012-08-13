@@ -99,6 +99,7 @@ CREATE TABLE runes_mods
 (
   char_idx INTEGER,
   rune_index INTEGER, 
+  rmod INTEGER,
   type INTEGER, 
   mindex INTEGER,
   value INTEGER, 
@@ -147,7 +148,8 @@ CREATE TABLE weapon_mods
 (
   char_idx INTEGER,
   weapon_index INTEGER, 
-  level INTEGER, 
+  modindex INTEGER,
+  level INTEGER,
   soft_max INTEGER, 
   hard_max INTEGER
 );
