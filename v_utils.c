@@ -1695,8 +1695,7 @@ void V_UpdatePlayerAbilities (edict_t *ent)
 	for (i = 0; i < 3; ++i)
 		V_ApplyRune(ent, &ent->myskills.items[i]);
 
-	safe_cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");
-	safe_cprintf(ent, PRINT_HIGH, "***CARGO 1***\n");
+	safe_cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");	
 	
 	// have points been refunded?
 	if (refunded > 0)

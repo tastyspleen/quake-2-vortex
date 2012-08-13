@@ -661,7 +661,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		//Talent: Corpulence (also in M_Initialize)
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
 		talentLevel2 = getTalentLevel(ent, TALENT_LIFE_TAP);
-		if(talentLevel > 0)	mult +=	0.4 * talentLevel;	//+50% per upgrade
+		if(talentLevel > 0)	mult +=	0.4 * talentLevel;	//+40% per upgrade
 		if(talentLevel2 > 0) mult += 0.2 * talentLevel2; //+20%
 
 		mult += 0.5; // base mult for player monsters
