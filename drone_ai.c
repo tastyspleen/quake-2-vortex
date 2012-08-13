@@ -2188,16 +2188,16 @@ void drone_think (edict_t *self)
 	DrawPath(self);
 
 	//Talent: Life Tap
-	if (self->activator && self->activator->inuse && self->activator->client && !(level.framenum % 10))
-	{
-		if (getTalentLevel(self->activator, TALENT_LIFE_TAP) > 0)
-		{
-			int damage = 0.01 * self->max_health;
-			if (damage < 1)
-				damage = 1;
-			T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, damage, 0, DAMAGE_NO_ABILITIES, 0);
-		}
-	}
+	// if (self->activator && self->activator->inuse && self->activator->client && !(level.framenum % 10))
+	// {
+	// 	if (getTalentLevel(self->activator, TALENT_LIFE_TAP) > 0)
+	// 	{
+	// 		int damage = 0.01 * self->max_health;
+	// 		if (damage < 1)
+	// 			damage = 1;
+	// 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, damage, 0, DAMAGE_NO_ABILITIES, 0);
+	// 	}
+	// }
 
 	if (self->linkcount != self->monsterinfo.linkcount)
 	{

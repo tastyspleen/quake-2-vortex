@@ -540,7 +540,8 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	edict_t		*drone;
 	float		mult;
 	int			talentLevel;
-	
+	int			talentLevel2;
+
 	drone = G_Spawn();
 	drone->classname = "drone";
 
@@ -659,7 +660,9 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	{
 		//Talent: Corpulence (also in M_Initialize)
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
-		if(talentLevel > 0)	mult +=	0.3 * talentLevel;	//+30% per upgrade
+		talentLevel2 = getTalentLevel(ent, TALENT_LIFE_TAP);
+		if(talentLevel > 0)	mult +=	0.4 * talentLevel;	//+50% per upgrade
+		if(talentLevel2 > 0) mult += 0.2 * talentLevel2; //+20%
 
 		mult += 0.5; // base mult for player monsters
 
@@ -1610,7 +1613,8 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 qboolean M_Initialize (edict_t *ent, edict_t *monster)
 {
 	int		talentLevel;
-	float	mult = 1.0;
+	int 	talentLevel2;
+	float	mult = 1.0;	
 
 	switch (monster->mtype)
 	{
@@ -1632,9 +1636,11 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 	{
 		//Talent: Corpulence
 		talentLevel = getTalentLevel(ent, TALENT_CORPULENCE);
-		if(talentLevel > 0)	mult +=	0.3 * talentLevel;	//+30% per upgrade
+		talentLevel2 = getTalentLevel(ent, TALENT_LIFE_TAP);
+		if(talentLevel > 0)	mult +=	2.2 * talentLevel;	//+30% per upgrade
+		if(talentLevel2 > 0) mult += 1.1 * talentLevel2;
 
-		mult += 0.5; // base player's monster multiplier.
+		mult += 0.5; // base player's monster multiplier.			
 	}
 
 	monster->health *= mult;

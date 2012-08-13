@@ -526,7 +526,7 @@ void SpawnTotem(edict_t *ent, int abilityID)
 		totem->delay = level.time + 2.0;
 	}
 
-	totem->max_health = totem->health;
+	totem->max_health = totem->health*2;
 
 	//Not sure if this stuff is needed (Archer)
 	totem->svflags |= SVF_MONSTER;

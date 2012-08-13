@@ -137,7 +137,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, POWER_SHIELD, 0, 15, 0);
 		enableAbility(ent, ARMOR_REGEN, 0, 15, 0);
 		enableAbility(ent, EXPLODING_ARMOR, 0, 15, 0);
-		enableAbility(ent, BEAM, 0, 15, 0);
+		enableAbility(ent, BEAM, 0, 20, 0);
 		enableAbility(ent, PLASMA_BOLT, 0, 15, 0);
 		enableAbility(ent, SHIELD, 1, 1, 0);
 
@@ -156,8 +156,8 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CLOAK, 1, 1, 0);
 		break;
 	case CLASS_NECROMANCER:// 80 points
-		enableAbility(ent, MONSTER_SUMMON, 0, 15, 0);
-		enableAbility(ent, HELLSPAWN, 0, 15, 0);
+		enableAbility(ent, MONSTER_SUMMON, 0, 20, 0);
+		enableAbility(ent, HELLSPAWN, 0, 20, 0);
 		enableAbility(ent, PLAGUE, 0, 15, 0);
 		enableAbility(ent, AMP_DAMAGE, 0, 15, 0);
 		enableAbility(ent, CRIPPLE, 0, 15, 0);
@@ -169,7 +169,7 @@ void setClassAbilities (edict_t *ent)
 		break;
 	case CLASS_ENGINEER:// 80 points
 		enableAbility(ent, PROXY, 0, 15, 0);
-		enableAbility(ent, BUILD_SENTRY, 0, 15, 0);
+		enableAbility(ent, BUILD_SENTRY, 0, 20, 0);
 		enableAbility(ent, SUPPLY_STATION, 0, 15, 0);
 		enableAbility(ent, BUILD_LASER, 0, 15, 0);
 		enableAbility(ent, MAGMINE, 0, 15, 0);
@@ -214,14 +214,21 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, MEDIC, 1, 20, 0);
 		enableAbility(ent, GHOST, 99, 99, 0);
 		enableAbility(ent, MORPH_MASTERY, 1, 1, 0);
+		// Specific Skills for Medics.
+		enableAbility(ent, SPIKER, 0, 1, 0);		
+		enableAbility(ent, GASSER, 0, 1, 0);
+		enableAbility(ent, MONSTER_SUMMON, 0, 1, 0);
+		ent->myskills.abilities[SPIKER].hard_max = 1;
+		ent->myskills.abilities[GASSER].hard_max = 1;
+		ent->myskills.abilities[MONSTER_SUMMON].hard_max = 1;
 		break;
 	case CLASS_SHAMAN:// 75 points
-		enableAbility(ent, FIRE_TOTEM, 0, 15, 0);
-		enableAbility(ent, WATER_TOTEM, 0, 15, 0);
-		enableAbility(ent, AIR_TOTEM, 0, 15, 0);
-		enableAbility(ent, EARTH_TOTEM, 0, 15, 0);
-		enableAbility(ent, DARK_TOTEM, 0, 15, 0);
-		enableAbility(ent, NATURE_TOTEM, 0, 15, 0);
+		enableAbility(ent, FIRE_TOTEM, 0, 20, 0);
+		enableAbility(ent, WATER_TOTEM, 0, 20, 0);
+		enableAbility(ent, AIR_TOTEM, 0, 20, 0);
+		enableAbility(ent, EARTH_TOTEM, 0, 20, 0);
+		enableAbility(ent, DARK_TOTEM, 0, 20, 0);
+		enableAbility(ent, NATURE_TOTEM, 0, 20, 0);
 		enableAbility(ent, FURY, 0, 15, 0);
 		enableAbility(ent, HASTE, 0, 5, 0); // lol oops
 		enableAbility(ent, SUPER_SPEED, 1, 1, 0);
@@ -250,7 +257,7 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, VITALITY, 0, 10, 1);
 	//enableAbility(ent, ID, 0, 1, 1); // vrxchile 2.0- id is no longer a skill.
 	enableAbility(ent, MAX_AMMO, 0, 10, 1);
-	enableAbility(ent, POWER_REGEN, 0, 5, 1);
+	enableAbility(ent, POWER_REGEN, 0, 8, 1);
 	enableAbility(ent, WORLD_RESIST, 0, 1, 1);
 
 	// ammo regen is hard capped at 5

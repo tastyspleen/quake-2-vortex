@@ -292,7 +292,14 @@ void myTankRocket (edict_t *self)
 		flash_number = MZ2_TANK_ROCKET_3;
 
 	damage = 20 + 10*self->monsterinfo.level;
-	speed = 450 /*+ 30*self->monsterinfo.level*/; // No scaling speed.
+	if( self->activator )
+	{
+		speed = 450 + 30*self->monsterinfo.level;	
+	}
+	else
+	{
+		speed = 450;
+	}	
 
 	MonsterAim(self, 1, speed, true, flash_number, forward, start);
 

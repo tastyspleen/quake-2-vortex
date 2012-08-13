@@ -6,4 +6,4 @@ env.Append(CCFLAGS='-g')
 
 sources = glob("*.c") + glob ("ai/*.c")
 
-env.SharedLibrary('gamex86', source=sources)
+env.SharedLibrary('gamex86', source=sources, CPPPATH='/usr/include/mysql', LIBS='mysqlclient')

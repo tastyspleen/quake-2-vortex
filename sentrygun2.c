@@ -23,7 +23,7 @@
 
 //Basic sentry attributes (in game)
 #define SENTRY_HEALTH_MULT			15		//Multiply by myskills.abilities[BUILD_SENTRY].current_level
-#define SENTRY_HEALTH_BASE			100		//Base health
+#define SENTRY_HEALTH_BASE			500		//Base health
 #define SENTRY_ARMOR_MULT			40		//Multiply by myskills.abilities[BUILD_SENTRY].current_level
 #define SENTRY_ARMOR_BASE			100		//Base armour
 #define SENTRY_HEAL_COST			0.1		//Amount of pc's required to heal 1 hp

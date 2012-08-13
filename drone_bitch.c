@@ -503,7 +503,14 @@ void myChickRocket (edict_t *self)
 		return;
 
 	damage = 50 + 15*self->monsterinfo.level;
-	speed = 450 /*+ 30*self->monsterinfo.level*/; // Don't scale speed
+	if ( self->activator->client )
+	{
+		speed = 450 + 30*self->monsterinfo.level;
+	}
+	else
+	{
+		speed = 450;	
+	}
 
 	MonsterAim(self, 1, speed, true, MZ2_CHICK_ROCKET_1, forward, start);
 	monster_fire_rocket (self, start, forward, damage, speed, MZ2_CHICK_ROCKET_1);

@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.0"
+#define VRX_VERSION "3.1"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -349,7 +349,7 @@ const char* Time();
 #define FURY_DURATION_BONUS			1.0
 //Fire totem
 #define FIRETOTEM_DAMAGE_BASE		0
-#define FIRETOTEM_DAMAGE_MULT		3
+#define FIRETOTEM_DAMAGE_MULT		6
 #define FIRETOTEM_REFIRE_BASE		2.0
 #define FIRETOTEM_REFIRE_MULT		0.0		//make this negative to reduce the "cooldown".
 //Water totem

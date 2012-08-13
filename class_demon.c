@@ -103,7 +103,7 @@ void cacodemon_attack (edict_t *ent)
 
 	if (level.time > ent->monsterinfo.attack_finished)
 	{
-		damage = CACODEMON_INITIAL_DAMAGE + CACODEMON_ADDON_DAMAGE*ent->myskills.abilities[CACODEMON].current_level;
+		damage = (CACODEMON_INITIAL_DAMAGE + CACODEMON_ADDON_DAMAGE*ent->myskills.abilities[CACODEMON].current_level)*2;
 		radius = CACODEMON_INITIAL_RADIUS + CACODEMON_ADDON_RADIUS*ent->myskills.abilities[CACODEMON].current_level;
 
 		ent->s.frame = CACODEMON_FRAME_ATTACK_FIRE;
