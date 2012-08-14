@@ -1234,12 +1234,12 @@ qboolean ClientCanConnect (edict_t *ent, char *userinfo)
 
 	for_each_player(find, i)
 	{
-		if ((check_dupeip->value > 0) && (find != ent) 
-			&& !Q_stricmp(ent->client->pers.current_ip, find->client->pers.current_ip))
-		{
-			Info_SetValueForKey(userinfo, "rejmsg", "Duplicate IPs not permitted.");
-			return false;
-		}
+		// if ((check_dupeip->value > 0) && (find != ent) 
+		// 	&& !Q_stricmp(ent->client->pers.current_ip, find->client->pers.current_ip))
+		// {
+		// 	Info_SetValueForKey(userinfo, "rejmsg", "Duplicate IPs not permitted.");
+		// 	return false;
+		// }
 		if (check_dupename->value > 0 && find != ent 
 			&& !Q_stricmp(ent->client->pers.netname, find->client->pers.netname))
 		{

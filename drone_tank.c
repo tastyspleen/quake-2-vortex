@@ -292,7 +292,7 @@ void myTankRocket (edict_t *self)
 		flash_number = MZ2_TANK_ROCKET_3;
 
 	damage = 20 + 10*self->monsterinfo.level;
-	if( self->activator )
+	if( self->activator && self->activator->client )
 	{
 		speed = 450 + 30*self->monsterinfo.level;	
 	}

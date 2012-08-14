@@ -746,7 +746,13 @@ void p_tank_spawn (edict_t *ent, int cost)
 	//VectorSet (tank->maxs, 24, 24, 64);
 	VectorCopy(boxmin, tank->mins);
 	VectorCopy(boxmax, tank->maxs);
-	//tank->s.skinnum = 2; // commander skin
+
+	// Skin Commander to Poltergeist class when Teleport and Tank abilities are combined
+	if( ent->myskills.abilities[TELEPORT].current_level >= 1 && ent->myskills.abilities[TANK].current_level > 20 )
+	{
+		tank->s.skinnum = 2; // commander skin
+	}
+	
 	VectorCopy(ent->s.angles, tank->s.angles);
 	tank->s.angles[PITCH] = 0; // monsters don't use pitch
 	tank->nextthink = level.time + FRAMETIME;

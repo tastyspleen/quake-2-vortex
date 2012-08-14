@@ -503,7 +503,7 @@ void myChickRocket (edict_t *self)
 		return;
 
 	damage = 50 + 15*self->monsterinfo.level;
-	if ( self->activator->client )
+	if ( self->activator && self->activator->client )
 	{
 		speed = 450 + 30*self->monsterinfo.level;
 	}

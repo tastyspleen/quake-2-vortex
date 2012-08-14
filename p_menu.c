@@ -172,12 +172,13 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, BUILD_SENTRY, 0, 20, 0);
 		enableAbility(ent, SUPPLY_STATION, 0, 15, 0);
 		enableAbility(ent, BUILD_LASER, 0, 15, 0);
-		enableAbility(ent, MAGMINE, 0, 15, 0);
+		enableAbility(ent, MAGMINE, 0, 20, 0);
 		enableAbility(ent, CALTROPS, 0, 15, 0);
 		enableAbility(ent, AUTOCANNON, 0, 15, 0);
 		enableAbility(ent, DETECTOR, 0, 15, 0);
-
 		enableAbility(ent, ANTIGRAV, 1, 1, 2);
+		//Hard Max Eng
+		ent->myskills.abilities[BUILD_SENTRY].hard_max = 50;
 		break;
 	case CLASS_MAGE:// 80 points
 		enableAbility(ent, MAGICBOLT, 0, 15, 0);
@@ -218,6 +219,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, SPIKER, 0, 1, 0);		
 		enableAbility(ent, GASSER, 0, 1, 0);
 		enableAbility(ent, MONSTER_SUMMON, 0, 1, 0);
+		// Hard Max for Specific Skills
 		ent->myskills.abilities[SPIKER].hard_max = 1;
 		ent->myskills.abilities[GASSER].hard_max = 1;
 		ent->myskills.abilities[MONSTER_SUMMON].hard_max = 1;
