@@ -748,7 +748,7 @@ void p_tank_spawn (edict_t *ent, int cost)
 	VectorCopy(boxmax, tank->maxs);
 
 	// Skin Commander to Poltergeist class when Teleport and Tank abilities are combined
-	if( ent->myskills.abilities[TELEPORT].current_level >= 1 && ent->myskills.abilities[TANK].current_level > 20 )
+	if( ent->myskills.abilities[TELEPORT].current_level >= 1 && ent->myskills.abilities[TANK].current_level >= 20 )
 	{
 		tank->s.skinnum = 2; // commander skin
 	}
