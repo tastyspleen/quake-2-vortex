@@ -17,7 +17,7 @@
 #define BRAIN_DEFAULT_TENTACLE_DMG	40	// tentacle attack, damage per frame
 #define BRAIN_ADDON_TENTACLE_DMG	6
 #define BRAIN_BEAM_COST				2
-#define BRAIN_BEAM_DEFAULT_DMG		10	// beam attack, damage per frame
+#define BRAIN_BEAM_DEFAULT_DMG		30	// beam attack, damage per frame
 #define BRAIN_BEAM_ADDON_DMG		2
 #define BRAIN_LOCKON_RANGE			96	// minimum range required for autoaim
 #define BRAIN_INIT_COST				50

@@ -18,7 +18,7 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW "queteimportaql"
+#define MYSQL_PW ""
 #define MYSQL_USER "root"
 #define MYSQL_DBNAME "vrxchile"
 
