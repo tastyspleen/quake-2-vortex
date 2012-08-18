@@ -1446,15 +1446,6 @@ qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, q
 
 		if (max_armor && self->monsterinfo.power_armor_power < max_armor)
 		{
-			if( max_armor == 0)
-				max_armor = 1;
-
-			if( regen_frames == 0 )
-				regen_frames = 1;
-
-			if( delay == 0 )
-				delay == 1;
-
 			int calc = 1;
 
 			if( (regen_frames / delay) == 0 )
