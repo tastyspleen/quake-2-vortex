@@ -26,7 +26,7 @@ void init_drone_berserk (edict_t *self);
 void init_drone_infantry (edict_t *self);
 int crand (void);
 
-qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target) 
+qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target)
 {
 	//if (target && target->inuse && target->classname)
 	//	gi.dprintf("drone_ValidChaseTarget() is checking %s\n", target->classname);
@@ -37,14 +37,14 @@ qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target)
 		return false;
 
 	// chasing a combat point/goal
-	if ((self->monsterinfo.aiflags & AI_COMBAT_POINT) && target->inuse 
-		&& ((target->mtype == INVASION_NAVI) || (target->mtype == PLAYER_NAVI) 
+	if ((self->monsterinfo.aiflags & AI_COMBAT_POINT) && target->inuse
+		&& ((target->mtype == INVASION_NAVI) || (target->mtype == PLAYER_NAVI)
 		|| (target->mtype == M_COMBAT_POINT) || target->mtype == INVASION_PLAYERSPAWN))
 		return true;
 
 	//FIXME: we should clean this up
 	// chasing invasion monster spawn
-	if (invasion->value && target->mtype == INVASION_MONSTERSPAWN 
+	if (invasion->value && target->mtype == INVASION_MONSTERSPAWN
 		&& !OnSameTeam(self, target))
 		return true;
 
@@ -56,7 +56,7 @@ qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target)
 
 	// if we're standing ground and have a limited sight range
 	// ignore enemies that move outside of this range (since we can't attack them)
-	if ((self->monsterinfo.aiflags & AI_STAND_GROUND) 
+	if ((self->monsterinfo.aiflags & AI_STAND_GROUND)
 		&& (entdist(self, target) > self->monsterinfo.sight_range))
 		return false;
 
@@ -83,7 +83,7 @@ qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target)
 
 	if (que_typeexists(target->curses, CURSE_FROZEN))
 		return false;
-	
+
 	//FIXME: we should do a better check than this
 	if (self->enemy && OnSameTeam(self, target))
 		return false;
@@ -123,7 +123,7 @@ qboolean CanStep (edict_t *self, float yaw, float dist)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-	// try the move	
+	// try the move
 	VectorAdd (self->s.origin, move, start);
 
 	// push down from a step height above the wished position
@@ -154,7 +154,7 @@ qboolean CanStep (edict_t *self, float yaw, float dist)
 	{
 		test[0] = trace.endpos[0];
 		test[1] = trace.endpos[1];
-		test[2] = trace.endpos[2] + self->mins[2] + 1;	
+		test[2] = trace.endpos[2] + self->mins[2] + 1;
 
 		if (gi.pointcontents(test) & MASK_WATER)
 			return false;
@@ -196,7 +196,7 @@ void drone_ai_checkattack (edict_t *self)
 		self->oldenemy = self->enemy;
 		if (!drone_findtarget(self, false))
 			return;
-		//gi.dprintf("%d going for an easier target\n", self->mtype);	
+		//gi.dprintf("%d going for an easier target\n", self->mtype);
 	}
 
 	//if (!infront(self, self->enemy))
@@ -205,7 +205,7 @@ void drone_ai_checkattack (edict_t *self)
 		//gi.dprintf("target is not in front\n");
 		return;
 	}
-	
+
 	// check for blocked shot
 	// if the entity blocking us is a valid target, attack them instead!
 	G_EntMidPoint(self, start);
@@ -216,7 +216,7 @@ void drone_ai_checkattack (edict_t *self)
 		if (G_ValidTarget(self, tr.ent, false))
 			self->enemy = tr.ent;
 		else
-			return;	
+			return;
 	}
 	//AngleVectors(self->s.angles, forward, NULL, NULL);
 	//VectorMA(self->s.origin, self->maxs[1]+8, forward , start);
@@ -271,7 +271,7 @@ void drone_pain (edict_t *self, edict_t *other, float kick, int damage)
 
 	if ((self->s.modelindex != 255) && (self->health < (0.5*self->max_health)))
 		self->s.skinnum |= 1;
-	
+
 	// keep track of damage by players in invasion mode
 //	if (INVASION_OTHERSPAWNS_REMOVED)
 //		AddDmgList(self, other, damage);
@@ -288,8 +288,8 @@ void drone_pain (edict_t *self, edict_t *other, float kick, int damage)
 	{
 		// attack if current enemy can't take damage/move (a node/goal?) OR our current enemy
 		// isn't visible OR if new enemy is closer than the old one
-		if (!self->enemy->takedamage || self->enemy->movetype == MOVETYPE_NONE 
-			|| !visible(self, self->enemy) 
+		if (!self->enemy->takedamage || self->enemy->movetype == MOVETYPE_NONE
+			|| !visible(self, self->enemy)
 			|| (entdist(self, other) < entdist(self, self->enemy)))
 		{
 			self->oldenemy = self->enemy;
@@ -335,7 +335,7 @@ void drone_death (edict_t *self, edict_t *attacker)
 		SpawnRune(self, attacker, false);
 
 		// world monsters sometimes drop ammo
-		if (self->activator && !self->activator->client 
+		if (self->activator && !self->activator->client
 			&& self->item && (random() >= 0.8))
 			Drop_Item(self, self->item);
 	}
@@ -352,9 +352,9 @@ void drone_heal (edict_t *self, edict_t *other)
 			self->monsterinfo.regen_delay1 = level.framenum + 10;
 			other->client->pers.inventory[power_cube_index] -= 5;
 		}
-		
+
 		// check armor
-		if (self->monsterinfo.power_armor_power < self->monsterinfo.max_armor 
+		if (self->monsterinfo.power_armor_power < self->monsterinfo.max_armor
 			&& other->client->pers.inventory[power_cube_index] >= 5)
 		{
 			self->armor_cache += (int)(0.50 * self->monsterinfo.max_armor) + 1;
@@ -411,7 +411,7 @@ void drone_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 	V_Touch(self, other, plane, surf);
 
 	// the monster's owner or allies can push him around
-	//if (G_EntIsAlive(other) && self->activator 
+	//if (G_EntIsAlive(other) && self->activator
 	//	&& ((other == self->activator) || IsAlly(self->activator, other)))
 
 	// if this is player-monster, look at the owner/activator
@@ -428,7 +428,7 @@ void drone_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 	}
 
 	//4.5 in FFA mode, allow players with PvP combat preferences to teleport world monsters that can't see their enemy
-	if (ffa->value && (!self->enemy || !visible(self, self->enemy)) && self->activator && self->activator->inuse 
+	if (ffa->value && (!self->enemy || !visible(self, self->enemy)) && self->activator && self->activator->inuse
 		&& !self->activator->client && OnSameTeam(self, other) == 1)
 	{
 
@@ -447,7 +447,7 @@ void drone_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 		}
 
 		self->s.event = EV_PLAYER_TELEPORT;
-		
+
 		self->monsterinfo.pausetime = level.time + 1.0;
 		if (self->monsterinfo.walk)
 			self->monsterinfo.walk(self);
@@ -456,7 +456,7 @@ void drone_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 		self->monsterinfo.inv_framenum = level.framenum + 10;
 	}
 
-	if (other && other->inuse && other->client && self->activator 
+	if (other && other->inuse && other->client && self->activator
 		&& (other == self->activator || IsAlly(self->activator, other)))
 	{
 		AngleVectors (other->client->v_angle, forward, right, NULL);
@@ -494,7 +494,7 @@ void drone_grow (edict_t *self)
 	// don't slide
 	if (self->groundentity)
 		VectorClear(self->velocity);
-	
+
 	M_CatagorizePosition (self);
 	M_WorldEffects (self);
 	M_SetEffects (self);
@@ -566,8 +566,8 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 				drone->monsterinfo.level = GetRandom(PvMLowestLevelPlayer(), PvMHighestLevelPlayer());
 			else
 				drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer());
-				
-			
+
+
 			// 4.5 assign monster bonus flags
 			// Champions spawn on invasion hard mode.
 			AssignChampionStuff(drone, &drone_type);
@@ -646,7 +646,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	//	mult *= 80;
 
 	//4.5 monster bonus flags
-	if (drone->monsterinfo.bonus_flags & BF_UNIQUE_FIRE 
+	if (drone->monsterinfo.bonus_flags & BF_UNIQUE_FIRE
 		|| drone->monsterinfo.bonus_flags & BF_UNIQUE_LIGHTNING)
 		mult *= 25;
 	else if (drone->monsterinfo.bonus_flags & BF_CHAMPION)
@@ -655,7 +655,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		mult *= 1.5;
 	else if (drone->monsterinfo.bonus_flags & BF_POSESSED)
 		mult *= 4.0;
-		
+
 	if (!worldspawn)
 	{
 		//Talent: Corpulence (also in M_Initialize)
@@ -704,13 +704,13 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		drone->nextthink = level.time + FRAMETIME;
 	}
 	else if (ent->client)
-	{	
+	{
 		// 3.9 double monster cost if there are too many monsters in CTF
 		if (ctf->value && (CTF_GetNumSummonable("drone", ent->teamnum) > MAX_MONSTERS))
 			drone->monsterinfo.cost *= 2;
-		
+
 		// cost is doubled if you are a flyer or cacodemon below skill level 5
-		if ((ent->mtype == MORPH_FLYER && ent->myskills.abilities[FLYER].current_level < 5) 
+		if ((ent->mtype == MORPH_FLYER && ent->myskills.abilities[FLYER].current_level < 5)
 			|| (ent->mtype == MORPH_CACODEMON && ent->myskills.abilities[CACODEMON].current_level < 5))
 			drone->monsterinfo.cost *= 2;
 
@@ -793,7 +793,7 @@ void RemoveAllDrones (edict_t *ent, qboolean refund_player)
 	DroneRemoveSelected(ent, NULL);
 
 	// search for other drones
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL) 
+	while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
 	{
 		// try to restore previous owner
 		if (e && e->activator && (e->activator == ent) && !RestorePreviousOwner(e))
@@ -817,7 +817,7 @@ void RemoveDrone (edict_t *ent)
 	tr = gi.trace(start, NULL, NULL, end, ent, MASK_MONSTERSOLID);
 
 	// are we pointing at a drone of ours?
-	if (tr.ent && tr.ent->activator && (tr.ent->activator == ent) 
+	if (tr.ent && tr.ent->activator && (tr.ent->activator == ent)
 		&& !strcmp(tr.ent->classname, "drone"))
 	{
 		// try to convert back to previous owner
@@ -832,9 +832,9 @@ void RemoveDrone (edict_t *ent)
 		M_Remove(tr.ent, true, true);
 		return;
 	}
-	
+
 	// search for other drones
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL) 
+	while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
 	{
 		if (e && e->activator && (e->activator == ent))
 		{
@@ -859,7 +859,7 @@ void combatpoint_think (edict_t *self)
 	qboolean	q=false;;
 
 	// if the goal times-out, then reset all drones
-	if (!G_EntExists(self->owner) || (level.time > self->delay) 
+	if (!G_EntExists(self->owner) || (level.time > self->delay)
 		|| (self->owner->selectedsentry != self))
 	{
 		G_FreeEdict(self);
@@ -939,7 +939,7 @@ void DroneRemoveSelected (edict_t *ent, edict_t *drone)
 {
 	int i;
 
-	for (i=0; i<3; i++) 
+	for (i=0; i<3; i++)
 	{
 		if (drone)
 		{
@@ -957,7 +957,7 @@ void DroneRemoveSelected (edict_t *ent, edict_t *drone)
 // returns true if this is a monster that we summoned
 qboolean ValidCommandMonster (edict_t *ent, edict_t *monster)
 {
-	return (isMonster(monster) && monster->activator 
+	return (isMonster(monster) && monster->activator
 		&& monster->activator->inuse && monster->activator == ent);
 }
 
@@ -965,7 +965,7 @@ edict_t **DroneAlreadySelected (edict_t *ent, edict_t *drone)
 {
 	int i;
 
-	for (i=0; i<3; i++) 
+	for (i=0; i<3; i++)
 	{
 		// is this drone already selected?
 		if (drone == ent->selected[i])
@@ -1042,7 +1042,7 @@ static edict_t *FindMoveTarget (edict_t *ent)
 		if (!G_EntIsAlive(e))
 			continue;
 
-		for (i=0; i<3; i++) 
+		for (i=0; i<3; i++)
 		{
 			// is this a selected drone?
 			if (e == ent->selected[i])
@@ -1083,7 +1083,7 @@ void DroneMove (edict_t *ent)
 			else
 				gi.centerprintf(ent, "Drones will follow target.\n");
 			for (i=0; i<3; i++) {
-				if (G_EntIsAlive(ent->selected[i]) 
+				if (G_EntIsAlive(ent->selected[i])
 					&& !(ent->selected[i]->spawnflags & AI_STAND_GROUND))
 				{
 					ent->selected[i]->enemy = target;
@@ -1147,7 +1147,7 @@ qboolean infront (edict_t *self, edict_t *other)
 	vec3_t	vec;
 	float	dot;
 	vec3_t	forward;
-	
+
 	AngleVectors (self->s.angles, forward, NULL, NULL);
 	VectorSubtract (other->s.origin, self->s.origin, vec);
 	VectorNormalize (vec);
@@ -1164,7 +1164,7 @@ qboolean infov (edict_t *self, edict_t *other, int degrees)
 	vec3_t	vec;
 	float	dot, value;
 	vec3_t	forward;
-	
+
 	AngleVectors (self->s.angles, forward, NULL, NULL);
 	VectorSubtract (other->s.origin, self->s.origin, vec);
 	VectorNormalize (vec);
@@ -1175,7 +1175,7 @@ qboolean infov (edict_t *self, edict_t *other, int degrees)
 	return false;
 }
 
-void MonsterAim (edict_t *self, float accuracy, int projectile_speed, qboolean rocket, 
+void MonsterAim (edict_t *self, float accuracy, int projectile_speed, qboolean rocket,
 				 int flash_number, vec3_t forward, vec3_t start)
 {
 	float	velocity, dist;
@@ -1211,7 +1211,7 @@ void MonsterAim (edict_t *self, float accuracy, int projectile_speed, qboolean r
 		AngleVectors(self->s.angles, forward, right, NULL);
 		return;
 	}
-	
+
 	// detected entities are easy targets
 	if (self->enemy->flags & FL_DETECTED && self->enemy->detected_time > level.time)
 		accuracy = -1;
@@ -1297,7 +1297,7 @@ void MonsterAim (edict_t *self, float accuracy, int projectile_speed, qboolean r
 			if (tr.fraction < 1)
 				VectorCopy(tr.endpos, target);
 		}
-		
+
 		// if we dont have a clear shot to our predicted target
 		if (!G_IsClearPath(self, MASK_SOLID, start, target))
 			G_EntMidPoint(self->enemy, target); // 3.58
@@ -1399,7 +1399,7 @@ qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, q
 				self->health = max_health;
 
 			// switch to normal monster skin when it's healed
-			if (!self->client && (self->svflags & SVF_MONSTER) 
+			if (!self->client && (self->svflags & SVF_MONSTER)
 				&& (self->health >= 0.3*self->max_health))
 				self->s.skinnum &= ~1;
 
@@ -1415,7 +1415,14 @@ qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, q
 
 			if (self->client->pers.inventory[body_armor_index] < max_armor)
 			{
-				armor = max_armor / (regen_frames / delay);
+				int calc = 1;
+
+				if( (regen_frames / delay) == 0 )
+					calc = 1;
+				else
+					calc = (regen_frames / delay);
+
+				armor = max_armor / calc;
 
 				if (armor < 1)
 					armor = 1;
@@ -1434,12 +1441,28 @@ qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, q
 		else
 			max_armor = 0;
 
-		//gi.dprintf("type:%d amt:%d max:%d absmax:%d mult:%.1f\n", self->monsterinfo.power_armor_type, 
+		//gi.dprintf("type:%d amt:%d max:%d absmax:%d mult:%.1f\n", self->monsterinfo.power_armor_type,
 		//	self->monsterinfo.power_armor_power, self->monsterinfo.max_armor, max_armor, mult);
 
 		if (max_armor && self->monsterinfo.power_armor_power < max_armor)
 		{
-			armor = max_armor / (regen_frames / delay);
+			if( max_armor == 0)
+				max_armor = 1;
+
+			if( regen_frames == 0 )
+				regen_frames = 1;
+
+			if( delay == 0 )
+				delay == 1;
+
+			int calc = 1;
+
+			if( (regen_frames / delay) == 0 )
+				calc = 1;
+			else
+				calc = (regen_frames / delay);
+
+			armor = max_armor / calc;
 
 			if (armor < 1)
 				armor = 1;
@@ -1469,7 +1492,7 @@ qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, q
 				self->client->pers.inventory[ammoIndex] += ammo;
 				if (self->client->pers.inventory[ammoIndex] > maxAmmo)
 					self->client->pers.inventory[ammoIndex] = maxAmmo;
-	
+
 				regenerate = true;
 			}
 		}
@@ -1490,16 +1513,16 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 		if (refund)
 			self->owner->client->pers.inventory[power_cube_index]+=self->monsterinfo.cost;
 	}
-	else if (self->activator && self->activator->inuse 
+	else if (self->activator && self->activator->inuse
 		&& !self->monsterinfo.slots_freed) // for all other monsters
 	{
-		
+
 		if (self->activator->client)
 		{
-			
+
 			// refund player's power cubes used if the monster has full health
 			if (refund && !M_NeedRegen(self))
-				self->activator->client->pers.inventory[power_cube_index] 
+				self->activator->client->pers.inventory[power_cube_index]
 				+= self->monsterinfo.cost;
 		}
 		else
@@ -1525,7 +1548,7 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 		self->activator->num_monsters -= self->monsterinfo.control_cost;
 		if (self->activator->num_monsters < 0)
 			self->activator->num_monsters = 0;
-		
+
 		// mark the player slots as being refunded, so it can't happen again
 		self->monsterinfo.slots_freed = true;
 	}
@@ -1562,10 +1585,10 @@ void M_BodyThink (edict_t *self)
 
 	// body becomes transparent before removal
 	if (level.time == self->delay-5.0)
-		self->s.effects = EF_PLASMA; 
+		self->s.effects = EF_PLASMA;
 	else if (level.time == self->delay-2.0)
 		self->s.effects = EF_SPHERETRANS;
-	
+
 	// remove the body
 	if (level.time >= self->delay)
 	{
@@ -1600,7 +1623,7 @@ qboolean M_Upkeep (edict_t *self, int delay, int upkeep_cost)
 	if (*cubes < upkeep_cost)
 	{
 		// owner can't pay upkeep, so we're dead :(
-		safe_cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of %s - Removing!\n", 
+		safe_cprintf(self->activator, PRINT_HIGH, "Couldn't keep up the cost of %s - Removing!\n",
 			GetMonsterKindString(self->mtype));
 		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, 100000, 0, 0, 0);
 		return false;
@@ -1614,7 +1637,7 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 {
 	int		talentLevel;
 	int 	talentLevel2;
-	float	mult = 1.0;	
+	float	mult = 1.0;
 
 	switch (monster->mtype)
 	{
@@ -1640,7 +1663,7 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 		if(talentLevel > 0)	mult +=	2.2 * talentLevel;	//+30% per upgrade
 		if(talentLevel2 > 0) mult += 1.1 * talentLevel2;
 
-		mult += 0.5; // base player's monster multiplier.			
+		mult += 0.5; // base player's monster multiplier.
 	}
 
 	monster->health *= mult;
@@ -1732,7 +1755,7 @@ char *GetMonsterKindString (int mtype)
 		case BOSS_TANK:
 		case M_COMMANDER:
 			return "Tank Commander";
-		case BOSS_MAKRON: 
+		case BOSS_MAKRON:
 		case M_MAKRON:
 			return "Makron";
 		case M_JORG: return "Jorg";
@@ -1768,7 +1791,7 @@ void M_Notify (edict_t *monster)
 	if (monster->activator->num_monsters < 0)
 		monster->activator->num_monsters = 0;
 
-	safe_cprintf(monster->activator, PRINT_HIGH, "You lost a %s! (%d/%d)\n", 
+	safe_cprintf(monster->activator, PRINT_HIGH, "You lost a %s! (%d/%d)\n",
 		GetMonsterKindString(monster->mtype), monster->activator->num_monsters, MAX_MONSTERS);
 
 	monster->monsterinfo.slots_freed = true;
@@ -1783,7 +1806,7 @@ void DroneAttack (edict_t *ent, edict_t *other)
 
 	gi.centerprintf(ent, "Monsters will attack target.\n");
 
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		e = ent->selected[i];
 		if (G_EntIsAlive(e) && ValidCommandMonster(ent, e) && visible(ent, e))
@@ -1804,7 +1827,7 @@ void DroneFollow (edict_t *ent, edict_t *other)
 
 	gi.centerprintf(ent, "Monsters will follow target.\n");
 
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		e = ent->selected[i];
 		if (G_EntIsAlive(e) && ValidCommandMonster(ent, e) && visible(ent, e))
@@ -1916,7 +1939,7 @@ void DroneMovePosition (edict_t *ent, vec3_t pos)
 	}
 
 	// search selected monsters
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		e = ent->selected[i];
 
@@ -1945,7 +1968,7 @@ void DroneMovePosition (edict_t *ent, vec3_t pos)
 			// move to this spot, but we may get distracted
 			else
 			{
-				e->monsterinfo.leader = NULL; 
+				e->monsterinfo.leader = NULL;
 			}
 
 			VectorCopy(pos, e->monsterinfo.last_sighting);
@@ -2055,7 +2078,7 @@ void MonsterCommand (edict_t *ent)
 			if ((slot = DroneAlreadySelected(ent, tr.ent)) != NULL)
 			{
 				// did we last select this monster very recently ('double-click')?
-				if (ent->client->lastCommand > level.time 
+				if (ent->client->lastCommand > level.time
 					&& ent->client->lastEnt == tr.ent)
 				{
 					// toggle stand ground
@@ -2115,7 +2138,7 @@ void MonsterFollowMe (edict_t *ent)
 	gi.centerprintf(ent, "Monsters will follow you.\n");
 
 	// search selected monsters
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		e = ent->selected[i];
 
@@ -2142,7 +2165,7 @@ void MonsterAttack (edict_t *ent)
 {
 	int		i;
 	edict_t *e, *goal=NULL;
-	
+
 	if (ctf->value)
 	{
 		if (ent->teamnum == 1)
@@ -2162,7 +2185,7 @@ void MonsterAttack (edict_t *ent)
 		goal = DroneTempEnt(ent, goal->s.origin, 0);
 
 	// search queue for drones
-	for (i=0; i<3; i++) 
+	for (i=0; i<3; i++)
 	{
 		e = ent->selected[i];
 		// is this a live, visible monster that we own?
@@ -2254,9 +2277,9 @@ void Cmd_Drone_f (edict_t *ent)
 	if (!Q_strcasecmp(s, "count"))
 	{
 		// search for other drones
-		while((e = G_Find(e, FOFS(classname), "drone")) != NULL) 
+		while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
 		{
-			if (e && e->activator && (e->activator == ent) 
+			if (e && e->activator && (e->activator == ent)
 				&& (e->deadflag != DEAD_DEAD))
 				i++;
 		}
