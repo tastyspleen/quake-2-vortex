@@ -574,6 +574,9 @@ int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
 	int i;
 
 	id = V_GDS_GetID(current, db);
+
+	QUERY("DELETE FROM runes_meta WHERE char_idx=%d", id);
+	QUERY("DELETE FROM runes_mods WHERE char_idx=%d", id);
 	
 	//begin runes
 	for (i = 0; i < numRunes; ++i)
