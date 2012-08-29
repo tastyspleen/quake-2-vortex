@@ -609,7 +609,11 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 		gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 
 		//save the player file
-		if (savemethod->value == 1)
+		if (savemethod->value == 2)
+		{
+			V_GDS_Queue_Add(ent, GDS_SAVERUNES);
+		}
+		else if (savemethod->value == 1)
 			SaveCharacter(ent);
 		else if (savemethod->value == 0)
 		{
@@ -763,6 +767,8 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 			}
 			else if (savemethod->value == 1)
 				SavePlayer(ent);
+			else if (savemethod->value == 2)
+				V_GDS_Queue_Add(ent, GDS_SAVERUNES);
 
 			safe_cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);

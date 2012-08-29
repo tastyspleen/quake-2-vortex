@@ -2419,6 +2419,8 @@ Will not be called between levels.
 void KillMyVote (edict_t *ent);
 void soldier_die(edict_t *ent);
 void turret_remove(edict_t *ent);
+void SaveCharacterQuit (edict_t *ent);
+
 void ClientDisconnect (edict_t *ent)
 {
 	int		i;
@@ -2491,9 +2493,9 @@ void ClientDisconnect (edict_t *ent)
 	}
 
 	//ent->myskills.inuse = 0;
-	// if (savemethod->value < 2)
+	if (savemethod->value != 2)
 		SaveCharacter(ent);
-	// else update mysql "Logged in!"
+	else SaveCharacterQuit(ent);
 
 	//GHz: Reset their skills_t to prevent any possibility of duping
 	memset(&ent->myskills,0,sizeof(skills_t));
