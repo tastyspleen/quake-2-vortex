@@ -124,6 +124,11 @@ void TradeItems(edict_t *player1, edict_t *player2)
 		memset(path, 0, strlen(path));
 		VRXGetPath(path, player2);
 		VSF_SaveRunes(player2, path);
+
+	}else if (savemethod->value == 2)
+	{
+		V_GDS_Queue_Add(player1, GDS_SAVERUNES);
+		V_GDS_Queue_Add(player2, GDS_SAVERUNES);
 	}
 }
 

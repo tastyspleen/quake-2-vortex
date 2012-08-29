@@ -18,9 +18,9 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW ""
+#define MYSQL_PW "c4r1t4"
 #define MYSQL_USER "root"
-#define MYSQL_DBNAME "vrxchile"
+#define MYSQL_DBNAME "vrxcltest"
 
 /* 
 These are modified versions of the sqlite version
@@ -59,7 +59,7 @@ const char* MYSQL_UPDATECDATA = "UPDATE character_data SET respawns=%d, health=%
 
 const char* MYSQL_UPDATESTATS = "UPDATE game_stats SET shots=%d, shots_hit=%d, frags=%d, fragged=%d, num_sprees=%d, max_streak=%d, spree_wars=%d, broken_sprees=%d, broken_spreewars=%d, suicides=%d, teleports=%d, num_2fers=%d WHERE char_idx=%d;";
 
-const char* MYSQL_UPDATEUDATA = "UPDATE userdata SET title=\"%s\", playername=\"%s\", password=\"%s\", email=\"%s\", owner=\"%s\", member_since=\"%s\", last_played=\"%s\", playtime_total=%d, playingtime=%d WHERE char_idx=%d;";
+const char* MYSQL_UPDATEUDATA = "UPDATE userdata SET title=\"%s\", playername=\"%s\", password=\"%s\", email=\"%s\", owner=\"%s\", member_since=\"%s\", last_played=CURDATE(), playtime_total=%d, playingtime=%d WHERE char_idx=%d;";
 
 const char* MYSQL_UPDATEPDATA = "UPDATE point_data SET exp=%d, exptnl=%d, level=%d, classnum=%d, skillpoints=%d, credits=%d, weap_points=%d, resp_weapon=%d, tpoints=%d WHERE char_idx=%d;";
 
@@ -548,11 +548,14 @@ int V_GDS_GetID(gds_queue_t *current, MYSQL *db)
 	char *format;
 	MYSQL_ROW row;
 	MYSQL_RES *result;
+	char escaped[32];
 	int id;
 
-	QUERY ("CALL GetCharID(\"%s\", @PID);", current->myskills.player_name);
+	mysql_real_escape_string(db, escaped, current->myskills.player_name, strlen(current->myskills.player_name));
 
-	QUERY ("SELECT @PID;", current->myskills.player_name); 
+	QUERY ("CALL GetCharID(\"%s\", @PID);", escaped);
+
+	QUERY ("SELECT @PID;"); 
 
 	GET_RESULT;
 
@@ -612,6 +615,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	int numAbilities = CountAbilities_S(&current->myskills);
 	int numWeapons = CountWeapons_S(&current->myskills);
 	int numRunes = CountRunes_S(&current->myskills);
+	char escaped[32];
 	char *format;
 	MYSQL_ROW row;
 	MYSQL_RES *result;
@@ -623,9 +627,11 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		return -1;
 	}
 
-	QUERY ("CALL CharacterExists(\"%s\", @exists);", current->myskills.player_name);
+	mysql_real_escape_string(db, escaped, current->myskills.player_name, strlen(current->myskills.player_name));
+
+	QUERY ("CALL CharacterExists(\"%s\", @exists);", escaped);
 	
-	QUERY ("SELECT @exists;", current->myskills.player_name);
+	QUERY ("SELECT @exists;", escaped);
 
 	GET_RESULT;
 
@@ -640,7 +646,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	{
 		// Create initial database.
 		gi.dprintf("DB: Creating character \"%s\"!\n", current->myskills.player_name);
-		QUERY ("CALL FillNewChar(\"%s\");", current->myskills.player_name);
+		QUERY ("CALL FillNewChar(\"%s\");", escaped);
 	}
 
 	id = V_GDS_GetID(current, db);
@@ -648,7 +654,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	{ // real saving
 		mysql_query(db, "START TRANSACTION");
 		// reset tables (remove records for reinsertion)
-		QUERY("CALL ResetTables(\"%s\");", current->myskills.player_name);
+		QUERY("CALL ResetTables(\"%s\");", escaped);
 
 		QUERY (MYSQL_UPDATEUDATA, 
 		 current->myskills.title,
@@ -657,7 +663,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		 current->myskills.email,
 		 current->myskills.owner,
  		 current->myskills.member_since,
-		 current->myskills.last_played,
+		 // current->myskills.last_played,
 		 current->myskills.total_playtime,
  		 current->myskills.playingtime, id);
 
@@ -820,6 +826,19 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	return id;
 }
 
+void V_GDS_SetPlaying(gds_queue_t *current, MYSQL *db)
+{
+	char escaped[32];
+	char *format;
+
+	if (current->ent->ThreadStatus == 1)
+	{
+		mysql_real_escape_string(db, escaped, current->ent->client->pers.netname, strlen(current->ent->client->pers.netname));
+
+		QUERY("UPDATE userdata SET isplaying = 1 WHERE playername=\"%s\"", escaped);
+	}
+}
+
 qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 {
 	char* format;
@@ -827,6 +846,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	int i, exists;
 	int id;
 	edict_t *player = current->ent;
+	char escaped[32];
 	gds_queue_t *otherq;
 	MYSQL_ROW row;
 	MYSQL_RES *result, *result_b;
@@ -837,35 +857,11 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if (player->PlayerID != current->id)
 		return false; // Heh.
 
-	if (otherq = V_GDS_FindSave(current)) // Got a save in the que, use that instead.
-	{ 
-		/* This however implies something- the character disconnects
-		   and if someone else comes in with that same name, 
-		   it go ahead and allow it. Assuming the password is right.*/ 
-		memcpy(&current->ent->myskills, &otherq->myskills, sizeof(skills_t));
-	
-		pthread_mutex_lock(&StatusMutex);
-	
-		if ( (i = canJoinGame(player)) == 0) 
-		{
-			if (player->PlayerID == current->id)
-			{
-				player->ThreadStatus = 1; // You can play.
-				V_GDS_FreeQueue_Add(otherq); // Remove this, now.
-			}
-		}else
-		{
-			V_GDS_Queue_Push(otherq, true); // push back into the que.
-			player->ThreadStatus = i;
-		}
+	mysql_real_escape_string(db, escaped, current->ent->client->pers.netname, strlen(current->ent->client->pers.netname));
 
-		pthread_mutex_unlock(&StatusMutex);
-		return i == 0; // success.
-	}
+	QUERY ("CALL CharacterExists(\"%s\", @Exists);", escaped);
 
-	QUERY ("CALL CharacterExists(\"%s\", @Exists);", player->client->pers.netname);
-
-	QUERY ("SELECT @Exists;", current->ent->myskills.player_name); 
+	QUERY ("SELECT @Exists;"); 
 
 	GET_RESULT;
 
@@ -881,9 +877,9 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 
 	FREE_RESULT;
 
-	QUERY ("CALL GetCharID(\"%s\", @PID);", current->ent->client->pers.netname);
+	QUERY ("CALL GetCharID(\"%s\", @PID);", escaped);
 	
-	QUERY ("SELECT @PID;", current->ent->myskills.player_name); 
+	QUERY ("SELECT @PID;"); 
 
 	GET_RESULT;
 
@@ -893,6 +889,45 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 
 	if (exists) // Exists? Then is it able to play?
 	{
+		if (otherq = V_GDS_FindSave(current)) // Got a save in the que, use that instead.
+		{  
+			memcpy(&current->ent->myskills, &otherq->myskills, sizeof(skills_t));
+
+			pthread_mutex_lock(&StatusMutex);
+
+			if ( (i = canJoinGame(player)) == 0) 
+			{
+				if (player->PlayerID == current->id)
+				{
+					player->ThreadStatus = 1; // You can play.
+
+					QUERY ("CALL CanPlay(%d, @IsAble);", id);
+					mysql_query (db, "SELECT @IsAble;");
+					GET_RESULT;
+
+					if (atoi(row[0]) == 0)
+					{
+						player->ThreadStatus = 4; // Already playing.
+						FREE_RESULT;
+						return false;
+					}
+
+					FREE_RESULT;
+
+					V_GDS_SetPlaying(current, db);
+					V_GDS_FreeQueue_Add(otherq); // Remove this, now.
+				}
+			}else
+			{
+				V_GDS_Queue_Push(otherq, true); // push back into the que.
+				player->ThreadStatus = i;
+			}
+
+			pthread_mutex_unlock(&StatusMutex);
+			return i == 0; // success.
+		} // No save in q? proceed as before
+
+
 		QUERY ("CALL CanPlay(%d, @IsAble);", id);
 		mysql_query (db, "SELECT @IsAble;");
 		GET_RESULT;
@@ -1270,7 +1305,10 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	if ( (i = canJoinGame(player)) == 0)
 	{
 		if (player->PlayerID == current->id)
+		{
 			player->ThreadStatus = 1; // You can play! :)
+			V_GDS_SetPlaying(current, db);
+		}
 	}else
 		player->ThreadStatus = i;
 
@@ -1391,9 +1429,7 @@ void HandleStatus(edict_t *player)
 	switch (player->ThreadStatus)
 	{
 	case 4:
-		gi.centerprintf(player, "You seem to be already playing in this or another server.\n\
-								If you're not, wait until tomorrow or ask an admin\n\
-								to free your character.\n");
+		gi.centerprintf(player, "You seem to be already playing in this or another server.\nIf you're not, wait until tomorrow or ask an admin\nto free your character.\n");
 	case 3:
 		/*if (player->inuse)
 			gi.cprintf(player, PRINT_LOW, "Character saved!\n");*/
@@ -1473,7 +1509,5 @@ void HandleStatus () {}
 #endif
 
 // az end
-
-
 
 #endif NO_GDS
