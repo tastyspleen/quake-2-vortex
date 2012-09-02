@@ -2,7 +2,7 @@ from glob import glob
 
 env = Environment()
 
-env.Append(CCFLAGS='-g')
+env.Append(CCFLAGS='-g -pthread')
 
 sources = glob("*.c") + glob ("ai/*.c")
 
