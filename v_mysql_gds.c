@@ -555,7 +555,7 @@ int V_GDS_GetID(gds_queue_t *current, MYSQL *db)
 
 	QUERY ("CALL GetCharID(\"%s\", @PID);", escaped);
 
-	QUERY ("SELECT @PID;"); 
+	mysql_query (db, "SELECT @PID;"); 
 
 	GET_RESULT;
 
@@ -864,7 +864,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 
 	QUERY ("CALL CharacterExists(\"%s\", @Exists);", escaped);
 
-	QUERY ("SELECT @Exists;"); 
+	mysql_query (db, "SELECT @Exists;"); 
 
 	GET_RESULT;
 
@@ -882,7 +882,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 
 	QUERY ("CALL GetCharID(\"%s\", @PID);", escaped);
 	
-	QUERY ("SELECT @PID;"); 
+	mysql_query (db, "SELECT @PID;"); 
 
 	GET_RESULT;
 
