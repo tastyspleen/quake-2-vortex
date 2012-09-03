@@ -202,7 +202,7 @@ void ShutdownGame (void)
 	for_each_player(ent, i)
 	{
 		//ent->myskills.inuse = 0;
-		SaveCharacter(ent); //WriteMyCharacter(ent);
+		SaveCharacterQuit(ent); //WriteMyCharacter(ent);
 	}
 	//K03 End
 	gi.dprintf ("==== ShutdownGame ====\n");
@@ -429,7 +429,7 @@ void VortexEndLevel (void)
 		PM_RemoveMonster(tempent);
 		VortexRemovePlayerSummonables(tempent);
 		tempent->myskills.streak = 0;
-		SaveCharacter(tempent);
+		SaveCharacterQuit(tempent);
 		if (G_EntExists(tempent))
 			WriteToLogfile(tempent, "Logged out.\n");
 		else
