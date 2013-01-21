@@ -163,12 +163,13 @@ void OpenUpgradeMenu (edict_t *ent)
 		addlinetomenu(ent, "Class specific skills", 1);
 
 	addlinetomenu(ent, "General skills", 2);
-	addlinetomenu(ent, "Mobility skills", 3); // az, vrxchile 2.7
+	// Commented out. -az vrxchile 3.2
+	//addlinetomenu(ent, "Mobility skills", 3); // az, vrxchile 2.7
 	addlinetomenu(ent, " ", 0);
 
 	addlinetomenu(ent, "Exit", 4);
 	setmenuhandler(ent, upgrademenu_handler);
-	ent->client->menustorage.currentline = 11;
+	ent->client->menustorage.currentline = 10;
 	showmenu(ent);
 
 	// try to shortcut to chat-protect mode

@@ -22,14 +22,6 @@
 #define BRAIN_LOCKON_RANGE			96	// minimum range required for autoaim
 #define BRAIN_INIT_COST				50
 
-#define MAGMINE_RANGE				256
-#define MAGMINE_COST				50
-#define MAGMINE_DEFAULT_PULL		-40
-#define MAGMINE_ADDON_PULL			-4
-#define MAGMINE_DEFAULT_HEALTH		200
-#define MAGMINE_ADDON_HEALTH		80
-#define MAGMINE_DELAY				1.0
-
 qboolean BrainValidTarget (edict_t *self, edict_t *target)
 {
 	// 3.6 this code is mostly redundant
@@ -272,6 +264,7 @@ void Cmd_SpawnMagmine_f (edict_t *ent)
 {
 	int talentLevel,cost=MAGMINE_COST;
 	float skill_mult=1.0, cost_mult=1.0, delay_mult=1.0;//Talent: Rapid Assembly & Precision Tuning
+	char *opt = gi.argv(1);
 
 	if (ent->myskills.abilities[MAGMINE].disable)
 		return;
@@ -291,6 +284,13 @@ void Cmd_SpawnMagmine_f (edict_t *ent)
 
 	if (!G_CanUseAbilities(ent, ent->myskills.abilities[MAGMINE].current_level, cost))
 		return;
+
+	if (!strcmp(opt, "self") && ent->myskills.class_num == CLASS_KAMIKAZE)
+	{
+		ent->automag = !ent->automag;
+		safe_cprintf(ent, PRINT_HIGH, "Auto Magmine %s\n", ent->automag? "enabled" : "disabled");
+		return;
+	}
 
 	if (ent->magmine && ent->magmine->inuse)
 	{

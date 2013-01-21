@@ -271,7 +271,8 @@ char *GetClassString (int class_num)
 		else
 			return "Apprentice";
 	case CLASS_SHAMAN:		return "Shaman";
-	case CLASS_ALIEN:		return	"Alien";
+	case CLASS_ALIEN:		return "Alien";
+	case CLASS_KAMIKAZE:	return "Kamikaze";
 	default:				return "Unknown";
 	}
 }
@@ -473,6 +474,8 @@ char *GetAbilityString (int ability_number)
 	case SPORE:				return	"Spore";
 	case ACID:				return	"Acid";
 	case COCOON:			return	"Cocoon";
+	case SELFDESTRUCT:		return  "Self Destruct";
+	case FLASH:				return	"Flash";
 	default:				return	":)";
 	}
 }
@@ -1973,6 +1976,9 @@ void V_ResetPlayerState (edict_t *ent)
 	ent->health_cache_nextframe = 0;
 	ent->armor_cache = 0;
 	ent->armor_cache_nextframe = 0;
+	
+	// reset automag
+	ent->automag = 0;
 
 	// boot them out of a wormhole, but don't forget to teleport them to a valid location!
 	ent->flags &= ~FL_WORMHOLE;

@@ -508,6 +508,9 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			case MOD_MIRV:
 				message = "ate his mirv grenade";
 				break;
+			case MOD_SELFDESTRUCT:
+				message = "went off with a blast";
+				break;
 			default:
 				message = "becomes bored with life";
 				break;
@@ -595,6 +598,9 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			case MOD_HELD_GRENADE:
 				message = "feels";
 				message2 = "'s pain";
+				break;
+			case MOD_SELFDESTRUCT:
+				message = "bombed ";
 				break;
 			case MOD_TELEFRAG:
 				message = "tried to invade";
@@ -3213,19 +3219,48 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 		//GHz: Keep us still and don't allow shooting
-		if (ent->holdtime && ent->holdtime > level.time)
+		// If we have an automag up, don't let us move either. -az
+		if ( (ent->holdtime && ent->holdtime > level.time) || ent->automag)
 		{
 			ucmd->forwardmove = 0;
 			ucmd->sidemove = 0;
 			ucmd->upmove = 0;
 
-			if (ent->client->buttons & BUTTON_ATTACK)
+			if (ent->client->buttons & BUTTON_ATTACK && !ent->automag)
 				ent->client->buttons &= ~BUTTON_ATTACK;
 
-			if (ucmd->buttons & BUTTON_ATTACK)
+			if (ucmd->buttons & BUTTON_ATTACK  && !ent->automag)
 				ucmd->buttons &= ~BUTTON_ATTACK;
 		}
-			
+		
+		if (ent->automag)
+		{
+			for (other = g_edicts; other != &g_edicts[256]; other++)
+			{
+				int		pull;
+				vec3_t	start, end, dir;
+				edict_t* client;
+
+				if (other->absmin[2]+1 < ent->absmin[2])
+					continue;
+
+				if (!G_ValidTarget(ent, other, true))
+					continue;
+
+				if (entdist(ent, other) > MAGMINE_RANGE)
+					continue;
+
+				pull = MAGMINE_DEFAULT_PULL + MAGMINE_ADDON_PULL * ent->myskills.abilities[MAGMINE].level;
+
+				G_EntMidPoint(other, end);
+				G_EntMidPoint(ent, start);
+				VectorSubtract(end, start, dir);
+				VectorNormalize(dir);
+
+				// Pull it.
+				T_Damage(other, ent, ent, dir, end, vec3_origin, 0, pull, 0, 0);
+			}
+		}
 		//End of slow move
 		if(que_typeexists(ent->curses, CURSE_FROZEN))
 		{
@@ -3767,7 +3802,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		if(!((!ent->myskills.abilities[CLOAK].disable) && ((ent->myskills.abilities[CLOAK].current_level > 0))))
 		{
-			if (!trading->value) // trading mode no chat protection
+			if (!trading->value || ent->automag) // trading mode no chat protection or if automagging either
 			{
 				if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-100)
 					gi.centerprintf(ent, "10 seconds to chat-protect.\n");

@@ -371,7 +371,7 @@ void SV_CalcGunOffset (edict_t *ent)
 	for (i=0 ; i<3 ; i++)
 	{
 		ent->client->ps.gunoffset[i] += forward[i]*(gun_y->value);
-		ent->client->ps.gunoffset[i] += right[i]*gun_x->value;
+		ent->client->ps.gunoffset[i] += right[i]*(gun_x ? gun_x->value : 1);
 		ent->client->ps.gunoffset[i] += up[i]* (-gun_z->value);
 	}
 }

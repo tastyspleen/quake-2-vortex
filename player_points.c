@@ -175,6 +175,7 @@ void check_for_levelup (edict_t *ent)
 	double points_needed;
 	int plateau_points = 50000;
 	qboolean levelup = false;
+	int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
 	char *message;
 
 	if (ent->ai.is_bot) // bots don't level up -az
@@ -185,7 +186,7 @@ void check_for_levelup (edict_t *ent)
 		levelup = true;
 
 		// maximum level cap
-		if (!ent->myskills.administrator && ent->myskills.level >= 30) // cap to 30
+		if (!ent->myskills.administrator && ent->myskills.level >= 40) // cap to 40 >:)
 		{
 			ent->myskills.next_level = ent->myskills.experience;
 			return;
@@ -196,11 +197,8 @@ void check_for_levelup (edict_t *ent)
 		points_needed = start_nextlevel->value * pow(nextlevel_mult->value, ent->myskills.level);
 
 		// the experience required to reach next level reaches a plateau
-		if (points_needed > plateau_points)
+		if (points_needed > plateau_points || ent->myskills.level > 5 || ent->myskills.level > plateau_level)
 		{
-			// determine level where plateau_points is reached
-			int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
-
 			// calculate next level points based
 			points_needed = plateau_points + 5000*(ent->myskills.level-plateau_level);
 		}
@@ -222,7 +220,7 @@ void check_for_levelup (edict_t *ent)
 		WriteToLogfile(ent, va("Player reached level %d\n", ent->myskills.level));
 
 		// maximum level cap
-		if (!ent->myskills.administrator && ent->myskills.level >= 30)
+		if (!ent->myskills.administrator && ent->myskills.level >= 40)
 		{
 			ent->myskills.next_level = ent->myskills.experience;
 			break;

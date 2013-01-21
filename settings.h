@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.1a"
+#define VRX_VERSION "3.2"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -591,13 +591,22 @@ const char* Time();
 #define CLASS_SHAMAN			9
 #define CLASS_ALIEN				10
 #define CLASS_WEAPONMASTER		11
+#define CLASS_KAMIKAZE			12 // Mweheheh.
 
-#define CLASS_MAX				11		//Number of classes to choose from
+#define CLASS_MAX				12		//Number of classes to choose from
 
 //Trade stuff
 #define TRADE_MAX_DISTANCE		512		//Trade distance
 #define TRADE_MAX_PLAYERS		5		//Max # of players to choose when trading
 
 #define VITALITY_MULT	0.15
+
+#define MAGMINE_RANGE				256
+#define MAGMINE_COST				50
+#define MAGMINE_DEFAULT_PULL		-40
+#define MAGMINE_ADDON_PULL			-4
+#define MAGMINE_DEFAULT_HEALTH		200
+#define MAGMINE_ADDON_HEALTH		80
+#define MAGMINE_DELAY				1.0
 
 #endif

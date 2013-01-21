@@ -338,6 +338,7 @@ void InitGame (void)
 	class9_skin = gi.cvar ("class9_skin", "slith/chompers", CVAR_LATCH); // necromancer
 	class10_skin = gi.cvar ("class10_skin", "bauul/bauul", CVAR_LATCH); // shaman
 	class11_skin = gi.cvar ("class11_skin", "xenoid/xenotype1", CVAR_LATCH); // alien
+	class12_skin = gi.cvar ("class12_skin", "ddz/ctf_g", CVAR_LATCH); // kamikaze
 
 	// minimum map ammo
 	world_min_shells = gi.cvar ("world_min_shells", "4", 0);

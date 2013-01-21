@@ -107,5 +107,7 @@
 #define COCOON			104
 #define ACID			105
 #define SPORE			106
+#define SELFDESTRUCT    107
+#define FLASH			108
 
-#define MAX_ABILITIES	107
+#define MAX_ABILITIES	109
