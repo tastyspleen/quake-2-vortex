@@ -147,6 +147,7 @@ cvar_t *class8_skin;
 cvar_t *class9_skin;
 cvar_t *class10_skin;
 cvar_t *class11_skin;
+cvar_t *class12_skin;
 
 // world spawn ammo
 cvar_t *world_min_bullets;

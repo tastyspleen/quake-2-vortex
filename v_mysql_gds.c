@@ -20,7 +20,7 @@
 #define DEFAULT_DATABASE "127.0.0.1"
 #define MYSQL_PW ""
 #define MYSQL_USER "root"
-#define MYSQL_DBNAME "vrxchile"
+#define MYSQL_DBNAME "vrxcl"
 
 /* 
 These are modified versions of the sqlite version

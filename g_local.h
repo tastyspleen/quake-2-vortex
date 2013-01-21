@@ -770,6 +770,7 @@ int	skullindex;
 #define MOD_ACID			98
 #define MOD_ICEBOLT			99//4.4
 #define MOD_UNHOLYGROUND	100//4.4
+#define MOD_SELFDESTRUCT	101
 //K03 End
 #define MOD_FRIENDLY_FIRE	0x8000000
 
@@ -900,6 +901,7 @@ extern cvar_t *class8_skin;
 extern cvar_t *class9_skin;
 extern cvar_t *class10_skin;
 extern cvar_t *class11_skin;
+extern cvar_t *class12_skin;
 extern cvar_t *ctf_enable_balanced_fc;
 extern cvar_t *voting;
 extern cvar_t *game_path;
@@ -1789,6 +1791,7 @@ struct edict_s
 	qboolean	superspeed;
 	qboolean	sucking;//GHz
 	qboolean	antigrav;
+	qboolean	automag; // magmining self?
 	int	lockon;
 
 	int FrameShot;

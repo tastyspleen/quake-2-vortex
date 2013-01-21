@@ -1063,6 +1063,7 @@ char *V_GetClassSkin (edict_t *ent)
 	case CLASS_NECROMANCER: return class9_skin->string;
 	case CLASS_SHAMAN: return class10_skin->string;
 	case CLASS_ALIEN: return class11_skin->string;
+	case CLASS_KAMIKAZE: return class12_skin->string;
 	default: return "male/grunt";
 	}
 }

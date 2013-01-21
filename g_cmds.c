@@ -2658,6 +2658,31 @@ void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, floa
 }
 */
 
+#define SELFDESTRUCT_RADIUS 256
+#define SELFDESTRUCT_BASE 50
+#define SELFDESTRUCT_BONUS 50
+void Cmd_SelfDestruct_f(edict_t *self)
+{
+	int damage;
+
+	if (!V_CanUseAbilities(self, SELFDESTRUCT, 25, true))
+		return;
+
+	damage = self->myskills.abilities[SELFDESTRUCT].level * SELFDESTRUCT_BONUS + SELFDESTRUCT_BASE;
+
+	// do the damage
+	T_RadiusDamage(self, self, damage, self, SELFDESTRUCT_RADIUS, MOD_SELFDESTRUCT);
+	T_Damage(self, self, self, vec3_origin, self->s.origin, vec3_origin, damage * 0.7, 0, 0, MOD_SELFDESTRUCT);
+
+	// GO BOOM!
+	gi.WriteByte (svc_temp_entity);
+	gi.WriteByte (TE_EXPLOSION1);
+	gi.WritePosition (self->s.origin);
+	gi.multicast (self->s.origin, MULTICAST_PVS);
+
+	return;
+}
+
 qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, float *cost_mult, float *skill_mult)
 {
 	// maximum skill/cost multiplier
@@ -3284,6 +3309,15 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "spawnpos") == 0)
 	{
 		Cmd_GetFloorPos_f(ent, 25);
+	}
+	else if (Q_stricmp (cmd, "flash") == 0) // az new skill: flash
+	{
+		if (V_CanUseAbilities(ent, FLASH, 0, true))
+			Teleport_them(ent);	
+	}
+	else if (Q_stricmp (cmd, "selfdestruct") == 0) // az new skill: self destruct
+	{
+		Cmd_SelfDestruct_f(ent);
 	}
 	else if (Q_stricmp (cmd, "ally") == 0)
 	{

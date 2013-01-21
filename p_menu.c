@@ -88,7 +88,8 @@ void setHardMax(edict_t *ent, int index)
 						ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 4; break;
 					}
 					
-				}
+				}else
+					ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 1.5; break;
 			}
 			else 
 				ent->myskills.abilities[index].hard_max = 1; break;
@@ -129,7 +130,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CREATE_QUAD, 0, 1, 0);
 		enableAbility(ent, CREATE_INVIN, 0, 1, 0);
 
-		enableAbility(ent, GRAPPLE_HOOK, 3, 3, 2);
+		enableAbility(ent, GRAPPLE_HOOK, 3, 3, 0);
 		break;
 	case CLASS_KNIGHT:// 70 points
 		enableAbility(ent, ARMOR_UPGRADE, 0, 10, 0);
@@ -141,7 +142,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, PLASMA_BOLT, 0, 15, 0);
 		enableAbility(ent, SHIELD, 1, 1, 0);
 
-		enableAbility(ent, BOOST_SPELL, 1, 1, 2);
+		enableAbility(ent, BOOST_SPELL, 1, 1, 0);
 		ent->myskills.respawn_weapon = 1;	//sword only
 		break;
 	case CLASS_VAMPIRE:// 80 points
@@ -152,8 +153,8 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CORPSE_EXPLODE, 0, 15, 0);
 		enableAbility(ent, MIND_ABSORB, 0, 15, 0);
 		enableAbility(ent, AMMO_STEAL, 0, 15, 0);
-		enableAbility(ent, CONVERSION, 0, 15, 0);
 		enableAbility(ent, CLOAK, 1, 1, 0);
+
 		break;
 	case CLASS_NECROMANCER:// 80 points
 		enableAbility(ent, MONSTER_SUMMON, 0, 20, 0);
@@ -163,9 +164,9 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CRIPPLE, 0, 15, 0);
 		enableAbility(ent, CURSE, 0, 15, 0);
 		enableAbility(ent, WEAKEN, 0, 15, 0);
-		enableAbility(ent, LOWER_RESIST, 0, 15, 0);
 
-		enableAbility(ent, JETPACK, 1, 1, 2);
+		enableAbility(ent, CONVERSION, 0, 15, 0);
+		enableAbility(ent, JETPACK, 1, 1, 0);
 		break;
 	case CLASS_ENGINEER:// 80 points
 		enableAbility(ent, PROXY, 0, 15, 0);
@@ -176,7 +177,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CALTROPS, 0, 15, 0);
 		enableAbility(ent, AUTOCANNON, 0, 15, 0);
 		enableAbility(ent, DETECTOR, 0, 15, 0);
-		enableAbility(ent, ANTIGRAV, 1, 1, 2);
+		enableAbility(ent, ANTIGRAV, 1, 1, 0);
 		//Hard Max Eng
 		ent->myskills.abilities[BUILD_SENTRY].hard_max = 50;
 		break;
@@ -190,19 +191,20 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, FIREBALL, 0, 15, 0);
 		enableAbility(ent, LIGHTNING_STORM, 0, 15, 0);
 
-		enableAbility(ent, TELEPORT, 1, 1, 2);
+		enableAbility(ent, TELEPORT, 1, 1, 0);
 		break;
 	case CLASS_CLERIC:// 80 points
 		enableAbility(ent, SALVATION, 0, 15, 0);
-		enableAbility(ent, HOLY_FREEZE, 0, 15, 0);
+		
 		enableAbility(ent, HEALING, 0, 15, 0);
 		enableAbility(ent, BLESS, 0, 15, 0);
 		enableAbility(ent, YIN, 0, 15, 0);
 		enableAbility(ent, YANG, 0, 15, 0);
 		enableAbility(ent, HAMMER, 0, 15, 0);
 		enableAbility(ent, DEFLECT, 0, 15, 0);
+		enableAbility(ent, LOWER_RESIST, 0, 15, 0);
 
-		enableAbility(ent, DOUBLE_JUMP, 1, 1, 2);
+		enableAbility(ent, DOUBLE_JUMP, 1, 1, 0);
 		break;
 	case CLASS_POLTERGEIST:// 80 points
 		enableAbility(ent, BERSERK, 1, 20, 0);
@@ -215,15 +217,18 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, MEDIC, 1, 20, 0);
 		enableAbility(ent, GHOST, 99, 99, 0);
 		enableAbility(ent, MORPH_MASTERY, 1, 1, 0);
+
 		// Specific Skills for Medics.
 		enableAbility(ent, SPIKER, 0, 1, 0);		
 		enableAbility(ent, GASSER, 0, 1, 0);
 		enableAbility(ent, MONSTER_SUMMON, 0, 1, 0);
+
 		// Hard Max for Specific Skills
 		ent->myskills.abilities[SPIKER].hard_max = 1;
 		ent->myskills.abilities[GASSER].hard_max = 1;
 		ent->myskills.abilities[MONSTER_SUMMON].hard_max = 1;
 		break;
+
 	case CLASS_SHAMAN:// 75 points
 		enableAbility(ent, FIRE_TOTEM, 0, 20, 0);
 		enableAbility(ent, WATER_TOTEM, 0, 20, 0);
@@ -246,7 +251,19 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, SPIKE, 0, 15, 0);
 		enableAbility(ent, COCOON, 0, 15, 0);
 
-		enableAbility(ent, BLACKHOLE, 1, 1, 2);
+		enableAbility(ent, BLACKHOLE, 1, 1, 0);
+		break;
+	case CLASS_KAMIKAZE:
+		enableAbility(ent, SELFDESTRUCT, 0, 15, 0);
+		enableAbility(ent, HA_PICKUP, 1, 15, 0);
+		enableAbility(ent, PROXY, 0, 15, 0);
+		enableAbility(ent, CREATE_INVIN, 0, 1, 0);
+		enableAbility(ent, AMNESIA, 0, 15, 0);
+		enableAbility(ent, MAGMINE, 0, 15, 0);
+		enableAbility(ent, FLASH, 1, 1, 0);
+
+		enableAbility(ent, BOOST_SPELL, 1, 1, 0);
+
 		break;
 	case CLASS_WEAPONMASTER:// 0 points
 		break;
@@ -283,6 +300,8 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, SCANNER, 0, 1, 1);
 
 	// vrxchile 2.7 mobility skills
+	// vrxchile 3.2 disable mobility skills
+	/*
 	enableAbility(ent, GRAPPLE_HOOK, 0, 3, 2);
 	enableAbility(ent, JETPACK, 0, 1, 2);
 	enableAbility(ent, SUPER_SPEED, 0, 1, 2);
@@ -291,7 +310,7 @@ void setGeneralAbilities (edict_t *ent)
 	enableAbility(ent, BLACKHOLE, 0, 1, 2);
 	enableAbility(ent, BOOST_SPELL, 0, 1, 2);
 	enableAbility(ent, TELEPORT, 0, 1, 2);
-
+	*/
 	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value) // vrxchile 2.0: WMs are the new APs.
 	{
 		enableAbility(ent, VAMPIRE, 0, 5, 1);
