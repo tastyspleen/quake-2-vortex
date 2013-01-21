@@ -16,6 +16,7 @@ int GetAbilityUpgradeCost(int index)
 		case DOUBLE_JUMP:
 		case JETPACK:
 		case ANTIGRAV:
+		case FLASH:
 		case ID:				return 2;			
 		//Abilities that cost 3 points
 		case WORLD_RESIST:

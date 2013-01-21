@@ -397,6 +397,8 @@ void setGeneralAbilities (edict_t *ent)
 		enableAbility(ent, SPORE, 0, 5, 1);
 		enableAbility(ent, ACID, 0, 5, 1);
 		enableAbility(ent, COCOON, 0, 5, 1);
+		enableAbility(ent, SELFDESTRUCT, 0, 5, 1);
+		enableAbility(ent, FLASH, 0, 1, 1);
 	}
 }
 
