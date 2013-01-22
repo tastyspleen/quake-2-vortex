@@ -883,9 +883,12 @@ void G_RunFrame (void)
 	static int ofs;
 	static float next_fragadd = 0;
 	edict_t	*ent;
-
-	//vec3_t	v,vv;
 	qboolean haveflag;
+
+#ifdef GDS_NOMULTITHREADING
+	ProcessQueue(NULL);
+#endif
+	//vec3_t	v,vv;
 //	gitem_t	*item;
 
 	level.framenum++;

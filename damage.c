@@ -927,6 +927,14 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		}
 	}
 
+	talentLevel = getTalentLevel(targ, TALENT_BLAST_RESIST);
+
+	if (talentLevel && ((dflags & DAMAGE_RADIUS) || mod == MOD_SELFDESTRUCT))
+	{
+		temp = 1 - 0.12 * talentLevel;
+		Resistance = min(Resistance, temp);
+	}
+
 	damage *= Resistance;
 
 	// gi.dprintf("%f damage after G_SubDamage() modification (%f resistance mult)\n", damage, Resistance);

@@ -2658,14 +2658,11 @@ void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, floa
 }
 */
 
-#define SELFDESTRUCT_RADIUS 256
-#define SELFDESTRUCT_BASE 50
-#define SELFDESTRUCT_BONUS 50
 void Cmd_SelfDestruct_f(edict_t *self)
 {
 	int damage;
 
-	if (!V_CanUseAbilities(self, SELFDESTRUCT, 25, true))
+	if (!V_CanUseAbilities(self, SELFDESTRUCT, 0, true))
 		return;
 
 	damage = self->myskills.abilities[SELFDESTRUCT].level * SELFDESTRUCT_BONUS + SELFDESTRUCT_BASE;

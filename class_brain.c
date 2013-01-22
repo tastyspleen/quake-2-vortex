@@ -285,10 +285,15 @@ void Cmd_SpawnMagmine_f (edict_t *ent)
 	if (!G_CanUseAbilities(ent, ent->myskills.abilities[MAGMINE].current_level, cost))
 		return;
 
-	if (!strcmp(opt, "self") && ent->myskills.class_num == CLASS_KAMIKAZE)
+	if (!strcmp(opt, "self"))
 	{
-		ent->automag = !ent->automag;
-		safe_cprintf(ent, PRINT_HIGH, "Auto Magmine %s\n", ent->automag? "enabled" : "disabled");
+		if (getTalentLevel(ent, TALENT_MAGMINESELF))
+		{
+			ent->automag = !ent->automag;
+			safe_cprintf(ent, PRINT_HIGH, "Auto Magmine %s\n", ent->automag? "enabled" : "disabled");
+		}else
+			safe_cprintf(ent, PRINT_HIGH, "You haven't upgraded this talent.\n");
+
 		return;
 	}
 

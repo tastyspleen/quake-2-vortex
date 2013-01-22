@@ -108,6 +108,11 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_SWARMING, 5);
 			addTalent(ent, TALENT_EXPLODING_BODIES, 5);
 			return;
+		case CLASS_KAMIKAZE:
+			addTalent(ent, TALENT_MARTYR, 5);
+			addTalent(ent, TALENT_BLAST_RESIST, 5);
+			addTalent(ent, TALENT_MAGMINESELF, 1);
+			addTalent(ent, TALENT_INSTANTPROXYS, 1);
 	default: return;
 	}
 }
@@ -527,6 +532,26 @@ int writeTalentDescription(edict_t *ent, int talentID)
 		addlinetomenu(ent, "Makes alien-summons'", MENU_WHITE_CENTERED);
 		addlinetomenu(ent, "corpses explode.", MENU_WHITE_CENTERED);
 		return 2;
+	// Kamikaze talents
+	case TALENT_MARTYR:
+		addlinetomenu(ent, "Creates an explotion", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "when you die.", MENU_WHITE_CENTERED);
+		return 2;
+	case TALENT_BLAST_RESIST:
+		addlinetomenu(ent, "Increases defense against", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "radius damage.", MENU_WHITE_CENTERED);
+		return 2;
+	case TALENT_MAGMINESELF:
+		addlinetomenu(ent, "Gain the ability", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "to turn into a living magmine", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "using 'magmine self'.", MENU_WHITE_CENTERED);
+		return 3;
+	case TALENT_INSTANTPROXYS:
+		addlinetomenu(ent, "Makes proxys be removed", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "instantly when they explode.", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "On level 2, it removes", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "hold time when building them.", MENU_WHITE_CENTERED);
+		return 4;
 	default:	return 0;
 	}
 }

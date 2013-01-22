@@ -97,7 +97,7 @@ gds_queue_t *free_last = NULL;
 // cvar_t *gds_debug; // Should I actually use this? -az
 
 // Threading
-#ifndef GDS_NOMULTITHREAD
+#ifndef GDS_NOMULTITHREADING
 
 pthread_t QueueThread;
 pthread_attr_t attr;
@@ -896,7 +896,9 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 		{  
 			memcpy(&current->ent->myskills, &otherq->myskills, sizeof(skills_t));
 
+#ifndef GDS_NOMULTITHREADING
 			pthread_mutex_lock(&StatusMutex);
+#endif
 
 			if ( (i = canJoinGame(player)) == 0) 
 			{
@@ -925,8 +927,9 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 				V_GDS_Queue_Push(otherq, true); // push back into the que.
 				player->ThreadStatus = i;
 			}
-
+#ifndef GDS_NOMULTITHREADING
 			pthread_mutex_unlock(&StatusMutex);
+#endif
 			return i == 0; // success.
 		} // No save in q? proceed as before
 
@@ -1391,8 +1394,10 @@ qboolean V_GDS_StartConn()
 
 void Mem_PrepareMutexes()
 {
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_init(&MemMutex_Malloc, NULL);
 	pthread_mutex_init(&MemMutex_Free, NULL);
+#endif
 }
 
 qboolean CanUseGDS()
@@ -1425,7 +1430,9 @@ void HandleStatus(edict_t *player)
 
 	if (player->ThreadStatus == 0)
 	{
+#ifndef GDS_NOMULTITHREADING
 		pthread_mutex_unlock(&StatusMutex);
+#endif
 		return;
 	}
 
@@ -1497,11 +1504,15 @@ void *V_Malloc(size_t Size, int Tag)
 
 void V_Free(void *mem)
 {
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&MemMutex_Free);
+#endif
 
 	gi.TagFree (mem);
 
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_unlock(&MemMutex_Free);
+#endif
 }
 
 #else
