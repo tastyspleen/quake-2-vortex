@@ -600,7 +600,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message2 = "'s pain";
 				break;
 			case MOD_SELFDESTRUCT:
-				message = "god bombed by";
+				message = "got bombed by";
 				break;
 			case MOD_TELEFRAG:
 				message = "tried to invade";
