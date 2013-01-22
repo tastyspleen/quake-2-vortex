@@ -112,7 +112,7 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_MARTYR, 5);
 			addTalent(ent, TALENT_BLAST_RESIST, 5);
 			addTalent(ent, TALENT_MAGMINESELF, 1);
-			addTalent(ent, TALENT_INSTANTPROXYS, 1);
+			addTalent(ent, TALENT_INSTANTPROXYS, 2);
 	default: return;
 	}
 }
