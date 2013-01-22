@@ -413,6 +413,30 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 
 int GetAbilityUpgradeCost(int index);
 
+void fixRuneIndexes(edict_t *rune, int i)
+{
+	int b_i;
+	// do a backward's iteration, if we find the ability then..
+	for (b_i = (i - 1); b_i > 0; b_i--)
+	{
+		// so we already have one of these?
+		// add onto it then, discard this one.
+		if (rune->vrxitem.modifiers[b_i].index == rune->vrxitem.modifiers[i].index &&
+			rune->vrxitem.modifiers[b_i].type == rune->vrxitem.modifiers[i].type)
+		{
+			// invalidate this modifier.
+			rune->vrxitem.modifiers[i].index = 0;
+			rune->vrxitem.modifiers[i].type = TYPE_NONE;
+				if (GetAbilityUpgradeCost(rune->vrxitem.modifiers[b_i].index) > 1)
+			{
+				// sum the abilities.
+				rune->vrxitem.modifiers[b_i].value += rune->vrxitem.modifiers[i].value;
+			}
+			rune->vrxitem.modifiers[i].value = 0;
+		}
+	}
+}
+
 void spawnNorm(edict_t *rune, int targ_level, int type)
 {
     int x = GetRandom(1, 100);
@@ -497,6 +521,8 @@ void spawnNorm(edict_t *rune, int targ_level, int type)
 
 			rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 			rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
+
+			fixRuneIndexes(rune, i);
 		}
 		rune->vrxitem.numMods = CountRuneMods(&rune->vrxitem);
 		rune->s.effects |= EF_QUAD;
@@ -519,6 +545,7 @@ void spawnClassRune(edict_t *rune, int targ_level)
 	for (i = 0; i < num_mods; ++i)
 	{
 		int abilityIndex = getClassRuneStat(rune->vrxitem.classNum);
+		int b_i;
 
 		rune->vrxitem.modifiers[i].index = abilityIndex;
 		
@@ -528,6 +555,8 @@ void spawnClassRune(edict_t *rune, int targ_level)
 			rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
 		rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 		rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
+
+		fixRuneIndexes(rune, i);
 	}
 	rune->vrxitem.numMods = CountRuneMods(&rune->vrxitem);
 	rune->s.effects |= EF_COLOR_SHELL;
