@@ -1537,7 +1537,9 @@ void proxy_explode (edict_t *self)
 	gi.multicast (self->s.origin, MULTICAST_PHS);
 
 	self->style = 1; //4.4 change status to disarmed
-	//proxy_remove(self, true);
+
+	if (getTalentLevel(self->creator, TALENT_INSTANTPROXYS)) // Remove proxys when you have this talent.
+		proxy_remove(self, true);
 }
 
 qboolean proxy_disabled_think (edict_t *self)
@@ -1720,7 +1722,10 @@ void SpawnProxyGrenade (edict_t *self, int cost, float skill_mult, float delay_m
 
 	self->num_proxy++;
 	self->client->pers.inventory[power_cube_index] -= cost;
-	self->holdtime = level.time + PROXY_BUILD_TIME * delay_mult;
+
+	if (getTalentLevel(self, TALENT_INSTANTPROXYS) < 2) // No hold time for instantproxys talent.
+		self->holdtime = level.time + PROXY_BUILD_TIME * delay_mult;
+
 	self->client->ability_delay = level.time + PROXY_BUILD_TIME * delay_mult;
 
 	safe_cprintf(self, PRINT_HIGH, "Proxy grenade built (%d/%d).\n", 

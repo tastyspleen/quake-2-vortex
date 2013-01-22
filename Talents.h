@@ -77,6 +77,11 @@
 #define TALENT_COMBAT_EXP			111
 #define TALENT_TACTICS				112
 #define TALENT_SIDEARMS				113
+//Kamikaze
+#define TALENT_MARTYR			    120
+#define TALENT_BLAST_RESIST			121
+#define TALENT_MAGMINESELF			122
+#define TALENT_INSTANTPROXYS		123
 
 typedef struct talent_s
 {

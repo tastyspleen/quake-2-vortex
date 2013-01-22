@@ -600,7 +600,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message2 = "'s pain";
 				break;
 			case MOD_SELFDESTRUCT:
-				message = "bombed ";
+				message = "god bombed by";
 				break;
 			case MOD_TELEFRAG:
 				message = "tried to invade";
@@ -1036,6 +1036,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	if (!self->deadflag) // called only once at player death
 	{
+		int talentLevel;
 //GHz START
 		if (ctf->value)
 			CTF_PlayerRespawnTime(self);
@@ -1051,6 +1052,20 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			Cmd_Help_f (self);		// show scores
 		// clear inventory
 		memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
+
+		talentLevel = getTalentLevel(self, TALENT_MARTYR);
+
+		if (talentLevel > 0) // Martyr
+		{
+			// do the damage
+			T_RadiusDamage(self, self, SELFDESTRUCT_BONUS * talentLevel, self, SELFDESTRUCT_RADIUS * talentLevel, MOD_SELFDESTRUCT);
+
+			// GO BOOM!
+			gi.WriteByte (svc_temp_entity);
+			gi.WriteByte (TE_EXPLOSION1);
+			gi.WritePosition (self->s.origin);
+			gi.multicast (self->s.origin, MULTICAST_PVS);
+		}
 	}
 
 	// remove powerups
@@ -3879,5 +3894,4 @@ void ClientBeginServerFrame (edict_t *ent)
 			PlayerTrail_Add (ent->s.old_origin);
 
 	client->latched_buttons = 0;
-
 }

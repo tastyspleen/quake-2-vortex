@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.2"
+#define VRX_VERSION "3.2a"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -608,5 +608,9 @@ const char* Time();
 #define MAGMINE_DEFAULT_HEALTH		200
 #define MAGMINE_ADDON_HEALTH		80
 #define MAGMINE_DELAY				1.0
+
+#define SELFDESTRUCT_RADIUS 256
+#define SELFDESTRUCT_BASE 50
+#define SELFDESTRUCT_BONUS 50
 
 #endif

@@ -29,6 +29,8 @@ int getClassNum(char *newclass)
 		return CLASS_ALIEN;
 	else if ((Q_strcasecmp(newclass, "Weapon Master") == 0) || (Q_strcasecmp(newclass, "WeaponMaster") == 0))
 		return CLASS_WEAPONMASTER;
+	else if (Q_strcasecmp(newclass, "Kamikaze") == 0)
+		return CLASS_KAMIKAZE;
 	return 0;
 }
 
@@ -355,6 +357,11 @@ char *GetTalentString(int talent_ID)
 	case TALENT_PHANTOM_COCOON:		return "Phantom Cocoon";
 	case TALENT_SWARMING:			return "Swarming";
 	case TALENT_EXPLODING_BODIES:	return "Exploding Body";
+		// Kamikaze talents
+	case TALENT_MARTYR:				return "Martyr";
+	case TALENT_INSTANTPROXYS:		return "Instant Proxys";
+	case TALENT_MAGMINESELF:		return "Magmine Self";
+	case TALENT_BLAST_RESIST:		return "Blast Resist";
 	default: return va("talent ID = %d", talent_ID);
 	}
 }
