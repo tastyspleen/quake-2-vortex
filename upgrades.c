@@ -19,6 +19,7 @@ int GetAbilityUpgradeCost(int index)
 		case FLASH:
 		case ID:				return 2;			
 		//Abilities that cost 3 points
+		case CLOAK:
 		case WORLD_RESIST:
 		case BULLET_RESIST:
 		case SHELL_RESIST:
@@ -29,7 +30,6 @@ int GetAbilityUpgradeCost(int index)
 		case BOOST_SPELL:
 		case SPLASH_RESIST:		return 3;
 		//Abilities that cost 4 points		
-		case CLOAK:
 		case CREATE_QUAD:
 		case CREATE_INVIN:
 		case SUPER_SPEED:

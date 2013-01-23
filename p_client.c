@@ -3010,7 +3010,14 @@ void ClientThinkstuff(edict_t *ent)
 	// cloak them
 	if (!ent->myskills.abilities[CLOAK].disable) 
 	{
-		if ((ent->myskills.abilities[CLOAK].current_level > 0) && (ent->client->idle_frames >= 10) 
+		int min_idle_frames = 11;
+		int talentlevel = getTalentLevel(ent, TALENT_IMP_CLOAK)
+			if (ent->myskills.abilities[CLOAK].current_level < 10)
+				min_idle_frames -= ent->myskills.abilities[CLOAK].current_level;
+			else
+				min_idle_frames = 1;
+
+		if ((ent->myskills.abilities[CLOAK].current_level > 0) && (ent->client->idle_frames >= min_idle_frames) 
 			&& !que_typeexists(ent->auras, 0) && (level.time > ent->client->ability_delay)
 			&& !HasFlag(ent) && !V_HasSummons(ent))
 		{
