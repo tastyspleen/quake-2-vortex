@@ -35,6 +35,7 @@ void setHardMax(edict_t *ent, int index)
 		case SPLASH_RESIST:
 		//case FREEZE_SPELL:
 		case CLOAK:
+			ent->myskills.abilities[index].hard_max = 10; break;
 		case CREATE_QUAD:
 		case CREATE_INVIN:
 		case BOOST_SPELL:
