@@ -3013,6 +3013,8 @@ void ClientThinkstuff(edict_t *ent)
 		int min_idle_frames = 11;
 		int talentlevel = getTalentLevel(ent, TALENT_IMP_CLOAK);
 
+		// if (ent->myskills.abilities[CLOAK].current_level < 10 && getTalentLevel(ent, TALENT_IMP_CLOAK) < 4)
+
 		if (ent->myskills.abilities[CLOAK].current_level < 10)
 		{
 			min_idle_frames -= ent->myskills.abilities[CLOAK].current_level;
@@ -3040,6 +3042,15 @@ void ClientThinkstuff(edict_t *ent)
 		{
 			ent->client->cloaking = false;
 			ent->svflags &= ~SVF_NOCLIENT;
+
+		}
+		else if ((ent->myskills.abilities[CLOAK].current_level == 10) && (talentlevel == 4))
+		{
+			ent->svflags |= SVF_NOCLIENT;
+			ent->client->cloaking = true;
+
+			//FIXME: we really shouldnt be calling this every frame...
+			VortexRemovePlayerSummonables(ent); // 3.75 no more cheap apps with cloak+laser/monster/etc
 		}
 		else
 			ent->client->cloaking = false;
@@ -3752,6 +3763,10 @@ void ClientBeginServerFrame (edict_t *ent)
 			if(talentLevel > 0)
 			{
 				int cloak_cubecost = 6 - talentLevel;
+				if (ent->myskills.abilities[CLOAK].current_level == 10 && getTalentLevel(ent, TALENT_IMP_CLOAK) == 4)
+				{
+					cloak_cubecost = 0;
+				}
 
 				//During night time, improved cloak takes 1/3 the cubes (rounded up).
 				if(!level.daytime)	cloak_cubecost = ceil((double)cloak_cubecost / 3.0);

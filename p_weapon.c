@@ -769,7 +769,7 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 				//K03 Begin
 				ent->shots++;
 				ent->myskills.shots++;
-				if (ent->movetype != MOVETYPE_NOCLIP) // don't uncloak if they are in noclip
+				if (ent->movetype != MOVETYPE_NOCLIP || (ent->myskills.abilities[CLOAK].current_level == 10 && getTalentLevel(ent, TALENT_IMP_CLOAK) == 4)) // don't uncloak if they are in noclip, or permacloaked due to upgrade levels
 					ent->svflags &= ~SVF_NOCLIENT;
 				ent->client->cloaking = false;
 				ent->client->cloakable = 0;
@@ -941,8 +941,11 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 	ent->shots++;
 	ent->myskills.shots++;
 	ent->svflags &= ~SVF_NOCLIENT;
-	ent->client->cloaking = false;
-	ent->client->cloakable = 0;
+	if (ent->myskills.abilities[CLOAK].current_level < 10 || getTalentLevel(ent, TALENT_IMP_CLOAK) < 4)
+	{
+		ent->client->cloaking = false;
+		ent->client->cloakable = 0;
+	}
 	//K03 End
 
 	// ### Hentai ### BEGIN
