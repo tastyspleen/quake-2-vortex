@@ -154,7 +154,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CORPSE_EXPLODE, 0, 15, 0);
 		enableAbility(ent, MIND_ABSORB, 0, 15, 0);
 		enableAbility(ent, AMMO_STEAL, 0, 15, 0);
-		enableAbility(ent, CLOAK, 1, 1, 0);
+		enableAbility(ent, CLOAK, 1, 10, 0);
 
 		break;
 	case CLASS_NECROMANCER:// 80 points
@@ -315,7 +315,7 @@ void setGeneralAbilities (edict_t *ent)
 	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value) // vrxchile 2.0: WMs are the new APs.
 	{
 		enableAbility(ent, VAMPIRE, 0, 5, 1);
-		enableAbility(ent, CLOAK, 0, 1, 1);
+		enableAbility(ent, CLOAK, 0, 10, 1);
 		enableAbility(ent, WEAPON_KNOCK, 0, 1, 1);
 		enableAbility(ent, ARMOR_UPGRADE, 0, 5, 1);
 		enableAbility(ent, AMMO_STEAL, 0, 5, 1);
