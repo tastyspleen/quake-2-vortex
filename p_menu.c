@@ -153,7 +153,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CORPSE_EXPLODE, 0, 15, 0);
 		enableAbility(ent, MIND_ABSORB, 0, 15, 0);
 		enableAbility(ent, AMMO_STEAL, 0, 15, 0);
-		enableAbility(ent, CLOAK, 1, 1, 0);
+		enableAbility(ent, CLOAK, 1, 10, 0);
 
 		break;
 	case CLASS_NECROMANCER:// 80 points
