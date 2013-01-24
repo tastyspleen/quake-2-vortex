@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="game"
 	ProjectGUID="{D152711C-A9AD-4718-BC11-EF2E9F3C17AE}"
 	RootNamespace="game"
@@ -3778,6 +3778,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\v_cmd.c"
+				>
+			</File>
+			<File
 				RelativePath="V_file_IO.c"
 				>
 				<FileConfiguration
@@ -4288,6 +4292,10 @@
 			</File>
 			<File
 				RelativePath="Talents.h"
+				>
+			</File>
+			<File
+				RelativePath=".\v_cmd.h"
 				>
 			</File>
 			<File

@@ -35,7 +35,6 @@ void setHardMax(edict_t *ent, int index)
 		case SPLASH_RESIST:
 		//case FREEZE_SPELL:
 		case CLOAK:
-			ent->myskills.abilities[index].hard_max = 10; break;
 		case CREATE_QUAD:
 		case CREATE_INVIN:
 		case BOOST_SPELL:
@@ -154,7 +153,7 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CORPSE_EXPLODE, 0, 15, 0);
 		enableAbility(ent, MIND_ABSORB, 0, 15, 0);
 		enableAbility(ent, AMMO_STEAL, 0, 15, 0);
-		enableAbility(ent, CLOAK, 1, 10, 0);
+		enableAbility(ent, CLOAK, 1, 1, 0);
 
 		break;
 	case CLASS_NECROMANCER:// 80 points
@@ -178,6 +177,8 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, CALTROPS, 0, 15, 0);
 		enableAbility(ent, AUTOCANNON, 0, 15, 0);
 		enableAbility(ent, DETECTOR, 0, 15, 0);
+		enableAbility(ent, DECOY, 0, 15, 0);
+
 		enableAbility(ent, ANTIGRAV, 1, 1, 0);
 		//Hard Max Eng
 		ent->myskills.abilities[BUILD_SENTRY].hard_max = 50;
@@ -315,7 +316,7 @@ void setGeneralAbilities (edict_t *ent)
 	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value) // vrxchile 2.0: WMs are the new APs.
 	{
 		enableAbility(ent, VAMPIRE, 0, 5, 1);
-		enableAbility(ent, CLOAK, 0, 10, 1);
+		enableAbility(ent, CLOAK, 0, 1, 1);
 		enableAbility(ent, WEAPON_KNOCK, 0, 1, 1);
 		enableAbility(ent, ARMOR_UPGRADE, 0, 5, 1);
 		enableAbility(ent, AMMO_STEAL, 0, 5, 1);

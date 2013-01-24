@@ -34,6 +34,18 @@ qboolean BOT_Commands(edict_t *ent)
 	return false;
 }
 
+char *bot_names[] = 
+		{
+			"BOTty",
+			"BOTon",
+			"BOTeo",
+			"BOTas",
+			"BOTes",
+			"BOTarengo",
+			"BOTalocado",
+			"BOTeonado"
+		};
+
 
 //==========================================
 // BOT_ServerCommand
@@ -41,18 +53,24 @@ qboolean BOT_Commands(edict_t *ent)
 //==========================================
 qboolean BOT_ServerCommand (void)
 {
-	char	*cmd;
+	char	*cmd, *name;
 
 	cmd = gi.argv (1);
 
-	
+	if (!ctf->value)
+		name = gi.argv(2);
+
+	if (strlen(name) < 5)
+	{
+		name = bot_names[GetRandom(0, 7)];
+	}
 
 	if( !Q_stricmp (cmd, "addbot") )
 	{ 
 		if(ctf->value) // name, skin, team
 			BOT_SpawnBot ( gi.argv(2), gi.argv(3), gi.argv(4), NULL );
 		else // name, skin
-			BOT_SpawnBot ( NULL, gi.argv(2), gi.argv(3), NULL );
+			BOT_SpawnBot ( NULL, name, gi.argv(3), NULL );
 	}	
 	// removebot
     else if( !Q_stricmp (cmd, "removebot") )

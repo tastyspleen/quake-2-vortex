@@ -545,7 +545,6 @@ void spawnClassRune(edict_t *rune, int targ_level)
 	for (i = 0; i < num_mods; ++i)
 	{
 		int abilityIndex = getClassRuneStat(rune->vrxitem.classNum);
-		int b_i;
 
 		rune->vrxitem.modifiers[i].index = abilityIndex;
 		

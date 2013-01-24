@@ -253,7 +253,7 @@ void UpgradeAbility(edict_t *ent, int ability_index)
 
 void upgradeMultiMenu_handler (edict_t *ent, int option)
 {
-	int p, cost, ability_index;
+	int p, ability_index;
 
 	if (option == 999)
 	{
@@ -293,7 +293,7 @@ void upgradeMultiMenu_handler (edict_t *ent, int option)
 
 void upgradeMultiMenu_handler_mobility (edict_t *ent, int option)
 {
-	int p, cost, ability_index;
+	int p, ability_index;
 
 	if (option == 999)
 	{

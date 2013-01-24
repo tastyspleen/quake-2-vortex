@@ -245,12 +245,12 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 	if (invasion->value == 1) // easy mode
 	{
 		if (invasion_difficulty_level < 7 && invasion_difficulty_level > 5)
-			mhealth = (invasion_difficulty_level-5) * 0.1 + 1;
+			mhealth = (invasion_difficulty_level-5) * 0.2 + 1;
 		else if (invasion_difficulty_level >= 7)
-			mhealth = 2 + 0.1 * invasion_difficulty_level;
+			mhealth = 1.8 + 0.15 * invasion_difficulty_level;
 	}else if (invasion->value == 2) // hard mode
 	{
-		mhealth = 1.8 + 0.25 * invasion_difficulty_level;
+		mhealth = 1.65 + 0.28 * invasion_difficulty_level;
 	}
 
 	monster->max_health = monster->health = monster->max_health*mhealth;
@@ -285,7 +285,7 @@ float TimeFormula()
 	int rval = base - playeramt - levelamt;
 
 	if (invasion->value == 2) // hard mode
-		cap = 40;
+		cap = 45;
 
 	if (rval < cap)
 		rval = cap;
@@ -415,9 +415,9 @@ void INV_SpawnMonsters (edict_t *self)
 	case 8:
 	case 9:
 	case 10:
-		max_monsters = 40; break;
+		max_monsters = 35; break; // vrxcl 3.2b decrease for not saturating the server hard.
 
-	default: max_monsters = 45;
+	default: max_monsters = 40;
 	}
 
 	if (!(invasion_difficulty_level % 5))

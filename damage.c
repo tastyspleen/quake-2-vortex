@@ -489,7 +489,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	float	temp;
 	que_t	*aura=NULL;
 	int talentLevel;
-	edict_t *activator, *dclient;
+	edict_t *dclient;
 	qboolean invasion_friendlyfire = false;
 	float Resistance = 1.0; // We find the highest resist value and only use THAT.
 

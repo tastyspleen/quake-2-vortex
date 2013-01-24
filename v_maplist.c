@@ -108,6 +108,7 @@ int v_LoadMapList(int mode)
 			if ((s = strtok(NULL, ",")) != NULL)
 			{
 				// terminate the line
+				// az: do we need this? test it.
 				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)] = '\0';
 
 				// copy monster value to list

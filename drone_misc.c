@@ -979,7 +979,7 @@ edict_t **GetFreeSelectSlot (edict_t *ent)
 {
 	int i;
 
-	for (i=0; i<3; i++)
+	for (i=0; i<4; i++)
 	{
 		// is this slot available?
 		if (!G_EntIsAlive(ent->selected[i]) // freed or not alive

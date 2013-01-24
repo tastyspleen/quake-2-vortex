@@ -374,7 +374,7 @@ void SpawnForcewall(edict_t *player, int type)
 		wall->touch = forcewall_touch;	
 	}
 	wall->die = wall_die;
-	wall->count = level.framenum + 900; // wall timeout
+	wall->count = level.framenum + 1000; // wall timeout
 	wall->movetype = MOVETYPE_NONE;
 	if (type)
 		wall->solid = SOLID_BBOX;

@@ -2658,28 +2658,6 @@ void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, floa
 }
 */
 
-void Cmd_SelfDestruct_f(edict_t *self)
-{
-	int damage;
-
-	if (!V_CanUseAbilities(self, SELFDESTRUCT, 0, true))
-		return;
-
-	damage = self->myskills.abilities[SELFDESTRUCT].level * SELFDESTRUCT_BONUS + SELFDESTRUCT_BASE;
-
-	// do the damage
-	T_RadiusDamage(self, self, damage, self, SELFDESTRUCT_RADIUS, MOD_SELFDESTRUCT);
-	T_Damage(self, self, self, vec3_origin, self->s.origin, vec3_origin, damage * 0.7, 0, 0, MOD_SELFDESTRUCT);
-
-	// GO BOOM!
-	gi.WriteByte (svc_temp_entity);
-	gi.WriteByte (TE_EXPLOSION1);
-	gi.WritePosition (self->s.origin);
-	gi.multicast (self->s.origin, MULTICAST_PVS);
-
-	return;
-}
-
 qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, float *cost_mult, float *skill_mult)
 {
 	// maximum skill/cost multiplier
@@ -2934,7 +2912,11 @@ void ClientCommand (edict_t *ent)
 
 	if (!ent->client)
 		return;		// not fully in game yet
+
 	cmd = gi.argv(0);
+
+	if (VortexCommand(cmd, ent)) // Handle it from here. (3.2b command system overhaul)
+		return;
 
 	if (Q_stricmp (cmd, "players") == 0)
 	{
@@ -3015,22 +2997,12 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "wave") == 0)
 		Cmd_Wave_f (ent);
 	//K03 Begin
-	else if (Q_stricmp(cmd, "thrust") == 0 )
-        Cmd_Thrust_f (ent);
-	else if (Q_stricmp(cmd, "vote") == 0)	//3.0 new map menu
-		ShowVoteModeMenu(ent);
 	else if (Q_stricmp(cmd, "upgrade_weapon") == 0)
 		OpenWeaponUpgradeMenu(ent, 0);
 	else if (Q_stricmp(cmd, "upgrade_ability") == 0)
 		OpenUpgradeMenu(ent);
 	else if (Q_stricmp(cmd, "talents") == 0)
 		OpenTalentUpgradeMenu(ent, 0);
-	else if (Q_stricmp(cmd, "vrxinfo") == 0)
-		OpenMyinfoMenu(ent);
-	else if (Q_stricmp(cmd, "vrxarmory") == 0)
-		OpenArmoryMenu(ent);
-	else if (Q_stricmp(cmd, "vrxrespawn") == 0)
-		OpenRespawnWeapMenu(ent);
 	else if (Q_stricmp (cmd, "hook") == 0)
         hook_fire (ent);
     else if (Q_stricmp (cmd, "unhook") == 0)
@@ -3041,16 +3013,6 @@ void ClientCommand (edict_t *ent)
 		Cmd_Salvation(ent);
 	else if ((Q_strcasecmp(cmd, "spell_boost") == 0) || (Q_strcasecmp(cmd, "boost") == 0))
 		Cmd_BoostPlayer(ent);
-    else if (Q_stricmp (cmd, "sentry") == 0)
-		cmd_SentryGun(ent);
-	else if (Q_stricmp (cmd, "lasersight") == 0)
-		Cmd_LaserSight_f(ent);
-	else if (Q_stricmp (cmd, "flashlight") == 0)
-        FL_make (ent);
-	else if (Q_stricmp(cmd, "monster") == 0)
-		Cmd_Drone_f(ent);
-	else if (Q_stricmp (cmd, "detpipes") == 0)
-		Cmd_DetPipes_f (ent);
 	else if (Q_stricmp (cmd, "monsters") == 0)
 		safe_cprintf(ent, PRINT_HIGH, "Monsters: %d/%d\n", ent->num_monsters, MAX_MONSTERS);
 	else if ((Q_strcasecmp(cmd, "spell_corpseexplode") == 0) || (Q_strcasecmp(cmd, "detonatebody") == 0))
@@ -3067,8 +3029,6 @@ void ClientCommand (edict_t *ent)
 		Cmd_Shield_f (ent, 1);
 	else if (Q_stricmp (cmd, "shieldoff") == 0)
 		Cmd_Shield_f (ent, 0);
-	else if (Q_stricmp (cmd, "laser") == 0)
-		Cmd_BuildLaser(ent);
 		//PlaceLaser(ent);
 	else if ((Q_strcasecmp(cmd, "spell_bomb") == 0) || (Q_strcasecmp(cmd, "bombspell") == 0))
 		Cmd_BombPlayer(ent, 1.0, 1.0);
@@ -3082,24 +3042,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_Speech (ent, atoi(gi.argv(1)));
 	else if (Q_stricmp (cmd, "lasers") == 0)
 		safe_cprintf(ent, PRINT_HIGH, "Lasers: %d/%d\n", ent->num_lasers, MAX_LASERS);
-	else if (Q_stricmp (cmd, "admincmd") == 0)
-		Cmd_AdminCmd(ent);
-	else if (Q_stricmp (cmd, "transfercredits") == 0)
-		Cmd_TransCredits(ent);
-	else if(!Q_stricmp(cmd,"forcewall"))
-    {
-     Cmd_Forcewall(ent);
-    }
-    else if(!Q_stricmp(cmd,"forcewall_off"))
-    {
-      ForcewallOff(ent);
-    }
 	/*
 	else if (Q_stricmp (cmd, "adminme") == 0)
 		Cmd_MakeAdmin(ent);
 	*/
-	else if (Q_stricmp (cmd, "teleport_fwd") == 0)
-		TeleportForward(ent);
 	else if (Q_stricmp (cmd, "teleport_rnd") == 0)
 	{
 		if (!ent->myskills.administrator)
@@ -3109,21 +3055,15 @@ void ClientCommand (edict_t *ent)
 			VectorClear(ent->velocity);
 		}
 	}
-	else if (Q_stricmp (cmd, "parasite") == 0)
-		Cmd_PlayerToParasite_f(ent);
 	else if (Q_stricmp (cmd, "lockon_on") == 0)
 		Cmd_Lockon_f(ent, 1);
 	else if (Q_stricmp (cmd, "lockon_crosshair") == 0)
 		Cmd_Lockon_f(ent, 2);
 	else if (Q_stricmp (cmd, "lockon_off") == 0)
 		Cmd_Lockon_f(ent, 0);
-	else if (Q_stricmp (cmd, "minisentry") == 0)
-		Cmd_MiniSentry_f(ent);
 	else if (Q_stricmp (cmd, "checkclientsettings") == 0)
 		VortexCheckClientSettings(ent, atoi(gi.argv(1)), atoi(gi.argv(2)));
 	//NewB
-	else if (Q_stricmp (cmd, "rune") == 0)
-		Cmd_Rune_f(ent);
 	else if (Q_stricmp (cmd, "trade") == 0)
 	{
 		char *opt = gi.argv(1);
@@ -3139,8 +3079,6 @@ void ClientCommand (edict_t *ent)
 		}
 		else ShowTradeMenu(ent);
 	}
-	else if (Q_stricmp (cmd, "vrxid") == 0)
-		Cmd_IdentifyPlayer(ent);
 	else if (Q_stricmp(cmd, "togglesecondary") == 0)
 	{
 		// save last weapon for lastweap cmd
@@ -3278,14 +3216,6 @@ void ClientCommand (edict_t *ent)
 				ent->client->weapon_mode = 1;
 		}
 	}
-	else if (Q_stricmp(cmd, "magmine")==0)
-	{
-		Cmd_SpawnMagmine_f(ent);
-	}
-	else if (Q_stricmp(cmd, "spike")==0)
-	{
-		Cmd_Spike_f(ent);
-	}
 	else if (Q_stricmp (cmd, "deathray") == 0)
 	{
 		Cmd_DeathRay_f(ent, false);
@@ -3310,15 +3240,9 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "flash") == 0) // az new skill: flash
 	{
 		if (V_CanUseAbilities(ent, FLASH, 0, true))
-			Teleport_them(ent);	
-	}
-	else if (Q_stricmp (cmd, "selfdestruct") == 0) // az new skill: self destruct
-	{
-		Cmd_SelfDestruct_f(ent);
-	}
-	else if (Q_stricmp (cmd, "ally") == 0)
-	{
-		ShowAllyMenu(ent);
+		{
+			FindValidSpawnPoint(ent, true); // Find them a random place to go.
+		}
 	}
 	else if (Q_stricmp (cmd, "allyinfo") == 0)
 	{
@@ -3387,47 +3311,7 @@ void ClientCommand (edict_t *ent)
 		else safe_cprintf(ent, PRINT_HIGH, "Ability number %d = %s\n", index, GetAbilityString(index));
 	}
 	//3.0 curse commands
-	else if (Q_strcasecmp(cmd, "curse") == 0)
-		Cmd_Curse(ent);
-	else if (Q_strcasecmp(cmd, "amnesia") == 0)
-		Cmd_Amnesia(ent);
-	else if (Q_strcasecmp(cmd, "weaken") == 0)
-		Cmd_Weaken(ent);
-	else if (Q_strcasecmp(cmd, "lifedrain") == 0)
-		Cmd_LifeDrain(ent);
-	else if (Q_strcasecmp(cmd, "ampdamage") == 0)
-		Cmd_AmpDamage(ent);
-	else if (Q_strcasecmp(cmd, "lowerresist") == 0)
-		Cmd_LowerResist(ent);
 	//3.0 bless commands
-	else if (Q_strcasecmp(cmd, "bless") == 0)
-		Cmd_Bless(ent);
-	else if (Q_strcasecmp(cmd, "heal") == 0)
-		Cmd_Healing(ent);
-	else if (Q_stricmp (cmd, "cacodemon") == 0)
-		Cmd_PlayerToCacodemon_f(ent);
-	else if (Q_stricmp (cmd, "flyer") == 0)
-		Cmd_PlayerToFlyer_f(ent);
-	else if (Q_stricmp (cmd, "mutant") == 0)
-		Cmd_PlayerToMutant_f(ent);
-	else if (Q_stricmp (cmd, "brain") == 0)
-		Cmd_PlayerToBrain_f(ent);
-	else if (Q_stricmp (cmd, "tank") == 0)
-		Cmd_PlayerToTank_f(ent);
-	else if (Q_stricmp (cmd, "hellspawn") == 0)
-		Cmd_HellSpawn_f(ent);
-	else if (Q_stricmp (cmd, "supplystation") == 0)
-		Cmd_CreateSupplyStation_f(ent);
-//	else if (Q_stricmp (cmd, "decoy") == 0)
-//		Cmd_Decoy_f(ent);
-	else if (Q_stricmp (cmd, "antigrav") == 0)
-		Cmd_Antigrav_f(ent);
-	else if (Q_stricmp (cmd, "masterpw") == 0)
-		Cmd_SetMasterPassword_f(ent);
-	else if (Q_stricmp (cmd, "owner") == 0)
-		Cmd_SetOwner_f(ent);
-	else if (Q_stricmp (cmd, "whois") == 0)
-		OpenWhoisMenu(ent);
 	else if (Q_stricmp (cmd, "mute") == 0)
 	{
 		int time = atoi(gi.argv(2));		
@@ -3443,8 +3327,6 @@ void ClientCommand (edict_t *ent)
 		Cmd_FireBeam_f(ent, 1);
 	else if (!Q_stricmp(cmd, "beam_off"))
 		Cmd_FireBeam_f(ent, 0);
-	else if (!Q_stricmp(cmd, "cripple"))
-		Cmd_Cripple_f(ent);
 	else if (!Q_stricmp(cmd, "magicbolt"))
 		Cmd_Magicbolt_f(ent, 1.0, 1.0);
 	else if (!Q_stricmp(cmd, "nova"))
@@ -3469,26 +3351,12 @@ void ClientCommand (edict_t *ent)
 			safe_cprintf(ent, PRINT_HIGH, "You must upgrade manashield before you can use it.\n");
 		}
 	}
-	else if (!Q_stricmp(cmd, "armorbomb"))
-		Cmd_ExplodingArmor_f(ent);
-	else if (!Q_stricmp(cmd, "vrxmenu"))
-		OpenGeneralMenu(ent);
-	else if (!Q_stricmp(cmd, "proxy"))
-		Cmd_BuildProxyGrenade(ent);
-	else if (!Q_stricmp(cmd, "napalm"))
-		Cmd_Napalm_f(ent);
 	else if (!Q_stricmp(cmd, "meteor"))
 		Cmd_Meteor_f(ent, 1.0, 1.0);
-	else if (!Q_stricmp(cmd, "medic"))
-		Cmd_PlayerToMedic_f(ent);
 	else if (Q_stricmp (cmd, "balancespirit") == 0)
 		cmd_Spirit(ent, M_BALANCESPIRIT);
 	else if (Q_stricmp (cmd, "chainlightning") == 0)
 		Cmd_ChainLightning_f(ent, 1.0, 1.0);
-	else if (Q_stricmp (cmd, "autocannon") == 0)
-		Cmd_AutoCannon_f(ent);
-	else if (Q_stricmp (cmd, "blessedhammer") == 0)
-		Cmd_BlessedHammer_f(ent);
 	//4.1 (Totems)
 	else if (Q_stricmp (cmd, "totem") == 0)
 	{
@@ -3536,84 +3404,12 @@ void ClientCommand (edict_t *ent)
 		SpawnTotem(ent, DARK_TOTEM);
 	else if (Q_stricmp (cmd, "naturetotem") == 0)
 		SpawnTotem(ent, NATURE_TOTEM);
-	else if (Q_stricmp (cmd, "wormhole") == 0)
-		Cmd_WormHole_f (ent);
-	else if (Q_stricmp (cmd, "update") == 0)
-		V_UpdatePlayerAbilities(ent);
-	else if (Q_stricmp (cmd, "berserker") == 0)
-		Cmd_PlayerToBerserk_f (ent);
-	else if (Q_stricmp (cmd, "caltrops") == 0)
-		Cmd_Caltrops_f (ent);
-	else if (Q_stricmp (cmd, "spikegrenade") == 0)
-		Cmd_SpikeGrenade_f (ent);
-	else if (Q_stricmp (cmd, "detector") == 0)
-		Cmd_Detector_f (ent);
-	else if (Q_stricmp (cmd, "convert") == 0)
-		Cmd_Conversion_f (ent);
-	else if (Q_stricmp (cmd, "deflect") == 0)
-		Cmd_Deflect_f (ent);
-	else if (Q_stricmp (cmd, "scanner") == 0)
-		Toggle_Scanner (ent);
-	else if (Q_stricmp (cmd, "emp") == 0)
-		Cmd_TossEMP (ent);
 	else if (Q_stricmp (cmd, "fireball") == 0)
 		Cmd_Fireball_f (ent, 1.0, 1.0);
 	else if (Q_stricmp (cmd, "icebolt") == 0)
 		Cmd_IceBolt_f (ent, 1.0, 1.0);
-	else if (Q_stricmp (cmd, "plasmabolt") == 0)
-		Cmd_Plasmabolt_f (ent);
 	else if (Q_stricmp (cmd, "lightningstorm") == 0)
 		Cmd_LightningStorm_f (ent, 1.0, 1.0);
-	else if (Q_stricmp (cmd, "mirv") == 0)
-		Cmd_TossMirv (ent);
-	else if (Q_stricmp (cmd, "healer") == 0)
-		Cmd_Healer_f (ent);
-	else if (Q_stricmp (cmd, "spiker") == 0)
-		Cmd_Spiker_f (ent);
-	else if (Q_stricmp (cmd, "obstacle") == 0)
-		Cmd_Obstacle_f (ent);
-	else if (Q_stricmp (cmd, "gasser") == 0)
-		Cmd_Gasser_f (ent);
-	else if (Q_stricmp (cmd, "spore") == 0)
-		Cmd_TossSpikeball(ent);
-	else if (Q_stricmp (cmd, "acid") == 0)
-		Cmd_FireAcid_f(ent);
-	else if (Q_stricmp (cmd, "cocoon") == 0)
-		Cmd_Cocoon_f(ent);
-	else if (Q_stricmp (cmd, "meditate") == 0)
-		Cmd_Meditate_f(ent);
-	else if (Q_stricmp (cmd, "overload") == 0)
-		Cmd_Overload_f(ent);
-	else if (Q_stricmp (cmd, "laserplatform") == 0)
-		Cmd_CreateLaserPlatform_f(ent);
-	else if (Q_stricmp (cmd, "lasertrap") == 0)
-		Cmd_LaserTrap_f(ent);
-	else if (Q_stricmp (cmd, "holyground") == 0)
-		Cmd_HolyGround_f(ent);
-	else if (Q_stricmp (cmd, "unholyground") == 0)
-		Cmd_UnHolyGround_f(ent);
-	else if (Q_stricmp (cmd, "purge") == 0)
-		Cmd_Purge_f(ent);
-	else if (Q_stricmp (cmd, "boomerang") == 0)
-		Cmd_Boomerang_f(ent);
-	else if (Q_stricmp (cmd, "combat") == 0)
-		OpenCombatMenu(ent, 0);
-	else if (Q_stricmp (cmd, "loadnodes") == 0)
-		Cmd_LoadNodes_f(ent);
-	else if (Q_stricmp (cmd, "savenodes") == 0)
-		Cmd_SaveNodes_f(ent);
-	else if (Q_stricmp (cmd, "deletenode") == 0)
-		Cmd_DeleteNode_f(ent);
-	else if (Q_stricmp (cmd, "addnode") == 0)
-		Cmd_AddNode_f(ent);
-	else if (Q_stricmp (cmd, "deleteallnodes") == 0)
-		Cmd_DeleteAllNodes_f(ent);
-	else if (Q_stricmp (cmd, "computenodes") == 0)
-		Cmd_ComputeNodes_f(ent);
-	else if (Q_stricmp (cmd, "showgrid") == 0)
-		Cmd_ToggleShowGrid(ent);
-	else if (Q_stricmp (cmd, "writepos") == 0)
-		Cmd_WritePos_f(ent);
 	//K03 End
 	else safe_cprintf(ent, PRINT_HIGH, "Unknown client command: %s\n", cmd);
 	/*

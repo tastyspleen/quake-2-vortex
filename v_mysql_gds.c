@@ -18,7 +18,7 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW ""
+#define MYSQL_PW "c4r1t4"
 #define MYSQL_USER "root"
 #define MYSQL_DBNAME "vrxcl"
 
@@ -95,6 +95,8 @@ gds_queue_t *free_first = NULL;
 gds_queue_t *free_last = NULL;
 // CVARS
 // cvar_t *gds_debug; // Should I actually use this? -az
+// if gds_singleserver is set then bypass the isplaying check.
+cvar_t *gds_singleserver;
 
 // Threading
 #ifndef GDS_NOMULTITHREADING
@@ -256,15 +258,18 @@ int FindWeaponIndex_S(int index, skills_t *myskills)
 // *********************************
 void V_GDS_FreeQueue_Add(gds_queue_t *current)
 {
-	if (!free_first)
+	if (current)
 	{
-		free_last = free_first = current;
-	}
-	else
-	{
-		free_last->next = current;
-		free_last = current;
-		free_last->next = NULL;
+		if (!free_first)
+		{
+			free_last = free_first = current;
+		}
+		else
+		{
+			free_last->next = current;
+			free_last = current;
+			free_last->next = NULL;
+		}
 	}
 }
 
@@ -466,6 +471,7 @@ gds_queue_t *V_GDS_FindSave(gds_queue_t *current)
 
 qboolean IsThreadRunning()
 {
+#ifndef GDS_NOMULTITHREADING
 	qboolean temp;
 	pthread_mutex_lock(&ThreadStatusMutex);
 
@@ -473,36 +479,36 @@ qboolean IsThreadRunning()
 
 	pthread_mutex_unlock(&ThreadStatusMutex);
 	return temp;
+#else
+	return true;
+#endif
 }
 
 void SetThreadRunning(qboolean running)
 {
+#ifndef GDS_NOMULTITHREADING
 	pthread_mutex_lock(&ThreadStatusMutex);
 
 	ThreadRunning = running;
 
 	pthread_mutex_unlock(&ThreadStatusMutex);
+#endif
 }
 
 void *ProcessQueue(void *unused)
 {
-	gds_queue_t *current = NULL;
-#ifndef GDS_NOMULTITHREADING
-	int Work = 1;
+	gds_queue_t *current = V_GDS_Queue_PopFirst();
 
-	while (Work)
-#else
 	while (current)
-#endif
 	{
-		current = V_GDS_Queue_PopFirst();
-
+#ifndef GDS_NOMULTITHREADING
 		if (!current)
 		{
 			SetThreadRunning(false);
 			pthread_exit(NULL);
 			continue;
 		}
+#endif
 		
 		if (current->operation == GDS_LOAD)
 		{
@@ -517,14 +523,17 @@ void *ProcessQueue(void *unused)
 		{
 			V_GDS_UpdateRunes(current, GDS_MySQL);
 		}
-#ifndef GDS_NOMULTITHREADING
-		else if (current->operation == GDS_EXITTHREAD)
-			Work = 0;
-#endif
+		
 		V_GDS_FreeQueue_Add(current);
+		current = V_GDS_Queue_PopFirst();
 	}
 
+	// Our operations are done- free the used elements so we don't end up with a heapload of memory used.
+	// Haha. Heap.
+	V_GDS_FreeMemory_Queue();
+
 #ifndef GDS_NOMULTITHREADING
+	SetThreadRunning(false);
 	pthread_exit(NULL);
 #endif
 	return NULL;
@@ -854,8 +863,11 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	MYSQL_ROW row;
 	MYSQL_RES *result, *result_b;
 
-	if (!db)
+	if (!db) // This is the only time we actually need to print it. 
+	{
+		gi.bprintf(PRINT_HIGH, "Sorry, we are unable to connect to the database at this time. \n");
 		return false;
+	}
 
 	if (player->PlayerID != current->id)
 		return false; // Heh.
@@ -872,9 +884,13 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 
 	if (exists == 0)
 	{
+#ifndef GDS_NOMULTITHREADING
 		pthread_mutex_lock(&StatusMutex);
+#endif
 		player->ThreadStatus = 2;
+#ifndef GDS_NOMULTITHREADING
 		pthread_mutex_unlock(&StatusMutex);
+#endif
 		return false;
 	}
 
@@ -910,7 +926,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 					mysql_query (db, "SELECT @IsAble;");
 					GET_RESULT;
 
-					if (atoi(row[0]) == 0)
+					if (atoi(row[0]) == 0 && !gds_singleserver->value)
 					{
 						player->ThreadStatus = 4; // Already playing.
 						FREE_RESULT;
@@ -938,11 +954,15 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 		mysql_query (db, "SELECT @IsAble;");
 		GET_RESULT;
 
-		if (atoi(row[0]) == 0)
+		if (atoi(row[0]) == 0 && !gds_singleserver->value)
 		{
+#ifndef GDS_NOMULTITHREADING
 			pthread_mutex_lock(&StatusMutex);
+#endif
 			player->ThreadStatus = 4; // Already playing.
+#ifndef GDS_NOMULTITHREADING
 			pthread_mutex_unlock(&StatusMutex);
+#endif
 			FREE_RESULT;
 			return false;
 		}
@@ -1354,6 +1374,8 @@ void CreateProcessQueue()
 qboolean V_GDS_StartConn()
 {
 	gi.dprintf("DB: Initializing connection... ");
+
+	gds_singleserver = gi.cvar("gds_single", "1", 0); // default to a single server using sql.
 
 	if (!GDS_MySQL)
 	{
