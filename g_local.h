@@ -1853,7 +1853,7 @@ struct edict_s
 	int in_database;
 	//K03 End
 	int			client_settings[5];//GHz: For cheat checks
-	edict_t		*selected[3];
+	edict_t		*selected[4];
 	edict_t		*other;
 	edict_t		*supplystation;
 	edict_t		*magmine;
@@ -2294,6 +2294,8 @@ do { \
 
 //az begin
 void SaveAllPlayers();
+
+#include "v_cmd.h"
 
 // 3.0 new holy vortex mode
 void hw_init();

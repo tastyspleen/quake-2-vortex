@@ -248,6 +248,7 @@ void hw_spawnflag (void)
 	flag = Spawn_Item(FindItemByClassname("item_flaghw"));
 	flag->think = hw_flagthink;
 	flag->nextthink = level.time + FRAMETIME;
+	flag->takedamage = DAMAGE_NO; // this should fix a nasty bug. should.
 
 	hw_index = ITEM_INDEX(FindItemByClassname("item_flaghw"));
 

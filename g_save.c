@@ -187,9 +187,9 @@ void InitGame (void)
 {
 	gi.dprintf ("==== InitGame ====\n");
 #ifndef LOCK_DEFAULTS
-	gi.dprintf("INFO: Vortex v.%s loaded.\n", VRX_VERSION);
+	gi.dprintf("INFO: Vortex v%s loaded.\n", VRX_VERSION);
 #else
-	gi.dprintf("INFO: Vortex v.%sL loaded.\n", VRX_VERSION);
+	gi.dprintf("INFO: Vortex v%sL loaded.\n", VRX_VERSION);
 	gi.dprintf("INFO: This version is locked for distribution.\n");
 #endif
 

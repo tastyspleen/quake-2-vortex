@@ -871,7 +871,7 @@ void Teleport_them(edict_t *ent)
 		SelectSpawnPoint(ent, spawn_origin, spawn_angles);
 
 	// find a single player start spot
-	if (!spot)
+	if (!spot && !invasion->value)
 	{
 		while ((spot = G_Find (spot, FOFS(classname), "info_player_start")) != NULL)
 		{
@@ -893,17 +893,23 @@ void Teleport_them(edict_t *ent)
 			}
 		}
 	}
+	
+	if (!invasion->value && spot)
+	{
+		VectorCopy (spot->s.angles, spawn_angles);
+		VectorCopy (spot->s.origin, spawn_origin);
+	}
 
-	VectorCopy (spot->s.origin, spawn_origin);
-	if(ent->svflags & SVF_MONSTER) spawn_origin[2] += 32;
-	else spawn_origin[2] += 9;
-	VectorCopy (spot->s.angles, spawn_angles);
+	if(ent->svflags & SVF_MONSTER) 
+		spawn_origin[2] += 32;
+	else 
+		spawn_origin[2] += 9;
 
 	if (ent->client)
 	{
-	ent->client->ps.pmove.origin[0] = spawn_origin[0]*8;
-	ent->client->ps.pmove.origin[1] = spawn_origin[1]*8;
-	ent->client->ps.pmove.origin[2] = spawn_origin[2]*8;
+		ent->client->ps.pmove.origin[0] = spawn_origin[0]*8;
+		ent->client->ps.pmove.origin[1] = spawn_origin[1]*8;
+		ent->client->ps.pmove.origin[2] = spawn_origin[2]*8;
 	}
 
 	VectorCopy (spawn_origin, ent->s.origin);
@@ -1039,10 +1045,13 @@ void Tball_Aura(edict_t *owner, vec3_t origin)
 		else
 		{
 			//Give the tball owner some xp
-			owner->client->pers.score += other->myskills.level;
-			owner->myskills.experience += other->myskills.level;
+			if (other->client && !G_IsSpectator(other)) // spectators being "teleported away" lawd -az
+			{
+				owner->client->pers.score += other->myskills.level;
+				owner->myskills.experience += other->myskills.level;
 
-			gi.bprintf(PRINT_MEDIUM, "%s was teleported away by %s.\n", other->client->pers.netname, owner->client->pers.netname);
+				gi.bprintf(PRINT_MEDIUM, "%s was teleported away by %s.\n", other->client->pers.netname, owner->client->pers.netname);
+			}
 		}
 	}		
 }
