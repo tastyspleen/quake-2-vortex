@@ -168,6 +168,7 @@ void TBI_SpawnThink(edict_t *self)
 void TBI_AwardTeam(int Teamnum, int exp, qboolean Broadcast)
 {
 	edict_t *cl_ent;
+	int i_maxclients = maxclients->value;
 	for (cl_ent = g_edicts + 1; cl_ent != g_edicts + i_maxclients + 1; cl_ent++)
 	{
 		if (!G_IsSpectator(cl_ent) && cl_ent->client)
