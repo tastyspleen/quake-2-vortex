@@ -276,12 +276,15 @@ void V_GDS_FreeQueue_Add(gds_queue_t *current)
 void V_GDS_FreeMemory_Queue()
 {
 	gds_queue_t *next;
+	
 	while (free_first)
 	{
 		next = free_first->next;
 		V_Free (free_first);
 		free_first = next;
 	}
+
+	free_last = free_first = NULL;
 }
 
 void V_GDS_Queue_Push(gds_queue_t *current, qboolean lock)
@@ -527,10 +530,6 @@ void *ProcessQueue(void *unused)
 		V_GDS_FreeQueue_Add(current);
 		current = V_GDS_Queue_PopFirst();
 	}
-
-	// Our operations are done- free the used elements so we don't end up with a heapload of memory used.
-	// Haha. Heap.
-	V_GDS_FreeMemory_Queue();
 
 #ifndef GDS_NOMULTITHREADING
 	SetThreadRunning(false);
@@ -1495,15 +1494,22 @@ void GDS_FinishThread()
 	if (GDS_MySQL)
 	{
 		V_GDS_Queue_Add(NULL, GDS_EXITTHREAD);
+
+		gi.dprintf("DB: Finishing thread... ", rc);
 		rc = pthread_join(QueueThread, &status);
+		gi.dprintf(" Done.\n", rc);
+
 		if (rc)
 			gi.dprintf("pthread_join: %d\n", rc);
+
 		rc = pthread_mutex_destroy(&QueueMutex);
 		if (rc)
 			gi.dprintf("pthread_mutex_destroy: %d\n", rc);
+
 		rc = pthread_mutex_destroy(&StatusMutex);
 		if (rc)
 			gi.dprintf("pthread_mutex_destroy: %d\n", rc);
+
 		V_GDS_FreeMemory_Queue();
 	}
 }

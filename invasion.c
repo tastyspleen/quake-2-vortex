@@ -28,6 +28,17 @@ void INV_InitSpawnQue (void)
 		INV_SpawnQue[i] = NULL;
 }
 
+qboolean INV_IsSpawnQueEmpty()
+{
+	int i;
+	for (i = 0; i < MAX_CLIENTS; i++)
+	{
+		if (INV_SpawnQue[i] != NULL)
+			return false;
+	}
+	return true;
+}
+
 qboolean INV_InSpawnQue (edict_t *ent)
 {
 	int i;
@@ -543,6 +554,12 @@ edict_t *INV_SelectPlayerSpawnPoint (edict_t *ent)
 
 	if (ent->spawn && ent->spawn->inuse)
 		return ent->spawn;
+	else // We requested a spawn point, but we don't have one. What now?
+	{
+		// Try to find one. But only if the spawn que is empty.
+		if (INV_IsSpawnQueEmpty())
+			return INV_GetRandomSpawn();
+	}
 
 	return NULL;
 }

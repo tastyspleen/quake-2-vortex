@@ -674,7 +674,7 @@ edict_t *G_Spawn (void)
 
 	if (globals.num_edicts == 128 || globals.num_edicts == 129) 
 	{
-		safe_cprintf(NULL, PRINT_HIGH, "");
+		// safe_cprintf(NULL, PRINT_HIGH, "");
 	}
 
 	G_InitEdict (e);

@@ -374,7 +374,7 @@ qboolean AI_MoveToGoalEntity(edict_t *self, usercmd_t *ucmd)
 	if(!AI_CanMove(self, BOT_MOVE_FORWARD) ) 
 	{
 		self->movetarget = NULL;
-		ucmd->forwardmove = -100;
+		ucmd->forwardmove = -400;
 		return false;
 	}
 

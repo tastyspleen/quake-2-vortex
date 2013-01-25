@@ -424,15 +424,18 @@ void fixRuneIndexes(edict_t *rune, int i)
 		if (rune->vrxitem.modifiers[b_i].index == rune->vrxitem.modifiers[i].index &&
 			rune->vrxitem.modifiers[b_i].type == rune->vrxitem.modifiers[i].type)
 		{
-			// invalidate this modifier.
-			rune->vrxitem.modifiers[i].index = 0;
-			rune->vrxitem.modifiers[i].type = TYPE_NONE;
-				if (GetAbilityUpgradeCost(rune->vrxitem.modifiers[b_i].index) > 1)
+			if (rune->vrxitem.modifiers[b_i].type == TYPE_ABILITY) // It's an ability?
 			{
-				// sum the abilities.
-				rune->vrxitem.modifiers[b_i].value += rune->vrxitem.modifiers[i].value;
+					// invalidate this modifier.
+					rune->vrxitem.modifiers[i].index = 0;
+					rune->vrxitem.modifiers[i].type = TYPE_NONE;
+					if (GetAbilityUpgradeCost(rune->vrxitem.modifiers[b_i].index) > 1)
+					{
+						// sum the abilities.
+						rune->vrxitem.modifiers[b_i].value += rune->vrxitem.modifiers[i].value;
+					}
+					rune->vrxitem.modifiers[i].value = 0;
 			}
-			rune->vrxitem.modifiers[i].value = 0;
 		}
 	}
 }

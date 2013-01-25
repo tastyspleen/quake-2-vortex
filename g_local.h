@@ -1732,6 +1732,7 @@ struct edict_s
 	float		dmg_radius;
 	int			sounds;			//make this a spawntemp var?
 	int			count;
+	qboolean exploded; // don't explode more than once at death. lol
 
 	edict_t		*chain;
 	edict_t		*enemy;
