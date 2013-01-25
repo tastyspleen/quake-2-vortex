@@ -324,10 +324,12 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 
 	// make sure we're at the top of the food chain
 	if (!(e1=G_GetSummoner(ent1)) && (ent1->mtype != M_RETARD) 
-		&& (ent1->mtype != INVASION_PLAYERSPAWN) && (ent1->mtype != CTF_PLAYERSPAWN))
+		&& (ent1->mtype != INVASION_PLAYERSPAWN) && (ent1->mtype != CTF_PLAYERSPAWN)
+		&& (ent1->mtype != TBI_PLAYERSPAWN))
 		return 0;
 	if (!(e2=G_GetSummoner(ent2)) && (ent2->mtype != M_RETARD) 
-		&& (ent2->mtype != INVASION_PLAYERSPAWN) && (ent2->mtype != CTF_PLAYERSPAWN))
+		&& (ent2->mtype != INVASION_PLAYERSPAWN) && (ent2->mtype != CTF_PLAYERSPAWN)
+		&& (ent2->mtype != TBI_PLAYERSPAWN))
 		return 0;
 
 	// if this is a summoner, does he own the other ent?
@@ -3271,7 +3273,7 @@ void ClientCommand (edict_t *ent)
 	{
 		int i;
 		//currently the only teamplay mode is domination
-		if (!domination->value && !ctf->value)
+		if (!domination->value && !ctf->value && !tbi->value)
 			return;
 
 		if (!ent->teamnum)

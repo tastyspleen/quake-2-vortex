@@ -923,6 +923,7 @@ extern	qboolean	is_quad;
 
 // az begin
 extern cvar_t *savemethod;
+extern cvar_t *tbi;
 // az end
 
 #define world	(&g_edicts[0])
@@ -1986,6 +1987,7 @@ v_maplist_t maplist_INV;
 v_maplist_t maplist_TRA;
 v_maplist_t maplist_INH;
 v_maplist_t maplist_VHW;
+v_maplist_t maplist_TBI;
 //end new map lists
 
 // teamplay stuff
@@ -2226,6 +2228,7 @@ qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 #define	PLAYER_NAVI				703
 #define INVASION_DEFENDERSPAWN	704
 #define CTF_PLAYERSPAWN			705
+#define TBI_PLAYERSPAWN			706 // Team Based Invasion PlayerSpawn.
 #define M_COMBAT_POINT			800 // temporary entity for monster navigation
 #define FUNC_DOOR				900
 //4.1 Archer
@@ -2304,6 +2307,10 @@ void hw_awardpoints (void);
 void hw_dropflag (edict_t *ent, gitem_t *item);
 qboolean hw_pickupflag (edict_t *ent, edict_t *other);
 void hw_spawnflag (void);
+
+// 3.4 new team vs invasion mode
+edict_t* TBI_FindSpawn(edict_t *ent);
+void InitTBI();
 //az end
 
 #ifndef min

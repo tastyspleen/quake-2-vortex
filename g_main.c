@@ -122,6 +122,7 @@ cvar_t *ptr;
 cvar_t *ffa;
 cvar_t *domination;
 cvar_t *hw; // vrxchile 3.0
+cvar_t *tbi; // vrxchile 3.4
 cvar_t *ctf;
 cvar_t *invasion;
 cvar_t *nolag;
@@ -534,6 +535,13 @@ void EndDMLevel (void)
 					changing = true;
 				}
 				break;
+			case MAPMODE_TBI:
+				if (!tbi->value)
+				{
+					gi.bprintf(PRINT_HIGH, "Switching to Destroy The Spawn mode!\n");
+					changing = true;
+				}
+				break;
 			}
 
 			level.modechange = changing;
@@ -579,7 +587,8 @@ void EndDMLevel (void)
 				mode = MAPMODE_FFA;
 			else if (hw->value)
 				mode = MAPMODE_VHW;
-
+			else if (tbi->value)
+				mode = MAPMODE_TBI;
 			else mode = MAPMODE_PVP;
 
 			//Point to the correct map list
@@ -1046,10 +1055,14 @@ void G_RunFrame (void)
 
 	if (ctf->value && (level.time == pregame_time->value))
 		CTF_Init();
-
+// az begin
 	if (hw->value && (level.time == pregame_time->value))
 		hw_init();
 
+	if (tbi->value && (level.time == pregame_time->value))
+		InitTBI();
+
+// az end
 	if (domination->value && (level.time > pregame_time->value))
 		dom_awardpoints();
 

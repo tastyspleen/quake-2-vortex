@@ -8658,7 +8658,7 @@ void Cmd_SelfDestruct_f(edict_t *self)
 
 	// do the damage
 	T_RadiusDamage(self, self, damage, self, SELFDESTRUCT_RADIUS, MOD_SELFDESTRUCT);
-	T_Damage(self, self, self, vec3_origin, self->s.origin, vec3_origin, damage * 0.7, 0, 0, MOD_SELFDESTRUCT);
+	T_Damage(self, self, self, vec3_origin, self->s.origin, vec3_origin, damage * 0.6, 0, 0, MOD_SELFDESTRUCT);
 
 	// GO BOOM!
 	gi.WriteByte (svc_temp_entity);
@@ -8666,5 +8666,6 @@ void Cmd_SelfDestruct_f(edict_t *self)
 	gi.WritePosition (self->s.origin);
 	gi.multicast (self->s.origin, MULTICAST_PVS);
 
+	self->client->ability_delay = level.time + 1.5;
 	return;
 }

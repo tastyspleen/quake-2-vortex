@@ -3902,6 +3902,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v_tbi.c"
+				>
+			</File>
+			<File
 				RelativePath="v_utils.c"
 				>
 				<FileConfiguration
