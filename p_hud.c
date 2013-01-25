@@ -668,7 +668,7 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_STATION_TIME] = 0;
 	}
 
-	if (ptr->value || domination->value)
+	if (ptr->value || domination->value || tbi->value)
 	{
 		//if (G_EntExists(ent))
 		if (ent->inuse && ent->teamnum)

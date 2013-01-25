@@ -313,6 +313,7 @@ void InitGame (void)
 	// az v2.5 vrxchile trading mode
 	trading = gi.cvar("trading", "0", 0);
 	tradingmode_enabled = gi.cvar("tradingmode_enabled", "0", CVAR_LATCH);
+	tbi = gi.cvar ("tbi", "0", CVAR_LATCH); // enable tbi mode
 	// az end
 	pvm_respawntime = gi.cvar ("pvm_respawntime", "10", 0);
 	pvm_monstermult = gi.cvar ("pvm_monstermult", "1.0", 0);

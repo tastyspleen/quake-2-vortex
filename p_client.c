@@ -1506,6 +1506,25 @@ qboolean SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 		return false;
 	}
 //GHz END
+	// az begin
+	else if (tbi->value)
+	{
+		spot = TBI_FindSpawn(ent);
+
+		if (!spot)
+		{
+			if (FindValidSpawnPoint(ent, true))
+			{
+				VectorCopy(ent->s.angles, angles);
+				VectorCopy(ent->s.origin, origin);
+				VectorCopy(vec3_origin, ent->s.origin); // to avoid killbox() fragging us
+				gi.linkentity(ent);
+				origin[2] += 9;
+				return true;
+			}
+		}
+	}
+	// az end
 	else if (deathmatch->value)
 		spot = SelectDeathmatchSpawnPoint (ent);
 	else if (coop->value)
@@ -2269,7 +2288,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	playernum = ent-g_edicts-1;
 
 	// combine name and skin into a configstring
-	if (ptr->value || domination->value || ctf->value)
+	if (ptr->value || domination->value || ctf->value || tbi->value)
 		AssignTeamSkin(ent, s);
 	else if (!V_AssignClassSkin(ent, s))
 		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );

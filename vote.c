@@ -36,6 +36,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "0");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//gi.cvar_set("dm_monsters", "0");				
 		}
 		break;
@@ -51,6 +52,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//if (dm_monsters->value < 8)
 			//	gi.cvar_set("dm_monsters", "8");
 			//else
@@ -69,6 +71,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -84,6 +87,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "11");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//gi.cvar_set("dm_monsters", "0");
 		}
 		break;
@@ -99,6 +103,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "21");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//if (dm_monsters->value < 4)
 			//	gi.cvar_set("dm_monsters", "4");
 			//else
@@ -117,6 +122,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "21");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//gi.cvar_set("dm_monsters", "4");
 		}
 		break;
@@ -132,6 +138,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("timelimit", "31");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			//gi.cvar_set("dm_monsters", "4");
 		}
 		break;
@@ -146,6 +153,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("trading", "1");
 			gi.cvar_set("timelimit", "0");
 			gi.cvar_set("hw", "0");
+			gi.cvar_set("tbi", "0");
 			break;
 		}
 		case MAPMODE_VHW: // vortex holy wars
@@ -159,7 +167,21 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 				gi.cvar_set("trading", "0");
 				gi.cvar_set("timelimit", "15");
 				gi.cvar_set("hw", "1");
+				gi.cvar_set("tbi", "0");
 				break;
+			}
+		case MAPMODE_TBI:
+			{
+				gi.cvar_set("ffa", "0");
+				gi.cvar_set("domination", "0");
+				gi.cvar_set("ctf", "0");
+				gi.cvar_set("pvm", "0");
+				gi.cvar_set("invasion", "0");
+				gi.cvar_set("fraglimit", "0");
+				gi.cvar_set("trading", "0");
+				gi.cvar_set("timelimit", "15");
+				gi.cvar_set("hw", "0");
+				gi.cvar_set("tbi", "1");
 			}
 		break;
 	}
@@ -197,6 +219,7 @@ v_maplist_t *GetMapList(int mode)
 	case MAPMODE_TRA:   return &maplist_TRA; // vrxchile 2.5: trading mode maplist
 	case MAPMODE_INH:	return &maplist_INH; // vrxchile 2.6: invasion hard mode
 	case MAPMODE_VHW:	return &maplist_VHW; // vrxchile 3.0: vortex holy wars mode
+	case MAPMODE_TBI:	return &maplist_TBI; // vrxchile 3.4: destroy the spawn mode
 	default:
 		gi.dprintf("ERROR in GetMapList(). Incorrect map mode. (%d)\n", mode);
 		return 0;
@@ -964,12 +987,16 @@ void ShowVoteModeMenu(edict_t *ent)
 		addlinetomenu(ent, " Domination", MAPMODE_DOM);
 		lastline++;
 	}
-	// CTF and vhw available when there are at least 4 players
+	// CTF and vhw and tbi available when there are at least 4 players
 	if (players >= 4)
 	{
 		addlinetomenu(ent, " CTF", MAPMODE_CTF);
 		lastline++;
+
 		addlinetomenu(ent, " Vortex Holywars", MAPMODE_VHW);
+		lastline++;
+
+		addlinetomenu(ent, " Destroy The Spawn", MAPMODE_TBI);
 		lastline++;
 	}
 //GHz END

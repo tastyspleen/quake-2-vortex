@@ -1817,6 +1817,7 @@ char *V_GetMonsterKind (int mtype)
 		return "spike grenade";
 	case INVASION_PLAYERSPAWN: 
 	case CTF_PLAYERSPAWN:
+	case TBI_PLAYERSPAWN:
 		return "spawn";
 	case M_SUPPLYSTATION:
 		return "depot";

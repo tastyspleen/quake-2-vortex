@@ -341,7 +341,6 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	}else // anything else?
 		ent->myskills.respawns = ent->client->pers.combat_changed = HOSTILE_PLAYERS |  HOSTILE_MONSTERS;
 
-	V_AssignClassSkin(ent, s);
 	Give_respawnitems(ent);
 	Give_respawnweapon(ent, ent->myskills.respawn_weapon);
 	

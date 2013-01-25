@@ -1078,7 +1078,7 @@ qboolean V_AssignClassSkin (edict_t *ent, char *s)
 		return false;
 
 	// don't assign class skins in teamplay modes
-	if (ctf->value || domination->value || ptr->value)
+	if (ctf->value || domination->value || ptr->value || tbi->value)
 		return false;
 
 	Com_sprintf(t, sizeof(t), "%s", s);
