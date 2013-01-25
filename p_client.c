@@ -1053,18 +1053,22 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		// clear inventory
 		memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
-		talentLevel = getTalentLevel(self, TALENT_MARTYR);
-
-		if (talentLevel > 0) // Martyr
+		if (!self->exploded)
 		{
-			// do the damage
-			T_RadiusDamage(self, self, SELFDESTRUCT_BONUS * talentLevel, self, SELFDESTRUCT_RADIUS * talentLevel, MOD_SELFDESTRUCT);
+				talentLevel = getTalentLevel(self, TALENT_MARTYR);
 
-			// GO BOOM!
-			gi.WriteByte (svc_temp_entity);
-			gi.WriteByte (TE_EXPLOSION1);
-			gi.WritePosition (self->s.origin);
-			gi.multicast (self->s.origin, MULTICAST_PVS);
+				if (talentLevel > 0) // Martyr
+				{
+					// do the damage
+					T_RadiusDamage(self, self, SELFDESTRUCT_BONUS * talentLevel, self, SELFDESTRUCT_RADIUS * talentLevel, MOD_SELFDESTRUCT);
+
+					// GO BOOM!
+					gi.WriteByte (svc_temp_entity);
+					gi.WriteByte (TE_EXPLOSION1);
+					gi.WritePosition (self->s.origin);
+					gi.multicast (self->s.origin, MULTICAST_PVS);
+				}
+				self->exploded = true;
 		}
 	}
 
@@ -1968,6 +1972,7 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (mins, ent->mins);
 	VectorCopy (maxs, ent->maxs);
 	VectorClear (ent->velocity);
+	ent->exploded = false;
 
 	V_ResetPlayerState(ent);
 

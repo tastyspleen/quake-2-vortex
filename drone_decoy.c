@@ -354,9 +354,10 @@ void init_drone_decoy (edict_t *self)
 	decoy_copy(self);
 
 	self->health = 250 + 100 * self->activator->myskills.level;
+	self->model = "players/male/tris.md2";
 
-	//Limit decoy health to 1000
-	if(self->health > 1000)		self->health = 1000;
+	//Limit decoy health to 2000
+	if(self->health > 2000)		self->health = 2000;
 
 	self->max_health = self->health;
 	self->gib_health = -150;
