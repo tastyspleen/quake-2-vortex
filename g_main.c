@@ -150,6 +150,19 @@ cvar_t *class10_skin;
 cvar_t *class11_skin;
 cvar_t *class12_skin;
 
+cvar_t *class1_model;
+cvar_t *class2_model;
+cvar_t *class3_model;
+cvar_t *class4_model;
+cvar_t *class5_model;
+cvar_t *class6_model;
+cvar_t *class7_model;
+cvar_t *class8_model;
+cvar_t *class9_model;
+cvar_t *class10_model;
+cvar_t *class11_model;
+cvar_t *class12_model;
+
 // world spawn ammo
 cvar_t *world_min_bullets;
 cvar_t *world_min_cells;

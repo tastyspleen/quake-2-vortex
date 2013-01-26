@@ -849,8 +849,7 @@ void Drop_PowerArmor (edict_t *ent, gitem_t *item)
 edict_t *SelectFarthestDeathmatchSpawnPoint (edict_t *ent);
 void Teleport_them(edict_t *ent)
 {
-	int i;
-	vec3_t	spawn_origin, spawn_angles;
+	vec3_t	spawn_origin, spawn_angles, start;
 	edict_t	*spot = NULL;
 
 	ent->client->tball_delay = level.time + 4;
@@ -865,81 +864,13 @@ void Teleport_them(edict_t *ent)
 
 	ent->s.event = EV_PLAYER_TELEPORT;
 	
-	if (!invasion->value)
-		spot = SelectFarthestDeathmatchSpawnPoint(ent);
-	else
-		SelectSpawnPoint(ent, spawn_origin, spawn_angles);
-
-	// find a single player start spot
-	if (!spot && !invasion->value)
-	{
-		while ((spot = G_Find (spot, FOFS(classname), "info_player_start")) != NULL)
-		{
-			if (!game.spawnpoint[0] && !spot->targetname)
-				break;
-
-			if (!game.spawnpoint[0] || !spot->targetname)
-				continue;
-
-			if (Q_stricmp(game.spawnpoint, spot->targetname) == 0)
-				break;
-		}
-
-		if (!spot)
-		{
-			if (!game.spawnpoint[0])
-			{	// there wasn't a spawnpoint without a target, so use any
-				spot = G_Find (spot, FOFS(classname), "info_player_start");
-			}
-		}
-	}
+	SelectSpawnPoint(ent, spawn_origin, spawn_angles);
 	
-	if (!invasion->value && spot)
-	{
-		VectorCopy (spot->s.angles, spawn_angles);
-		VectorCopy (spot->s.origin, spawn_origin);
-	}
-
-	if(ent->svflags & SVF_MONSTER) 
-		spawn_origin[2] += 32;
-	else 
-		spawn_origin[2] += 9;
-
-	if (ent->client)
-	{
-		ent->client->ps.pmove.origin[0] = spawn_origin[0]*8;
-		ent->client->ps.pmove.origin[1] = spawn_origin[1]*8;
-		ent->client->ps.pmove.origin[2] = spawn_origin[2]*8;
-	}
-
-	VectorCopy (spawn_origin, ent->s.origin);
-	ent->s.origin[2] += 1;	// make sure off ground
-	VectorCopy (ent->s.origin, ent->s.old_origin);
-
-	ent->s.angles[PITCH] = 0;
-	ent->s.angles[YAW] = spawn_angles[YAW];
-	ent->s.angles[ROLL] = 0;
-	if (ent->client)
-	{
-		VectorCopy (ent->s.angles, ent->client->ps.viewangles);
-		VectorCopy (ent->s.angles, ent->client->v_angle);
-
-		// set the delta angle
-		for (i=0 ; i<3 ; i++)
-		{
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - ent->client->resp.cmd_angles[i]);
-		}
-	}
-
-	// add a teleportation effect
-	ent->s.event = EV_PLAYER_TELEPORT;
-
-	if (ent->client)
-	{
-	// hold in place briefly
-	ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
-	ent->client->ps.pmove.pm_time = 14;
-
+	VectorCopy(spawn_origin, start);
+	start[2] += 9;
+	VectorCopy(start, ent->s.origin);
+	VectorCopy(spawn_angles, ent->s.angles);
+	
 	//3.0 You get some invincibility when you spawn, but you can't shoot
 	ent->client->respawn_time = ent->client->ability_delay = level.time + (RESPAWN_INVIN_TIME / 10);
 	ent->client->invincible_framenum = level.framenum + RESPAWN_INVIN_TIME;
@@ -948,7 +879,6 @@ void Teleport_them(edict_t *ent)
 	if (ent->mtype)
 		ent->monsterinfo.attack_finished = ent->client->respawn_time;
 
-	}
 	KickPlayerBack(ent);//Kicks all campers away!
 	KillBox (ent);
 }

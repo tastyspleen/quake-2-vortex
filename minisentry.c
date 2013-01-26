@@ -565,7 +565,7 @@ void SpawnMiniSentry (edict_t *ent, int cost, float skill_mult, float delay_mult
 
 	// create basic ent for sentry base
 	base = G_Spawn();
-	base->creator = ent;
+	base->activator = base->creator = ent;
 	VectorCopy(ent->s.angles, base->s.angles);
 	base->s.angles[PITCH] = 0;
 	base->s.angles[ROLL] = 0;

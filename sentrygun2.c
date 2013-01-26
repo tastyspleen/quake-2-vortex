@@ -982,7 +982,7 @@ void SpawnSentry1 (edict_t *ent, int sentryType, int cost, float skill_mult, flo
 	sentry = G_Spawn();
 
 	//Sentry gun properties
-	sentry->creator = ent;
+	sentry->activator = sentry->creator = ent;
 	sentry->classname = "Sentry_Gun";
 	sentry->movetype = MOVETYPE_TOSS;
 	sentry->clipmask = MASK_MONSTERSOLID;

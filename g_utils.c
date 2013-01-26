@@ -1614,6 +1614,8 @@ void G_TeleportNearbyEntities(vec3_t point, float radius, qboolean vis, edict_t 
 			continue;
 		if (ctf->value && e->mtype == CTF_PLAYERSPAWN)
 			continue;
+		if (tbi->value && e->mtype == TBI_PLAYERSPAWN)
+			continue;
 
 		if (e == ignore)
 			continue;

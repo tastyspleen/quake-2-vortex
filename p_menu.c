@@ -537,6 +537,9 @@ void StartGame (edict_t *ent)
 	ent->ThreadStatus = 0;
 #endif
 
+	if (tbi->value && level.time > pregame_time->value)
+		OrganizeTeams(false);
+
 	SavePlayer(ent); // Do we need to?
 }
 

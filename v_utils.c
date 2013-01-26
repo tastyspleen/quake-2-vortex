@@ -2048,7 +2048,7 @@ void V_ResetPlayerState (edict_t *ent)
 	if (ctf->value || domination->value)
 	{
 		char *s = Info_ValueForKey(ent->client->pers.userinfo, "skin");
-		AssignTeamSkin(ent, s);
+		V_AssignClassSkin(ent, s);
 		
 		// drop the flag
 		dom_dropflag(ent, FindItem("Flag"));

@@ -1,7 +1,12 @@
 #include "g_local.h"
 
-#define TBI_SPAWN_HEALTH 5000
+void TBI_AwardTeam(int Teamnum, int exp, qboolean Broadcast);
+void TBI_CheckSpawns();
+void TBI_Reinitialize();
+
+#define TBI_SPAWN_HEALTH 15000
 #define TBI_MAX_SPAWNS	 16
+
 typedef struct
 {
 	int RedSpawns;
@@ -35,7 +40,20 @@ void TBI_AssignTeam(edict_t* ent)
 
 	ent->teamnum = TeamNum;
 
-	AssignTeamSkin(ent, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
+	V_AssignClassSkin(ent, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
+}
+
+void TBI_CheckRules(edict_t* self)
+{
+	TBI_CheckSpawns();
+
+	if (!tbi_game.BlueSpawns || !tbi_game.RedSpawns)
+	{
+		gi.bprintf(PRINT_HIGH, "Team %s is out of spawns!\n", !tbi_game.RedSpawns ? "Red" : "Blue");
+		TBI_Reinitialize();
+		gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
+		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, 350 * pow(AveragePlayerLevel(), 2) / 4, true);
+	}
 }
 
 void TBI_SpawnPlayers()
@@ -45,6 +63,8 @@ void TBI_SpawnPlayers()
 	edict_t *cl_ent;
 
 	CurrentRedSpawn = CurrentBlueSpawn = 0;
+
+	OrganizeTeams(true);
 	
 	// Assign everyone a spawn
 	for (cl_ent = g_edicts + 1; cl_ent != g_edicts + i_maxclients + 1; cl_ent++)
@@ -77,16 +97,22 @@ void TBI_SpawnPlayers()
 
 	for (cl_ent = g_edicts + 1; cl_ent != g_edicts + i_maxclients + 1; cl_ent++)
 	{
+		vec3_t start;
 		// Alrighty, everyone's got spawns.
 		if (cl_ent->client && cl_ent->inuse && !G_IsSpectator(cl_ent))
-			respawn(cl_ent); // Respawn them.
+		{
+			VectorCopy(cl_ent->spawn->s.origin, start);
+			start[2] += 9;
+			VectorCopy(start, cl_ent->s.origin);
+			VectorCopy(cl_ent->spawn->s.angles, cl_ent->s.angles);
+			cl_ent->client->invincible_framenum = level.framenum + 30;
+			gi.linkentity(cl_ent);
+		}
 	}
 }
 
 edict_t *TBI_FindRandomSpawnForTeam(int team)
 {
-	edict_t* random;
-
 	if (team == RED_TEAM)
 	{
 		return tbi_game.EntRedSpawns[GetRandom(0, tbi_game.TotalRedSpawns-1)];
@@ -140,13 +166,18 @@ edict_t* TBI_FindSpawn(edict_t *ent)
 void TBI_Reinitialize()
 {
 	int i;
+
+	tbi_game.RedSpawns = tbi_game.BlueSpawns = 0;
+
 	for (i = 0; i < tbi_game.TotalRedSpawns; i++)
 	{
 		edict_t *e = tbi_game.EntRedSpawns[i];
 		e->health = e->max_health;
 		e->deadflag = DEAD_NO;
 		e->solid = SOLID_BBOX;
+		e->takedamage = DAMAGE_YES;
 		e->svflags &= ~SVF_NOCLIENT;
+		tbi_game.RedSpawns++;
 	}
 
 	for (i = 0; i < tbi_game.TotalBlueSpawns; i++)
@@ -156,6 +187,8 @@ void TBI_Reinitialize()
 		e->deadflag = DEAD_NO;
 		e->solid = SOLID_BBOX;
 		e->svflags &= ~SVF_NOCLIENT;
+		e->takedamage = DAMAGE_YES;
+		tbi_game.BlueSpawns++;
 	}
 
 	TBI_SpawnPlayers();
@@ -163,6 +196,26 @@ void TBI_Reinitialize()
 
 void TBI_SpawnThink(edict_t *self)
 {
+}
+
+void TBI_CheckSpawns()
+{
+	int i;
+	tbi_game.RedSpawns = tbi_game.BlueSpawns = 0;
+
+	for (i = 0; i < tbi_game.TotalRedSpawns; i++)
+	{
+		edict_t *e = tbi_game.EntRedSpawns[i];
+		if (e->deadflag != DEAD_DEAD)
+			tbi_game.RedSpawns++;
+	}
+
+	for (i = 0; i < tbi_game.TotalBlueSpawns; i++)
+	{
+		edict_t *e = tbi_game.EntBlueSpawns[i];
+		if (e->deadflag != DEAD_DEAD)
+			tbi_game.BlueSpawns++;
+	}
 }
 
 void TBI_AwardTeam(int Teamnum, int exp, qboolean Broadcast)
@@ -187,34 +240,28 @@ void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 {
 	if (self->deadflag != DEAD_DEAD)
 	{
-		if (self->teamnum == RED_TEAM)
-			tbi_game.RedSpawns--;
-		else
-			tbi_game.BlueSpawns--;
+		edict_t *cl_ent;
+		int i_maxclients = maxclients->value;
+
+		self->svflags |= SVF_NOCLIENT;
+		self->solid = SOLID_NOT;
+		self->takedamage = DAMAGE_NO;
 
 		gi.bprintf(PRINT_HIGH, "A %s spawn has been destroyed.\n", self->teamnum == RED_TEAM ? "red" : "blue");
 
 		// Give some experience.
-		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, pow(self->monsterinfo.level, 2) / 2 * 225, false);
-
-		if (!tbi_game.BlueSpawns || !tbi_game.RedSpawns)
-		{
-			gi.bprintf(PRINT_HIGH, "Team %s is out of spawns!\n", !tbi_game.RedSpawns ? "Red" : "Blue");
-			TBI_Reinitialize();
-
-			TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, 700 * pow(AveragePlayerLevel(), 2) / 3.5, true);
-		}
-		
-		self->svflags |= SVF_NOCLIENT;
-		self->solid = SOLID_NOT;
+		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, pow(self->monsterinfo.level, 2) / 6 * 60, false);	
 
 		gi.WriteByte (svc_temp_entity);
 		gi.WriteByte (TE_EXPLOSION1);
 		gi.WritePosition (self->s.origin);
 		gi.multicast (self->s.origin, MULTICAST_PVS);
+
+		gi.sound(g_edicts, CHAN_VOICE, gi.soundindex(va("bosstank/BTKUNQV%d.wav", GetRandom(1, 2))), 1, ATTN_NONE, 0);
 	}
 
 	self->deadflag = DEAD_DEAD;
+	TBI_CheckRules(self);
 }
 
 void TBI_InitPlayerSpawns(int teamnum)
@@ -291,5 +338,4 @@ void InitTBI()
 	TBI_InitPlayerSpawns(3); // deathmatch stuff.
 
 	TBI_SpawnPlayers();
-	OrganizeTeams(true);
 }
