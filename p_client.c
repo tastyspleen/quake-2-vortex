@@ -1522,7 +1522,10 @@ qboolean SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 				origin[2] += 9;
 				return true;
 			}
-		}
+		}/*else
+		{
+			gi.dprintf("spawning %d into %d", ent->teamnum, spot->teamnum);
+		}*/
 	}
 	// az end
 	else if (deathmatch->value)
@@ -2288,9 +2291,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	playernum = ent-g_edicts-1;
 
 	// combine name and skin into a configstring
-	if (ptr->value || domination->value || ctf->value || tbi->value)
-		AssignTeamSkin(ent, s);
-	else if (!V_AssignClassSkin(ent, s))
+	if (!V_AssignClassSkin(ent, s))
 		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
 	// fov

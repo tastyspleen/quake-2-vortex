@@ -252,7 +252,7 @@ void sortTeamsByLevel()
 
 			   // set team skin
 			   s = Info_ValueForKey (playerlist[i]->client->pers.userinfo, "skin");
-			   AssignTeamSkin(playerlist[i], s);
+			   V_AssignClassSkin(playerlist[i], s);
           }	
      }
 }

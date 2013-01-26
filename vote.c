@@ -386,6 +386,7 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_TRA:	Com_sprintf (tempBuffer, 1024, "%sTrading ", tempBuffer); break;
 			case MAPMODE_INH:	Com_sprintf (tempBuffer, 1024, "%sInvasion (Hard mode) ", tempBuffer); break;
 			case MAPMODE_VHW:	Com_sprintf (tempBuffer, 1024, "%sVortex HolyWars ", tempBuffer); break;
+			case MAPMODE_TBI:   Com_sprintf (tempBuffer, 1024, "%sDestroy the Spawn ", tempBuffer); break;
 		}
 		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
 
@@ -644,7 +645,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 		return;
 	}
 	//Multi-page navigation
-	else if (option > 10000)
+	else if (option > 20000)
 	{
 		int mode = (option / 1000) - 10;
 		int nextpage = option % 1000;		//page number we will end up in (page 0 = main menu)
@@ -739,7 +740,7 @@ void ShowVoteMapMenu(edict_t *ent, int pagenum, int mapmode)
 
 	if ((!EndOfList) && (i != maplist->nummaps))
 	{
-		addlinetomenu(ent, " Next", (10000 + pagenum + 1) + (mapmode * 1000)); //ex: pvp, page 3 = 11004
+		addlinetomenu(ent, " Next", (20000 + pagenum + 1) + (mapmode * 1000)); //ex: pvp, page 3 = 11004
 	}
 	else
 	{
@@ -747,7 +748,7 @@ void ShowVoteMapMenu(edict_t *ent, int pagenum, int mapmode)
 		++ent->client->menustorage.currentline;
 	}
 	
-	addlinetomenu(ent, " Previous", (10000 + pagenum - 1) + (mapmode * 1000));	//ex: pvm, page 3 = 12002
+	addlinetomenu(ent, " Previous", (20000 + pagenum - 1) + (mapmode * 1000));	//ex: pvm, page 3 = 12002
 	addlinetomenu(ent, " Exit", 66666);
 
 	//Set handler
@@ -999,6 +1000,7 @@ void ShowVoteModeMenu(edict_t *ent)
 		addlinetomenu(ent, " Destroy The Spawn", MAPMODE_TBI);
 		lastline++;
 	}
+
 //GHz END
 	//Menu footer
 	addlinetomenu(ent, " ", 0);

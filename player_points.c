@@ -186,7 +186,7 @@ void check_for_levelup (edict_t *ent)
 		levelup = true;
 
 		// maximum level cap
-		if (!ent->myskills.administrator && ent->myskills.level >= 40) // cap to 40 >:)
+		if (!ent->myskills.administrator && ent->myskills.level >= 50) // cap to 50
 		{
 			ent->myskills.next_level = ent->myskills.experience;
 			return;
@@ -220,7 +220,7 @@ void check_for_levelup (edict_t *ent)
 		WriteToLogfile(ent, va("Player reached level %d\n", ent->myskills.level));
 
 		// maximum level cap
-		if (!ent->myskills.administrator && ent->myskills.level >= 40)
+		if (!ent->myskills.administrator && ent->myskills.level >= 50)
 		{
 			ent->myskills.next_level = ent->myskills.experience;
 			break;

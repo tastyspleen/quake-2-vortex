@@ -968,7 +968,7 @@ void Cmd_Magicbolt_f (edict_t *ent, float skill_mult, float cost_mult)
 
 	damage = (BOLT_INITIAL_DAMAGE+BOLT_ADDON_DAMAGE*ent->myskills.abilities[MAGICBOLT].current_level)*skill_mult;
 
-	ent->client->ability_delay = level.time/*+BOLT_DELAY*cost_mult*/; // vrc 2.32 remove  magicbolt delay to spam!
+	ent->client->ability_delay = level.time + 0.1; // vrc 2.32 remove  magicbolt delay to spam!
 
 	fire_magicbolt(ent, damage, 0, 0, cost_mult);
 
@@ -1084,10 +1084,10 @@ void Cmd_FrostNova_f (edict_t *ent, float skill_mult, float cost_mult)
 }
 
 #define EXPLODING_ARMOR_COST			0
-#define EXPLODING_ARMOR_MAX_COUNT		6
+#define EXPLODING_ARMOR_MAX_COUNT		4
 #define EXPLODING_ARMOR_AMOUNT			50
-#define EXPLODING_ARMOR_DMG_BASE		200
-#define EXPLODING_ARMOR_DMG_ADDON		30	
+#define EXPLODING_ARMOR_DMG_BASE		75
+#define EXPLODING_ARMOR_DMG_ADDON		40
 #define EXPLODING_ARMOR_MAX_RADIUS		256	
 #define EXPLODING_ARMOR_DELAY			1
 #define EXPLODING_ARMOR_DETECTION		32
@@ -6604,10 +6604,10 @@ void Cmd_Healer_f (edict_t *ent)
 #define SPIKER_FRAME_READY				13
 #define SPIKER_FRAME_DEAD				18
 
-#define SPIKER_INITIAL_HEALTH			100
-#define SPIKER_ADDON_HEALTH				40
+#define SPIKER_INITIAL_HEALTH			80
+#define SPIKER_ADDON_HEALTH				30
 #define SPIKER_INITIAL_DAMAGE			50
-#define SPIKER_ADDON_DAMAGE				20
+#define SPIKER_ADDON_DAMAGE				10
 #define SPIKER_INITIAL_SPEED			1000
 #define SPIKER_ADDON_SPEED				0
 #define SPIKER_COST						25

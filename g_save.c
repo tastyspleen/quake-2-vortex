@@ -325,21 +325,40 @@ void InitGame (void)
 
 	// class skins
 	enforce_class_skins = gi.cvar ("enforce_class_skins", "1", CVAR_LATCH);
-	class1_skin = gi.cvar ("class1_skin", "terran/blue", CVAR_LATCH); // soldier
-	class2_skin = gi.cvar ("class2_skin", "zumlin/zumlin", CVAR_LATCH); // polt
-	class3_skin = gi.cvar ("class3_skin", "caleb/caleb_undead", CVAR_LATCH); // vampire
-	class4_skin = gi.cvar ("class4_skin", "linfang/ctf_r", CVAR_LATCH); // mage
-	class5_skin = gi.cvar ("class5_skin", "terminator/blood", CVAR_LATCH); // engy
-	class6_skin = gi.cvar ("class6_skin", "pknight/knight", CVAR_LATCH); // knight
-	class7_skin = gi.cvar ("class7_skin", "alita/alita", CVAR_LATCH); // cleric
+
+	class1_model = gi.cvar ("class1_model", "terran", CVAR_LATCH); // soldier
+	class2_model = gi.cvar ("class2_model", "zumlin", CVAR_LATCH); // polt
+	class3_model = gi.cvar ("class3_model", "caleb", CVAR_LATCH); // vampire
+	class4_model = gi.cvar ("class4_model", "linfang", CVAR_LATCH); // mage
+	class5_model = gi.cvar ("class5_model", "terminator", CVAR_LATCH); // engy
+	class6_model = gi.cvar ("class6_model", "pknight", CVAR_LATCH); // knight
+	class7_model = gi.cvar ("class7_model", "alita", CVAR_LATCH); // cleric
 	if (generalabmode->value)
-		class8_skin = gi.cvar ("class8_skin", "ratamahatta/ratamahatta", CVAR_LATCH); // weapon master
+		class8_model = gi.cvar ("class8_model", "ratamahatta", CVAR_LATCH); // weapon master
 	else
-		class8_skin = gi.cvar ("class8_skin", "marine/brownie", CVAR_LATCH); // apprentice
-	class9_skin = gi.cvar ("class9_skin", "slith/chompers", CVAR_LATCH); // necromancer
-	class10_skin = gi.cvar ("class10_skin", "bauul/bauul", CVAR_LATCH); // shaman
-	class11_skin = gi.cvar ("class11_skin", "xenoid/xenotype1", CVAR_LATCH); // alien
-	class12_skin = gi.cvar ("class12_skin", "ddz/ctf_g", CVAR_LATCH); // kamikaze
+		class8_model = gi.cvar ("class8_model", "marine", CVAR_LATCH); // apprentice
+	class9_model = gi.cvar ("class9_model", "slith", CVAR_LATCH); // necromancer
+	class10_model = gi.cvar ("class10_model", "bauul", CVAR_LATCH); // shaman
+	class11_model = gi.cvar ("class11_model", "xenoid", CVAR_LATCH); // alien
+	class12_model = gi.cvar ("class12_model", "ddz", CVAR_LATCH); // kamikaze
+
+
+
+	class1_skin = gi.cvar ("class1_skin", "blue", CVAR_LATCH); // soldier
+	class2_skin = gi.cvar ("class2_skin", "zumlin", CVAR_LATCH); // polt
+	class3_skin = gi.cvar ("class3_skin", "caleb_undead", CVAR_LATCH); // vampire
+	class4_skin = gi.cvar ("class4_skin", "ctf_r", CVAR_LATCH); // mage
+	class5_skin = gi.cvar ("class5_skin", "blood", CVAR_LATCH); // engy
+	class6_skin = gi.cvar ("class6_skin", "knight", CVAR_LATCH); // knight
+	class7_skin = gi.cvar ("class7_skin", "alita", CVAR_LATCH); // cleric
+	if (generalabmode->value)
+		class8_skin = gi.cvar ("class8_skin", "ratamahatta", CVAR_LATCH); // weapon master
+	else
+		class8_skin = gi.cvar ("class8_skin", "brownie", CVAR_LATCH); // apprentice
+	class9_skin = gi.cvar ("class9_skin", "chompers", CVAR_LATCH); // necromancer
+	class10_skin = gi.cvar ("class10_skin", "bauul", CVAR_LATCH); // shaman
+	class11_skin = gi.cvar ("class11_skin", "xenotype1", CVAR_LATCH); // alien
+	class12_skin = gi.cvar ("class12_skin", "ctf_g", CVAR_LATCH); // kamikaze
 
 	// minimum map ammo
 	world_min_shells = gi.cvar ("world_min_shells", "4", 0);
@@ -422,7 +441,8 @@ void InitGame (void)
 	//3.0 Load the custom map lists
 	if(v_LoadMapList(MAPMODE_PVP) && v_LoadMapList(MAPMODE_PVM) && v_LoadMapList(MAPMODE_INV)
 		&& v_LoadMapList(MAPMODE_DOM) && v_LoadMapList(MAPMODE_CTF) && v_LoadMapList(MAPMODE_FFA)
-		&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH) && v_LoadMapList(MAPMODE_VHW))
+		&& v_LoadMapList(MAPMODE_TRA) && v_LoadMapList(MAPMODE_INH) && v_LoadMapList(MAPMODE_VHW)
+		&& v_LoadMapList(MAPMODE_TBI))
 		gi.dprintf("INFO: Vortex Custom Map Lists loaded successfully\n");
 	else
 		gi.dprintf("WARNING: Error loading custom map lists\n");

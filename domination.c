@@ -375,7 +375,7 @@ void dom_init (void)
 		if (G_EntExists(cl_ent))
 		{
 			s = Info_ValueForKey (cl_ent->client->pers.userinfo, "skin");
-			AssignTeamSkin(cl_ent, s);
+			V_AssignClassSkin(cl_ent, s);
 		}
 	}
 	

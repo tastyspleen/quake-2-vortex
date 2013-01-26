@@ -315,6 +315,9 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 		gi.dprintf("V_GDS_Queue_Add: Null Entity or Client!\n");
 	}
 
+	if (!GDS_MySQL)
+		return;
+
 	if (operation != GDS_SAVE && 
 		operation != GDS_LOAD && 
 		operation != GDS_SAVECLOSE &&
@@ -1372,6 +1375,7 @@ void CreateProcessQueue()
 
 qboolean V_GDS_StartConn()
 {
+	int rc;
 	gi.dprintf("DB: Initializing connection... ");
 
 	gds_singleserver = gi.cvar("gds_single", "1", 0); // default to a single server using sql.
@@ -1403,7 +1407,8 @@ qboolean V_GDS_StartConn()
 
 	pthread_mutex_init(&QueueMutex, NULL);
 	pthread_mutex_init(&StatusMutex, NULL);
-	pthread_mutex_init(&ThreadStatusMutex, NULL);
+	if (rc = pthread_mutex_init(&ThreadStatusMutex, NULL))
+		gi.dprintf("mutex creation err: %d", rc);
 
 	pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
@@ -1495,7 +1500,7 @@ void GDS_FinishThread()
 	{
 		V_GDS_Queue_Add(NULL, GDS_EXITTHREAD);
 
-		gi.dprintf("DB: Finishing thread... ", rc);
+		gi.dprintf("DB: Finishing thread... ");
 		rc = pthread_join(QueueThread, &status);
 		gi.dprintf(" Done.\n", rc);
 
