@@ -372,6 +372,7 @@ void setGeneralAbilities (edict_t *ent)
 		enableAbility(ent, METEOR, 0, 5, 1);
 		enableAbility(ent, AUTOCANNON, 0, 5, 1);
 		enableAbility(ent, HAMMER, 0, 5, 1);
+		enableAbility(ent, SUPER_SPEED, 0, 5, 1);
 		enableAbility(ent, FIRE_TOTEM, 0, 5, 1);
 		enableAbility(ent, WATER_TOTEM, 0, 5, 1);
 		enableAbility(ent, AIR_TOTEM, 0, 5, 1);
