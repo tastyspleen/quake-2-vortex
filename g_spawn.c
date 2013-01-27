@@ -912,12 +912,12 @@ char *dm_statusbar =
 // picked up item
 "if 7 "
 //"   yv 125 "
-"	xv	120 "
-"	pic 7 "
-"	xv 145"
 "	yv -42 "
-"	stat_string 8 "
+"	xv 120 "
+"	pic 7 "
+"	xv 145 "
 "	yb	-50 "
+"	stat_string 8 "
 "endif "
 
 // timer

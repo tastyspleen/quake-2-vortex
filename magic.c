@@ -2613,7 +2613,7 @@ void Cmd_ChainLightning_f (edict_t *ent, float skill_mult, float cost_mult)
 #define AUTOCANNON_START_DELAY			2.0 // time until the cannon can fire its first shot
 #define AUTOCANNON_BUILD_TIME			1.0 // time it takes player to build the autocannon
 #define AUTOCANNON_DELAY				1.0	// ability delay
-#define AUTOCANNON_RANGE				1024
+#define AUTOCANNON_RANGE				2048
 #define AUTOCANNON_INITIAL_HEALTH		100//250
 #define AUTOCANNON_ADDON_HEALTH			40//25
 #define AUTOCANNON_INITIAL_DAMAGE		100
