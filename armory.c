@@ -1005,9 +1005,9 @@ void SaveArmory()
 
 	//get path
 	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\%s", game_path->string, "Settings\\ArmoryItems.dat");
+		sprintf(filename, "%s\\%s", game_path->string, "settings\\ArmoryItems.dat");
 	#else
-		sprintf(filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
+		sprintf(filename, "%s/%s", game_path->string, "settings/ArmoryItems.dat");
 	#endif	
 
 	if ((fptr = fopen(filename, "wb")) != NULL)
@@ -1032,7 +1032,7 @@ void LoadArmory()	//Call this during InitGame()
 	FILE *fptr;
 
 	//get path
-	sprintf(filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
+	sprintf(filename, "%s/%s", game_path->string, "settings/ArmoryItems.dat");
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{

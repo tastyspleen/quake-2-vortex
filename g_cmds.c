@@ -1826,7 +1826,7 @@ void Cmd_MakeAdmin(edict_t *ent)
 	}
 }
 
-void VortexCheckClientSettings(edict_t *ent, int setting, int value)
+void VortexCheckClientsettings(edict_t *ent, int setting, int value)
 {
 	if (ent->myskills.administrator)
 		return;
@@ -3064,7 +3064,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "lockon_off") == 0)
 		Cmd_Lockon_f(ent, 0);
 	else if (Q_stricmp (cmd, "checkclientsettings") == 0)
-		VortexCheckClientSettings(ent, atoi(gi.argv(1)), atoi(gi.argv(2)));
+		VortexCheckClientsettings(ent, atoi(gi.argv(1)), atoi(gi.argv(2)));
 	//NewB
 	else if (Q_stricmp (cmd, "trade") == 0)
 	{

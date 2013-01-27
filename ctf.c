@@ -1269,9 +1269,9 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 		return false;
 
 	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\Settings\\loc\\%s_%d.loc", game_path->string, level.mapname, teamnum);
+		sprintf(path, "%s\\settings\\loc\\%s_%d.loc", game_path->string, level.mapname, teamnum);
 	#else
-		sprintf(path, "%s/Settings/%s_%d.loc", game_path->string, level.mapname, teamnum);
+		sprintf(path, "%s/settings/%s_%d.loc", game_path->string, level.mapname, teamnum);
 	#endif
 	
 		gi.dprintf("Reading file %s.\n", path);
@@ -1304,7 +1304,7 @@ void CTF_WriteFlagPosition (edict_t *ent)
 	if (!teamnum)
 		return;
 
-	sprintf(path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
+	sprintf(path, "%s/settings/%s_%s.loc", game_path->string, level.mapname, s1);
 
      if ((fptr = fopen(path, "w")) != NULL) // write text to file
      {  
