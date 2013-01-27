@@ -483,7 +483,8 @@ char *GetAbilityString (int ability_number)
 	case COCOON:			return	"Cocoon";
 	case SELFDESTRUCT:		return  "Self Destruct";
 	case FLASH:				return	"Flash";
-	default:				return	":)";
+	case DECOY:				return	"Decoy";
+	default:				return	"<ERROR: NO NAME>";
 	}
 }
 
