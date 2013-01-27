@@ -2,7 +2,7 @@
 
 void DoMaplistFilename(int mode, char* filename)
 {
-	sprintf(filename, "%s/Settings/", game_path->string);
+	sprintf(filename, "%s/settings/", game_path->string);
 
 	switch(mode)
 	{
