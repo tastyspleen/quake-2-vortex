@@ -849,10 +849,11 @@ char *single_statusbar =
 
 // picked up item
 "if 7 "
-"	xv	0 "
+"	yv	125 "
+"   xv 120 "
 "	pic 7 "
-"	xv	26 "
-"	yb	-42 "
+"	xv	145 "
+"	yb	133 "
 "	stat_string 8 "
 "	yb	-50 "
 "endif "
@@ -916,8 +917,8 @@ char *dm_statusbar =
 "	xv 120 "
 "	pic 7 "
 "	xv 145 "
-"	yb	-50 "
 "	stat_string 8 "
+"	yb	-50 "
 "endif "
 
 // timer
