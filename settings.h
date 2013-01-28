@@ -44,7 +44,7 @@ const char* Time();
 #define NEWBIE_BASHER_MAX 3 * AveragePlayerLevel()	//maximum level a newbie basher can be
 
 #define	MAX_MINISENTRIES			2// number of minisentries you can have out at a time
-#define MAX_CREDITS					1000000 // max credits someone can have; update this on next reset to unsigned long!
+#define MAX_CREDITS					10000000 // max credits someone can have; update this on next reset to unsigned long!
 // General settings
 #define CLOAK_DRAIN_TIME			1 //10 frames = 1 second
 #define CLOAK_DRAIN_AMMO			1.0
@@ -156,18 +156,20 @@ const char* Time();
 #define ADDON_POWERCUBES_ENGINEER			10
 #define INITIAL_POWERCUBES_WEAPONMASTER		200
 #define ADDON_POWERCUBES_WEAPONMASTER		10
+#define INITIAL_POWERCUBES_KAMIKAZE			200
+#define ADDON_POWERCUBES_KAMIKAZE 		    10
 
 // Respawning
-#define TBALLS_RESPAWN		1
+#define TBALLS_RESPAWN		2
 #define	POWERCUBES_RESPAWN	25
 
 //Ammo pickups (also handled during respawning)
 #define	SHELLS_PICKUP		10
 #define	BULLETS_PICKUP		50
 #define	GRENADES_PICKUP		5
-#define	ROCKETS_PICKUP		5
+#define	ROCKETS_PICKUP		8
 #define	CELLS_PICKUP		50
-#define	SLUGS_PICKUP		5
+#define	SLUGS_PICKUP		8
 
 // Ammo upgrade skill
 #define AMMO_UP_BASE		1.0
@@ -223,7 +225,7 @@ const char* Time();
 #define EXP_LOSE_SUICIDE		5
 #define EXP_MINIBOSS			100
 
-#define CREDITS_PLAYER_BASE		10
+#define CREDITS_PLAYER_BASE		20
 #define	CREDITS_OTHER_BASE		10
 #define CREDIT_LOW				1
 #define CREDIT_SAME				2
@@ -274,9 +276,9 @@ const char* Time();
 #define MACHINEGUN_ADDON_TRACERDAMAGE	3
 
 // note: CG fires 40 bullets/sec
-#define CHAINGUN_INITIAL_DAMAGE			5
-#define CHAINGUN_ADDON_DAMAGE			0.15
-#define CHAINGUN_ADDON_TRACERDAMAGE		5
+#define CHAINGUN_INITIAL_DAMAGE			3
+#define CHAINGUN_ADDON_DAMAGE			0.17
+#define CHAINGUN_ADDON_TRACERDAMAGE		4
 
 #define GRENADE_INITIAL_DAMAGE			200
 #define GRENADE_ADDON_DAMAGE			10
@@ -287,7 +289,7 @@ const char* Time();
 
 // fires every 7-8 frames
 #define GRENADELAUNCHER_INITIAL_DAMAGE			100
-#define GRENADELAUNCHER_ADDON_DAMAGE			5
+#define GRENADELAUNCHER_ADDON_DAMAGE			10
 #define GRENADELAUNCHER_INITIAL_RADIUS_DAMAGE	100
 #define GRENADELAUNCHER_ADDON_RADIUS_DAMAGE		5
 #define GRENADELAUNCHER_INITIAL_RADIUS			100
@@ -389,7 +391,7 @@ const char* Time();
 #define SENTRY_ADDON_AMMO			10
 
 #define MINISENTRY_INITIAL_HEALTH	50
-#define MINISENTRY_ADDON_HEALTH		10
+#define MINISENTRY_ADDON_HEALTH		15
 #define MINISENTRY_INITIAL_ARMOR	50
 #define MINISENTRY_ADDON_ARMOR		30
 #define MINISENTRY_MAX_HEALTH		200
@@ -612,5 +614,14 @@ const char* Time();
 #define SELFDESTRUCT_RADIUS 256
 #define SELFDESTRUCT_BASE 50
 #define SELFDESTRUCT_BONUS 50
+
+#define EXPLODING_ARMOR_COST			0
+#define EXPLODING_ARMOR_MAX_COUNT		4
+#define EXPLODING_ARMOR_AMOUNT			50
+#define EXPLODING_ARMOR_DMG_BASE		70
+#define EXPLODING_ARMOR_DMG_ADDON		25
+#define EXPLODING_ARMOR_MAX_RADIUS		180	
+#define EXPLODING_ARMOR_DELAY			1
+#define EXPLODING_ARMOR_DETECTION		32
 
 #endif

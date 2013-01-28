@@ -400,8 +400,11 @@ qboolean MirroredEntitiesExist (edict_t *ent);
 
 void Cmd_Decoy_f (edict_t *ent)
 {
+	edict_t *ret;
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_Decoy_f()\n", ent->client->pers.netname);
+
+	return;
 
 	if (!V_CanUseAbilities(ent, DECOY, M_DEFAULT_COST, true))
 		return;
@@ -412,5 +415,6 @@ void Cmd_Decoy_f (edict_t *ent)
 		return;
 	}
 
-	SpawnDrone(ent, 20, false);
+	ret = SpawnDrone(ent, 20, false);
+	ret->monsterinfo.level = ent->myskills.abilities[DECOY].current_level;
 }

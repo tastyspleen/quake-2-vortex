@@ -52,7 +52,7 @@ void TBI_CheckRules(edict_t* self)
 		gi.bprintf(PRINT_HIGH, "Team %s is out of spawns!\n", !tbi_game.RedSpawns ? "Red" : "Blue");
 		TBI_Reinitialize();
 		gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
-		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, 350 * pow(AveragePlayerLevel(), 2) / 4, true);
+		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, 350 * pow(AveragePlayerLevel(), 2) / 6, true);
 	}
 }
 
@@ -228,29 +228,33 @@ void TBI_AwardTeam(int Teamnum, int exp, qboolean Broadcast)
 		{
 			if (cl_ent->teamnum == Teamnum)
 				V_AddFinalExp(cl_ent, exp);
-			cl_ent->myskills.credits += exp;
+			cl_ent->myskills.credits += exp * 2 / 3; // 2/3s the exp.
 		}
 	}
 
 	if (Broadcast)
-		gi.bprintf(PRINT_HIGH, "Awarded team %s a total of %d experience points and credits!\n", Teamnum == RED_TEAM ? "Red" : "Blue", exp);
+		gi.bprintf(PRINT_HIGH, "Awarded team %s a total of %d experience points and %d credits!\n", Teamnum == RED_TEAM ? "Red" : "Blue", exp, exp * 2 / 3);
 }
 
 void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	if (self->deadflag != DEAD_DEAD)
 	{
-		edict_t *cl_ent;
 		int i_maxclients = maxclients->value;
+		char* message;
 
 		self->svflags |= SVF_NOCLIENT;
 		self->solid = SOLID_NOT;
 		self->takedamage = DAMAGE_NO;
+		
+		message = HiPrint(va("A %s spawn has been destroyed.\n", self->teamnum == RED_TEAM ? "red" : "blue"));
+		
+		gi.bprintf(PRINT_HIGH, message);
 
-		gi.bprintf(PRINT_HIGH, "A %s spawn has been destroyed.\n", self->teamnum == RED_TEAM ? "red" : "blue");
+		V_Free(message);
 
 		// Give some experience.
-		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, pow(self->monsterinfo.level, 2) / 6 * 60, false);	
+		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, pow(self->monsterinfo.level, 2) / 7 * 50, false);	
 
 		gi.WriteByte (svc_temp_entity);
 		gi.WriteByte (TE_EXPLOSION1);

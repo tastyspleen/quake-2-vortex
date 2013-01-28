@@ -1050,7 +1050,8 @@ void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text)
 
 char *V_GetClassSkin (edict_t *ent)
 {
-	char *c1, *c2, out[64];
+	char *c1, *c2;
+	static char out[64];
 	
 	/* az 3.4a ctf skins support */
 

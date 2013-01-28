@@ -1009,7 +1009,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 
 	if (level.time < pregame_time->value && !trading->value )
 	{
-		if (invasion->value < 2)  // allow use of abilities in invasion hard mode.
+		if (!IsAllowedPregameSkills())  // allow use of abilities in pvm modes.
 		{
 			if (print_msg)
 				safe_cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
@@ -1865,9 +1865,16 @@ char *V_GetMonsterName (edict_t *monster)
 	return &buf[0];
 }
 
+qboolean IsAllowedPregameSkills()
+{
+	if (pvm->value || invasion->value)
+		return true;
+	return false;
+}
+
 qboolean V_IsPVP (void)
 {
-	return (!pvm->value && !ctf->value && !ffa->value && !invasion->value && !ctf->value && !ptr->value);
+	return !pvm->value && !ctf->value && !ffa->value && !invasion->value && !ptr->value && !domination->value && !tbi->value;
 }
 
 qboolean V_HealthCache (edict_t *ent, int max_per_second, int update_frequency)
@@ -2155,7 +2162,7 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 	if (cl_ent)
 	{
 		// CTF/Domination/PtR/PvM mode effects
-		if (ctf->value || domination->value || ptr->value || pvm->value || hw->value)
+		if (ctf->value || domination->value || ptr->value || pvm->value || hw->value || tbi->value)
 		{
 			// flag effects for clients
 			if (ent->client)

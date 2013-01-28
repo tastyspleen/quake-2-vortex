@@ -672,6 +672,144 @@ void Cmd_Give_f (edict_t *ent)
 	}
 }
 
+void Cmd_Togglesecondary_f (edict_t *ent)
+{
+	// save last weapon for lastweap cmd
+	ent->client->last_weapon_mode = ent->client->weapon_mode;
+
+	// tank boss secondary attack mode
+	if (ent->owner && G_EntIsAlive(ent->owner) && IsABoss(ent->owner))
+	{
+		if (ent->client->weapon_mode)
+			ent->client->weapon_mode = 0;
+		else
+			ent->client->weapon_mode = 1;
+		return;
+	}
+
+	// secondary attack mode for player-monsters
+	if (PM_PlayerHasMonster(ent))
+	{
+		// player-tank has a 3rd attack if morph mastery is trained
+		if ((ent->owner->mtype == P_TANK) 
+			&& (ent->myskills.abilities[MORPH_MASTERY].current_level > 0))
+		{
+			if (ent->client->weapon_mode==3)
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Rocket Mode\n");
+				ent->client->weapon_mode=0;
+			}
+			else if (ent->client->weapon_mode==2)
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Blaster Mode\n");
+				ent->client->weapon_mode=3;
+			}
+			else if (ent->client->weapon_mode==1)
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Bullet Mode\n");
+				ent->client->weapon_mode=2;
+			}
+			else
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Punch Mode\n");
+				ent->client->weapon_mode=1;
+			}
+			return;
+		}
+
+		// monster player-monsters only have 2 attacks
+		if (ent->client->weapon_mode)
+			ent->client->weapon_mode = 0;
+		else
+			ent->client->weapon_mode = 1;
+		return;
+	}
+
+	if (ent->mtype == MORPH_FLYER)
+	{
+		if (ent->client->weapon_mode)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Blaster\n");
+			ent->client->weapon_mode = 0;
+		}
+		else
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Smart rockets\n");
+			ent->client->weapon_mode = 1;
+		}
+		return;
+	}
+
+	if (ent->mtype == MORPH_MEDIC)
+	{
+		if (ent->client->weapon_mode==2)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
+			ent->client->weapon_mode=0;
+		}
+		else if (ent->client->weapon_mode==1)
+		{
+			if (ent->myskills.abilities[MORPH_MASTERY].current_level > 0)
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Blaster Bolt\n");
+				ent->client->weapon_mode=2;
+			}
+			else
+			{
+				safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
+				ent->client->weapon_mode=0;
+			}
+
+		}
+		else
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Healing\n");
+			ent->client->weapon_mode=1;
+		}
+		return;
+	}
+
+	if (ent->mtype == MORPH_BERSERK)
+	{
+		if (ent->client->weapon_mode == 2)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Punch\n");
+			ent->client->weapon_mode = 0;
+		}
+		else if (ent->client->weapon_mode == 1)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Crush\n");
+			ent->client->weapon_mode = 2;
+		}
+		else
+		{
+			safe_cprintf(ent, PRINT_HIGH, "Slash\n");
+			ent->client->weapon_mode = 1;
+		}
+		return;
+	}
+
+	if (ToggleSecondary(ent, ent->client->pers.weapon, true))
+	{	
+		// allow instant change for GL, since the refire rate is the same for both modes
+		if (Q_stricmp(ent->client->pers.weapon->pickup_name, "Grenade Launcher"))
+		{
+			// re-draw the weapon
+			ent->client->newweapon = ent->client->pers.weapon;
+		}
+		else
+		{
+			ent->client->refire_frames = 0;
+			lasersight_off(ent);
+		}
+		// toggle mode
+		if (ent->client->weapon_mode)
+			ent->client->weapon_mode = 0;
+		else
+			ent->client->weapon_mode = 1;
+	}
+}
+
 /*
 ==================
 Cmd_God_f
@@ -3001,24 +3139,14 @@ void ClientCommand (edict_t *ent)
 	//K03 Begin
 	else if (Q_stricmp(cmd, "upgrade_weapon") == 0)
 		OpenWeaponUpgradeMenu(ent, 0);
-	else if (Q_stricmp(cmd, "upgrade_ability") == 0)
-		OpenUpgradeMenu(ent);
 	else if (Q_stricmp(cmd, "talents") == 0)
 		OpenTalentUpgradeMenu(ent, 0);
 	else if (Q_stricmp (cmd, "hook") == 0)
         hook_fire (ent);
     else if (Q_stricmp (cmd, "unhook") == 0)
 		hook_reset(ent->client->hook);
-	else if ((Q_strcasecmp(cmd, "spell_stealammo") == 0) || (Q_strcasecmp(cmd, "ammosteal") == 0))
-		Cmd_AmmoStealer_f(ent);
-	else if ((Q_strcasecmp(cmd, "aura_salvation") == 0) || (Q_strcasecmp(cmd, "salvation") == 0))
-		Cmd_Salvation(ent);
-	else if ((Q_strcasecmp(cmd, "spell_boost") == 0) || (Q_strcasecmp(cmd, "boost") == 0))
-		Cmd_BoostPlayer(ent);
 	else if (Q_stricmp (cmd, "monsters") == 0)
 		safe_cprintf(ent, PRINT_HIGH, "Monsters: %d/%d\n", ent->num_monsters, MAX_MONSTERS);
-	else if ((Q_strcasecmp(cmd, "spell_corpseexplode") == 0) || (Q_strcasecmp(cmd, "detonatebody") == 0))
-	    Cmd_CorpseExplode (ent);
 	else if (Q_stricmp (cmd, "sspeed") == 0)
 		Cmd_SuperSpeed_f (ent, 1);
 	else if (Q_stricmp (cmd, "nosspeed") == 0)
@@ -3036,8 +3164,6 @@ void ClientCommand (edict_t *ent)
 		Cmd_BombPlayer(ent, 1.0, 1.0);
 	//else if ((Q_strcasecmp(cmd, "aura_shock") == 0) || (Q_strcasecmp(cmd, "holyshock") == 0))
 	//	Cmd_HolyShock(ent);
-	else if ((Q_strcasecmp(cmd, "aura_holyfreeze") == 0) || (Q_strcasecmp(cmd, "holyfreeze") == 0))
-		Cmd_HolyFreeze(ent);
 	else if (Q_stricmp(cmd, "yell") == 0)
 		Cmd_Yell (ent, atoi(gi.argv(1)));
 	else if (Q_stricmp(cmd, "speech") == 0)
@@ -3080,143 +3206,6 @@ void ClientCommand (edict_t *ent)
 			ent->client->trade_off = true;
 		}
 		else ShowTradeMenu(ent);
-	}
-	else if (Q_stricmp(cmd, "togglesecondary") == 0)
-	{
-		// save last weapon for lastweap cmd
-		ent->client->last_weapon_mode = ent->client->weapon_mode;
-
-		// tank boss secondary attack mode
-		if (ent->owner && G_EntIsAlive(ent->owner) && IsABoss(ent->owner))
-		{
-			if (ent->client->weapon_mode)
-				ent->client->weapon_mode = 0;
-			else
-				ent->client->weapon_mode = 1;
-			return;
-		}
-
-		// secondary attack mode for player-monsters
-		if (PM_PlayerHasMonster(ent))
-		{
-			// player-tank has a 3rd attack if morph mastery is trained
-			if ((ent->owner->mtype == P_TANK) 
-				&& (ent->myskills.abilities[MORPH_MASTERY].current_level > 0))
-			{
-				if (ent->client->weapon_mode==3)
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Rocket Mode\n");
-					ent->client->weapon_mode=0;
-				}
-				else if (ent->client->weapon_mode==2)
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Blaster Mode\n");
-					ent->client->weapon_mode=3;
-				}
-				else if (ent->client->weapon_mode==1)
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Bullet Mode\n");
-					ent->client->weapon_mode=2;
-				}
-				else
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Punch Mode\n");
-					ent->client->weapon_mode=1;
-				}
-				return;
-			}
-
-			// monster player-monsters only have 2 attacks
-			if (ent->client->weapon_mode)
-				ent->client->weapon_mode = 0;
-			else
-				ent->client->weapon_mode = 1;
-			return;
-		}
-
-		if (ent->mtype == MORPH_FLYER)
-		{
-			if (ent->client->weapon_mode)
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Blaster\n");
-				ent->client->weapon_mode = 0;
-			}
-			else
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Smart rockets\n");
-				ent->client->weapon_mode = 1;
-			}
-			return;
-		}
-
-		if (ent->mtype == MORPH_MEDIC)
-		{
-			if (ent->client->weapon_mode==2)
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
-				ent->client->weapon_mode=0;
-			}
-			else if (ent->client->weapon_mode==1)
-			{
-				if (ent->myskills.abilities[MORPH_MASTERY].current_level > 0)
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Blaster Bolt\n");
-					ent->client->weapon_mode=2;
-				}
-				else
-				{
-					safe_cprintf(ent, PRINT_HIGH, "Hyperblaster\n");
-					ent->client->weapon_mode=0;
-				}
-
-			}
-			else
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Healing\n");
-				ent->client->weapon_mode=1;
-			}
-			return;
-		}
-
-		if (ent->mtype == MORPH_BERSERK)
-		{
-			if (ent->client->weapon_mode == 2)
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Punch\n");
-				ent->client->weapon_mode = 0;
-			}
-			else if (ent->client->weapon_mode == 1)
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Crush\n");
-				ent->client->weapon_mode = 2;
-			}
-			else
-			{
-				safe_cprintf(ent, PRINT_HIGH, "Slash\n");
-				ent->client->weapon_mode = 1;
-			}
-			return;
-		}
-
-		if (ToggleSecondary(ent, ent->client->pers.weapon, true))
-		{	
-			// allow instant change for GL, since the refire rate is the same for both modes
-			if (Q_stricmp(ent->client->pers.weapon->pickup_name, "Grenade Launcher"))
-			{
-				// re-draw the weapon
-				ent->client->newweapon = ent->client->pers.weapon;
-			}
-			else
-			{
-				ent->client->refire_frames = 0;
-				lasersight_off(ent);
-			}
-			// toggle mode
-			if (ent->client->weapon_mode)
-				ent->client->weapon_mode = 0;
-			else
-				ent->client->weapon_mode = 1;
-		}
 	}
 	else if (Q_stricmp (cmd, "deathray") == 0)
 	{

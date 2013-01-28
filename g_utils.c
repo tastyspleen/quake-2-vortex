@@ -991,7 +991,7 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 		return false;
 	if (level.time < pregame_time->value && !trading->value)
 	{
-		if ( invasion->value < 2 ) // invasion hard mode can use abilities in pregame.
+		if ( !pvm->value && !invasion->value ) // pvm modes allow abilities in pregame.
 		{
 			safe_cprintf(ent, PRINT_HIGH, "You can't use abilities during pre-game.\n");
 			return false;

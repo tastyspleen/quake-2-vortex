@@ -1,5 +1,9 @@
 #include "g_local.h"
 
+#ifdef CMD_USEHASH
+#include "fnv.h"
+#endif
+
 void Cmd_IdentifyPlayer (edict_t *ent);
 void Cmd_SetMasterPassword_f (edict_t *ent);
 void Cmd_SetOwner_f (edict_t *ent);
@@ -26,6 +30,7 @@ void Cmd_ExplodingArmor_f (edict_t *ent);
 void Cmd_Cripple_f (edict_t *ent);
 void Cmd_SpawnMagmine_f (edict_t *ent);
 void Cmd_ExplodingArmor_f (edict_t *ent);
+void Cmd_Togglesecondary_f (edict_t *ent);
 void Cmd_Spike_f (edict_t *ent);
 void Cmd_BuildProxyGrenade (edict_t *ent);
 void Cmd_Napalm_f (edict_t *ent);
@@ -69,6 +74,8 @@ void Cmd_CorpseExplode(edict_t *ent);
 void Cmd_HellSpawn_f (edict_t *ent);
 void Cmd_Caltrops_f (edict_t *ent);
 void Cmd_PrintCommandList(edict_t *ent);
+
+#define CommandTotal sizeof(commands) / sizeof(gameCommand_s)
 
 gameCommand_s commands[] = 
 {
@@ -159,27 +166,101 @@ gameCommand_s commands[] =
 	{ "writepos",	    Cmd_WritePos_f },
 	{ "rune",		    Cmd_Rune_f },
 	{ "vrxid",		    Cmd_IdentifyPlayer },
-	{ "vrxcommands",    Cmd_PrintCommandList }
+	{ "vrxcommands",    Cmd_PrintCommandList },
+	{ "upgrade_ability",OpenUpgradeMenu },
+	{ "spell_stealammo",Cmd_AmmoStealer_f },
+	{ "ammosteal",		Cmd_AmmoStealer_f },
+	{ "salvation",		Cmd_Salvation },
+	{ "aura_salvation",	Cmd_Salvation },
+	{ "spell_boost",	Cmd_BoostPlayer },
+	{ "boost",	Cmd_BoostPlayer },
+	{ "detonatebody", Cmd_CorpseExplode },
+	{ "spell_corpseexplode", Cmd_CorpseExplode },
+	{ "aura_holyfreeze", Cmd_HolyFreeze },
+	{ "holyfreeze", Cmd_HolyFreeze },
+	{ "togglesecondary", Cmd_Togglesecondary_f }
 };
+
+#ifdef CMD_USEHASH
+#define MAXCOMMANDS 20000
+
+gameCommand_s hashedList[MAXCOMMANDS];
+
+void TestHash()
+{
+	int count = 0, i, ccount = CommandTotal;
+	for (i = 0; i < MAXCOMMANDS; i++)
+	{
+		if (hashedList[i].Function)
+			count++;
+	}
+	if (count != ccount)
+	{
+		gi.dprintf("warning: hashing failed for commands.\n");
+	}
+}
+
+void InitHash()
+{
+	int i;
+	static qboolean initialized = false;
+
+	if (initialized)
+		return;
+
+	for (i = 0; i < CommandTotal; i++)
+	{
+		int index = fnv_32a_str(commands[i].FunctionName, FNV1_32A_INIT) % (MAXCOMMANDS);
+		memcpy(&hashedList[index], &commands[i], sizeof(gameCommand_s));
+	}
+
+	TestHash();
+	initialized = true;
+}
 
 qboolean VortexCommand(char* command, edict_t* ent)
 {
-	int i;
+	int index;
 
 	if (G_IsSpectator(ent))
 		return false;
 
-	for (i = 0; i < sizeof(commands) / sizeof(gameCommand_s); i++)
+	index = fnv_32a_str(command, FNV1_32A_INIT) % (MAXCOMMANDS);
+
+	if (!hashedList[index].FunctionName || !hashedList[index].Function)
+		return false;
+
+	if (!Q_strcasecmp(hashedList[index].FunctionName, command)) // we found it
 	{
-		if (!Q_strcasecmp(commands[i].FunctionName, command)) // we found it
+
+		hashedList[index].Function(ent);
+		return true;
+	}
+	
+	return false;
+};
+#else
+
+qboolean VortexCommand(char* command, edict_t* ent)
+{
+	int index;
+
+	if (G_IsSpectator(ent))
+		return false;
+
+	for (index = 0; index < CommandTotal; index++)
+	{
+		if (!Q_stricmp(commands[index].FunctionName, command)) // we found it
 		{
-			commands[i].Function(ent);
+			commands[index].Function(ent);
 			return true;
 		}
 	}
-
+	
 	return false;
 };
+
+#endif
 
 static qboolean initialized = false;
 

@@ -4,7 +4,7 @@ typedef void (*PlayerCommand)(edict_t* ent);
 
 typedef struct 
 {
-	char* FunctionName;
+	const char* FunctionName;
 	PlayerCommand Function;
 } gameCommand_s;
 

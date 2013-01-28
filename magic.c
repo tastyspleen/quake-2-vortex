@@ -1083,15 +1083,6 @@ void Cmd_FrostNova_f (edict_t *ent, float skill_mult, float cost_mult)
 	}	
 }
 
-#define EXPLODING_ARMOR_COST			0
-#define EXPLODING_ARMOR_MAX_COUNT		4
-#define EXPLODING_ARMOR_AMOUNT			50
-#define EXPLODING_ARMOR_DMG_BASE		75
-#define EXPLODING_ARMOR_DMG_ADDON		40
-#define EXPLODING_ARMOR_MAX_RADIUS		256	
-#define EXPLODING_ARMOR_DELAY			1
-#define EXPLODING_ARMOR_DETECTION		32
-
 void RemoveExplodingArmor (edict_t *ent)
 {
 	edict_t *e=NULL;
