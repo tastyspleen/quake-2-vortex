@@ -1060,6 +1060,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 				if (talentLevel > 0) // Martyr
 				{
 					// do the damage
+					self->exploded = true; // make sure we don't do it more than once
 					T_RadiusDamage(self, self, SELFDESTRUCT_BONUS * talentLevel, self, SELFDESTRUCT_RADIUS * talentLevel, MOD_SELFDESTRUCT);
 
 					// GO BOOM!
@@ -1068,7 +1069,6 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 					gi.WritePosition (self->s.origin);
 					gi.multicast (self->s.origin, MULTICAST_PVS);
 				}
-				self->exploded = true;
 		}
 	}
 
@@ -2503,8 +2503,12 @@ void ClientDisconnect (edict_t *ent)
 
 	if (ent->teamnum && !G_IsSpectator(ent))
 	{
-		gi.bprintf(PRINT_HIGH, "Waiting for player(s) to re-join...\n");
-		AddJoinedQueue(ent);
+		if (!tbi->value)
+		{
+			gi.bprintf(PRINT_HIGH, "Waiting for player(s) to re-join...\n");
+			AddJoinedQueue(ent);
+		}else
+			OrganizeTeams(false);
 	}
 //	else
 //		gi.dprintf("%s %s teamnum %d\n", ent->client->pers.netname, G_IsSpectator(ent)?"y":"n", ent->teamnum);
@@ -3283,16 +3287,17 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		//GHz: Keep us still and don't allow shooting
 		// If we have an automag up, don't let us move either. -az
-		if ( (ent->holdtime && ent->holdtime > level.time) || ent->automag)
+		// az: nope nevermind it's bullshit
+		if ( (ent->holdtime && ent->holdtime > level.time))
 		{
 			ucmd->forwardmove = 0;
 			ucmd->sidemove = 0;
 			ucmd->upmove = 0;
 
-			if (ent->client->buttons & BUTTON_ATTACK && !ent->automag)
+			if (ent->client->buttons & BUTTON_ATTACK)
 				ent->client->buttons &= ~BUTTON_ATTACK;
 
-			if (ucmd->buttons & BUTTON_ATTACK  && !ent->automag)
+			if (ucmd->buttons & BUTTON_ATTACK )
 				ucmd->buttons &= ~BUTTON_ATTACK;
 		}
 		
@@ -3302,7 +3307,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				int		pull;
 				vec3_t	start, end, dir;
-				edict_t* client;
 
 				if (other->absmin[2]+1 < ent->absmin[2])
 					continue;
@@ -3310,7 +3314,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if (!G_ValidTarget(ent, other, true))
 					continue;
 
-				if (entdist(ent, other) > MAGMINE_RANGE)
+				if (entdist(ent, other) > MAGMINE_RANGE * 2)
 					continue;
 
 				pull = MAGMINE_DEFAULT_PULL + MAGMINE_ADDON_PULL * ent->myskills.abilities[MAGMINE].level;

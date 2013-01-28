@@ -183,6 +183,11 @@ only happens when a new game is started or a save game
 is loaded.
 ============
 */
+
+// az begin
+void InitHash ();
+// az end
+
 void InitGame (void)
 {
 	gi.dprintf ("==== InitGame ====\n");
@@ -205,6 +210,9 @@ void InitGame (void)
 		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
 
 	Mem_PrepareMutexes();
+#ifdef CMD_USEHASH
+	InitHash();
+#endif
 	// az end
 
 	//K03 Begin

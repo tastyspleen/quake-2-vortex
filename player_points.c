@@ -30,7 +30,8 @@ char *HiPrint(char *text)
 {
 	int i;
 	char* ReturnVal;
-		ReturnVal = V_Malloc(strlen(text)+1, TAG_LEVEL);
+	
+	ReturnVal = V_Malloc(strlen(text)+1, TAG_LEVEL);
 
 	strcpy(ReturnVal, text);
 
@@ -374,7 +375,7 @@ int V_AddFinalExp (edict_t *player, int exp)
 		exp -= player->myskills.nerfme;
 	}
 
-	if (player->myskills.level < 30) // hasn't reached the cap
+	if (player->myskills.level < 50) // hasn't reached the cap
 	{
 		if (!player->ai.is_bot) // not a bot? have exp
 			player->myskills.experience += exp;

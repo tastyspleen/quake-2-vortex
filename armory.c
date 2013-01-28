@@ -321,14 +321,16 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 				price = 50000;
 			break;
 		case 29:	//ability point
-			price = 2650*ent->myskills.level;
-			if (price > 50000)
-				price = 50000;
+			// az- we buff this up since the amount of credits went up a fucking lot due to dts
+			price = pow(ent->myskills.level, 2) * 270; 
+			
+			// price minimum.
+			if (price < 20000)
+				price = 20000;
+
 			break;
-		case 30: // weapon point
-			price = 420*ent->myskills.level;
-			if (price > 50000)
-				price = 50000;
+		case 30: // weapon points
+			price = 3420*ent->myskills.level;
 			break;
 		default:
 			gi.dprintf("ERROR: Invalid armory item!\n");
