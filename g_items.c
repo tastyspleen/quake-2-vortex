@@ -650,7 +650,12 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 	else
 	{
 		if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-			SetRespawn (ent, 30);
+		{
+			if (!invasion->value)
+				SetRespawn (ent, 30);
+			else
+				SetRespawn (ent, 20);
+		}
 	}
 
 	return true;
@@ -2450,7 +2455,7 @@ gives +1 to maximum health
 /* icon */		"p_adrenaline",
 /* pickup */	"Adrenaline",
 /* width */		2,
-		60,
+		45, // az- 45 seconds to respawn.
 		NULL,
 		0,
 		NULL,

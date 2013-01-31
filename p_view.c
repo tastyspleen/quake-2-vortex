@@ -114,11 +114,12 @@ void P_DamageFeedback (edict_t *player)
 	{
 		r = 1 + (rand()&1);
 		player->pain_debounce_time = level.time + 0.7;
-		if (player->health < 25)
+		// az: use percents instead of fixed values.
+		if (player->health < player->max_health*0.25)
 			l = 25;
-		else if (player->health < 50)
+		else if (player->health < player->max_health*0.50)
 			l = 50;
-		else if (player->health < 75)
+		else if (player->health < player->max_health*0.75)
 			l = 75;
 		else
 			l = 100;

@@ -1015,6 +1015,7 @@ typedef enum
 #define STAT_STATION_ICON		18
 #define STAT_STATION_TIME		19
 #define STAT_CHARGE_LEVEL		20
+#define STAT_INVASIONTIME		21 // -az
 //#define STAT_RANK             24
 #define STAT_ID_DAMAGE			24
 #define STAT_STREAK		        25

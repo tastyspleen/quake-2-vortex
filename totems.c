@@ -586,6 +586,7 @@ void SpawnTotem(edict_t *ent, int abilityID)
 
 	// calling entity made a sound, used to alert monsters
 	ent->lastsound = level.framenum;
+	ent->client->ability_delay = level.time + 1.3;
 }
 
 #endif

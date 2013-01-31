@@ -261,7 +261,7 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 			mhealth = 1.8 + 0.15 * invasion_difficulty_level;
 	}else if (invasion->value == 2) // hard mode
 	{
-		mhealth = 1.65 + 0.28 * invasion_difficulty_level;
+		mhealth = 1.63 + 0.22 * invasion_difficulty_level;
 	}
 
 	monster->max_health = monster->health = monster->max_health*mhealth;
@@ -291,12 +291,12 @@ float TimeFormula()
 {
 	int base = 4*60;
 	int playeramt = ActivePlayers() * 10;
-	int levelamt = invasion_difficulty_level * 10;
+	int levelamt = invasion_difficulty_level * 8;
 	int cap = 60;
 	int rval = base - playeramt - levelamt;
 
 	if (invasion->value == 2) // hard mode
-		cap = 45;
+		cap = 48;
 
 	if (rval < cap)
 		rval = cap;

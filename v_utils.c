@@ -308,7 +308,7 @@ char *GetTalentString(int talent_ID)
 	case TALENT_FATAL_WOUND:		return "Fatal Wound";
 	//Mage Talents
 	case TALENT_ICE_BOLT:			return "Ice Bolt";
-	case TALENT_MEDITATION:			return "Meditation";
+	case TALENT_MEDITATION:			return "Mana Charge";
 	case TALENT_FROST_NOVA:			return "Frost Nova";
 	case TALENT_IMP_MAGICBOLT:		return "Imp. Magicbolt";
 	case TALENT_MANASHIELD:			return "Mana Shield";
@@ -2223,7 +2223,7 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 				// default blue shell (blue team and PvM aura or morphed/monster)
 				else
 				{
-					if (!hw->value || !V_IsPVP()) // not holywars or not pvp gives default shell.
+					if (!V_IsPVP())
 						ent->s.renderfx |= RF_SHELL_BLUE;
 				}
 			}

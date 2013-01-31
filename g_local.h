@@ -1805,7 +1805,8 @@ struct edict_s
 	qboolean	superspeed;
 	qboolean	sucking;//GHz
 	qboolean	antigrav;
-	qboolean	automag; // magmining self?
+	qboolean	automag; // az: magmining self?
+	qboolean	manacharging; // az: charging mana?
 	int	lockon;
 
 	int FrameShot;

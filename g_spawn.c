@@ -994,6 +994,17 @@ char *dm_statusbar =
 "num 3 24 "
 //Rank stuff done
 */
+// az start
+"if 21 "
+"   xv 136 "
+"   yv  252 "
+"   string2 \"Time Left\" "
+"   xv 136 "
+"   yv 260 "
+"   num 4 21 "
+"endif"
+// az end
+
 //GHz START
 // show damage done to target
 "if 24 "

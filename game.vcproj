@@ -57,7 +57,7 @@
 				PrecompiledHeaderFile=".\Debug/game.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="d:\q2\vortex\gamex86.pdb"
+				ProgramDataBaseFileName="d:\q2\vortex\gamex86b.pdb"
 				BrowseInformation="1"
 				BrowseInformationFile=".\Debug/"
 				WarningLevel="3"
