@@ -135,7 +135,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "2");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "31");
+			gi.cvar_set("timelimit", "26");
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");

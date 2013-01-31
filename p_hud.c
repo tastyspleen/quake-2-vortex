@@ -1,5 +1,15 @@
 #include "g_local.h"
 
+// get our data from invasion. -az
+extern struct invdata_s
+{
+	int printedmessage;
+	int mspawned;
+	float limitframe;
+	edict_t *boss;
+
+} invasion_data;
+
 /*
 ======================================================================
 
@@ -676,14 +686,14 @@ void G_SetStats (edict_t *ent)
 			index = 0;
 			if (ent->teamnum == 1)
 			{
-				if (DEFENSE_TEAM == ent->teamnum)
+				if (DEFENSE_TEAM == ent->teamnum || tbi->value) // show team color pic in tbi, always.
 					index =  gi.imageindex("i_ctf1"); // show team color pic
 				else
 					index = gi.imageindex("i_ctf1d"); // not in control
 			}
-			else if (ent->teamnum == 2)
+			else if (ent->teamnum == 2 || tbi->value)
 			{
-				if (DEFENSE_TEAM == ent->teamnum)
+				if (DEFENSE_TEAM == ent->teamnum || tbi->value)
 					index = gi.imageindex("i_ctf2");
 				else
 					index = gi.imageindex("i_ctf2d");
@@ -1022,6 +1032,12 @@ void G_SetStats (edict_t *ent)
 	if (ent->client->ps.stats[STAT_TIMEMIN] < 0)
 		ent->client->ps.stats[STAT_TIMEMIN] = 0;
 	
+	// az invasion stuff.
+	if (invasion->value && level.time > pregame_time->value)
+	{
+		ent->client->ps.stats[STAT_INVASIONTIME] = invasion_data.limitframe - level.time;
+	}else
+		ent->client->ps.stats[STAT_INVASIONTIME] = 0;
 	
 
 	if (ent->client->pers.selected_item == -1)

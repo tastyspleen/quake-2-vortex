@@ -148,7 +148,7 @@ gameCommand_s commands[] =
 	{ "spore",		    Cmd_TossSpikeball },
 	{ "acid",		    Cmd_FireAcid_f },
 	{ "cocoon",		    Cmd_Cocoon_f },
-	{ "meditate",	    Cmd_Meditate_f },
+	{ "meditate"   ,	Cmd_Meditate_f },
 	{ "overload",	    Cmd_Overload_f },
 	{ "laserplatform",  Cmd_CreateLaserPlatform_f },
 	{ "lasertrap",	    Cmd_LaserTrap_f },
@@ -273,10 +273,9 @@ void Cmd_PrintCommandList(edict_t *ent)
 	{
 		bigstr[0] = '\0';
 		strcat(bigstr, "Command List: \n");
-		strcat(bigstr, "==============================\n");
+		strcat(bigstr, "=============\n");
 		for (i = 0; i < (sizeof(commands) / sizeof(gameCommand_s)); i++)
 		{
-			strcat(bigstr, "  ");
 			strcat(bigstr, commands[i].FunctionName);
 			strcat(bigstr, "\n");
 		}

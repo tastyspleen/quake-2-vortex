@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.4a"
+#define VRX_VERSION "3.4b"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -260,10 +260,10 @@ const char* Time();
 #define WEAPON_20MM_ADDON_RANGE		30
 
 // fires every 1.0 seconds
-#define SHOTGUN_INITIAL_DAMAGE		8
-#define SHOTGUN_ADDON_DAMAGE		0.2//0.3
+#define SHOTGUN_INITIAL_DAMAGE		6
+#define SHOTGUN_ADDON_DAMAGE		0.125//0.3
 #define SHOTGUN_INITIAL_BULLETS		10
-#define SHOTGUN_ADDON_BULLETS		0.5
+#define SHOTGUN_ADDON_BULLETS		0.35
 
 // fires every 1.2 seconds
 #define SUPERSHOTGUN_INITIAL_DAMAGE		10

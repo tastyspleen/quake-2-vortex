@@ -585,6 +585,9 @@ int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
 	int i;
 
 	id = V_GDS_GetID(current, db);
+	mysql_autocommit(db, false);
+
+	mysql_query(db, "START TRANSACTION");
 
 	QUERY("DELETE FROM runes_meta WHERE char_idx=%d", id);
 	QUERY("DELETE FROM runes_mods WHERE char_idx=%d", id);
@@ -619,6 +622,10 @@ int V_GDS_UpdateRunes(gds_queue_t *current, MYSQL* db)
 		}
 	}
 	//end runes
+	
+	mysql_query(db, "COMMIT"); // hopefully this will avoid shit breaking
+	mysql_autocommit(db, true);
+
 	return 0;
 }
 
@@ -640,6 +647,8 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 			gi.dprintf("DB: NULL database (V_GDS_Save())\n"); */
 		return -1;
 	}
+
+	mysql_autocommit(db, false);
 
 	mysql_real_escape_string(db, escaped, current->myskills.player_name, strlen(current->myskills.player_name));
 
@@ -837,6 +846,8 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 	pthread_mutex_unlock(&StatusMutex);
 #endif
 
+	mysql_autocommit(db, true);
+
 	return id;
 }
 
@@ -956,17 +967,25 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 		mysql_query (db, "SELECT @IsAble;");
 		GET_RESULT;
 
-		if (atoi(row[0]) == 0 && !gds_singleserver->value)
+		if (row && row[0])
 		{
+			if (atoi(row[0]) == 0 && !gds_singleserver->value)
+			{
 #ifndef GDS_NOMULTITHREADING
-			pthread_mutex_lock(&StatusMutex);
+				pthread_mutex_lock(&StatusMutex);
 #endif
-			player->ThreadStatus = 4; // Already playing.
+				player->ThreadStatus = 4; // Already playing.
 #ifndef GDS_NOMULTITHREADING
-			pthread_mutex_unlock(&StatusMutex);
+				pthread_mutex_unlock(&StatusMutex);
 #endif
-			FREE_RESULT;
-			return false;
+				FREE_RESULT;
+				return false;
+			}
+		}else
+		{
+			char* error = mysql_error(GDS_MySQL);
+			if (error)
+				gi.dprintf("DB: %s\n", error);
 		}
 
 		FREE_RESULT;

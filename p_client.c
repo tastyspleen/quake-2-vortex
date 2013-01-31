@@ -2136,6 +2136,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	ent->num_hammers = 0;//4.4 Talent: Boomerang
 	
 	G_StuffPlayerCmds(ent, "alias +thrust thrust on\nalias -thrust thrust off\n");
+	G_StuffPlayerCmds(ent, "alias +manacharge meditate_start\nalias -thrust meditate_finalize\n"); // -az
 	G_StuffPlayerCmds(ent, "alias +hook hook\nalias -hook unhook\n");
 	G_StuffPlayerCmds(ent, "alias +superspeed sspeed\nalias -superspeed nosspeed on\n");
 	G_StuffPlayerCmds(ent, "alias +sprint sprinton\nalias -sprint sprintoff\n");
@@ -2797,6 +2798,10 @@ void ClientThinkstuff(edict_t *ent)
 	// 4.0 we shouldn't be here if we're dead
 	if ((ent->health < 1) || (ent->deadflag == DEAD_DEAD) || G_IsSpectator(ent) || (ent->flags & FL_WORMHOLE))
 		return;
+
+	// 10 cubes per second (new meditation)
+	if (ent->manacharging)
+		ent->client->pers.inventory[power_cube_index] += 1*getTalentLevel(ent, TALENT_MEDITATION);
 
 	// 4.2 recharge blaster ammo
 	// (apple)
