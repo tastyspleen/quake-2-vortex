@@ -976,6 +976,9 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 	if (ent->flags & FL_WORMHOLE)
 		return false;
 
+	if (ent->manacharging)
+		return false;
+
 	// poltergeist cannot use abilities in human form
 	if (ent->myskills.class_num == CLASS_POLTERGEIST && !ent->mtype)
 	{
