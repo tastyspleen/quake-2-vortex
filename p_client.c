@@ -2136,7 +2136,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	ent->num_hammers = 0;//4.4 Talent: Boomerang
 	
 	G_StuffPlayerCmds(ent, "alias +thrust thrust on\nalias -thrust thrust off\n");
-	G_StuffPlayerCmds(ent, "alias +manacharge meditate_start\nalias -thrust meditate_finalize\n"); // -az
+	G_StuffPlayerCmds(ent, "alias +manacharge meditate\nalias -thrust meditate\n"); // -az
 	G_StuffPlayerCmds(ent, "alias +hook hook\nalias -hook unhook\n");
 	G_StuffPlayerCmds(ent, "alias +superspeed sspeed\nalias -superspeed nosspeed on\n");
 	G_StuffPlayerCmds(ent, "alias +sprint sprinton\nalias -sprint sprintoff\n");

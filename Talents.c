@@ -336,8 +336,8 @@ int writeTalentDescription(edict_t *ent, int talentID)
 		addlinetomenu(ent, "fireball to chill targets.", MENU_WHITE_CENTERED);
 		return 2;
 	case TALENT_MEDITATION:
-		addlinetomenu(ent, "Meditate to build power", MENU_WHITE_CENTERED);
-		addlinetomenu(ent, "cubes (cmd 'meditate').", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "Recharge your power", MENU_WHITE_CENTERED);
+		addlinetomenu(ent, "cubes at a whim (cmd '+manacharge').", MENU_WHITE_CENTERED);
 		return 2;
 	case TALENT_OVERLOAD:
 		addlinetomenu(ent, "Use extra power cubes", MENU_WHITE_CENTERED);
