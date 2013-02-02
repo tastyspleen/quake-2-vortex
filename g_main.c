@@ -214,17 +214,24 @@ void ShutdownGame (void)
 	int i;
 	edict_t *ent;
 
+
 	for_each_player(ent, i)
 	{
 		//ent->myskills.inuse = 0;
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 		SaveCharacterQuit(ent); //WriteMyCharacter(ent);
+#else
+		SaveCharacter(ent);
+#endif
 	}
+
+
 	//K03 End
 	gi.dprintf ("==== ShutdownGame ====\n");
 
-	#ifndef GDS_NOMULTITHREADING
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	GDS_FinishThread();
-	#endif
+#endif
 
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);
@@ -444,7 +451,11 @@ void VortexEndLevel (void)
 		PM_RemoveMonster(tempent);
 		VortexRemovePlayerSummonables(tempent);
 		tempent->myskills.streak = 0;
+#ifndef NO_GDS
 		SaveCharacterQuit(tempent);
+#else
+		SaveCharacter(tempent);
+#endif
 		if (G_EntExists(tempent))
 			WriteToLogfile(tempent, "Logged out.\n");
 		else
@@ -907,7 +918,7 @@ void G_RunFrame (void)
 	edict_t	*ent;
 	qboolean haveflag;
 
-#ifdef GDS_NOMULTITHREADING
+#if (defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	ProcessQueue(NULL);
 #endif
 	//vec3_t	v,vv;

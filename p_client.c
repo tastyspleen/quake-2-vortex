@@ -2109,7 +2109,9 @@ deathmatch mode, so clear everything out before starting them.
 */
 void ClientBeginDeathmatch (edict_t *ent)
 {
+#ifndef NO_GDS
 	static int lastID = 0;
+#endif
 	if (debuginfo->value > 1)
 		gi.dprintf("ClientBeginDeathmatch()\n");
 
@@ -2118,6 +2120,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	InitClientResp (ent->client);
 
 	// az begin
+#ifndef NO_GDS
 	ent->PlayerID = lastID;
 	lastID++;
 
@@ -2126,6 +2129,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 		gi.dprintf("We seem to have passed a big player ID. Resetting!");
 		lastID = 0;
 	}
+#endif
 	// az end
 
 	//K03 Begin
@@ -2544,9 +2548,13 @@ void ClientDisconnect (edict_t *ent)
 	}
 
 	//ent->myskills.inuse = 0;
+#ifndef NO_GDS
 	if (savemethod->value != 2)
+#endif
 		SaveCharacter(ent);
+#ifndef NO_GDS
 	else SaveCharacterQuit(ent);
+#endif
 
 	//GHz: Reset their skills_t to prevent any possibility of duping
 	memset(&ent->myskills,0,sizeof(skills_t));

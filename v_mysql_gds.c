@@ -1,8 +1,9 @@
+#include "g_local.h"
+
 #ifndef NO_GDS
 
 #include <my_global.h>
 #include <mysql.h>
-#include "g_local.h"
 #include "gds.h"
 
 #ifndef GDS_NOMULTITHREADING
@@ -1537,17 +1538,27 @@ void GDS_FinishThread()
 		V_GDS_FreeMemory_Queue();
 	}
 }
+#else
+
+void GDS_FinishThread () {}
+void HandleStatus () {}
+
+#endif
+
+// az end
+
+#endif NO_GDS
 
 void *V_Malloc(size_t Size, int Tag)
 {
 	void *Memory;
 
-#ifndef GDS_NOMULTITHREADING
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	pthread_mutex_lock(&MemMutex_Malloc);
 #endif
 	Memory = gi.TagMalloc (Size, Tag);
 
-#ifndef GDS_NOMULTITHREADING
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	pthread_mutex_unlock(&MemMutex_Malloc);
 #endif
 
@@ -1566,14 +1577,3 @@ void V_Free(void *mem)
 	pthread_mutex_unlock(&MemMutex_Free);
 #endif
 }
-
-#else
-
-void GDS_FinishThread () {}
-void HandleStatus () {}
-
-#endif
-
-// az end
-
-#endif NO_GDS

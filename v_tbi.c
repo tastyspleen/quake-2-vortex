@@ -33,7 +33,8 @@ void TBI_AssignTeam(edict_t* ent)
 	if (!tbi->value)
 		return;
 
-	if (tbi_game.RedPlayers > tbi_game.BluePlayers)
+	OrganizeTeams(false);
+/*	if (tbi_game.RedPlayers > tbi_game.BluePlayers)
 		TeamNum = BLUE_TEAM;
 
 	switch (TeamNum)
@@ -46,7 +47,7 @@ void TBI_AssignTeam(edict_t* ent)
 
 	ent->teamnum = TeamNum;
 
-	V_AssignClassSkin(ent, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
+	V_AssignClassSkin(ent, Info_ValueForKey(ent->client->pers.userinfo, "skin"));*/
 }
 
 qboolean TBI_CheckRules(edict_t* self)
@@ -119,7 +120,7 @@ void TBI_SpawnPlayers()
 				cl_ent->client->invincible_framenum = level.framenum + 30;
 				gi.linkentity(cl_ent);
 
-				tr = gi.trace (cl_ent->s.origin, cl_ent->mins, cl_ent->maxs, cl_ent->s.origin, NULL, MASK_SHOT);
+				tr = gi.trace (cl_ent->s.origin, cl_ent->mins, cl_ent->maxs, cl_ent->s.origin, cl_ent, MASK_SHOT);
 
 				if (tr.fraction != 1) // so there's someone in our spot. NUKE THEM
 					KillBox(cl_ent);
@@ -243,6 +244,20 @@ void TBI_CheckSpawns()
 	}
 }
 
+int TBI_CountTeamPlayers(int team)
+{
+	edict_t *cl_ent;
+	int i_maxclients = maxclients->value;
+	int total = 0;
+
+	for (cl_ent = g_edicts + 1; cl_ent != g_edicts + i_maxclients + 1; cl_ent++)
+	{
+		if (!G_IsSpectator(cl_ent) && cl_ent->client && cl_ent->inuse && cl_ent->teamnum == team)
+			total++;
+	}
+	return total;
+}
+
 int TBI_CountActivePlayers()
 {
 	edict_t *cl_ent;
@@ -290,6 +305,7 @@ void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		self->svflags |= SVF_NOCLIENT;
 		self->solid = SOLID_NOT;
 		self->takedamage = DAMAGE_NO;
+		self->deadflag = DEAD_DEAD;
 		
 		message = HiPrint(va("A %s spawn has been destroyed. %d/%d left.", self->teamnum == RED_TEAM ? "red" : "blue",
 			self->teamnum == RED_TEAM ? tbi_game.RedSpawns-1 : tbi_game.BlueSpawns-1, // left
@@ -311,8 +327,6 @@ void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		if (!TBI_CheckRules(self))
 			gi.sound(g_edicts, CHAN_VOICE, gi.soundindex(va("bosstank/BTKUNQV%d.wav", GetRandom(1, 2))), 1, ATTN_NONE, 0);
 	}
-
-	self->deadflag = DEAD_DEAD;
 }
 
 void TBI_InitPlayerSpawns(int teamnum)

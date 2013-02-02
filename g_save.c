@@ -205,11 +205,21 @@ void InitGame (void)
 
 	// Before anything else, prepare TagMalloc's mutexes and a mysql connection
 	if (savemethod->value == 2)
+	{
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 		V_GDS_StartConn(); // start connection to db
+#else
+		gi.dprintf("This server does not support MySQL. Forcing offline saving via SQLite.\n");
+		gi.cvar_forceset("savemethod", "0");
+#endif
+	}
 	else
 		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
 
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	Mem_PrepareMutexes();
+#endif
+
 #ifdef CMD_USEHASH
 	InitHash();
 #endif
@@ -422,6 +432,12 @@ void InitGame (void)
 	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "2.0", CVAR_SERVERINFO  | CVAR_NOSET);
 	gi.cvar_forceset("vrx_pointmult", "1.5");
 	gi.cvar_forceset("vrx_creditmult", "2.0");
+	vrx_sub10mult = gi.cvar ("vrx_sub10mult", "1.5", CVAR_NOSET);
+	vrx_over10mult = gi.cvar ("vrx_over10mult", "0.65", CVAR_NOSET);
+
+	vrx_creditmult = gi.cvar ("vrx_creditmult", "2.0", CVAR_NOSET/* | CVAR_LATCH*/);
+	vrx_pvpcreditmult = gi.cvar ("vrx_pvpcreditmult", "3.0", CVAR_NOSET);
+	vrx_pvmcreditmult = gi.cvar ("vrx_pvmcreditmult", "1.0", CVAR_NOSET);
 
 	adminpass = gi.cvar ("adminpass", "", CVAR_NOSET);
 	gi.cvar_forceset("adminpass", "");
@@ -468,6 +484,7 @@ void InitGame (void)
 
 	// az begin
 	AI_Init();
+	// az end
 }
 
 //=========================================================
