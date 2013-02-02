@@ -371,7 +371,7 @@ void init_drone_decoy (edict_t *self)
 	self->monsterinfo.stand = decoy_stand;
 	self->monsterinfo.run = actor_run;
 	self->monsterinfo.attack = actor_attack;
-	self->monsterinfo.control_cost = 33;
+	self->monsterinfo.control_cost = 45;
 	self->monsterinfo.cost = 25;
 	self->monsterinfo.jumpup = 64;
 	self->monsterinfo.jumpdn = 512;
@@ -414,5 +414,6 @@ void Cmd_Decoy_f (edict_t *ent)
 	}
 
 	ret = SpawnDrone(ent, 20, false);
-	ret->monsterinfo.level = ent->myskills.abilities[DECOY].current_level;
+	if (ret)
+		ret->monsterinfo.level = ent->myskills.abilities[DECOY].current_level;
 }

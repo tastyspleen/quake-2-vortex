@@ -538,9 +538,6 @@ void StartGame (edict_t *ent)
 	ent->ThreadStatus = 0;
 #endif
 
-	if (tbi->value && level.time > pregame_time->value)
-		OrganizeTeams(false);
-
 	SavePlayer(ent); // Do we need to?
 }
 
@@ -756,13 +753,17 @@ void joinmenu_handler (edict_t *ent, int option)
 	{
 	case 1:
 		//If no GDS is running, join the game right away.
+#ifndef NO_GDS
 		if(savemethod->value < 2)
+#endif
 			JoinTheGame(ent);
+#ifndef NO_GDS
 		else
 		{
 			gi.centerprintf(ent, "You have been queued for Loading.\n Please wait.\n");
 			V_GDS_Queue_Add(ent, GDS_LOAD);
 		}
+#endif
 		break;
 	case 2: 
 		ChaseCam(ent); break;

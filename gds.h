@@ -62,10 +62,10 @@ void HandleStatus(edict_t *player);
 
 void Mem_PrepareMutexes();
 
+#endif //NO_GDS
+
 // Wrapped, thread save mem allocation.
 void *V_Malloc(size_t Size, int Tag);
 void V_Free (void* mem);
-
-#endif //NO_GDS
 
 #endif // MYSQL_GDS

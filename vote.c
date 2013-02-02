@@ -49,7 +49,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -68,7 +68,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -84,7 +84,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "11");
+			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -100,7 +100,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "100");
-			gi.cvar_set("timelimit", "21");
+			gi.cvar_set("timelimit", va("%d", 20+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -119,7 +119,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "1");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "21");
+			gi.cvar_set("timelimit", va("%d", 20+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -135,7 +135,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "2");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", "26");
+			gi.cvar_set("timelimit", va("%d", 25+pregame_time->value/60));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -165,7 +165,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 				gi.cvar_set("invasion", "0");
 				gi.cvar_set("fraglimit", "0");
 				gi.cvar_set("trading", "0");
-				gi.cvar_set("timelimit", "15");
+				gi.cvar_set("timelimit", va("%d", 15+pregame_time->value/60));
 				gi.cvar_set("hw", "1");
 				gi.cvar_set("tbi", "0");
 				break;
@@ -179,7 +179,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 				gi.cvar_set("invasion", "0");
 				gi.cvar_set("fraglimit", "0");
 				gi.cvar_set("trading", "0");
-				gi.cvar_set("timelimit", "15");
+				gi.cvar_set("timelimit", va("%d", 15+pregame_time->value/60));
 				gi.cvar_set("hw", "0");
 				gi.cvar_set("tbi", "1");
 			}
@@ -647,7 +647,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 	//Multi-page navigation
 	else if (option > 20000)
 	{
-		int mode = (option / 1000) - 10;
+		int mode = (option / 1000) - 20;
 		int nextpage = option % 1000;		//page number we will end up in (page 0 = main menu)
 		if (nextpage != 0)
 			ShowVoteMapMenu(ent, nextpage, mode);

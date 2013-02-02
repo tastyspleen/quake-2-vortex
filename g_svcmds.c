@@ -793,9 +793,11 @@ void	ServerCommand (void)
 	else if (Q_stricmp (cmd, "maplist") == 0) 
         Cmd_Maplist_f (NULL); 
 	// az begin
+#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	else if (Q_stricmp (cmd, "connectgds") == 0)
 		V_GDS_StartConn();
 	// az end
+#endif
 //GHz START
 #if ALLOW_ADMIN
 	else if (Q_stricmp (cmd, "addexp") == 0) 
