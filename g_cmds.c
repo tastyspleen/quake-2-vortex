@@ -2696,7 +2696,6 @@ Cmd_Thorns(edict_t *ent);
 int ClassNum(edict_t *ent, int team);
 void Cmd_VampireMode (edict_t *ent);
 qboolean vrx_CheckForFlag (void);
-qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg);
 /*
 =================
 ClientCommand
