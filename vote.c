@@ -20,6 +20,7 @@ edict_t *voter;
 void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 {
 	//char buf[8];
+	int timelimit;
 
 	//Change the mode
 	switch(gamemode)
@@ -43,13 +44,14 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		case MAPMODE_PVM:
 		{
 			// player versus monsters
+			timelimit = 10+pregame_time->value/60;
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
 			gi.cvar_set("ctf", "0");
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -61,6 +63,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_DOM:
 		{
+			timelimit = 10+pregame_time->value/60;
 			// domination mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "1");
@@ -68,7 +71,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -77,6 +80,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_CTF:
 		{
+			timelimit = 10+pregame_time->value/60;
 			// ctf mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -84,7 +88,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", va("%d", 10+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -93,6 +97,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_FFA:
 		{
+			timelimit = 20+pregame_time->value/60;
 			// free for all mode
 			gi.cvar_set("ffa", "1");
 			gi.cvar_set("domination", "0");
@@ -100,7 +105,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "0");
 			gi.cvar_set("invasion", "0");
 			gi.cvar_set("fraglimit", "100");
-			gi.cvar_set("timelimit", va("%d", 20+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -112,6 +117,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_INV:
 		{
+			timelimit = 20+pregame_time->value/60;
 			// invasion mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -119,7 +125,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "1");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", va("%d", 20+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -128,6 +134,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_INH:
 		{
+			timelimit = 25+pregame_time->value/60;
 			// invasion mode - hard
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -135,7 +142,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			gi.cvar_set("pvm", "1");
 			gi.cvar_set("invasion", "2");
 			gi.cvar_set("fraglimit", "0");
-			gi.cvar_set("timelimit", va("%d", 25+pregame_time->value/60));
+			gi.cvar_set("timelimit", va("%d", timelimit));
 			gi.cvar_set("trading", "0");
 			gi.cvar_set("hw", "0");
 			gi.cvar_set("tbi", "0");
@@ -158,6 +165,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		}
 		case MAPMODE_VHW: // vortex holy wars
 			{
+				timelimit = 15+pregame_time->value/60;
 				gi.cvar_set("ffa", "0");
 				gi.cvar_set("domination", "0");
 				gi.cvar_set("ctf", "0");
@@ -165,13 +173,14 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 				gi.cvar_set("invasion", "0");
 				gi.cvar_set("fraglimit", "0");
 				gi.cvar_set("trading", "0");
-				gi.cvar_set("timelimit", va("%d", 15+pregame_time->value/60));
+				gi.cvar_set("timelimit", va("%d", timelimit));
 				gi.cvar_set("hw", "1");
 				gi.cvar_set("tbi", "0");
 				break;
 			}
 		case MAPMODE_TBI:
 			{
+				timelimit = 15+pregame_time->value/60;
 				gi.cvar_set("ffa", "0");
 				gi.cvar_set("domination", "0");
 				gi.cvar_set("ctf", "0");
@@ -179,7 +188,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 				gi.cvar_set("invasion", "0");
 				gi.cvar_set("fraglimit", "0");
 				gi.cvar_set("trading", "0");
-				gi.cvar_set("timelimit", va("%d", 15+pregame_time->value/60));
+				gi.cvar_set("timelimit", va("%d", timelimit));
 				gi.cvar_set("hw", "0");
 				gi.cvar_set("tbi", "1");
 			}
