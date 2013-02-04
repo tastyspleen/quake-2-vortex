@@ -125,6 +125,8 @@ void TBI_SpawnPlayers()
 				if (tr.fraction != 1) // so there's someone in our spot. NUKE THEM
 					KillBox(cl_ent);
 
+				V_ResetPlayerState(cl_ent);
+
 			}else // Dead players must respawn.
 				respawn(cl_ent);
 
@@ -137,10 +139,10 @@ edict_t *TBI_FindRandomSpawnForTeam(int team)
 {
 	if (team == RED_TEAM)
 	{
-		return tbi_game.EntRedSpawns[GetRandom(0, tbi_game.TotalRedSpawns-1)];
+		return tbi_game.EntRedSpawns[GetRandom(1, tbi_game.TotalRedSpawns)-1];
 	}
 	else
-		return tbi_game.EntBlueSpawns[GetRandom(0, tbi_game.TotalBlueSpawns-1)];
+		return tbi_game.EntBlueSpawns[GetRandom(1, tbi_game.TotalBlueSpawns)-1];
 }
 
 edict_t* TBI_FindSpawn(edict_t *ent)

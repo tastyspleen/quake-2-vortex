@@ -277,13 +277,6 @@ void LeapAttack (edict_t *ent)
 	ent->client->boosted = false;
 }
 
-#define CORPSE_EXPLOSION_INITIAL_DAMAGE		50
-#define CORPSE_EXPLOSION_ADDON_DAMAGE		25
-#define CORPSE_EXPLOSION_INITIAL_RADIUS		100
-#define CORPSE_EXPLOSION_ADDON_RADIUS		10
-#define CORPSE_EXPLOSION_MAX_RANGE			8192
-#define CORPSE_EXPLOSION_SEARCH_RADIUS		128
-
 void BecomeExplosion2 (edict_t *self);
 void Cmd_CorpseExplode(edict_t *ent)
 {
@@ -393,8 +386,6 @@ void Vampire_Think(edict_t *self)
 		}
 	}
 }
-
-#define TELEPORT_COST	20
 
 void TeleportPlayer (edict_t *player)
 {
@@ -796,11 +787,6 @@ void LockOnTarget (edict_t *player)
 	player->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
 }
 */
-
-#define CRIPPLE_RANGE			256
-#define CRIPPLE_COST			25
-#define CRIPPLE_DELAY			2.0
-#define CRIPPLE_MAX_DAMAGE		500
 
 void CrippleAttack (edict_t *ent)
 {
@@ -6594,18 +6580,6 @@ void Cmd_Healer_f (edict_t *ent)
 #define SPIKER_FRAMES_REARM_END			23
 #define SPIKER_FRAME_READY				13
 #define SPIKER_FRAME_DEAD				18
-
-#define SPIKER_INITIAL_HEALTH			80
-#define SPIKER_ADDON_HEALTH				30
-#define SPIKER_INITIAL_DAMAGE			50
-#define SPIKER_ADDON_DAMAGE				10
-#define SPIKER_INITIAL_SPEED			1000
-#define SPIKER_ADDON_SPEED				0
-#define SPIKER_COST						25
-#define SPIKER_DELAY					1.0
-#define SPIKER_REFIRE_DELAY				2.0
-#define SPIKER_INITIAL_RANGE			512
-#define SPIKER_ADDON_RANGE				0
 
 void spiker_dead (edict_t *self)
 {

@@ -827,12 +827,18 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		if ((!targ->myskills.abilities[GHOST].disable) && !(dflags & DAMAGE_NO_PROTECTION)) 
 		{
 			int talentSlot = getTalentSlot(targ, TALENT_SECOND_CHANCE);
-			temp = 1 + 0.05*targ->myskills.abilities[GHOST].current_level;
+			temp = 1 + 0.035*targ->myskills.abilities[GHOST].current_level;
 			temp = 1.0/temp;
 
 			// cap ghost resistance to 75%
-			if (temp < 0.25)
+			if (temp < 0.25 && targ->myskills.class_num == CLASS_POLTERGEIST)
 				temp = 0.25;
+			
+			if (temp < 0.4 && targ->myskills.class_num != CLASS_POLTERGEIST)
+			{
+				if (!pvm->value && !invasion->value) // PVP mode? cap it to 40%.
+					temp = 0.4;
+			}
 
 			if (!hw->value)
 			{

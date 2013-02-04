@@ -2678,13 +2678,6 @@ void Cmd_TossEMP (edict_t *ent)
 	ent->client->pers.inventory[power_cube_index] -= cost;
 }
 
-#define MIRV_INITIAL_DAMAGE			50
-#define MIRV_ADDON_DAMAGE			10
-#define MIRV_INITIAL_RADIUS			100
-#define MIRV_ADDON_RADIUS			2.5
-#define MIRV_DELAY					0.5
-#define MIRV_COST					25
-
 void mirv_explode (edict_t *self)
 {
 	vec3_t  grenade1, grenade2, grenade3, grenade4;
@@ -2755,12 +2748,12 @@ void mirv_explode (edict_t *self)
 	e = fire_grenade2(self->owner, self->s.origin, grenade6, self->dmg, 10, 1.5, self->dmg_radius, self->radius_dmg, false);
 	e->mtype = M_MIRV;
 	e->touch = NULL;
-	e = fire_grenade2(self->owner, self->s.origin, grenade7, self->dmg, 10, 1.5, self->dmg_radius, self->radius_dmg, false);
+	/*e = fire_grenade2(self->owner, self->s.origin, grenade7, self->dmg, 10, 1.5, self->dmg_radius, self->radius_dmg, false);
 	e->mtype = M_MIRV;
 	e->touch = NULL;
 	e = fire_grenade2(self->owner, self->s.origin, grenade8, self->dmg, 10, 1.5, self->dmg_radius, self->radius_dmg, false);
 	e->mtype = M_MIRV;
-	e->touch = NULL;
+	e->touch = NULL;*/
 
 	G_FreeEdict(self);
 }
