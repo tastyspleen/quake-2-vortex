@@ -307,7 +307,7 @@ void PM_Effects (edict_t *ent)
 		{
 			ent->svflags &= ~SVF_NOCLIENT;
 
-			if (!ctf->value && !domination->value && !ptr->value  && !invasion->value)
+			if (!ctf->value && !domination->value && !ptr->value  && !invasion->value && !tbi->value)
 			{
 				// glow red if we are hostile against players (i.e. PvP/FFA combat preferences)
 				if(player->myskills.respawns & HOSTILE_PLAYERS)
@@ -336,7 +336,7 @@ void PM_Effects (edict_t *ent)
 				ent->s.effects &= ~(EF_SPHERETRANS|EF_PLASMA);
 
 			// in team modes, we should glow with team color
-			if (domination->value || pvm->value || ptr->value || ctf->value)
+			if (domination->value || pvm->value || ptr->value || ctf->value || tbi->value)
 			{
 
 				ent->s.effects |= EF_COLOR_SHELL;
@@ -829,7 +829,7 @@ void Cmd_PlayerToTank_f (edict_t *ent)
 */
 	//Talent: Morphing
 	if(getTalentSlot(ent, TALENT_MORPHING) != -1)
-		tank_cubecost *= 1.0 - 0.25 * getTalentLevel(ent, TALENT_MORPHING);
+		tank_cubecost *= 1.0 - 0.2 * getTalentLevel(ent, TALENT_MORPHING);
 
 //	if (!G_CanUseAbilities(ent, ent->myskills.abilities[TANK].current_level, tank_cubecost))
 //		return;

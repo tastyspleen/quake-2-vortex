@@ -208,11 +208,15 @@ void InitHash()
 	if (initialized)
 		return;
 
+	gi.dprintf("Initializing command list.. ");
+
 	for (i = 0; i < CommandTotal; i++)
 	{
 		int index = fnv_32a_str(commands[i].FunctionName, FNV1_32A_INIT) % (MAXCOMMANDS);
 		memcpy(&hashedList[index], &commands[i], sizeof(gameCommand_s));
 	}
+
+	gi.dprintf("Done.\n");
 
 	TestHash();
 	initialized = true;

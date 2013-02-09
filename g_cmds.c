@@ -111,7 +111,7 @@ void Cmd_Lockon_f (edict_t *ent, int toggle)
 
 	if (!ent->inuse)
 		return;
-	if (ent->myskills.administrator < 10)
+	if (ent->myskills.administrator < 30)
 		return;
 
 	ent->lockon = toggle;
@@ -1250,17 +1250,7 @@ void Cmd_Inven_f (edict_t *ent)
 	}
 	//K03 End
 
-	cl->showinventory = true;
-
-	gi.WriteByte (svc_inventory);
-	for (i=0 ; i<MAX_ITEMS ; i++)
-	{
-		gi.WriteShort (cl->pers.inventory[i]);
-	}
-	gi.unicast (ent, true);
-
-	if (cl->pers.scanner_active & 1)
-		cl->pers.scanner_active = 0;//2;
+	OpenGeneralMenu(ent);
 }
 /*
 =================

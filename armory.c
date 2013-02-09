@@ -332,6 +332,9 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		case 30: // weapon points
 			price = 3420*ent->myskills.level;
 			break;
+		case 31: // respawns
+			price = ARMORY_PRICE_RESPAWN;
+			break;
 		default:
 			gi.dprintf("ERROR: Invalid armory item!\n");
 			return;
@@ -461,6 +464,12 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			ent->myskills.weapon_points += 2;
 			safe_cprintf(ent, PRINT_HIGH, "You bought two weapon points - you now have %d.\n", ent->myskills.weapon_points);
 			break;
+#ifndef REMOVE_RESPAWNS
+		case 31:
+			ent->myskills.weapon_respawns += 100;
+			safe_cprintf(ent, PRINT_HIGH, "You bought 100 respawns - you now have %d.\n", ent->myskills.weapon_respawns);
+			break;
+#endif
 		}
 	}
 
@@ -501,7 +510,7 @@ void PurchaseMenu_handler (edict_t *ent, int option)
 	}
 
 	//Try to buy it
-	if (option > 27) // reset, ab pt, weap pt
+	if (option > 27 && option != 31) // reset, ab pt, weap pt, but not respawns
 	{
 		armoryConfirmOption(ent, option);
 		return;
@@ -858,7 +867,7 @@ void BuyRuneMenu_handler (edict_t *ent, int option)
 		OpenArmoryMenu(ent);
 		return;
 	}
-	else if ((page_num > 0) && (page_num < 5))	//5 was chosen for no real reason
+	else if ((page_num > 0) && (page_num < 7))	//5 was chosen for no real reason
 	{
 		if (page_choice == 2)	//next
             OpenBuyRuneMenu (ent, page_num+1, 0);
@@ -903,16 +912,25 @@ void OpenBuyRuneMenu(edict_t *ent, int page_num, int lastline)
 
 	switch(page_num)
 	{
-	case 1: firstItem = WeaponRunes;	break;
-	case 2: firstItem = AbilityRunes;	break;
-	case 3: firstItem = ComboRunes;		break;
+	case 1: 
+		firstItem = WeaponRunes;	break;
+	case 2:		
+		firstItem = &WeaponRunes[10];	break;
+	case 3: 
+		firstItem = AbilityRunes;	break;
+	case 4:
+		firstItem = &AbilityRunes[10];	break;
+	case 5: 
+		firstItem = ComboRunes;		break;
+	case 6:
+		firstItem = &ComboRunes[10];		break;
 	default: 
 		gi.dprintf("Error in OpenBuyRuneMenu(). Invalid page number: %d\n", page_num);
 		return;
 	}
 
 	//Print this page's items
-    for (i = 0; i < ARMORY_MAX_RUNES; ++i)
+    for (i = 0; i < ARMORY_MAX_RUNES / 2; ++i)
 	{
 		item_t *rune = &((firstItem + i)->rune);
 		if (rune->itemtype != ITEM_NONE)
@@ -926,16 +944,22 @@ void OpenBuyRuneMenu(edict_t *ent, int page_num, int lastline)
 		{
 			switch(page_num)
 			{
-			case 1: addlinetomenu(ent, "    <Empty Weapon Slot>", 0); break;
-			case 2: addlinetomenu(ent, "    <Empty Ability Slot>", 0); break;
-			case 3: addlinetomenu(ent, "    <Empty Combo Slot>", 0); break;
+			case 1: 
+			case 2:
+				addlinetomenu(ent, "    <Empty Weapon Slot>", 0); break;
+			case 3: 
+			case 4:
+				addlinetomenu(ent, "    <Empty Ability Slot>", 0); break;
+			case 5: 
+			case 6:
+				addlinetomenu(ent, "    <Empty Combo Slot>", 0); break;
 			}
 		}
 	}
 
 	//Footer
 	addlinetomenu(ent, " ", 0);
-	if (page_num < 3) addlinetomenu(ent, "Next", (page_num*10)+2);
+	if (page_num < 6) addlinetomenu(ent, "Next", (page_num*10)+2);
 	addlinetomenu(ent, "Back", (page_num*10)+1);
 	addlinetomenu(ent, "Exit", 99);
 

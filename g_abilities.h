@@ -41,6 +41,7 @@ typedef struct skills_s
 	unsigned int fragged;
 	unsigned int credits;
 	unsigned int respawns;
+	unsigned int weapon_respawns;
 
 	int class_num;
 	int boss;

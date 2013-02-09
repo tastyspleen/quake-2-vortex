@@ -378,7 +378,9 @@ int V_AddFinalExp (edict_t *player, int exp)
 	if (player->myskills.level < 50) // hasn't reached the cap
 	{
 		if (!player->ai.is_bot) // not a bot? have exp
+		{
 			player->myskills.experience += exp;
+		}
 	}
 	player->client->resp.score += exp;
 	check_for_levelup(player);
@@ -497,121 +499,6 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 
 void VortexAddExp(edict_t *attacker, edict_t *targ);
 int PVM_TotalMonsters (edict_t *monster_owner);
-void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
-{
-	int exp_points		= 0;
-	int monsters		= 0;
-	float level_diff	= 0;
-	//char *message;
-	//int i;
-	//edict_t *player;
-
-	if (IsABoss(monster))
-	{
-		PlayerBossPoints(attacker, monster);
-		return;
-	}
-
-	if (IsABoss(attacker))
-		return; // boss-player does not get awarded points!
-
-	attacker = G_GetClient(attacker);
-
-	//GHz: Abort if we have invalid data
-	if (attacker == NULL || !monster->inuse /*|| !monster->activator || monster->activator->client*/)
-		return;
-
-	if (attacker->flags & FL_CHATPROTECT)
-		return;
-
-	//VortexSpreeAbilities(attacker);
-
-	//GHz: Only award experience to one person if monster is not a boss
-	if (monster->monsterinfo.control_cost <= 100)
-	{
-		if (INVASION_OTHERSPAWNS_REMOVED)
-			INV_AwardMonsterKill(attacker, monster);
-		else
-			AddMonsterExp(attacker, monster);
-/*
-		//3.0 (If pvm was cleared of monsters, give everyone a small bonus)
-		// search for other drones
-		if(pvm->value)
-		{
-			edict_t *e = NULL;
-
-			//find the monster spawn ent
-			while((e = G_Find(e, FOFS(classname), "MonsterSpawn")) != NULL) 
-			{
-				if (e && e->inuse)
-					break;
-			}
-
-			// get actual total world monsters
-			if (e && e->inuse)
-				monsters = PVM_TotalMonsters(e);
-
-			//If the map is clear of monsters
-			if ((e != NULL) && !monsters)
-			{
-				exp_points = GetRandom(25, 50);
-
-				gi.dprintf("Giving players a PvM bonus (%d) killing all monsters.\n", exp_points, e->num_monsters);
-
-				for_each_player(player, i)
-				{
-					if (player->solid == SOLID_NOT)
-						continue;
-					if (player->health < 0)
-						continue;
-					if (player->flags & FL_CHATPROTECT)
-						continue;
-					if (player->client->idle_frames > 100) //10 seconds of idling
-						continue;
-
-					player->client->resp.score += exp_points;
-					player->myskills.experience += exp_points;
-					check_for_levelup(player);
-				}
-			}
-		}
-*/
-
-	}
-	else
-	{
-		if (monster->mtype == M_JORG)//GHz: Award exp on Makron kill instead
-			return;
-
-		G_PrintGreenText(va("%s puts the smackdown on a world-spawned boss!", attacker->client->pers.netname));
-		AwardBossKill(monster);
-		/*
-		SPREE_WAR = false;
-		SPREE_DUDE = NULL;
-
-		message = HiPrint(va("%s puts the smackdown on a world-spawned boss!", attacker->client->pers.netname));
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		message = LoPrint(message);
-
-		for_each_player(player, i)
-		{
-			if (player->solid == SOLID_NOT)
-				continue;
-
-			//GHz: Calculate level difference modifier
-			level_diff = (float) (0.5*monster->monsterinfo.level) / (player->myskills.level + 1);
-
-			exp_points = GetRandom(250, 500) * level_diff;
-			if (exp_points > 1000)
-				exp_points = 1000;
-
-			V_AddFinalExp(player, exp_points);
-			VortexAddCredits(player, level_diff, 0, false);
-			
-		}
-		*/
-	}
-}
 
 void hw_deathcleanup(edict_t *targ, edict_t *attacker);
 

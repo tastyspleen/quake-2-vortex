@@ -4,11 +4,11 @@ void TBI_AwardTeam(int Teamnum, int exp, qboolean Broadcast);
 void TBI_CheckSpawns();
 void TBI_Reinitialize();
 
-#define TBI_SPAWN_HEALTH 15000
+#define TBI_SPAWN_HEALTH (15000 + (250 * AveragePlayerLevel()))
 #define TBI_MAX_SPAWNS	 16
 #define TBI_MIN_PLAYERS	 4
-#define DESTROYSPAWN_EXP (pow(self->monsterinfo.level, 2) / 7 * 50)
-#define ROUNDEND_EXP 350 * pow(AveragePlayerLevel(), 2) / 6
+#define DESTROYSPAWN_EXP (pow(self->monsterinfo.level, 1.3) / 7 * 50)
+#define ROUNDEND_EXP 220 * pow(AveragePlayerLevel(), 1.3) / 6
 
 #define PLAYERSPAWN_REGEN_FRAMES		800
 #define PLAYERSPAWN_REGEN_DELAY			10
@@ -125,14 +125,13 @@ void TBI_SpawnPlayers()
 				if (tr.fraction != 1) // so there's someone in our spot. NUKE THEM
 					KillBox(cl_ent);
 
-				V_ResetPlayerState(cl_ent);
-
 			}else // Dead players must respawn.
 				respawn(cl_ent);
 
 			cl_ent->spawn = NULL;
 		}
 	}
+	G_ResetPlayerState(NULL);
 }
 
 edict_t *TBI_FindRandomSpawnForTeam(int team)

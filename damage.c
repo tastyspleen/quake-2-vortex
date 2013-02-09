@@ -937,7 +937,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 
 	if (talentLevel && ((dflags & DAMAGE_RADIUS) || mod == MOD_SELFDESTRUCT))
 	{
-		temp = 1 - 0.12 * talentLevel;
+		temp = 1 - 0.15 * talentLevel;
 		Resistance = min(Resistance, temp);
 	}
 

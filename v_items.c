@@ -381,7 +381,9 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 	if (iRandom < CHANCE_UNIQUE)
 	{
 		//spawn a unique
-		//if (!spawnUnique(rune, 0))
+#ifdef ENABLE_UNIQUES
+		if (!spawnUnique(rune, 0))
+#endif
 			spawnNorm(rune, targ_level, 0);
 	}
 	else if (iRandom < CHANCE_UNIQUE + CHANCE_CLASS)

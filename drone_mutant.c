@@ -546,7 +546,7 @@ void init_drone_mutant (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 150 + 20*self->monsterinfo.level;
+	self->health = 120 + 20*self->monsterinfo.level;
 	//else
 		//self->health = 400 + 160*self->monsterinfo.level;
 

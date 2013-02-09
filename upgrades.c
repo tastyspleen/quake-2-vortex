@@ -64,7 +64,7 @@ void upgradeSpecialMenu_handler(edict_t *ent, int option)
 		else safe_cprintf(ent, PRINT_HIGH, va("You need %d point to upgrade this ability.\n", cost));
 		return;
 	}
-	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || ent->myskills.administrator)
+	if (ent->myskills.abilities[option-1].level < ent->myskills.abilities[option-1].max_level || ent->myskills.administrator > 20)
 	{
 		ent->myskills.speciality_points -= cost;
 		ent->myskills.abilities[option-1].level++;

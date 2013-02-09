@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.4c"
+#define VRX_VERSION "3.6"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -35,8 +35,8 @@ const char* Time();
 
 #define SMARTROCKET_LOCKFRAMES		3 // frames required for smart rocket to lock-on to a target
 #define DAMAGE_ESCAPE_DELAY			0.2 // seconds before player can use tball/jetpack/boost/teleport/superspeed after being damaged
-#define EXP_PLAYER_MONSTER				100
-#define EXP_WORLD_MONSTER				75
+#define EXP_PLAYER_MONSTER			75
+#define EXP_WORLD_MONSTER			35
 #define AMMO_REGEN_DELAY			5.0 // seconds until next ammo regen tick
 #define MAX_KNOCKBACK				300 // maximum knockback allowed for some attacks (e.g. rocket explosion)
 #define CHAT_PROTECT_FRAMES			200
@@ -225,8 +225,8 @@ const char* Time();
 #define EXP_LOSE_SUICIDE		5
 #define EXP_MINIBOSS			100
 
-#define CREDITS_PLAYER_BASE		20
-#define	CREDITS_OTHER_BASE		10
+#define CREDITS_PLAYER_BASE		15
+#define	CREDITS_OTHER_BASE		8
 #define CREDIT_LOW				1
 #define CREDIT_SAME				2
 #define CREDIT_HIGH				3
@@ -456,7 +456,7 @@ const char* Time();
 #define M_INSANE_CONTROL_COST			33
 #define M_SOLDIERLT_CONTROL_COST		30
 #define M_SOLDIER_CONTROL_COST			30
-#define M_GUNNER_CONTROL_COST			40
+#define M_GUNNER_CONTROL_COST			33
 #define M_CHICK_CONTROL_COST			25
 #define M_PARASITE_CONTROL_COST			30
 #define M_MEDIC_CONTROL_COST			30
@@ -521,18 +521,18 @@ const char* Time();
 #define RADIUS_BOMB					512
 
 //3.0 Armoury
-#define ARMORY_ITEMS				30	//Number of available items
+#define ARMORY_ITEMS				31	//Number of available items
 
 #define ARMORY_RUNE_UNIQUE_PRICE	150000
 #define ARMORY_RUNE_APOINT_PRICE	5000
 #define ARMORY_RUNE_WPOINT_PRICE	2500
-#define ARMORY_MAX_RUNES			10
+#define ARMORY_MAX_RUNES			20
 
 #define ARMORY_PRICE_WEAPON			5
 #define ARMORY_PRICE_AMMO			5
 #define ARMORY_PRICE_TBALLS			10
 #define ARMORY_PRICE_POWERCUBE		1
-//#define ARMORY_PRICE_RESPAWNS		100
+#define ARMORY_PRICE_RESPAWN		2000
 #define ARMORY_PRICE_HEALTH			5
 #define ARMORY_PRICE_ARMOR			10
 #define ARMORY_PRICE_POTIONS		50
@@ -542,7 +542,7 @@ const char* Time();
 #define ARMORY_PRICE_AUTO_TBALL		250
 #define ARMORY_PRICE_RESET			1500 // per level price (so level 10 would be 15k)
 
-//#define ARMORY_QTY_RESPAWNS			1000
+#define ARMORY_QTY_RESPAWNS			100
 #define ARMORY_QTY_POTIONS			5
 #define ARMORY_QTY_ANTIDOTES		10
 #define ARMORY_QTY_GRAVITYBOOTS		25
