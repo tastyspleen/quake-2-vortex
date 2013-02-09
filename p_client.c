@@ -3138,11 +3138,6 @@ void V_PlayerJump (edict_t *ent)
 		gi.sound(ent, CHAN_VOICE, gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
 		PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
 	}
-	
-	if (ent->mtype == MORPH_TANK || ent->mtype == P_TANK)
-	{
-		ent->velocity[2] = 0; // No jumps for the tank.
-	}
 
 	if (ent->mtype == MORPH_MUTANT)
 	{
@@ -3317,6 +3312,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 			if (ucmd->buttons & BUTTON_ATTACK )
 				ucmd->buttons &= ~BUTTON_ATTACK;
+		}
+
+		if (PM_PlayerHasMonster(ent))
+		{
+			if (ent->owner->mtype == P_TANK)
+				ucmd->upmove = 0;
 		}
 		
 		if (ent->automag)
