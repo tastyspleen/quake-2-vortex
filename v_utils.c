@@ -132,7 +132,7 @@ char *GetArmoryItemString (int purchase_number)
 	case 28:	return "Reset Abilities/Weapons";
 	case 29:	return "Ability point";
 	case 30:	return "Weapon point";
-
+	case 31:	return "Respawns";
 	default:	return "<BAD ITEM NUMBER>";
 	}
 }
@@ -1558,7 +1558,7 @@ void V_ModifyMorphedHealth (edict_t *ent, int type, qboolean morph)
 	switch (type)
 	{
 	// player-tank has no maximum health multiplier
-	case P_TANK: mult = 2 + 0.15 * ent->myskills.abilities[TANK].current_level; break;
+	case P_TANK: mult = 1.8 + 0.12 * ent->myskills.abilities[TANK].current_level; break;
 	// 2x health multiplier max
 	case MORPH_BERSERK:
 		mult = 1 + 0.1 * ent->myskills.abilities[BERSERK].current_level; 
@@ -1710,7 +1710,7 @@ void V_UpdatePlayerAbilities (edict_t *ent)
 	for (i = 0; i < 3; ++i)
 		V_ApplyRune(ent, &ent->myskills.items[i]);
 
-	safe_cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");	
+	/*safe_cprintf(ent, PRINT_HIGH, "Your abilities have been updated.\n");	*/
 	
 	// have points been refunded?
 	if (refunded > 0)

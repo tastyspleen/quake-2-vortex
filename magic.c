@@ -1059,7 +1059,7 @@ void Cmd_FrostNova_f (edict_t *ent, float skill_mult, float cost_mult)
 		if(talent->delay < level.time)
 		{
 			Cmd_Nova_f(ent, talent->upgradeLevel, skill_mult, cost_mult);
-			talent->delay = level.time + 4.0;	//4 second recharge.
+			talent->delay = level.time + 2.2;	// 2 second recharge.
 		}
 		else safe_cprintf(ent, PRINT_HIGH, va("You can't cast another frost nova for %0.1f seconds.\n", talent->delay - level.time));
 	}
@@ -8645,6 +8645,6 @@ void Cmd_SelfDestruct_f(edict_t *self)
 	gi.WritePosition (self->s.origin);
 	gi.multicast (self->s.origin, MULTICAST_PVS);
 
-	self->client->ability_delay = level.time + 1.5;
+	self->client->ability_delay = level.time + 1;
 	return;
 }

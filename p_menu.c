@@ -68,7 +68,7 @@ void setHardMax(edict_t *ent, int index)
 				}
 				else
 				{
-					ent->myskills.abilities[index].hard_max = 25;					
+					ent->myskills.abilities[index].hard_max = 30;					
 				}	
 				break;			
 			}
@@ -489,7 +489,6 @@ void StartGame (edict_t *ent)
 	modify_max(ent);
 
 	Give_respawnitems(ent);
-	Give_respawnweapon(ent, ent->myskills.respawn_weapon);
 		
 	// add a teleportation effect
 	ent->s.event = EV_PLAYER_TELEPORT;
@@ -531,7 +530,7 @@ void StartGame (edict_t *ent)
 		ent->s.effects |= EF_COLOR_SHELL;
 		ent->s.renderfx |= RF_SHELL_RED;
 	}
-	gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
+	gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 	WriteToLogfile(ent, "Logged in.\n");
 
 #ifndef GDS_NOMULTITHREADING
@@ -831,6 +830,7 @@ void OpenMyinfoMenu (edict_t *ent)
 	else
 		addlinetomenu(ent, "Frag Percent: --", 0);
 	addlinetomenu(ent, va("Played Hrs:   %.1f", (float)ent->myskills.playingtime/3600), 0);
+	addlinetomenu(ent, va("Respawns: %d", ent->myskills.weapon_respawns), 0);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Exit", 1);
 
@@ -970,6 +970,7 @@ void classmenu_handler (edict_t *ent, int option)
 	setGeneralAbilities(ent);
 	setClassAbilities(ent);
 	setTalents(ent);
+	ent->myskills.weapon_respawns = 100;
 	gi.dprintf("INFO: %s created a new %s!\n", ent->client->pers.netname, GetClassString(ent->myskills.class_num));
 	WriteToLogfile(ent, va("%s created a %s.\n", ent->client->pers.netname, GetClassString(ent->myskills.class_num)));
 	check_for_levelup(ent);
@@ -1101,6 +1102,7 @@ void OpenGeneralMenu (edict_t *ent)
 	if (ent->myskills.class_num != CLASS_POLTERGEIST)
 		addlinetomenu(ent, "Upgrade weapons", 2);
 	addlinetomenu(ent, "Upgrade talents", 3);
+	addlinetomenu(ent, " ", 0);
 	if (ent->myskills.class_num != CLASS_POLTERGEIST && 
 		ent->myskills.class_num != CLASS_KNIGHT)
 	addlinetomenu(ent, "Set respawn weapon", 4);
@@ -1111,7 +1113,6 @@ void OpenGeneralMenu (edict_t *ent)
 	addlinetomenu(ent, "Form alliance", 9);
 	addlinetomenu(ent, "Trade items", 10);
 	addlinetomenu(ent, "Vote for map/mode", 11);
-	addlinetomenu(ent, "Set combat preferences", 13);
 	addlinetomenu(ent, "Help", 12);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Close", 99);

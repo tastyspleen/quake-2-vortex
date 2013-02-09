@@ -547,7 +547,7 @@ void InitSunEntity(void)
 	if (invasion->value < 2)
 	{
 		fullbright = 'z';
-		nightbright = 'e';
+		nightbright = 'd';
 		nighttimelight = 'k';
 	}else
 	{

@@ -808,7 +808,7 @@ void init_drone_bitch (edict_t *self)
 	if (self->activator && self->activator->client)
 		self->health = 100 + 10*self->monsterinfo.level;
 	else
-		self->health = 35 + 15*self->monsterinfo.level;
+		self->health = 65 + 15*self->monsterinfo.level;
 
 	self->max_health = self->health;
 	self->gib_health = -100;

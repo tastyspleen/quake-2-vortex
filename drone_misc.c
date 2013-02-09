@@ -567,6 +567,12 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 			else
 				drone->monsterinfo.level = GetRandom(LowestLevelPlayer(), HighestLevelPlayer());
 
+			if (pvm->value) // In PvM mode... Make them tougher.
+			{
+				drone->health *= 1.5;
+				drone->max_health *= 1.5;
+			}
+
 
 			// 4.5 assign monster bonus flags
 			// Champions spawn on invasion hard mode.

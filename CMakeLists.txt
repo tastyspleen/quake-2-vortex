@@ -11,6 +11,8 @@ option(VRX_USE_MYSQL "Use MySQL based GDS" FALSE)
 option(VRX_USE_MULTITHREAD "Use multithreading (only valid when using mysql)" FALSE)
 option(VRX_ALLOW_ADMIN "Allow usage of admin commands via rcon/sv commands." TRUE)
 option(VRX_LOCKDEFAULTS "Disallow changing exp/credits rates via cvar." FALSE)
+option(VRX_REMOVERESPAWNS "Remove the usage of respawns." FALSE)
+option(VRX_USEHASH "Use hashing on commands instead of iterating through the list." TRUE)
 
 # Source files
 file (GLOB VRX_FILES ./*.c)
@@ -53,12 +55,20 @@ if (WIN32 AND VRX_USE_MULTITHREAD)
   set (CC_LINK_LIBS ${CC_LINK_LIBS} pthreadVC2)
 endif ()
 
+if (NOT VRX_REMOVERESPAWNS)
+  add_definitions(-DREMOVE_RESPAWNS)
+endif ()
+
 if (NOT VRX_USE_MULTITHREAD)
   add_definitions(-DGDS_NOMULTITHREADING)
 endif ()
 
 if (NOT VRX_USE_MYSQL)
   add_definitions(-DNO_GDS)
+endif()
+
+if (VRX_USEHASH)
+  add_definitions(-DCMD_USEHASH)
 endif()
 
 if (VRX_ALLOW_ADMIN)

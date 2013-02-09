@@ -399,7 +399,7 @@ void init_drone_gladiator (edict_t *self)
 	self->s.modelindex = gi.modelindex ("models/monsters/gladiatr/tris.md2");
 	VectorSet (self->mins, -24, -24, -24);
 	VectorSet (self->maxs, 24, 24, 48);
-	self->health = 75 + 10*self->monsterinfo.level;
+	self->health = 95 + 10*self->monsterinfo.level;
 	self->max_health = self->health;
 	self->gib_health = -100;
 	self->mass = 400;

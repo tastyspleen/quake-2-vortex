@@ -981,7 +981,7 @@ void init_drone_medic (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 45 + 12*self->monsterinfo.level;
+	self->health = 75 + 12*self->monsterinfo.level;
 	//else self->health = 200 + 20*self->monsterinfo.level;
 
 	self->max_health = self->health;

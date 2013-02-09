@@ -142,6 +142,21 @@ qboolean que_typeexists (que_t *que, int type)
 					case CURSE:
 					case WEAKEN:
 					case AMNESIA:
+					case BLEEDING:
+					case CURSE_BURN:
+					case CURSE_FROZEN:
+						return true;
+					}
+					switch(que[i].ent->mtype)
+					{
+					case LIFE_DRAIN:
+					case AMP_DAMAGE:
+					case CURSE:
+					case WEAKEN:
+					case AMNESIA:
+					case BLEEDING:
+					case CURSE_BURN:
+					case CURSE_FROZEN:
 						return true;
 					}
 				}

@@ -19,7 +19,7 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW ""
+#define MYSQL_PW "c4r1t4"
 #define MYSQL_USER "root"
 #define MYSQL_DBNAME "vrxcl"
 
@@ -317,7 +317,10 @@ void V_GDS_Queue_Add(edict_t *ent, int operation)
 	}
 
 	if (!GDS_MySQL)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "It seems that there's no connection to the database. Contact an admin ASAP.\n");
 		return;
+	}
 
 	if (operation != GDS_SAVE && 
 		operation != GDS_LOAD && 
@@ -722,7 +725,7 @@ int V_GDS_Save(gds_queue_t *current, MYSQL* db)
 		//*****************************
 
 		QUERY (MYSQL_UPDATECDATA,
-		 current->myskills.respawns,
+		 current->myskills.weapon_respawns,
 		 current->myskills.current_health,
 		 MAX_HEALTH(current->ent),
 		 current->ent->client ? current->ent->client->pers.inventory[body_armor_index] : 0,
@@ -877,9 +880,8 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	MYSQL_ROW row;
 	MYSQL_RES *result, *result_b;
 
-	if (!db) // This is the only time we actually need to print it. 
+	if (!db)
 	{
-		gi.bprintf(PRINT_HIGH, "Sorry, we are unable to connect to the database at this time. \n");
 		return false;
 	}
 
@@ -1257,7 +1259,7 @@ qboolean V_GDS_Load(gds_queue_t *current, MYSQL *db)
 	//in-game stats
 	//*****************************
 	//respawns
-	player->myskills.respawns = atoi(row[1]);
+	player->myskills.weapon_respawns = atoi(row[1]);
 	//health
 	player->myskills.current_health = atoi(row[2]);
 	//max health

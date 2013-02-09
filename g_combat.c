@@ -176,7 +176,6 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 Killed
 ============
 */
-void VortexAddMonsterExp(edict_t *attacker, edict_t *monster);
 void VortexAddExp(edict_t *attacker, edict_t *targ);
 void drone_death (edict_t *self, edict_t *attacker);
 void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
@@ -197,29 +196,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 	//K03 End
 
 	if (!targ->client && !targ->deadflag && (targ->solid != SOLID_NOT))
-	//	VortexAddMonsterExp(attacker, targ);
 		VortexAddExp(attacker, targ);
-/*
-	if ((targ->svflags & SVF_MONSTER) && (targ->deadflag != DEAD_DEAD) &&
-		(!targ->client))//K03
-	{
-		if (targ->activator)
-			VortexAddMonsterExp(attacker, targ);
-
-		//K03 End
-//		targ->svflags |= SVF_DEADMONSTER;	// now treat as a different content type
-		if (!(targ->monsterinfo.aiflags & AI_GOOD_GUY))
-		{
-			level.killed_monsters++;
-			if (coop->value && attacker->client)
-				attacker->client->resp.score++;
-			// medics won't heal monsters that they kill themselves
-			if (strcmp(attacker->classname, "monster_medic") == 0)
-				targ->owner = attacker;
-		}
-	}
-*/
-
 
 	if (targ->movetype == MOVETYPE_PUSH || targ->movetype == MOVETYPE_STOP || targ->movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc

@@ -287,7 +287,7 @@ qboolean ReadPlayer_v1(FILE * fRead, edict_t *player)
 	//in-game stats
 	//*****************************
 	//respawns
-	player->myskills.respawns =  ReadInteger(fRead);
+	player->myskills.weapon_respawns =  ReadInteger(fRead);
 	//health
 	player->myskills.current_health =  ReadInteger(fRead);
 	//max health
@@ -503,7 +503,7 @@ void WritePlayer_v1(FILE * fWrite, char *playername, edict_t *player)
 	//in-game stats
 	//*****************************
 	//respawns
-	WriteInteger(fWrite, player->myskills.respawns);
+	WriteInteger(fWrite, player->myskills.weapon_respawns);
 	//health
 	WriteInteger(fWrite, player->myskills.current_health);
 	//max health
@@ -940,7 +940,7 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 		//*****************************
 
 		format = strdup(va(SQLITE_UPDATECDATA, 
-		 player->myskills.respawns,
+		 player->myskills.weapon_respawns,
 		 player->myskills.current_health,
 		 MAX_HEALTH(player),
 		 player->client->pers.inventory[body_armor_index],
@@ -1432,7 +1432,7 @@ qboolean VSF_LoadPlayer(edict_t *player, char* path)
 	//in-game stats
 	//*****************************
 	//respawns
-	player->myskills.respawns = sqlite3_column_int(stmt, 0);
+	player->myskills.weapon_respawns = sqlite3_column_int(stmt, 0);
 	//health
 	player->myskills.current_health = sqlite3_column_int(stmt, 1);
 	//max health
