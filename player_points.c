@@ -579,7 +579,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 			else
 				attacker->nfer++;
 
-			bonus += 1 - ((attacker->lastkill - level.time) + 0.1) + attacker->nfer*25;
+			bonus += 1 + (attacker->nfer / 2);
 			attacker->myskills.num_2fers++;
 
 			if (attacker->nfer == 4)
