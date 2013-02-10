@@ -221,13 +221,13 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, MORPH_MASTERY, 1, 1, 0);
 
 		// Specific Skills for Medics.
-		enableAbility(ent, SPIKER, 0, 1, 0);		
-		enableAbility(ent, GASSER, 0, 1, 0);
+		/*enableAbility(ent, SPIKER, 0, 1, 0);		
+		enableAbility(ent, GASSER, 0, 1, 0);*/
 		enableAbility(ent, MONSTER_SUMMON, 0, 1, 0);
 
 		// Hard Max for Specific Skills
-		ent->myskills.abilities[SPIKER].hard_max = 1;
-		ent->myskills.abilities[GASSER].hard_max = 1;
+		/*ent->myskills.abilities[SPIKER].hard_max = 1;
+		ent->myskills.abilities[GASSER].hard_max = 1;*/
 		ent->myskills.abilities[MONSTER_SUMMON].hard_max = 1;
 		break;
 

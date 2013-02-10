@@ -466,8 +466,8 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31:
-			ent->myskills.weapon_respawns += 100;
-			safe_cprintf(ent, PRINT_HIGH, "You bought 100 respawns - you now have %d.\n", ent->myskills.weapon_respawns);
+			ent->myskills.weapon_respawns += 50;
+			safe_cprintf(ent, PRINT_HIGH, "You bought 50 respawns - you now have %d.\n", ent->myskills.weapon_respawns);
 			break;
 #endif
 		}
