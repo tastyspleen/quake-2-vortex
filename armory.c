@@ -815,9 +815,12 @@ void OpenBuyRuneConfirmMenu(edict_t *ent, int option)
 
 	switch(page_num)
 	{
-	case 1: firstItem = WeaponRunes;	break;
-	case 2: firstItem = AbilityRunes;	break;
-	case 3: firstItem = ComboRunes;		break;
+	case 1: firstItem = WeaponRunes;		break;
+	case 2: firstItem = &WeaponRunes[10];	break;
+	case 3: firstItem = AbilityRunes;		break;
+	case 4: firstItem = &AbilityRunes[10];	break;
+	case 5: firstItem = ComboRunes;			break;
+	case 6: firstItem = &ComboRunes[10];	break;
 	default: 
 		gi.dprintf("Error in OpenBuyRuneConfirmMenu(). Invalid page number: %d\n", page_num);
 		return;
