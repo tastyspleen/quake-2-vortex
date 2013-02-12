@@ -283,7 +283,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
 	Com_sprintf(entry, sizeof(entry), 
 		"xv 0 yv 16 string2 \"Time:%2im %2is Frags:%3i Players:%3i\" "
-		"xv 0 yv 24 string2 \"Name       Lv Cl Score Frg Spr Png\" ",
+		"xv 0 yv 34 string2 \"Name       Lv Cl Score Frg Spr Png\" ",
 		(int)(time_left/60), (int)(time_left-(int)((time_left/60)*60)),
 		frag_left, total_players()); 
 
@@ -311,7 +311,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		  if (!cl_ent)
 			  continue; 
 
-          y = 34 + 8 * i; 
+          y = 44 + 8 * i; 
 		
 		// 3.78 truncate client's name and class string
 		strcpy(name, V_TruncateString(cl->pers.netname, 11));
