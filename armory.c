@@ -332,9 +332,11 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 		case 30: // weapon points
 			price = 3420*ent->myskills.level;
 			break;
+#ifndef REMOVE_RESPAWNS
 		case 31: // respawns
-			price = ARMORY_PRICE_RESPAWN;
+			price = ARMORY_PRICE_RESPAWN * (250 - ent->myskills.weapon_respawns) / 250;
 			break;
+#endif
 		default:
 			gi.dprintf("ERROR: Invalid armory item!\n");
 			return;
@@ -466,8 +468,8 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31:
-			ent->myskills.weapon_respawns += 50;
-			safe_cprintf(ent, PRINT_HIGH, "You bought 50 respawns - you now have %d.\n", ent->myskills.weapon_respawns);
+			safe_cprintf(ent, PRINT_HIGH, "You bought %d respawns for %d credits - you now have %d.\n", 250 - ent->myskills.weapon_respawns, price, 250);
+			ent->myskills.weapon_respawns = 250;
 			break;
 #endif
 		}

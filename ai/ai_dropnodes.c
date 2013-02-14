@@ -433,9 +433,9 @@ void AITools_AddBotRoamNode(void)
 //==========================================
 void AITools_DropNodes(edict_t *ent)
 {
-	if( nav.loaded )
+	/*if( nav.loaded )
 		return;
-
+	*/
 	AI_CategorizePosition (ent);
 	player.ent = ent;
 	AI_PathMap();

@@ -371,6 +371,7 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 	if (mode && (maplist->nummaps > mapnum))
 	{
 		char tempBuffer[1024];
+		char* greentext;
 		//Add the vote
 		voter = ent;
 		numVotes = 1;
@@ -399,7 +400,12 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 		}
 		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
 
-		gi.bprintf (PRINT_CHAT, "%s", tempBuffer);
+		greentext = HiPrint(tempBuffer);
+		gi.bprintf (PRINT_HIGH, "%s\n", greentext);
+		V_Free(greentext);
+		gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/comp_up.wav"), 1, ATTN_NONE, 0);
+
+
 		gi.bprintf (PRINT_HIGH, "Please place your vote by typing 'vote yes' or 'vote no' within the next %d seconds.\n", floattoint(voteTimeLeft-level.time));
 
 	}
@@ -600,7 +606,7 @@ void RunVotes ()
 		if (V_VoteDone())
 		{
 			// Tell everyone
-			gi.bprintf (PRINT_CHAT, "A majority was reached!\nVote passed!\n");
+			G_PrintGreenText("A majority was reached! Vote passed!\n");
 			voteTimeLeft = -1;
 			//Change the map
 			EndDMLevel();
@@ -629,8 +635,8 @@ void RunVotes ()
 		if (V_VoteDone() == CHANGE_NOW)
 		{
 			// Tell everyone
-			gi.bprintf (PRINT_CHAT, "A majority was reached!\nVote passed!\n");
-			voteTimeLeft = -1;
+			gi.sound(&g_edicts[0], CHAN_AUTO, gi.soundindex("misc/keyuse.wav"), 1, ATTN_NONE, 0);
+			G_PrintGreenText("A majority was reached! Vote passed!\n");
 			//Change the map
 			EndDMLevel();
 		}
@@ -885,7 +891,7 @@ void ShowVoteModeMenu(edict_t *ent)
 	if (!voting->value)
 		return;
 	// don't allow non-admin voting during pre-game to allow players time to connect
-	if (!ent->myskills.administrator && (level.time < 15.0)) // allow 15 seconds for players to connect
+	if (!ent->myskills.administrator && (level.time < 5.0)) // allow 5 seconds for players to connect
 	{
 		safe_cprintf(ent, PRINT_HIGH, "Please allow time for other players to connect.\n");
 		return;
@@ -899,6 +905,7 @@ void ShowVoteModeMenu(edict_t *ent)
 			safe_cprintf(ent, PRINT_HIGH, "There is no vote taking place at this time.\n");
 		else
 		{
+			char* voted;
 			// Did we already vote?
 			if (ent->client->resp.HasVoted)
 			{
@@ -907,8 +914,10 @@ void ShowVoteModeMenu(edict_t *ent)
 			}
 			ent->client->resp.HasVoted = true;
 			numVotes++;
-
-			gi.bprintf (PRINT_CHAT, "%s voted Yes.\n", ent->client->pers.netname);
+			
+			voted = HiPrint(va("%s voted Yes.\n", ent->client->pers.netname));
+			gi.bprintf (PRINT_HIGH, "%s\n", voted);
+			V_Free(voted);
 		}
 		return;
 	}

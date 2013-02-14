@@ -93,12 +93,19 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 {
 	//Give_respawnitems(ent);
 
-	if (ent->myskills.class_num == CLASS_POLTERGEIST)
-		return;
 #ifndef REMOVE_RESPAWNS
 	if (!ent->myskills.weapon_respawns) // No respawns.
 		return;
 #endif
+
+#ifndef REMOVE_RESPAWNS
+	if (pregame_time->value < level.time) // not in pregame?
+		ent->myskills.weapon_respawns--;
+#endif
+	
+	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+		return;
+
 
 	//3.02 begin new respawn weapon code
 	//Give them the weapon
@@ -127,9 +134,6 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 
 	//3.0 reset auto-tball flag
 	ent->v_flags = SFLG_NONE;
-#ifndef REMOVE_RESPAWNS
-	ent->myskills.weapon_respawns--;
-#endif
 }
 
 void Pick_respawnweapon(edict_t *ent)

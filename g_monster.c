@@ -375,47 +375,6 @@ void M_CatagorizePosition (edict_t *ent)
 void M_WorldEffects (edict_t *ent)
 {
 	//int		dmg;
-
-	/*
-	if (ent->health > 0)
-	{
-		if (!(ent->flags & FL_SWIM))
-		{
-			if (ent->waterlevel < 3)
-			{
-				ent->air_finished = level.time + 12;
-			}
-			else if (ent->air_finished < level.time)
-			{	// drown!
-				if (ent->pain_debounce_time < level.time)
-				{
-					dmg = 2 + 2 * floor(level.time - ent->air_finished);
-					if (dmg > 15)
-						dmg = 15;
-					T_Damage (ent, world, world, vec3_origin, ent->s.origin, vec3_origin, dmg, 0, DAMAGE_NO_ARMOR, MOD_WATER);
-					ent->pain_debounce_time = level.time + 1;
-				}
-			}
-		}
-		else
-		{
-			if (ent->waterlevel > 0)
-			{
-				ent->air_finished = level.time + 9;
-			}
-			else if (ent->air_finished < level.time)
-			{	// suffocate!
-				if (ent->pain_debounce_time < level.time)
-				{
-					dmg = 2 + 2 * floor(level.time - ent->air_finished);
-					if (dmg > 15)
-						dmg = 15;
-					T_Damage (ent, world, world, vec3_origin, ent->s.origin, vec3_origin, dmg, 0, DAMAGE_NO_ARMOR, MOD_WATER);
-					ent->pain_debounce_time = level.time + 1;
-				}
-			}
-		}
-	*/
 	
 	if (ent->waterlevel == 0)
 	{

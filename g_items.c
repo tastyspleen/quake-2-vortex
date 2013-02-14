@@ -287,61 +287,6 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 	V_GiveAmmoClip(other, 2, AMMO_CELLS);
 	V_GiveAmmoClip(other, 2, AMMO_SLUGS);
 
-/*
-	item = Fdi_BULLETS;//FindItem("Bullets");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_bullets)
-			other->client->pers.inventory[index] = other->client->pers.max_bullets;
-	}
-
-	item = Fdi_SHELLS;//FindItem("Shells");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_shells)
-			other->client->pers.inventory[index] = other->client->pers.max_shells;
-	}
-
-	item = Fdi_CELLS;//FindItem("Cells");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_cells)
-			other->client->pers.inventory[index] = other->client->pers.max_cells;
-	}
-
-	if (item)
-	{
-		item = Fdi_GRENADES;//FindItem("Grenades");
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_grenades)
-			other->client->pers.inventory[index] = other->client->pers.max_grenades;
-	}
-
-	item = Fdi_ROCKETS;//FindItem("Rockets");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_rockets)
-			other->client->pers.inventory[index] = other->client->pers.max_rockets;
-	}
-
-	item = Fdi_SLUGS;//FindItem("Slugs");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_slugs)
-			other->client->pers.inventory[index] = other->client->pers.max_slugs;
-	}
-*/
 	// RAFAEL
 	item = Fdi_MAGSLUGS;//FindItem ("Mag Slug");
 	if (item)

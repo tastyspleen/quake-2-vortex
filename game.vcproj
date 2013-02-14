@@ -2758,50 +2758,6 @@
 				>
 			</File>
 			<File
-				RelativePath="gds.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release Alpha|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug Alpha|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug 2|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\grid.c"
 				>
 			</File>
@@ -4652,6 +4608,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\v_autobind.c"
+				>
+			</File>
+			<File
 				RelativePath=".\v_cmd.c"
 				>
 			</File>
@@ -4797,6 +4757,10 @@
 			</File>
 			<File
 				RelativePath="v_shared.h"
+				>
+			</File>
+			<File
+				RelativePath=".\v_sqlite_character.c"
 				>
 			</File>
 			<File
@@ -5182,10 +5146,6 @@
 			</File>
 			<File
 				RelativePath="m_tank.h"
-				>
-			</File>
-			<File
-				RelativePath="maplist.h"
 				>
 			</File>
 			<File

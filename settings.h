@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.6"
+#define VRX_VERSION "3.72"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -532,7 +532,7 @@ const char* Time();
 #define ARMORY_PRICE_AMMO			5
 #define ARMORY_PRICE_TBALLS			10
 #define ARMORY_PRICE_POWERCUBE		1
-#define ARMORY_PRICE_RESPAWN		2000
+#define ARMORY_PRICE_RESPAWN		1000
 #define ARMORY_PRICE_HEALTH			5
 #define ARMORY_PRICE_ARMOR			10
 #define ARMORY_PRICE_POTIONS		50

@@ -1,16 +1,6 @@
 #include "g_local.h"
 #include "damage.h"
 
-/*
-qboolean IsMorphedPlayerDamage (int mod)
-{
-	return (mod == MOD_BERSERK_CRUSH || mod == MOD_BERSERK_SLASH || mod == MOD_BERSERK_PUNCH 
-		|| mod == MOD_CACODEMON_FIREBALL || mod == MOD_TENTACLE || mod == MOD_HYPERBLASTER
-		|| mod == MOD_ROCKET || mod == MOD_R_SPLASH || mod == MOD_BLASTER || mod == MOD_MUTANT
-		|| mod == MOD_PARASITE || mod == MOD_TANK_PUNCH || mod == MOD_TANK_BULLET);
-}
-*/
-
 int G_DamageType (int mod, int dflags)
 {
 	switch (mod)

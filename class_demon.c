@@ -379,17 +379,29 @@ void PlagueCloudSpawn (edict_t *ent)
 {
 	float	radius;
 	edict_t *e=NULL;
+	int levelmax;
 
-	if (ent->myskills.abilities[PLAGUE].disable)
+	if (ent->myskills.abilities[PLAGUE].disable && ent->myskills.abilities[BLOOD_SUCKER].disable)
 		return;
 
 	if (!V_CanUseAbilities(ent, PLAGUE, 0, false))
-		return;
+	{
+		if (!V_CanUseAbilities(ent, BLOOD_SUCKER, 0, false)) // parasites have passive plague
+			return;
+	}
 
 	if ((ent->myskills.class_num == CLASS_POLTERGEIST) && !ent->mtype && !PM_PlayerHasMonster(ent))
 		return; // can't use this in human form
 
-	radius = PLAGUE_DEFAULT_RADIUS+PLAGUE_ADDON_RADIUS*ent->myskills.abilities[PLAGUE].current_level;
+	if (ent->mtype == M_MYPARASITE) // you're a parasite? pick highest, plague or parasite.
+		levelmax = max(ent->myskills.abilities[PLAGUE].current_level, ent->myskills.abilities[BLOOD_SUCKER].current_level);
+	else
+	{
+		if (!ent->myskills.abilities[PLAGUE].disable) // we have the skill, right?
+			levelmax = ent->myskills.abilities[PLAGUE].current_level;
+	}
+
+	radius = PLAGUE_DEFAULT_RADIUS+PLAGUE_ADDON_RADIUS*levelmax;
 
 	if (radius > PLAGUE_MAX_RADIUS)
 		radius = PLAGUE_MAX_RADIUS;
@@ -454,7 +466,14 @@ void plague_think (edict_t *self)
 
 	if (level.time > self->wait)
 	{
-		dmg = (float)self->owner->myskills.abilities[PLAGUE].current_level/10 * ((float)self->enemy->max_health/20);
+		int maxlevel;
+
+		if (self->owner->mtype == M_MYPARASITE)
+			maxlevel = max(self->owner->myskills.abilities[PLAGUE].current_level, self->owner->myskills.abilities[BLOOD_SUCKER].current_level);
+		else
+			maxlevel = self->owner->myskills.abilities[PLAGUE].current_level;
+
+		dmg = (float)maxlevel/10 * ((float)self->enemy->max_health/20);
 		if (!self->enemy->client && strcmp(self->enemy->classname, "player_tank") != 0)
 			dmg *= 2; // non-clients take double damage (helps with pvm)
 		if (dmg < 1)

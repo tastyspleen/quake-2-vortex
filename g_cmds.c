@@ -1227,7 +1227,6 @@ Cmd_Inven_f
 */
 void Cmd_Inven_f (edict_t *ent)
 {
-	int			i;
 	gclient_t	*cl;
 	if(ent->svflags & SVF_MONSTER) return;
 
@@ -2447,50 +2446,6 @@ void Cmd_AdminCmd (edict_t *ent)
 		*segf = 1; // Boom.
 	}
 
-	if (!Q_stricmp(cmd1, "bot"))
-	{
-		if( !Q_stricmp (cmd2, "addbot") )
-		{ 
-			if(ctf->value) // name, skin, team
-				BOT_SpawnBot ( gi.argv(3), gi.argv(4), gi.argv(5), NULL );
-			else // name, skin
-				BOT_SpawnBot ( NULL, cmd3, gi.argv(4), NULL );
-		}	
-		// removebot
-		else if( !Q_stricmp (cmd2, "removebot") )
-			BOT_RemoveBot(gi.argv(3));
-
-		else if( !Q_stricmp (cmd2, "editnodes") )
-			AITools_InitEditnodes();
-
-		else if( !Q_stricmp (cmd2, "makenodes") )
-			AITools_InitMakenodes();
-
-		else if( !Q_stricmp (cmd2, "savenodes") )
-			AITools_SaveNodes();
-
-		else if( !Q_stricmp (cmd2, "addbotroam") )
-			AITools_AddBotRoamNode();
-
-		else if( !Q_stricmp (cmd2, "addmonster") )
-			M_default_Spawn ();
-
-		else
-			return;
-	}
-
-	if (!Q_stricmp(cmd1, "debugsound"))
-	{
-		edict_t *speaker;
-		speaker = G_Spawn();
-		st.noise = "invasion/hard_victory.wav";
-		speaker->spawnflags |= 1;
-		speaker->attenuation = 1;
-		speaker->volume = 1;
-		VectorCopy(ent->s.origin, speaker->s.origin);
-		SP_target_speaker(speaker);
-	}
-
 	/*else if (Q_stricmp(cmd1, "upgrade_ability") == 0)
 	{
 		safe_cprintf(ent, PRINT_HIGH, "Upgrading ability #%d for %s...\n", atoi(cmd3), cmd2);
@@ -2691,10 +2646,7 @@ qboolean vrx_CheckForFlag (void);
 ClientCommand
 =================
 */
-//void	PlaceLaser (edict_t *ent);
-void Cmd_BuildLaser (edict_t *ent);
 void Cmd_HolyFreeze(edict_t *ent);
-//void SpawnForcewall(edict_t *player);
 void Cmd_Forcewall(edict_t *ent);
 void ForcewallOff(edict_t *player);
 void ChangeRune (edict_t *ent, int type);
@@ -2771,21 +2723,6 @@ que_t *que_ptr (que_t *src, que_t *dst)
 }
 
 //Talent: Overload
-/*
-void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, float *cost_mult, float *skill_mult)
-{
-	*cost_mult = (float)cubes / cost;
-	if (*cost_mult < 1.5 || *cost_mult > 3.0)
-	{
-		safe_cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
-			floattoint(1.5 * cost), floattoint(3.0 * cost));
-		return;
-	}
-	// change second value to 0.082 for 3x damage
-	*skill_mult = pow((1 + 0.0496 * *cost_mult), talentLevel);
-	//gi.dprintf("cost = %.3f skill = %.3f\n", *cost_mult, *skill_mult);
-}
-*/
 
 qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, float *cost_mult, float *skill_mult)
 {
