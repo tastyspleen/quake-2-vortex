@@ -344,8 +344,7 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	Give_respawnitems(ent);
 	Give_respawnweapon(ent, ent->myskills.respawn_weapon);
 	
-	setGeneralAbilities(ent);
-	setClassAbilities(ent);
+	AssignAbilities(ent);
 	setTalents(ent);
 	ent->myskills.streak = 0;
 
