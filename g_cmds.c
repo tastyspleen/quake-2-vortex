@@ -1757,17 +1757,6 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	}
 //GHz END
 
-	// don't allow q2ace clients into the game... they are often hacked
-	/*
-	if ((s = strstr(text, "Q2ACE - Q2 Anti-Cheat-Edition")) != NULL)
-	{
-		gi.bprintf(PRINT_HIGH, "%s is using an unauthorized Quake 2 client!\n", ent->client->pers.netname);
-		stuffcmd(ent, "disconnect\n");
-		gi.bprintf(PRINT_HIGH, "%s was kicked\n", ent->client->pers.netname);
-		return;
-	}
-	*/
-
 	if (flood_msgs->value) {
 		cl = ent->client;
         if (level.time < cl->flood_locktill) {

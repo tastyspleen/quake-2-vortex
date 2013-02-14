@@ -1446,9 +1446,7 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		//	player->myskills.weapon_points *= 2;
 		
 		//Initialize their upgrades
-		disableAbilities(player);
-		setGeneralAbilities(player);
-		setClassAbilities(player);
+		AssignAbilities(player);
         resetWeapons(player);
 
 		//Check for special level-up bonuses
@@ -1670,12 +1668,8 @@ void V_UpdatePlayerAbilities (edict_t *ent)
 
 	// reset all ability upgrades
 	memset(ent->myskills.abilities, 0, sizeof(upgrade_t) * MAX_ABILITIES);
-	disableAbilities(ent);
 
-	// set general abilities
-	setGeneralAbilities(ent);
-	// set class-specific abilities
-	setClassAbilities(ent);
+	AssignAbilities(ent);
 
 	for (i=0; i<MAX_ABILITIES; ++i)	
 	{
