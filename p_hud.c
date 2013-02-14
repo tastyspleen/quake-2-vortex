@@ -1051,9 +1051,7 @@ void G_SetStats (edict_t *ent)
 	// id code
 	//GHz End
 //GHz START
-	if (/*(ent->myskills.abilities[ID].disable) || 
-		(!ent->myskills.abilities[ID].current_level) || */
-		(level.time > ent->lastdmg+3))
+	if (level.time > ent->lastdmg+3)
 		ent->client->ps.stats[STAT_ID_DAMAGE] = 0;
 //GHz END
 
@@ -1151,20 +1149,6 @@ void G_SetSpectatorStats (edict_t *ent)
 		cl->ps.stats[STAT_LAYOUTS] |= 1;
 	if (cl->showinventory && cl->pers.health > 0)
 		cl->ps.stats[STAT_LAYOUTS] |= 2;
-/*
-	if (cl->chase_target && cl->chase_target->inuse && cl->chase_target->client)
-	{
-		// set a configstring to the player's name
-		gi.configstring (CS_GENERAL+(ent-g_edicts-1), 
-			va("Chasing %s (%d)", cl->chase_target->client->pers.netname, cl->chase_target->myskills.level));
-		// set stat to the configstring's index
-		cl->ps.stats[STAT_CHASE] = CS_GENERAL+(ent-g_edicts-1);
-
-		cl->ps.stats[STAT_CHASE] = CS_PLAYERSKINS + 
-			(cl->chase_target - g_edicts) - 1;
-	}
-	else
-		cl->ps.stats[STAT_CHASE] = 0;*/
 }
 
 

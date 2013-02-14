@@ -290,25 +290,11 @@ void ChangeWeapon (edict_t *ent)
 
 	ent->client->refire_frames = 0;
 	lasersight_off(ent);
-	/*
-	//GHz START
-	// toggle weapon mode
-	if (ent->client->pers.weapon && ent->client->newweapon && ent->client->pers.weapon == ent->client->newweapon 
-		&& ToggleSecondary(ent, ent->client->pers.weapon, false))
-	{
-		if (ent->client->weapon_mode)
-			ent->client->weapon_mode = 0;
-		else
-			ent->client->weapon_mode = 1;
-	}
-	//GHz END
-	*/
 	
 	if (ent->client->grenade_time)
 	{
 		ent->client->grenade_time = level.time;
 		ent->client->weapon_sound = 0;
-		//weapon_grenade_fire (ent, false);
 		ent->client->grenade_time = 0;
 	}
 

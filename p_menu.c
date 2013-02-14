@@ -5,7 +5,7 @@
 
 qboolean loc_CanSee (edict_t *targ, edict_t *inflictor);
 void check_for_levelup(edict_t *ent);
-
+void Cmd_Armory_f(edict_t*ent, int selection);
 //Function prototypes required for this .c file:
 void GDS_LoadPlayer(edict_t *ent);
 void OpenDOMJoinMenu (edict_t *ent);
@@ -221,13 +221,9 @@ void setClassAbilities (edict_t *ent)
 		enableAbility(ent, MORPH_MASTERY, 1, 1, 0);
 
 		// Specific Skills for Medics.
-		/*enableAbility(ent, SPIKER, 0, 1, 0);		
-		enableAbility(ent, GASSER, 0, 1, 0);*/
 		enableAbility(ent, MONSTER_SUMMON, 0, 1, 0);
 
 		// Hard Max for Specific Skills
-		/*ent->myskills.abilities[SPIKER].hard_max = 1;
-		ent->myskills.abilities[GASSER].hard_max = 1;*/
 		ent->myskills.abilities[MONSTER_SUMMON].hard_max = 1;
 		break;
 
@@ -276,7 +272,6 @@ void setGeneralAbilities (edict_t *ent)
 {
 	// general
 	enableAbility(ent, VITALITY, 0, 10, 1);
-	//enableAbility(ent, ID, 0, 1, 1); // vrxchile 2.0- id is no longer a skill.
 	enableAbility(ent, MAX_AMMO, 0, 10, 1);
 	enableAbility(ent, POWER_REGEN, 0, 8, 1);
 	enableAbility(ent, WORLD_RESIST, 0, 1, 1);
@@ -1083,7 +1078,7 @@ void generalmenu_handler (edict_t *ent, int option)
 	case 10: ShowTradeMenu(ent); break;
 	case 11: ShowVoteModeMenu(ent); break;
 	case 12: ShowHelpMenu(ent, 0); break;
-	case 13: OpenCombatMenu(ent, 0); break;
+	case 13: Cmd_Armory_f(ent, 31); break;
 	default: closemenu(ent);
 	}
 }
@@ -1098,10 +1093,24 @@ void OpenGeneralMenu (edict_t *ent)
 	addlinetomenu(ent, "Welcome to Vortex!", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "Please choose a sub-menu.", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Upgrade abilities", 1);
+	
+	if (!ent->myskills.speciality_points)
+		addlinetomenu(ent, "Upgrade abilities", 1);
+	else
+		addlinetomenu(ent, va("Upgrade abilities (%d)", ent->myskills.speciality_points), 1);
+	
 	if (ent->myskills.class_num != CLASS_POLTERGEIST)
-		addlinetomenu(ent, "Upgrade weapons", 2);
-	addlinetomenu(ent, "Upgrade talents", 3);
+	{
+		if (!ent->myskills.weapon_points)
+			addlinetomenu(ent, "Upgrade weapons", 2);
+		else
+			addlinetomenu(ent, va("Upgrade weapons (%d)", ent->myskills.weapon_points), 2);
+	}
+	if (!ent->myskills.talents.talentPoints)
+		addlinetomenu(ent, "Upgrade talents", 3);
+	else
+		addlinetomenu(ent, va("Upgrade talents (%d)",ent->myskills.talents.talentPoints), 3);
+
 	addlinetomenu(ent, " ", 0);
 	if (ent->myskills.class_num != CLASS_POLTERGEIST && 
 		ent->myskills.class_num != CLASS_KNIGHT)
@@ -1114,8 +1123,11 @@ void OpenGeneralMenu (edict_t *ent)
 	addlinetomenu(ent, "Trade items", 10);
 	addlinetomenu(ent, "Vote for map/mode", 11);
 	addlinetomenu(ent, "Help", 12);
-	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Close", 99);
+
+#ifndef REMOVE_RESPAWNS
+	if (pregame_time->value > level.time || trading->value) // we in pregame? you can buy respawns
+		addlinetomenu(ent, va("Buy Respawns (%d)", ent->myskills.weapon_respawns), 13);
+#endif
 
 	setmenuhandler(ent, generalmenu_handler);
 	ent->client->menustorage.currentline = 18;

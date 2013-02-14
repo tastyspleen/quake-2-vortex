@@ -3,7 +3,7 @@
 // dom but without teams. vrxchile 3.0 - az
 
 #define HW_POINTS 150
-#define HW_CREDITS 200
+#define HW_CREDITS 100
 #define HW_AWARD_FRAMES		50
 #define HW_MINIMUM_PLAYERS	3
 #define HW_FRAG_POINTS		75

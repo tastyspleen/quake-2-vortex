@@ -1202,7 +1202,6 @@ int LowestLevelPlayer(void);
 int PvMHighestLevelPlayer(void);//GHz
 int PvMLowestLevelPlayer(void);
 int ActivePlayers (void);//Apple
-float VortexGetAbilityModifier(int level, float base_modifier);//GHz
 int vrx_GetMonsterCost(int mtype);//GHz
 int vrx_GetMonsterControlCost(int mtype);//GHz
 void VortexRemovePlayerSummonables(edict_t *self);//GHz
@@ -2085,7 +2084,6 @@ void Teleport_them(edict_t *ent);
 void Cmd_CreateHealth_f(edict_t *ent);
 void Check_full(edict_t *ent);
 void Cmd_AmmoStealer_f(edict_t *ent);
-void Add_credits(edict_t *ent, int targ_level);
 void MonsterAim(edict_t *self, float accuracy, int projectile_speed, qboolean rocket, int flash_number, vec3_t forward, vec3_t start);
 float entdist(edict_t *ent1, edict_t *ent2);
 void Cmd_Upgrade_Weapon(edict_t *ent, int weapon);
@@ -2268,11 +2266,9 @@ qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 #define VectorEmpty(a)        ((a[0]==0)&&(a[1]==0)&&(a[2]==0))
 #define SENTRY_UPRIGHT		1
 #define SENTRY_FLIPPED		2
-void	ReadBotChat(void);
-void BotGreeting(edict_t *chat);
-void BotComeback(edict_t *self);
-void BotInsultStart(edict_t *self);
-void BotInsult(edict_t *self, edict_t *enemy, int chat_type);
+int V_GetRuneWeaponPts(edict_t *ent, item_t *rune);
+int V_GetRuneAbilityPts(edict_t *ent, item_t *rune);
+qboolean SavePlayer(edict_t *ent);
 void Cmd_BFGFireball(edict_t *ent);
 qboolean IsNewbieBasher (edict_t *player);
 qboolean TeleportNearTarget (edict_t *self, edict_t *target, float dist);
@@ -2290,9 +2286,6 @@ qboolean BossExists (void);
 int numNearbyEntities (edict_t *ent, float dist, qboolean vis);
 void RemoveLasers (edict_t *ent);
 int V_AddFinalExp (edict_t *player, int exp);
-
-//GDS STUFF
-//#include "sqlstuff.h"
 //K03 End
 
 //NewB
@@ -2311,7 +2304,23 @@ do { \
 
 //az begin
 void SaveAllPlayers();
+// v_sqlite_character.c
+qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* playername);
+qboolean VSF_LoadPlayer(edict_t *player, char* path);
 
+// missing definitions
+void OpenModeMenu(edict_t *ent);
+qboolean CanJoinGame(edict_t *ent, int returned);
+qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg);
+
+#ifndef NO_GDS
+void SaveCharacterQuit (edict_t *ent);
+#endif
+
+// New AutoStuff (hopefully making life easier on newbies)
+void V_AutoStuff(edict_t* ent);
+
+// new command system
 #include "v_cmd.h"
 
 // 3.0 new holy vortex mode

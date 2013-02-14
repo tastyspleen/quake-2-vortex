@@ -185,10 +185,6 @@ void newPlayer(edict_t *ent);
 int canJoinGame(edict_t *ent);
 //************ player.c ************
 
-//************ gds.c ************
-int GDS_OpenConfigFile(edict_t *ent);
-//************ gds.c ************
-
 //************ invasion.c ************
 edict_t *INV_SelectPlayerSpawnPoint (edict_t *ent);
 void INV_InitSpawnQue (void);
@@ -245,4 +241,7 @@ void dmgListCleanup (edict_t *self, qboolean clear_all);
 float GetTotalBossDamage (edict_t *self);
 float GetPlayerBossDamage (edict_t *player, edict_t *boss);
 qboolean SpawnWaitingPlayers (void);
+
+// etc
+int GetAbilityUpgradeCost(int index);
 #endif

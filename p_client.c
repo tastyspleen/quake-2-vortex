@@ -16,8 +16,6 @@ void EatCorpses (edict_t *ent);
 void PlagueCloudSpawn (edict_t *ent);
 void boss_update (edict_t *ent, usercmd_t *ucmd, int type);
 void RunCacodemonFrames (edict_t *ent, usercmd_t *ucmd);
-//void RunTankFrames (edict_t *ent, usercmd_t *ucmd);
-void GDS_CheckPlayer (edict_t *ent);
 void brain_fire_beam (edict_t *self);
 
 //
@@ -1865,7 +1863,6 @@ void ShowGun(edict_t *ent);
 void KillBoxMonsters(edict_t *ent);
 // az end
 
-//void MorphToBrain (edict_t *ent);
 void PutClientInServer (edict_t *ent)
 {
 	vec3_t	mins = {-16, -16, -24};
@@ -2138,21 +2135,8 @@ void ClientBeginDeathmatch (edict_t *ent)
 	ent->client->cloaking = false;
 	ent->max_pipes = 0;
 	ent->num_hammers = 0;//4.4 Talent: Boomerang
-	
-	G_StuffPlayerCmds(ent, "alias +thrust thrust on\nalias -thrust thrust off\n");
-	G_StuffPlayerCmds(ent, "alias +manacharge meditate\nalias -manacharge meditate\n"); // -az
-	G_StuffPlayerCmds(ent, "alias +hook hook\nalias -hook unhook\n");
-	G_StuffPlayerCmds(ent, "alias +superspeed sspeed\nalias -superspeed nosspeed on\n");
-	G_StuffPlayerCmds(ent, "alias +sprint sprinton\nalias -sprint sprintoff\n");
-	G_StuffPlayerCmds(ent, "alias +shield shieldon\nalias -shield shieldoff\n");
-	G_StuffPlayerCmds(ent, "alias +lockon lockon_on\nalias -lockon lockon_off\n");
-	G_StuffPlayerCmds(ent, "alias +beam beam_on\nalias -beam beam_off\n");
-	// WARNING: this might cause overflowing!!!
-	//stuffcmd(ent, "alias +thrust thrust on\nalias -thrust thrust off\n");
-	//stuffcmd(ent, "alias +hook hook\nalias -hook unhook\n");
-	//stuffcmd(ent, "alias +superspeed sspeed\nalias -superspeed nosspeed on\n");
-	//stuffcmd(ent, "alias +lockon lockon_on\nalias -lockon lockon_off\n");
-	//stuffcmd(ent, "alias +beam beam_on\nalias -beam beam_off\n");
+
+	V_AutoStuff(ent);
 
 	if (SPREE_WAR == true && ent && ent == SPREE_DUDE)
 	{
@@ -2278,7 +2262,11 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	s = Info_ValueForKey (userinfo, "name");
 	// log event if new name is different than old name
 	if (strcmp(s, ent->client->pers.netname))
+	{
 		WriteToLogfile(ent, va("Changed name to %s.\n", s));
+		if (strlen(ent->client->pers.netname) > 3)
+			gi.bprintf(PRINT_HIGH, "%s changed name to %s\n", ent->client->pers.netname, s);
+	}
 	if (strlen( ent->client->pers.netname) < 1)
 		strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
 	Info_SetValueForKey(userinfo, "name", ent->client->pers.netname);
@@ -2501,10 +2489,6 @@ void ClientDisconnect (edict_t *ent)
 	// remove from list of players waiting to spawn
 	if (INVASION_OTHERSPAWNS_REMOVED)
 		INV_RemoveSpawnQue(ent);
-
-	// reset gds status for this player
-	//ent->client->gds_downloading = false;
-	//ent->client->gds_complete = true;
 
 	if (ent->teamnum && !G_IsSpectator(ent))
 	{
@@ -3098,7 +3082,9 @@ void ClientThinkstuff(edict_t *ent)
 			ent->client->cloaking = false;
 	}
 
-	if ((!ent->myskills.abilities[PLAGUE].disable) && (ent->myskills.abilities[PLAGUE].current_level))
+	if ( (!ent->myskills.abilities[PLAGUE].disable) && (ent->myskills.abilities[PLAGUE].current_level) ||
+		 (!ent->myskills.abilities[BLOOD_SUCKER].disable) && (ent->myskills.abilities[BLOOD_SUCKER].current_level)
+		)
 		PlagueCloudSpawn(ent);
 
 	if (ent->flags & FL_CHATPROTECT)

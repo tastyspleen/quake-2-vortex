@@ -63,18 +63,6 @@ void NewLevel_Addons(edict_t *ent)
 		else ent->myskills.speciality_points++;
 	}
 
-	// free ID at level 5
-	if (ent->myskills.level == 5)
-	{
-		if (!ent->myskills.abilities[ID].level)
-		{
-			ent->myskills.abilities[ID].level++;
-			ent->myskills.abilities[ID].current_level++;
-		}
-		else
-			ent->myskills.speciality_points += ent->myskills.abilities[ID].level*2; // give back points spent on ID.
-	}
-
 	// free scanner at level 10
 	if (ent->myskills.level == 10)
 	{
@@ -92,56 +80,6 @@ void NewLevel_Addons(edict_t *ent)
 	if (ent->myskills.level > 1 && !(ent->myskills.level % 2)) // Give a talent point every two levels.
 		ent->myskills.talents.talentPoints++;
 }
-
-void Add_credits(edict_t *ent, int targ_level)
-{
-	int level_diff		= 0;
-	int credit_points	= 0;
-	float temp			= 0.0;
-
-	if (!ent->client)
-		return;
-
-	if (targ_level > ent->myskills.level)
-	{
-		level_diff = targ_level - ent->myskills.level;
-		credit_points = GetRandom(CREDIT_HIGH, CREDIT_HIGH*2) + CREDIT_HIGH*level_diff;
-	}
-	else if (targ_level < ent->myskills.level)
-	{
-		level_diff = ent->myskills.level - targ_level;
-		credit_points = (GetRandom(CREDIT_LOW, CREDIT_LOW*2) + CREDIT_LOW)/level_diff;
-	}
-	else credit_points = GetRandom(CREDIT_SAME, CREDIT_SAME*5);	//3.0 changed from: credit_points = CREDIT_SAME
-	
-	if (credit_points < 0)
-		credit_points = 1;
-
-	if (ent->myskills.streak >= SPREE_START)//GHz
-	{
-		temp = (ent->myskills.streak + 1 - SPREE_START) * SPREE_BONUS;
-		if (temp > 4) temp = 4;
-		if (ent->myskills.streak >= SPREE_WARS_START && SPREE_WARS > 0)
-			temp *= SPREE_WARS_BONUS;
-		credit_points *= 1 + temp;
-	}
-
-	if (credit_points > 100)
-		credit_points = 100;
-
-	credit_points *= vrx_creditmult->value;
-
-	if (ent->myskills.credits+credit_points > MAX_CREDITS)
-	{
-		safe_cprintf(ent, PRINT_HIGH, "Maximum credits reached!\n");
-		ent->myskills.credits = MAX_CREDITS;
-	}
-	else
-		ent->myskills.credits += credit_points;
-
-//	gi.dprintf("%s was awarded with %d credits\n", ent->client->pers.netname, credit_points);
-}
-
 
 gitem_t	*GetWeaponForNumber(int i)
 {
@@ -390,112 +328,6 @@ int V_AddFinalExp (edict_t *player, int exp)
 
 #define EXP_SHARED_FACTOR				0.5
 #define PLAYER_MONSTER_MIN_PLAYERS		4
-
-void AddMonsterExp (edict_t *player, edict_t *monster)
-{
-	int		base_exp, exp_points, control_cost;
-	float	level_diff, bonus;
-	edict_t	*e;
-
-	if (!player->client)
-		return;
-	// don't award points to spectators
-	if (G_IsSpectator(player))
-		return;
-	// don't award points to dead players
-	if (player->health < 1)
-		return;
-	// don't award points to players in chat-protect mode
-	if (player->flags & FL_CHATPROTECT)
-		return;
-	// don't award points for monster that was just resurrected
-	if (monster->monsterinfo.resurrected_time > level.time)
-		return;
-
-	// don't award exp for player-monsters
-	if (PM_MonsterHasPilot(monster))
-		return;
-
-	// is this a world-spawned monster or a player-spawned monster?
-	e = G_GetClient(monster);
-	if (e)
-	{
-		if (total_players() < PLAYER_MONSTER_MIN_PLAYERS)
-			return; // don't award player-spawned monster exp if there are too few players
-		base_exp = EXP_PLAYER_MONSTER;
-	}
-	else
-		base_exp = EXP_WORLD_MONSTER;
-
-	// reduce experience for invasion mode because of secondary objective
-	if (INVASION_OTHERSPAWNS_REMOVED)
-		base_exp *= 0.5;
-
-	// increase experience for monsters in FFA since it is harder to stay alive
-	// if (ffa->value)
-	//	base_exp *= 1.5;
-
-	level_diff = (float) monster->monsterinfo.level / (player->myskills.level+1);
-
-	control_cost = monster->monsterinfo.control_cost;
-	if (control_cost < 1)
-		control_cost = 1;
-
-	// calculate spree bonus
-	bonus = 1 + 0.04*player->myskills.streak;
-
-	if (bonus > 2)
-		bonus = 2;
-
-	// calculate ally bonus
-	if (allies->value && !numAllies(player))
-	{
-		if (e)
-			bonus += 0.5*(float)numAllies(e);
-	}
-	
-	exp_points = control_cost * (level_diff*base_exp);
-	exp_points *= bonus;
-
-	// cap max experience at 300% normal
-	// vrxchile v1.3 Do not cap.
-	/*max_exp = 3*base_exp*control_cost;
-	if (exp_points > max_exp)
-		exp_points = max_exp;*/
-
-	// give your team some experience
-	if (/*pvm->value ||*/ ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
-		Add_ctfteam_exp(player, (int)(EXP_SHARED_FACTOR*exp_points));
-
-	// give your allies some experience
-	if (allies->value)
-		AddAllyExp(player, exp_points);
-
-	// add experience
-	/*
-	player->client->resp.score += exp_points;
-	player->myskills.experience += exp_points;
-	check_for_levelup(player);
-	*/
-	V_AddFinalExp(player, exp_points);
-
-	// add credits
-	VortexAddCredits(player, level_diff, 0, false);
-
-	player->lastkill = level.time + 1.0;
-	player->client->idle_frames = 0;
-
-	// increment spree
-	//if (pvm->value)
-	if ((player->myskills.respawns & HOSTILE_MONSTERS) //4.5 PvM preference players only
-		&& !(player->myskills.respawns & HOSTILE_PLAYERS))
-	{
-		player->myskills.streak++;
-		VortexSpreeAbilities(player);
-	}
-
-	//gi.dprintf("AddMonsterExp(), %d exp, %d control_cost %d level\n", exp_points, control_cost, monster->monsterinfo.level);
-}
 
 void VortexAddExp(edict_t *attacker, edict_t *targ);
 int PVM_TotalMonsters (edict_t *monster_owner);

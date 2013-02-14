@@ -11,6 +11,16 @@ returns 1 if the entity is visible to self, even if not infront ()
 //K03 Begin
 extern qboolean	is_quad;
 
+qboolean G_EntValid(edict_t *ent)
+{
+	// entity must exist and be in-use
+	if (!ent || !ent->inuse)
+		return false;
+	// if this is not a player-monster (morph), then the entity must be solid/damageable
+	if (!PM_PlayerHasMonster(ent) && (!ent->takedamage || (ent->solid == SOLID_NOT)))
+		return false;
+	return true;
+}
 qboolean visible (edict_t *self, edict_t *other)
 {
 	vec3_t start, end;
@@ -639,7 +649,7 @@ void Grenade_Explode (edict_t *ent)
 	int			mod;
 
 	// remove grenade if owner dies or becomes invalid
-	if (!G_EntIsAlive(ent->owner))
+	if (!G_EntValid(ent->owner))
 	{
 		BecomeExplosion1(ent);
 		return;
@@ -1046,7 +1056,7 @@ void rocket_think (edict_t *self)
 {
 	// remove rocket if owner dies or becomes invalid
 	// or the rocket times out
-	if (!G_EntIsAlive(self->owner) || (level.time >= self->delay))
+	if (!G_EntValid(self->owner) || (level.time >= self->delay))
 	{
 		BecomeExplosion1(self);
 		return;
