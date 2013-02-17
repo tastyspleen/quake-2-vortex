@@ -2333,6 +2333,7 @@ void hw_spawnflag (void);
 // 3.4 new team vs invasion mode
 edict_t* TBI_FindSpawn(edict_t *ent);
 void InitTBI();
+
 //az end
 
 #ifndef min

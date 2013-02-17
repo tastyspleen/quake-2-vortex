@@ -528,8 +528,9 @@ char *GetRuneValString(item_t *rune)
 			case 3:  return "Good";
 			case 4:  return "Flawless";
 			case 5:  return "Perfect";
-			case 6:  return "Godly";
-			default: return "Cheater's";
+			case 6:  
+			default:
+				return "Godly";
 			}
 		}
 		break;
@@ -543,8 +544,9 @@ char *GetRuneValString(item_t *rune)
 			case 3:  return "Good";
 			case 4:  return "Flawless";
 			case 5:  return "Perfect";
-			case 6:  return "Godly";
-			default: return "Cheater's";
+			case 6:  
+			default:				
+				return "Godly";
 			}
 		}
 		break;
@@ -562,8 +564,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Mechanic's";
 					case 4:  return "Scientist's";
 					case 5:  return "Physicist's";
-					case 6:  return "Engineer's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Engineer's";
 					}
 				}
 				break;
@@ -577,8 +580,10 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Soldier's";
 					case 4:  return "Warrior's";
 					case 5:  return "Veteran's";
-					case 6:  return "Master's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Master's";
+					
 					}
 				}
 				break;
@@ -592,8 +597,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Mage's";
 					case 4:  return "Wizard's";
 					case 5:  return "Sorcerer's";
-					case 6:  return "Archimage's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Archimage's";
 					}
 				}
 				break;
@@ -607,8 +613,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Necromancer's";
 					case 4:  return "Warlock's";
 					case 5:  return "Demi-Lich's";
-					case 6:  return "Lich's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Lich's";
 					}
 				}
 				break;
@@ -622,8 +629,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Vampire's";
 					case 4:  return "Revenant's";
 					case 5:  return "Nosferatu's";
-					case 6:  return "Dracula's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Dracula's";
 					}
 				}
 				break;
@@ -637,8 +645,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Poltergeist's";
 					case 4:  return "Apparition's";
 					case 5:  return "Ghost's";
-					case 6:  return "Monster's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Monster's";
 					}
 				}
 				break;
@@ -652,8 +661,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Knight's";
 					case 4:  return "Baron's";
 					case 5:  return "Lord's";
-					case 6:  return "King's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "King's";
 					}
 				}
 				break;
@@ -667,8 +677,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Cleric's";
 					case 4:  return "Pastor's";
 					case 5:  return "Bishop's";
-					case 6:  return "Pope's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Pope's";
 					}
 				}
 				break;
@@ -682,8 +693,9 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Weapon Master's";
 					case 4:  return "Guru's";
 					case 5:  return "Expert's";
-					case 6:  return "Elite's'";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Elite's'";
 					}
 				}
 				break;
@@ -697,8 +709,9 @@ char *GetRuneValString(item_t *rune)
 						case 3:  return "Martian's";
 						case 4:  return "Extraterrestrial's";
 						case 5:  return "Invader's";
-						case 6:  return "Royal";
-						default: return "Cheater's";
+						case 6:  
+						default:
+							return "Royal";
 					}
 				}
 				break;
@@ -712,206 +725,20 @@ char *GetRuneValString(item_t *rune)
 					case 3:  return "Exorcist's";
 					case 4:  return "Mapudungun's";
 					case 5:  return "Spiriter's";
-					case 6:  return "Totem Manipulator's";
-					default: return "Cheater's";
+					case 6:  
+					default:
+						return "Totem Manipulator's";
 					}
 				}
 				break;
+			case CLASS_KAMIKAZE:
+				 return "Kamikaze's";
 			default: return "<Unknown Class>";
 			}
 			break;
 		default: return "Strange";
 		}
 	}
-}
-
-//************************************************************************************************
-//	CLASS RUNE ARRAYS
-//************************************************************************************************
-
-int getClassRuneStat(int cIndex)
-{
-	int index;
-
-	switch (cIndex)
-	{
-	case CLASS_SOLDIER:
-		{
-			index = GetRandom(0, 6);
-			switch(index)
-			{
-			case 0: return STRENGTH;
-			case 1: return RESISTANCE;
-			case 2: return HA_PICKUP;
-			case 3: return NAPALM;
-			case 4: return SPIKE_GRENADE;
-			case 5: return EMP;
-			case 6: return MIRV;
-			}
-		}
-		break;
-	case CLASS_KNIGHT:
-		{
-			index = GetRandom(0, 6);
-			switch(index)
-			{
-			case 0: return ARMOR_UPGRADE;
-			case 1: return REGENERATION;
-			case 2: return POWER_SHIELD;
-			case 3: return ARMOR_REGEN;
-			case 4: return EXPLODING_ARMOR;
-			case 5: return BEAM;
-			case 6: return PLASMA_BOLT;
-			}
-		}
-		break;
-	case CLASS_VAMPIRE:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return VAMPIRE;
-			case 1: return GHOST;
-			case 2: return LIFE_DRAIN;
-			case 3: return FLESH_EATER;
-			case 4: return CORPSE_EXPLODE;
-			case 5: return MIND_ABSORB;
-			case 6: return AMMO_STEAL;
-			case 7: return CONVERSION;
-			}
-		}
-		break;
-	case CLASS_NECROMANCER:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return MONSTER_SUMMON;
-			case 1: return HELLSPAWN;
-			case 2: return PLAGUE;
-			case 3: return AMP_DAMAGE;
-			case 4: return CRIPPLE;
-			case 5: return CURSE;
-			case 6: return WEAKEN;
-			case 7: return LOWER_RESIST;
-			}
-		}
-		break;
-	case CLASS_ENGINEER:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return PROXY;
-			case 1: return BUILD_SENTRY;
-			case 2: return SUPPLY_STATION;
-			case 3: return BUILD_LASER;
-			case 4: return MAGMINE;
-			case 5: return CALTROPS;
-			case 6: return AUTOCANNON;
-			case 7: return DETECTOR;
-			}
-		}
-		break;
-	case CLASS_MAGE:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return MAGICBOLT;
-			case 1: return NOVA;
-			case 2: return BOMB_SPELL;
-			case 3: return FIREBALL;
-			case 4: return FORCE_WALL;
-			case 5: return LIGHTNING;
-			case 6: return METEOR;
-			case 7: return LIGHTNING_STORM;
-			}
-		}
-		break;
-	case CLASS_CLERIC:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return SALVATION;
-			case 1: return HOLY_FREEZE;
-			case 2: return HEALING;
-			case 3: return BLESS;
-			case 4: return YIN;
-			case 5: return YANG;
-			case 6: return HAMMER;
-			case 7: return DEFLECT;
-			}
-		}
-		break;
-	case CLASS_POLTERGEIST:
-		{
-			index = GetRandom(0, 9);
-			switch(index)
-			{
-			case 0: return CACODEMON;
-			case 1: return BLOOD_SUCKER;
-			case 2: return BRAIN;
-			case 3: return FLYER;
-			case 4: return MUTANT;
-			case 5: return TANK;
-			case 6: return MEDIC;
-			case 7: return SPIKE;
-			case 8: return MORPH_MASTERY;
-			case 9: return BERSERK;
-			}
-		}
-		break;
-	case CLASS_SHAMAN:
-		{
-			index = GetRandom(0, 8);
-			switch(index)
-			{
-			case 0: return FIRE_TOTEM;
-			case 1: return WATER_TOTEM;
-			case 2: return AIR_TOTEM;
-			case 3: return EARTH_TOTEM;
-			case 4: return DARK_TOTEM;
-			case 5: return NATURE_TOTEM;
-			case 6: return FURY;
-			case 7: return TOTEM_MASTERY;
-			case 8: return HASTE;
-			}
-		}
-		break;
-	case CLASS_WEAPONMASTER:
-		{
-			index = GetRandom(0, 5);
-			switch(index)
-			{
-			case 0: return HASTE;
-			case 1: return AMMO_STEAL;
-			case 2: return HA_PICKUP;
-			case 3: return SUPER_SPEED;
-			case 4: return CREATE_QUAD;
-			case 5: return CREATE_INVIN;
-			}
-		}
-		break;
-	case CLASS_ALIEN:
-		{
-			index = GetRandom(0, 7);
-			switch(index)
-			{
-			case 0: return SPIKER;
-			case 1: return OBSTACLE;
-			case 2: return GASSER;
-			case 3: return HEALER;
-			case 4: return SPORE;
-			case 5: return ACID;
-			case 6: return SPIKE;
-			case 7: return COCOON;
-			}
-		}
-		break;
-	}
-	return -1;
 }
 
 //************************************************************************************************

@@ -2401,7 +2401,7 @@ void Cmd_MapSize_f (edict_t *ent)
 void Cmd_AdminCmd (edict_t *ent)
 {
 	edict_t *player;
-	char *cmd1, *cmd2, *cmd3, *message;
+	char *cmd1, *cmd2, *cmd3;
 	int num = 0;
 
 	if (!ent->myskills.administrator)
@@ -2420,9 +2420,7 @@ void Cmd_AdminCmd (edict_t *ent)
 		if ((player = FindPlayerByName(cmd2)) != NULL)
 		{
 			ResetPlayer(player);
-			message = HiPrint(va("**%s's character was reset**", player->client->pers.netname));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("**%s's character was reset**", player->client->pers.netname));
 		}
 		else
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
@@ -2462,9 +2460,7 @@ void Cmd_AdminCmd (edict_t *ent)
 		{
 			num = atoi(cmd3);
 			player->myskills.boss = num;
-			message = HiPrint(va("**%s's boss level was edited by %s**", player->client->pers.netname, ent->client->pers.netname));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("**%s's boss level was edited by %s**", player->client->pers.netname, ent->client->pers.netname));
 		}
 		else
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
@@ -2480,9 +2476,7 @@ void Cmd_AdminCmd (edict_t *ent)
 				return;
 			player->myskills.experience += num;
 			check_for_levelup(player);
-			message = HiPrint(va("**%s's experience was edited by %s**", player->client->pers.netname, ent->client->pers.netname));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("**%s's experience was edited by %s**", player->client->pers.netname, ent->client->pers.netname));
 		}
 		else
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);

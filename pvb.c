@@ -65,9 +65,6 @@ edict_t *Boss_CreateTank (void)
 
 void Boss_ReadyPlayer (edict_t *player, edict_t *boss)
 {
-	char	*message;
-	//gi.dprintf("DEBUG: getting player and boss ready\n");
-
 	if (!boss || !player)
 		return;
 
@@ -95,8 +92,7 @@ void Boss_ReadyPlayer (edict_t *player, edict_t *boss)
 	memset (player->client->pers.inventory, 0, sizeof(player->client->pers.inventory));
 	player->client->pers.weapon = NULL;
 
-	message = HiPrint(va("A level %d boss known as %s has spawned!", boss->monsterinfo.level, player->client->pers.netname));
-	gi.bprintf(PRINT_HIGH, "%s\n", message);
+	G_PrintGreenText(va("A level %d boss known as %s has spawned!", boss->monsterinfo.level, player->client->pers.netname));
 	//gi.dprintf("DEBUG: player and boss ready\n");
 }
 
@@ -230,7 +226,6 @@ void AwardBossKill (edict_t *boss)
 {
 	int			i, damage, exp_points, credits;
 	float		levelmod, dmgmod;
-	char		*message;
 	edict_t		*player;
 	dmglist_t	*slot=NULL;
 
@@ -247,9 +242,8 @@ void AwardBossKill (edict_t *boss)
 		if (slot && (player == slot->player))
 		{
 			dmgmod = 100*(slot->damage/GetTotalBossDamage(boss));
-			message = HiPrint(va("%s got a hi-damage bonus! %d damage (%.1f%c)", 
+			G_PrintGreenText(va("%s got a hi-damage bonus! %d damage (%.1f%c)", 
 				slot->player->client->pers.netname, (int)slot->damage, dmgmod, '%'));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
 			exp_points *= BOSS_DAMAGE_BONUSMOD;
 		}
 

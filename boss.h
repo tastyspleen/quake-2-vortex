@@ -20,7 +20,6 @@ dmglist_t *findHighestDmgPlayer (edict_t *self);
 void printDmgList (edict_t *self);
 void boss_pain (edict_t *self, edict_t *other, float kick, int damage);
 qboolean findNearbyBoss (edict_t *self);
-void PlayerBossPoints (edict_t *attacker, edict_t *target);
 char *HiPrint(char *text);
 void boss_eyecam (edict_t *player, edict_t *boss);
 void boss_position_player (edict_t *player, edict_t *boss);

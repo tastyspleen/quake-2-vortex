@@ -12,6 +12,27 @@
 #include "auras.h"
 #include "Talents.h"
 
+/**************** v_abilitylist.c ***************/
+void enableAbility (edict_t *ent, int index, int level, int max_level, int general);
+void disableAbilities (edict_t *ent);
+void setHardMax(edict_t *ent, int index);
+void AssignAbilities(edict_t *ent);
+
+#define INCREASED_SOFTMAX 20
+#define DEFAULT_SOFTMAX 15
+#define GENERAL_SOFTMAX 8
+
+typedef struct 
+{
+	int index;
+	int start;
+	int softmax;
+	int general;
+}abildefinition_t;
+
+typedef abildefinition_t* AbilList;
+/**************** v_abilitylist.c ***************/
+
 //************ lasersight.c ************
 void lasersight_off (edict_t *ent);
 //************ lasersight.c ************
@@ -112,7 +133,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index);
 qboolean V_IsPVP (void);
 char *V_GetMonsterName (edict_t *monster);
 char *GetAbilityString (int ability_number);
-int getClassRuneStat(int cIndex);
+abildefinition_t getClassRuneStat(int cIndex);
 char *GetRuneValString(item_t *rune);
 char *GetShortWeaponString (int weapon_number);
 char *GetRandomString (int len);
