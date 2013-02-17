@@ -246,9 +246,7 @@ void boss_makron_spawn (edict_t *ent)
 
 	if (G_EntExists(ent->owner) && (ent->owner->mtype == BOSS_MAKRON))
 	{
-		message = HiPrint(va("%s got bored and left the game.", ent->client->pers.netname));
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		V_Free(message);
+		G_PrintGreenText(va("%s got bored and left the game.", ent->client->pers.netname));
 
 		BecomeTE(ent->owner);
 		ent->svflags &= ~SVF_NOCLIENT;

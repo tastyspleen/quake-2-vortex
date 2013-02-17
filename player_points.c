@@ -1,7 +1,5 @@
 #include "g_local.h"
 
-//Function Prototypes required for this .c file:
-void PlayerBossPoints (edict_t *attacker, edict_t *target);
 
 int mypower(int x, int y)
 {
@@ -115,7 +113,6 @@ void check_for_levelup (edict_t *ent)
 	int plateau_points = 50000;
 	qboolean levelup = false;
 	int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
-	char *message;
 
 	if (ent->ai.is_bot) // bots don't level up -az
 		return;
@@ -153,9 +150,7 @@ void check_for_levelup (edict_t *ent)
 		NewLevel_Addons(ent);//Add any special addons that should be there!
 		modify_max(ent);
 
-		message = HiPrint(va("*****%s gained a level*****", ent->client->pers.netname));
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		message = LoPrint(message);
+		G_PrintGreenText(va("*****%s gained a level*****", ent->client->pers.netname));
 		WriteToLogfile(ent, va("Player reached level %d\n", ent->myskills.level));
 
 		// maximum level cap
@@ -598,7 +593,6 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 {
 	int lose_points=0;
 	float level_diff;
-	char *message;
 
 	if (IsABoss(attacker))
 	{
@@ -723,28 +717,20 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 
 			if (attacker == SPREE_DUDE)
 			{
-				message = HiPrint(va("%s SPREE WAR: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
-				gi.bprintf(PRINT_HIGH, "%s\n", message);
-				message = LoPrint(message);
+				G_PrintGreenText(va("%s SPREE WAR: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
 			}
 		}
 		else if (attacker->myskills.streak >= 10 && GetRandom(1,2) == 1)
 		{
-			message = HiPrint(va("%s rampage: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("%s rampage: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
 		}
 		else if (attacker->myskills.streak >= 10)
 		{
-			message = HiPrint(va("%s is god-like: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("%s is god-like: %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
 		}
 		else if (attacker->myskills.streak >= SPREE_START)
 		{
-			message = HiPrint(va("%s is on a %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
-			gi.bprintf(PRINT_HIGH, "%s\n", message);
-			message = LoPrint(message);
+			G_PrintGreenText(va("%s is on a %d frag spree!", attacker->client->pers.netname, attacker->myskills.streak));
 		}
 	}
 }

@@ -1,23 +1,5 @@
 #include "g_local.h"
 
-void enableAbility (edict_t *ent, int index, int level, int max_level, int general);
-void disableAbilities (edict_t *ent);
-void setHardMax(edict_t *ent, int index);
-
-#define INCREASED_SOFTMAX 20
-#define DEFAULT_SOFTMAX 15
-#define GENERAL_SOFTMAX 8
-
-typedef struct 
-{
-	int index;
-	int start;
-	int softmax;
-	int general;
-}abildefinition_t;
-
-typedef abildefinition_t* AbilList;
-
 abildefinition_t GENERAL_abil[] = {
 	{ VITALITY          , 0 , 10                , 1  },
 	{ MAX_AMMO          , 0 , 10                , 1  },
@@ -357,4 +339,48 @@ void disableAbilities (edict_t *ent)
 		ent->myskills.abilities[i].disable = true;
 		ent->myskills.abilities[i].hidden = false;
 	}
+}
+
+//************************************************************************************************
+//	CLASS RUNE ARRAYS
+//************************************************************************************************
+
+/*
+az: This one needs a bit of explaining.
+
+You used to have to define manually every class rune's possible abilities, meaning every time you 
+added a class or such you had to manually update this.
+
+Using ability lists, this will always be up to date, and it'll always be relevant.
+*/
+
+abildefinition_t null_ab = { -1, 0, 0, 0 };
+
+abildefinition_t getClassRuneStat(int cIndex)
+{
+	int ability_index;
+	int count = 0;
+	abildefinition_t *first, *current;
+
+	// find in our ability list for this class
+	first = ablist[cIndex];
+
+	current = first;
+	
+	// count them
+	while (current->index != -1)
+	{
+		count++;
+		current++;
+	}
+
+	// pick one of the list at random
+	if (count) // we might get a division by 0 here..
+	{
+		ability_index = GetRandom(1, count) - 1;
+
+		// return its ability index
+		return first[ability_index];
+	}else
+		return null_ab;
 }

@@ -18,7 +18,7 @@
 // Definitions
 // *********************************
 
-#define DEFAULT_DATABASE "127.0.0.1"
+#define DEFAULT_DATABASE "localhost"
 #define MYSQL_PW ""
 #define MYSQL_USER "root"
 #define MYSQL_DBNAME "vrxcl"
@@ -1538,6 +1538,8 @@ void GDS_FinishThread()
 			gi.dprintf("pthread_mutex_destroy: %d\n", rc);
 
 		V_GDS_FreeMemory_Queue();
+		mysql_close(GDS_MySQL);
+		GDS_MySQL = NULL;
 	}
 }
 #else

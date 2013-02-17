@@ -301,21 +301,16 @@ void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	if (self->deadflag != DEAD_DEAD)
 	{
 		int i_maxclients = maxclients->value;
-		char* message;
 
 		self->svflags |= SVF_NOCLIENT;
 		self->solid = SOLID_NOT;
 		self->takedamage = DAMAGE_NO;
 		self->deadflag = DEAD_DEAD;
 		
-		message = HiPrint(va("A %s spawn has been destroyed. %d/%d left.", self->teamnum == RED_TEAM ? "red" : "blue",
+		G_PrintGreenText(va("A %s spawn has been destroyed. %d/%d left.", self->teamnum == RED_TEAM ? "red" : "blue",
 			self->teamnum == RED_TEAM ? tbi_game.RedSpawns-1 : tbi_game.BlueSpawns-1, // left
 			self->teamnum == RED_TEAM ? tbi_game.TotalRedSpawns : tbi_game.TotalBlueSpawns)  // team
 			); // of total
-		
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-
-		V_Free(message);
 
 		// Give some experience.
 		TBI_AwardTeam(self->teamnum == RED_TEAM? BLUE_TEAM : RED_TEAM, DESTROYSPAWN_EXP, false);	

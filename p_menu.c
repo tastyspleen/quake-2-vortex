@@ -134,7 +134,6 @@ void StartGame (edict_t *ent)
 		ent->s.effects |= EF_COLOR_SHELL;
 		ent->s.renderfx |= RF_SHELL_RED;
 	}
-	gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 	WriteToLogfile(ent, "Logged in.\n");
 
 #ifndef GDS_NOMULTITHREADING
@@ -355,6 +354,7 @@ void joinmenu_handler (edict_t *ent, int option)
 	switch (option)
 	{
 	case 1:
+		gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 		//If no GDS is running, join the game right away.
 #ifndef NO_GDS
 		if(savemethod->value < 2)
