@@ -3903,9 +3903,7 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	if (ent->lastkill < level.time && ent->nfer) // we're out of nfer time!
 	{
-		char *message = HiPrint(va("%s got a %dfer.", ent->client->pers.netname, ent->nfer));
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		V_Free(message);
+		G_PrintGreenText(va("%s got a %dfer.", ent->client->pers.netname, ent->nfer));
 		ent->nfer = 0;
 	}
 		

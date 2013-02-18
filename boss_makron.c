@@ -241,7 +241,7 @@ void boss_makron_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int 
 
 void boss_makron_spawn (edict_t *ent)
 {
-	char	userinfo[MAX_INFO_STRING], *message;
+	char	userinfo[MAX_INFO_STRING];
 	edict_t	*boss;
 
 	if (G_EntExists(ent->owner) && (ent->owner->mtype == BOSS_MAKRON))
@@ -265,9 +265,7 @@ void boss_makron_spawn (edict_t *ent)
 		return;
 	}
 
-	message = HiPrint(va("A level %d boss known as %s has spawned!", average_player_level, ent->client->pers.netname));
-	gi.bprintf(PRINT_HIGH, "%s\n", message);
-	V_Free(message);
+	G_PrintGreenText(va("A level %d boss known as %s has spawned!", average_player_level, ent->client->pers.netname));
 
 	// create the tank entity that the player will pilot
 	boss = G_Spawn();

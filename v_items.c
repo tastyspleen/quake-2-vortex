@@ -198,6 +198,81 @@ void V_TossRune (edict_t *rune, float h_vel, float v_vel)
 	rune->velocity[2] = v_vel;
 }
 
+/* az- This function is for avoiding redundant abilities within a rune. */
+void fixRuneIndexes(edict_t *rune, int i)
+{
+	int b_i;
+	// do a backward's iteration, if we find the ability then..
+	for (b_i = (i - 1); b_i > -1; b_i--)
+	{
+		// so we already have one of these?
+		// add onto it then, discard this one.
+		if (rune->vrxitem.modifiers[b_i].index == rune->vrxitem.modifiers[i].index &&
+			rune->vrxitem.modifiers[b_i].type == rune->vrxitem.modifiers[i].type)
+		{
+			if (rune->vrxitem.modifiers[b_i].type == TYPE_ABILITY) // It's an ability?
+			{
+					// invalidate this modifier.
+					rune->vrxitem.modifiers[i].index = 0;
+					rune->vrxitem.modifiers[i].type = TYPE_NONE;
+					if (GetAbilityUpgradeCost(rune->vrxitem.modifiers[b_i].index) > 1)
+					{
+						// sum the modifiers.
+						rune->vrxitem.modifiers[b_i].value += rune->vrxitem.modifiers[i].value;
+					}
+					rune->vrxitem.modifiers[i].value = 0;
+			}
+		}
+	}
+}
+
+
+/* az- With this, our rune generation woes are finished, finally! */
+abildefinition_t *getRandomAbility();
+void V_CreateAbilityModifier(edict_t* rune, qboolean is_class, int i)
+{
+	abildefinition_t *ability; // Get ability description
+	int hard_max;
+
+	if (is_class)
+		ability = getClassRuneStat(rune->vrxitem.classNum);
+	else
+		ability = getRandomAbility();
+
+	if (ability->index < 0 || ability->index > MAX_ABILITIES-1) 
+		return; // we can't use this ability, it's invalid due to its index
+
+	// alright so we got a valid ability
+	rune->vrxitem.modifiers[i].index = ability->index;
+
+	if (GetAbilityUpgradeCost(ability->index) > 1) // No runes that have cost 2+ stuff should get over...
+	{
+		// for class runes, having this kind of abilities that are one-pointed or more is stupid
+		if (!ability->start || generalabmode->value || !is_class) 
+			rune->vrxitem.modifiers[i].value = 1;
+		else 
+		{
+			// if it has a starting value then we must invalidate this modifier. It's pointless to have it.
+			rune->vrxitem.modifiers[i].index = 0;
+			rune->vrxitem.modifiers[i].value = 0;
+			rune->vrxitem.modifiers[i].type = TYPE_NONE;
+		}
+	}
+	else
+	{
+		rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
+	}
+
+	hard_max = getHardMax(ability->index, !is_class, 0);
+	if (rune->vrxitem.modifiers[i].value > hard_max) // this ability goes way too high? trim it
+		rune->vrxitem.modifiers[i].value = hard_max;
+
+	rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
+	rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
+
+	fixRuneIndexes(rune, i);
+}
+
 edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, float levelmod)
 {
 	int		iRandom;
@@ -415,34 +490,6 @@ void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 
 int GetAbilityUpgradeCost(int index);
 
-/* This function is for avoiding redundant abilities within a rune. */
-void fixRuneIndexes(edict_t *rune, int i)
-{
-	int b_i;
-	// do a backward's iteration, if we find the ability then..
-	for (b_i = (i - 1); b_i > -1; b_i--)
-	{
-		// so we already have one of these?
-		// add onto it then, discard this one.
-		if (rune->vrxitem.modifiers[b_i].index == rune->vrxitem.modifiers[i].index &&
-			rune->vrxitem.modifiers[b_i].type == rune->vrxitem.modifiers[i].type)
-		{
-			if (rune->vrxitem.modifiers[b_i].type == TYPE_ABILITY) // It's an ability?
-			{
-					// invalidate this modifier.
-					rune->vrxitem.modifiers[i].index = 0;
-					rune->vrxitem.modifiers[i].type = TYPE_NONE;
-					if (GetAbilityUpgradeCost(rune->vrxitem.modifiers[b_i].index) > 1)
-					{
-						// sum the modifiers.
-						rune->vrxitem.modifiers[b_i].value += rune->vrxitem.modifiers[i].value;
-					}
-					rune->vrxitem.modifiers[i].value = 0;
-			}
-		}
-	}
-}
-
 void spawnNorm(edict_t *rune, int targ_level, int type)
 {
     int x = GetRandom(1, 100);
@@ -507,28 +554,11 @@ void spawnNorm(edict_t *rune, int targ_level, int type)
 
 		for (i=0; i < num_mods; ++i)
 		{
-			int abilityIndex = GetRandom(0, MAX_ABILITIES-1);
-
-			while (abilityIndex == ID)
-			{
-				abilityIndex = GetRandom(0, MAX_ABILITIES-1);
-			}
-
 			//25% chance for rune mod not to show up
 			if (GetRandom(0, 4) == 0)
 				continue;
-
-
-			rune->vrxitem.modifiers[i].index = abilityIndex;
-			if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 2+ stuff should get over...
-				rune->vrxitem.modifiers[i].value = 1;
-			else
-				rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
-
-			rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
-			rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
-
-			fixRuneIndexes(rune, i);
+			
+			V_CreateAbilityModifier(rune, false, i);
 		}
 		rune->vrxitem.numMods = CountRuneMods(&rune->vrxitem);
 		rune->s.effects |= EF_QUAD;
@@ -557,39 +587,7 @@ void spawnClassRune(edict_t *rune, int targ_level)
 
 	for (i = 0; i < num_mods; ++i)
 	{
-		abildefinition_t ability = getClassRuneStat(rune->vrxitem.classNum); // Get ability description
-		int abilityIndex = ability.index; // Index
-
-		if (abilityIndex < 0 || abilityIndex > MAX_ABILITIES-1) 
-			continue; // we can't use this ability, it's invalid due to its index
-
-		// alright so we got a valid ability
-		rune->vrxitem.modifiers[i].index = abilityIndex;
-		
-		if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 2+ stuff should get over...
-		{
-			// for class runes, having this kind of abilities that are one-pointed or more is stupid
-			if (!ability.start) 
-				rune->vrxitem.modifiers[i].value = 1;
-			else // if it has a starting value then we must invalidate this modifier. It's pointless to have it.
-			{
-				rune->vrxitem.modifiers[i].index = 0;
-				rune->vrxitem.modifiers[i].value = 0;
-				rune->vrxitem.modifiers[i].type = TYPE_NONE;
-			}
-		}
-		else
-		{
-			rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
-		}
-
-		if (rune->vrxitem.modifiers[i].value > ability.softmax) // this ability goes way too high? trim it
-			rune->vrxitem.modifiers[i].value = ability.softmax;
-
-		rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
-		rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
-
-		fixRuneIndexes(rune, i);
+		V_CreateAbilityModifier(rune, true, i);
 	}
 	rune->vrxitem.numMods = CountRuneMods(&rune->vrxitem);
 	rune->s.effects |= EF_COLOR_SHELL;
@@ -729,24 +727,7 @@ void spawnCombo(edict_t *rune, int targ_level)
 		//50% chance of ability mod
 		if (type > 5)
 		{
-			int abilityIndex = GetRandom(0, MAX_ABILITIES-1);
-
-			while (abilityIndex == ID) // deny ID as a rune skill.
-			{
-				abilityIndex = GetRandom(0, MAX_ABILITIES-1);
-			}
-
-			rune->vrxitem.modifiers[i].index = abilityIndex;
-
-			if (GetAbilityUpgradeCost(abilityIndex) > 1) // No runes that have cost 4 stuff should get over...
-				rune->vrxitem.modifiers[i].value = 1;
-			else
-				rune->vrxitem.modifiers[i].value = GetRandom(1, RUNE_ABILITY_MAXVALUE);
-
-			rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
-			rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
-
-			fixRuneIndexes(rune, abilityIndex);
+			V_CreateAbilityModifier(rune, false, i);
 		}
 		else	//50% chance of weapon mod
 		{

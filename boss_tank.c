@@ -180,16 +180,14 @@ void boss_tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 
 void boss_spawn_tank (edict_t *ent)
 {
-	char	userinfo[MAX_INFO_STRING], *message;
+	char	userinfo[MAX_INFO_STRING];
 	//edict_t	*tank;
 
 	//gi.dprintf("boss_spawn_tank()\n");
 
 	if (G_EntExists(ent->owner) && (ent->owner->mtype == BOSS_TANK))
 	{
-		message = HiPrint(va("%s got bored and left the game.", ent->client->pers.netname));
-		gi.bprintf(PRINT_HIGH, "%s\n", message);
-		V_Free(message);
+		G_PrintGreenText(va("%s got bored and left the game.", ent->client->pers.netname));
 
 		BecomeTE(ent->owner);
 		ent->svflags &= ~SVF_NOCLIENT;

@@ -15,7 +15,7 @@
 /**************** v_abilitylist.c ***************/
 void enableAbility (edict_t *ent, int index, int level, int max_level, int general);
 void disableAbilities (edict_t *ent);
-void setHardMax(edict_t *ent, int index);
+int getHardMax(int index, qboolean general, int class);
 void AssignAbilities(edict_t *ent);
 
 #define INCREASED_SOFTMAX 20
@@ -133,7 +133,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index);
 qboolean V_IsPVP (void);
 char *V_GetMonsterName (edict_t *monster);
 char *GetAbilityString (int ability_number);
-abildefinition_t getClassRuneStat(int cIndex);
+abildefinition_t *getClassRuneStat(int cIndex);
 char *GetRuneValString(item_t *rune);
 char *GetShortWeaponString (int weapon_number);
 char *GetRandomString (int len);

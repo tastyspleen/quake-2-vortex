@@ -398,5 +398,10 @@ void InitTBI()
 	TBI_InitPlayerSpawns(BLUE_TEAM);
 	TBI_InitPlayerSpawns(3); // deathmatch stuff.
 
+	if (tbi_game.BlueSpawns < 2 || tbi_game.RedSpawns < 2)
+	{
+		gi.dprintf("Warning: a very low amount of spawns has been found. (%d red %d blue)\n", 
+			tbi_game.RedSpawns, tbi_game.BlueSpawns);
+	}
 	TBI_SpawnPlayers();
 }

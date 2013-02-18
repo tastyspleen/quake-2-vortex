@@ -703,7 +703,6 @@ void CheckNeedPass (void)
 CheckDMRules
 =================
 */
-char *HiPrint(char *text);//K03
 
 void SP_target_speaker (edict_t *ent);
 
