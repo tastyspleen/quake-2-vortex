@@ -186,6 +186,7 @@ is loaded.
 
 // az begin
 void InitHash ();
+void InitializeAbilityList();
 // az end
 
 void InitGame (void)
@@ -223,6 +224,8 @@ void InitGame (void)
 #ifdef CMD_USEHASH
 	InitHash();
 #endif
+
+	InitializeAbilityList();
 	// az end
 
 	//K03 Begin

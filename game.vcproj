@@ -4620,7 +4620,7 @@
 				>
 			</File>
 			<File
-				RelativePath="V_file_IO.c"
+				RelativePath=".\v_file_io.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

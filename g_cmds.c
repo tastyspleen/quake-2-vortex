@@ -1911,7 +1911,6 @@ void ResetPlayer (edict_t *ent)
 }
 
 char *LoPrint(char *text);
-char *HiPrint(char *text);
 //edict_t *FindPlayerByName(const char *name);	//4.0 Already declared in g_local.h
 void check_for_levelup(edict_t *ent);
 

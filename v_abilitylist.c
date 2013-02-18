@@ -1,5 +1,7 @@
 #include "g_local.h"
 
+abildefinition_t *abilities_by_index[MAX_ABILITIES];
+
 abildefinition_t GENERAL_abil[] = {
 	{ VITALITY          , 0 , 10                , 1  },
 	{ MAX_AMMO          , 0 , 10                , 1  },
@@ -213,9 +215,9 @@ void AssignAbilities(edict_t *ent)
 				int real_max = first->softmax;
 				
 				if (first->softmax > 10) // a 15 softmax? dump down to 8
-					real_max = 8;
+					real_max = GENERAL_SOFTMAX;
 
-				enableAbility(ent, first->index, 0, first->softmax, 1);
+				enableAbility(ent, first->index, 0, real_max, 1);
 				first++;
 			}
 		}
@@ -234,7 +236,7 @@ void AssignAbilities(edict_t *ent)
 	}
 }
 
-void setHardMax(edict_t *ent, int index)
+int getHardMax(int index, qboolean general, int class)
 {
 	switch(index)
 	{
@@ -257,59 +259,52 @@ void setHardMax(edict_t *ent, int index)
 		case TELEPORT:
 		case JETPACK:
 		case SHIELD:
-			ent->myskills.abilities[index].hard_max = 1; break;
+			return 1; break;
 
 			// Special cases for the non-general ability mode.
-
-		case REGENERATION:
-			if (!generalabmode->value)
-			{
-				if (ent->myskills.abilities[index].general_skill)
-					ent->myskills.abilities[index].hard_max = 15;
-				break;
-			}
 		case HASTE:
 		case AMMO_REGEN:
-			ent->myskills.abilities[index].hard_max = 5;
-			break;
+			return 5;
 		case STRENGTH:
 		case RESISTANCE:
 			if (!generalabmode->value)
 			{
-				if (ent->myskills.abilities[index].general_skill && 
-					!ent->myskills.class_num == CLASS_SOLDIER)
-				{					
-					ent->myskills.abilities[index].hard_max = 15;
-					
-				}
+				if (general && class == CLASS_SOLDIER)
+					return 15;
 				else
-				{
-					ent->myskills.abilities[index].hard_max = 30;					
-				}	
+					return 30;					
 				break;			
 			}
 
+		case REGENERATION:
+			if (!generalabmode->value)
+			{
+				if (general)
+					return 15;
+				break;
+			}
 		//Everything else
 		default:
 			if (GetAbilityUpgradeCost(index) < 2)
 			{
 				if (!generalabmode->value)
 				{
-					if (ent->myskills.class_num == CLASS_WEAPONMASTER)
+					if (class == CLASS_WEAPONMASTER)
 					{
-						ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 2; break;
+						return GENERAL_SOFTMAX * 2;
 					}
 					else
 					{
-						ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 4; break;
+						return abilities_by_index[index]->softmax * 4;
 					}
 					
 				}else
-					ent->myskills.abilities[index].hard_max = ent->myskills.abilities[index].max_level * 1.5; break;
+					return abilities_by_index[index]->softmax * 1.5;
 			}
 			else 
-				ent->myskills.abilities[index].hard_max = 1; break;
+				return abilities_by_index[index]->softmax;
 	}	
+	return abilities_by_index[index]->softmax;
 }
 
 void enableAbility (edict_t *ent, int index, int level, int max_level, int general)
@@ -327,7 +322,7 @@ void enableAbility (edict_t *ent, int index, int level, int max_level, int gener
 	}
 
 	ent->myskills.abilities[index].general_skill = general;
-	setHardMax(ent, index);
+	ent->myskills.abilities[index].hard_max = getHardMax(index, general, ent->myskills.class_num);
 }
 
 void disableAbilities (edict_t *ent)
@@ -356,7 +351,7 @@ Using ability lists, this will always be up to date, and it'll always be relevan
 
 abildefinition_t null_ab = { -1, 0, 0, 0 };
 
-abildefinition_t getClassRuneStat(int cIndex)
+abildefinition_t *getClassRuneStat(int cIndex)
 {
 	int ability_index;
 	int count = 0;
@@ -380,7 +375,34 @@ abildefinition_t getClassRuneStat(int cIndex)
 		ability_index = GetRandom(1, count) - 1;
 
 		// return its ability index
-		return first[ability_index];
+		return &first[ability_index];
 	}else
-		return null_ab;
+		return &null_ab;
+}
+
+abildefinition_t *getRandomAbility()
+{
+	return abilities_by_index[GetRandom(0, MAX_ABILITIES-1)];
+}
+
+void InitializeAbilityList()
+{
+	abildefinition_t *first;
+	int i;
+	gi.dprintf("INFO: Initializing ability list... ");
+
+	for (i = -1; i < CLASS_MAX; i++)
+	{
+		// iterate through our pointer list
+		first = ablist[i+1];
+
+		// iterate through class' ability list
+		while (first->index != -1)
+		{
+			abilities_by_index[first->index] = first;
+			first++;
+		}
+	}
+
+	gi.dprintf("Done.\n");
 }
