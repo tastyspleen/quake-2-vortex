@@ -11,7 +11,7 @@ void Cmd_Caltrops_f (edict_t *ent);
 void Cmd_DetPipes_f (edict_t *ent)
 {
 	edict_t	*blip = NULL;
-	if ((ent->myskills.class_num == CLASS_POLTERGEIST) && (ent->mtype))
+	if ((isMorphingPolt(ent)) && (ent->mtype))
 		return; // poltergeist cannot hurt anyone with human weapons
 	while ((blip = findradius(blip, ent->s.origin, 1000)) != NULL)
 	{
@@ -1035,7 +1035,7 @@ void Cmd_Use_f (edict_t *ent)
 		return;
 	}
 
-	if ((ent->myskills.class_num == CLASS_KNIGHT) && 
+	if ((ent->myskills.class_num == CLASS_PALADIN) && 
 		((Q_strcasecmp(s, "20mm cannon") == 0) || (Q_strcasecmp(s, "grenades") == 0)) )
 		return;
 
@@ -1071,7 +1071,7 @@ void Cmd_Use_f (edict_t *ent)
 	//K03 Begin
 	slot = GetSlot(it);
 
-	if ((ent->myskills.class_num == CLASS_KNIGHT) && (slot > 0) && (slot < 11))
+	if ((ent->myskills.class_num == CLASS_PALADIN) && (slot > 0) && (slot < 11))
 		return;
 
 	if (slot == 1 && ent->client->pers.weapon == FindItem ("Blaster"))
@@ -1281,7 +1281,7 @@ void Cmd_InvUse_f (edict_t *ent)
 		return;
 	}
 
-	if(ent->myskills.class_num != CLASS_KNIGHT)	//doomie
+	if(ent->myskills.class_num != CLASS_PALADIN)	//doomie
 		it->use (ent, it);
 }
 //ZOID
@@ -1318,7 +1318,7 @@ void Cmd_WeapPrev_f (edict_t *ent)
 	if (!cl->pers.weapon)
 		return;
 
-	if (ent->myskills.class_num == CLASS_KNIGHT)
+	if (ent->myskills.class_num == CLASS_PALADIN)
 		return;
 	selected_weapon = ITEM_INDEX(cl->pers.weapon);
 	// scan  for the next valid one
@@ -1351,7 +1351,7 @@ void Cmd_WeapNext_f (edict_t *ent)
 	cl = ent->client;
 	if (!cl->pers.weapon)
 		return;
-	if (ent->myskills.class_num == CLASS_KNIGHT)
+	if (ent->myskills.class_num == CLASS_PALADIN)
 		return;
 
 	selected_weapon = ITEM_INDEX(cl->pers.weapon);

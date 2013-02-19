@@ -480,13 +480,13 @@ void OpenRespawnWeapMenu(edict_t *ent)
 	if (!ShowMenu(ent))
         return;
 
-	if(ent->myskills.class_num == CLASS_KNIGHT)
+	if(ent->myskills.class_num == CLASS_PALADIN)
 	{
 		safe_cprintf(ent, PRINT_HIGH, "Knights are restricted to a sabre.\n");
 		return;
 	}
 
-	if(ent->myskills.class_num == CLASS_POLTERGEIST)
+	if(isMorphingPolt(ent))
 	{
 		safe_cprintf(ent, PRINT_HIGH, "You can't pick a respawn weapon.\n");
 		return;
@@ -706,7 +706,7 @@ void OpenGeneralMenu (edict_t *ent)
 	else
 		addlinetomenu(ent, va("Upgrade abilities (%d)", ent->myskills.speciality_points), 1);
 	
-	if (ent->myskills.class_num != CLASS_POLTERGEIST)
+	if (!isMorphingPolt(ent))
 	{
 		if (!ent->myskills.weapon_points)
 			addlinetomenu(ent, "Upgrade weapons", 2);
@@ -719,8 +719,8 @@ void OpenGeneralMenu (edict_t *ent)
 		addlinetomenu(ent, va("Upgrade talents (%d)",ent->myskills.talents.talentPoints), 3);
 
 	addlinetomenu(ent, " ", 0);
-	if (ent->myskills.class_num != CLASS_POLTERGEIST && 
-		ent->myskills.class_num != CLASS_KNIGHT)
+	if (!isMorphingPolt(ent) && 
+		ent->myskills.class_num != CLASS_PALADIN)
 	addlinetomenu(ent, "Set respawn weapon", 4);
 	addlinetomenu(ent, "Set master password", 5);
 	addlinetomenu(ent, "Show character info", 6);

@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "3.72b"
+#define VRX_VERSION "4.0"
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -583,19 +583,14 @@ const char* Time();
 
 // class numbers
 #define CLASS_SOLDIER			1
-#define CLASS_POLTERGEIST		2
-#define CLASS_VAMPIRE			3
-#define CLASS_MAGE				4
-#define CLASS_ENGINEER			5
-#define CLASS_KNIGHT			6
-#define CLASS_CLERIC			7
-#define CLASS_NECROMANCER		8
-#define CLASS_SHAMAN			9
-#define CLASS_ALIEN				10
-#define CLASS_WEAPONMASTER		11
-#define CLASS_KAMIKAZE			12 // Mweheheh.
+#define CLASS_DEMON				2
+#define CLASS_ENGINEER			3
+#define CLASS_PALADIN			4
+#define CLASS_ARCANIST			5
+#define CLASS_POLTERGEIST		6
+#define CLASS_WEAPONMASTER		7
 
-#define CLASS_MAX				12		//Number of classes to choose from
+#define CLASS_MAX				7		//Number of classes to choose from
 
 //Trade stuff
 #define TRADE_MAX_DISTANCE		512		//Trade distance

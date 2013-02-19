@@ -2960,7 +2960,7 @@ void ClientThinkstuff(edict_t *ent)
 		&& !(ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 		&& !que_findtype(ent->curses, NULL, CURSE)) // can't regen when cursed
 	{
-		if (ent->myskills.class_num == CLASS_KNIGHT)
+		if (ent->myskills.class_num == CLASS_PALADIN)
 			health_factor = floattoint(1.5*ent->myskills.abilities[ARMOR_REGEN].current_level);
 		else
 			health_factor = floattoint(1*ent->myskills.abilities[ARMOR_REGEN].current_level);
@@ -3082,10 +3082,16 @@ void ClientThinkstuff(edict_t *ent)
 			ent->client->cloaking = false;
 	}
 
-	if ( (!ent->myskills.abilities[PLAGUE].disable) && (ent->myskills.abilities[PLAGUE].current_level) ||
-		 (!ent->myskills.abilities[BLOOD_SUCKER].disable) && (ent->myskills.abilities[BLOOD_SUCKER].current_level)
-		)
+	if ((!ent->myskills.abilities[PLAGUE].disable) && (ent->myskills.abilities[PLAGUE].current_level))
+	{
 		PlagueCloudSpawn(ent);
+	}
+
+	if ((!ent->myskills.abilities[BLOOD_SUCKER].disable) && (ent->myskills.abilities[BLOOD_SUCKER].current_level))
+	{
+		if (ent->mtype == M_MYPARASITE)
+			PlagueCloudSpawn(ent);
+	}
 
 	if (ent->flags & FL_CHATPROTECT)
 		ent->client->ability_delay = level.time + 1; // can't use abilities in chat-protect

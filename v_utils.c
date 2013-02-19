@@ -8,20 +8,20 @@ qboolean IsAllowedPregameSkills();
 //Takes the class string and returns the index
 int getClassNum(char *newclass)
 {
-	if (Q_strcasecmp(newclass, "Soldier") == 0)
+/*	if (Q_strcasecmp(newclass, "Soldier") == 0)
 		return CLASS_SOLDIER;
 	else if (Q_strcasecmp(newclass, "Mage") == 0)
-		return CLASS_MAGE;
+		return CLASS_ARCANIST;
 	else if (Q_strcasecmp(newclass, "Necromancer") == 0)
 		return CLASS_NECROMANCER;
 	else if (Q_strcasecmp(newclass, "Vampire") == 0)
-		return CLASS_VAMPIRE;
+		return CLASS_DEMON;
 	else if (Q_strcasecmp(newclass, "Engineer") == 0)
 		return CLASS_ENGINEER;
 	else if (Q_strcasecmp(newclass, "Poltergeist") == 0)
 		return CLASS_POLTERGEIST;
 	else if (Q_strcasecmp(newclass, "Knight") == 0)
-		return CLASS_KNIGHT;
+		return CLASS_PALADIN;
 	else if (Q_strcasecmp(newclass, "Cleric") == 0)
 		return CLASS_CLERIC;
 	else if (Q_strcasecmp(newclass, "Shaman") == 0)
@@ -32,6 +32,7 @@ int getClassNum(char *newclass)
 		return CLASS_WEAPONMASTER;
 	else if (Q_strcasecmp(newclass, "Kamikaze") == 0)
 		return CLASS_KAMIKAZE;
+		*/
 	return 0;
 }
 
@@ -261,12 +262,25 @@ char *GetClassString (int class_num)
 	switch (class_num)
 	{
 	case CLASS_SOLDIER:		return "Soldier";
-	case CLASS_MAGE:		return "Mage";
+	case CLASS_DEMON:		return "Demon";
+	case CLASS_ENGINEER:	return "Engineer";
+	case CLASS_ARCANIST:	return "Arcanist";
+	case CLASS_POLTERGEIST: return "Alien";
+	case CLASS_PALADIN:		return "Paladin";
+	case CLASS_WEAPONMASTER:
+		if (generalabmode->value) // :)
+			return "Weapon Master";
+		else
+			return "Apprentice";
+	default:
+		return "Unknown";
+
+	/*case CLASS_ARCANIST:		return "Mage";
 	case CLASS_NECROMANCER:	return "Necromancer";
-	case CLASS_VAMPIRE:		return "Vampire";
+	case CLASS_DEMON:		return "Vampire";
 	case CLASS_ENGINEER:	return "Engineer";
 	case CLASS_POLTERGEIST: return "Poltergeist";
-	case CLASS_KNIGHT:		return "Knight";
+	case CLASS_PALADIN:		return "Knight";
 	case CLASS_CLERIC:		return "Cleric";
 	case CLASS_WEAPONMASTER:
 		if (generalabmode->value) // :)
@@ -277,6 +291,7 @@ char *GetClassString (int class_num)
 	case CLASS_ALIEN:		return "Alien";
 	case CLASS_KAMIKAZE:	return "Kamikaze";
 	default:				return "Unknown";
+	*/
 	}
 }
 
@@ -587,7 +602,7 @@ char *GetRuneValString(item_t *rune)
 					}
 				}
 				break;
-			case CLASS_MAGE:
+			case CLASS_ARCANIST:
 				{
 					switch(level / 2)
 					{
@@ -603,7 +618,7 @@ char *GetRuneValString(item_t *rune)
 					}
 				}
 				break;
-			case CLASS_NECROMANCER:
+			case CLASS_DEMON:
 				{
 					switch(level / 2)
 					{
@@ -616,22 +631,6 @@ char *GetRuneValString(item_t *rune)
 					case 6:  
 					default:
 						return "Lich's";
-					}
-				}
-				break;
-			case CLASS_VAMPIRE:
-				{
-					switch(level / 2)
-					{
-					case 0:	 return "Ghoul's";
-					case 1:  return "Geist's";
-					case 2:  return "Wraith's";
-					case 3:  return "Vampire's";
-					case 4:  return "Revenant's";
-					case 5:  return "Nosferatu's";
-					case 6:  
-					default:
-						return "Dracula's";
 					}
 				}
 				break;
@@ -651,7 +650,7 @@ char *GetRuneValString(item_t *rune)
 					}
 				}
 				break;
-			case CLASS_KNIGHT:
+			case CLASS_PALADIN:
 				{
 					switch(level / 2)
 					{
@@ -664,22 +663,6 @@ char *GetRuneValString(item_t *rune)
 					case 6:  
 					default:
 						return "King's";
-					}
-				}
-				break;
-			case CLASS_CLERIC:
-				{
-					switch(level / 2)
-					{
-					case 0:	 return "Follower's";
-					case 1:  return "Acolyte's";
-					case 2:  return "Preacher's";
-					case 3:  return "Cleric's";
-					case 4:  return "Pastor's";
-					case 5:  return "Bishop's";
-					case 6:  
-					default:
-						return "Pope's";
 					}
 				}
 				break;
@@ -699,40 +682,6 @@ char *GetRuneValString(item_t *rune)
 					}
 				}
 				break;
-			case CLASS_ALIEN:
-				{
-					switch (level / 2)
-					{
-						case 0:  return "Newborn's";
-						case 1:	 return "Feeding's";
-						case 2:  return "Grown's";
-						case 3:  return "Martian's";
-						case 4:  return "Extraterrestrial's";
-						case 5:  return "Invader's";
-						case 6:  
-						default:
-							return "Royal";
-					}
-				}
-				break;
-			case CLASS_SHAMAN:
-				{
-					switch (level / 2)
-					{
-					case 0:  return "Villager's";
-					case 1:	 return "Agricultor's";
-					case 2:  return "Shaman's";
-					case 3:  return "Exorcist's";
-					case 4:  return "Mapudungun's";
-					case 5:  return "Spiriter's";
-					case 6:  
-					default:
-						return "Totem Manipulator's";
-					}
-				}
-				break;
-			case CLASS_KAMIKAZE:
-				 return "Kamikaze's";
 			default: return "<Unknown Class>";
 			}
 			break;
@@ -808,7 +757,7 @@ qboolean V_CanUseAbilities (edict_t *ent, int ability_index, int ability_cost, q
 		return false;
 
 	// poltergeist cannot use abilities in human form
-	if (ent->myskills.class_num == CLASS_POLTERGEIST && !ent->mtype)
+	if (isMorphingPolt(ent) && !ent->mtype)
 	{
 		// allow them to morph
 		if (!PM_PlayerHasMonster(ent) && (ability_index != CACODEMON) && (ability_index != MUTANT) && (ability_index != BRAIN) && (ability_index != FLYER)
@@ -1252,7 +1201,7 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		if (Q_strcasecmp(playername, player->myskills.player_name) != 0)
 			continue;
 
-		if (newclass == CLASS_KNIGHT)
+		if (newclass == CLASS_PALADIN)
 			player->myskills.respawn_weapon = 1; //sword only
 
 		//Reset player's skills and change their class
@@ -1437,7 +1386,7 @@ void V_RestoreMorphed (edict_t *ent, int refund)
 
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/morph.wav") , 1, ATTN_NORM, 0);
 
-	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+	if (isMorphingPolt(ent))
 		VortexRemovePlayerSummonables(ent);
 
 	if (PM_PlayerHasMonster(ent))
@@ -1974,7 +1923,7 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 			ent->s.renderfx |= (RF_SHELL_RED|RF_SHELL_GREEN|RF_SHELL_BLUE);
 		}
 		// players and player-summoned monsters in FFA/PvP mode glow red
-		else if (cl_ent && cl_ent->myskills.respawns & HOSTILE_PLAYERS)
+		else if (cl_ent)
 		{
 			ent->s.effects |= EF_COLOR_SHELL;
 			ent->s.renderfx |= (RF_SHELL_RED);
@@ -2069,11 +2018,6 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 					{
 						ent->s.effects |= EF_COLOR_SHELL;
 						ent->s.renderfx |= (RF_SHELL_GREEN);
-					}
-					else
-					{
-						if (!hw->value || !V_IsPVP()) // not holywars or pvp gives default shell.
-							ent->s.renderfx |= RF_SHELL_RED;
 					}
 				}
 				else
@@ -2239,8 +2183,8 @@ void V_NonShellEffects (edict_t *ent)
 		}
 
 		// ghost effect applies to all classes except Poltergeist (who gets it for free)
-		else if (ent->myskills.abilities[GHOST].current_level > 0 
-			&& ent->myskills.class_num != CLASS_POLTERGEIST)
+		else if (ent->myskills.abilities[GHOST].current_level > 0 ||
+			isMorphingPolt(ent))
 			ent->s.effects |= EF_PLASMA;
 
 		// super speed effect
@@ -2400,4 +2344,9 @@ qboolean node_visible (nodedata_t *start, nodedata_t *end)
 qboolean isMonster (edict_t *ent)
 {
 	return (ent && ent->mtype && ent->mtype < 100 && ent->svflags & SVF_MONSTER);
+}
+
+qboolean isMorphingPolt(edict_t *ent)
+{
+	return ent->myskills.class_num == CLASS_POLTERGEIST && ent->myskills.abilities[MORPH_MASTERY].current_level && !ent->myskills.abilities[MORPH_MASTERY].disable;
 }

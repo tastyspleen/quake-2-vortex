@@ -237,7 +237,11 @@ void V_CreateAbilityModifier(edict_t* rune, qboolean is_class, int i)
 	if (is_class)
 		ability = getClassRuneStat(rune->vrxitem.classNum);
 	else
+	{
 		ability = getRandomAbility();
+		while (!ability)
+			ability = getRandomAbility();
+	}
 
 	if (ability->index < 0 || ability->index > MAX_ABILITIES-1) 
 		return; // we can't use this ability, it's invalid due to its index

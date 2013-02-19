@@ -108,7 +108,7 @@ void fire_sword ( edict_t *self, vec3_t start, vec3_t aimdir, int damage, int ki
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
 
-//	if (self->myskills.class_num == CLASS_KNIGHT)	//doomie
+//	if (self->myskills.class_num == CLASS_PALADIN)	//doomie
 //		sword_bonus = 1.5;
 	swordrange = SABRE_INITIAL_RANGE + (SABRE_ADDON_RANGE * self->myskills.weapons[WEAPON_SWORD].mods[2].current_level * sword_bonus);
 
@@ -192,7 +192,7 @@ void Weapon_Sword_Fire (edict_t *ent)
 	if (ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 		return;
 
-	if (ent->myskills.class_num == CLASS_KNIGHT)
+	if (ent->myskills.class_num == CLASS_PALADIN)
 		sword_bonus = 1.5;
 	damage = SABRE_INITIAL_DAMAGE + (SABRE_ADDON_DAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[0].current_level * sword_bonus);
 
@@ -224,7 +224,7 @@ void Weapon_Lance_Fire (edict_t *ent)
 		return;
 
 	// calculate knight bonus
-	if (ent->myskills.class_num == CLASS_KNIGHT)
+	if (ent->myskills.class_num == CLASS_PALADIN)
 		sword_bonus = 1.5;
 
 	damage = SABRE_INITIAL_DAMAGE + (SABRE_ADDON_DAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[0].current_level * sword_bonus);

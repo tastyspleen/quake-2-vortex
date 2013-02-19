@@ -21,7 +21,7 @@ void Give_respawnitems(edict_t *ent)
 
 	//if (!ent->myskills.abilities[START_ARMOR].disable)
 	//	ent->client->pers.inventory[ITEM_INDEX(FindItem("Body Armor"))] = ((MAX_ARMOR(ent))*0.2)*ent->myskills.abilities[START_ARMOR].current_level;
-	if ((ent->myskills.level >= 10) || (ent->myskills.class_num == CLASS_KNIGHT)) // give starting armor to level 10+ and knight
+	if ((ent->myskills.level >= 10) || (ent->myskills.class_num == CLASS_PALADIN)) // give starting armor to level 10+ and knight
 		ent->client->pers.inventory[ITEM_INDEX(FindItem("Body Armor"))] += 50;
 	if (ent->myskills.boss > 0)
 		 ent->client->pers.inventory[ITEM_INDEX(FindItem("Body Armor"))] = MAX_ARMOR(ent);
@@ -93,6 +93,12 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 {
 	//Give_respawnitems(ent);
 
+	if (ent->myskills.class_num == CLASS_PALADIN)
+	{
+		ent->myskills.respawn_weapon = 1;
+		Pick_respawnweapon(ent);
+	}
+
 #ifndef REMOVE_RESPAWNS
 	if (!ent->myskills.weapon_respawns) // No respawns.
 		return;
@@ -103,7 +109,7 @@ void Give_respawnweapon(edict_t *ent, int weaponID)
 		ent->myskills.weapon_respawns--;
 #endif
 	
-	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+	if (isMorphingPolt(ent))
 		return;
 
 
@@ -466,16 +472,12 @@ int MAX_ARMOR(edict_t *ent)
 switch (ent->myskills.class_num)
 	{
 	case CLASS_SOLDIER:		value = INITIAL_ARMOR_SOLDIER+LEVELUP_ARMOR_SOLDIER*ent->myskills.level;			break;
-	case CLASS_VAMPIRE:		value = INITIAL_ARMOR_VAMPIRE+LEVELUP_ARMOR_VAMPIRE*ent->myskills.level;			break;
+	case CLASS_DEMON:		value = INITIAL_ARMOR_VAMPIRE+LEVELUP_ARMOR_VAMPIRE*ent->myskills.level;			break;
 	case CLASS_ENGINEER:	value = INITIAL_ARMOR_ENGINEER+LEVELUP_ARMOR_ENGINEER*ent->myskills.level;			break;
-	case CLASS_MAGE:		value = INITIAL_ARMOR_MAGE+LEVELUP_ARMOR_MAGE*ent->myskills.level;					break;
-	case CLASS_NECROMANCER:	value = INITIAL_ARMOR_NECROMANCER+LEVELUP_ARMOR_NECROMANCER*ent->myskills.level;	break;
+	case CLASS_ARCANIST:		value = INITIAL_ARMOR_MAGE+LEVELUP_ARMOR_MAGE*ent->myskills.level;					break;
 	case CLASS_POLTERGEIST:	value = INITIAL_ARMOR_POLTERGEIST+LEVELUP_ARMOR_POLTERGEIST*ent->myskills.level;	break;
-	case CLASS_KNIGHT:		value = INITIAL_ARMOR_KNIGHT+LEVELUP_ARMOR_KNIGHT*ent->myskills.level;				break;
-	case CLASS_CLERIC:		value = INITIAL_ARMOR_CLERIC+LEVELUP_ARMOR_CLERIC*ent->myskills.level;				break;
+	case CLASS_PALADIN:		value = INITIAL_ARMOR_KNIGHT+LEVELUP_ARMOR_KNIGHT*ent->myskills.level;				break;
 	case CLASS_WEAPONMASTER:value = INITIAL_ARMOR_WEAPONMASTER+LEVELUP_ARMOR_WEAPONMASTER*ent->myskills.level;	break;
-	case CLASS_SHAMAN:		value = INITIAL_ARMOR_SHAMAN+LEVELUP_ARMOR_SHAMAN*ent->myskills.level;				break;
-	case CLASS_ALIEN:		value = INITIAL_ARMOR_ALIEN+LEVELUP_ARMOR_ALIEN*ent->myskills.level;				break;
 	default:				value = 100 + 5*ent->myskills.level;												break;
 	}
 
@@ -508,16 +510,12 @@ int MAX_HEALTH(edict_t *ent)
 	switch (ent->myskills.class_num)
 	{
 	case CLASS_SOLDIER:		value = INITIAL_HEALTH_SOLDIER+LEVELUP_HEALTH_SOLDIER*ent->myskills.level;				break;
-	case CLASS_VAMPIRE:		value = INITIAL_HEALTH_VAMPIRE+LEVELUP_HEALTH_VAMPIRE*ent->myskills.level;				break;
+	case CLASS_DEMON:		value = INITIAL_HEALTH_VAMPIRE+LEVELUP_HEALTH_VAMPIRE*ent->myskills.level;				break;
 	case CLASS_ENGINEER:	value = INITIAL_HEALTH_ENGINEER+LEVELUP_HEALTH_ENGINEER*ent->myskills.level;			break;
-	case CLASS_MAGE:		value = INITIAL_HEALTH_MAGE+LEVELUP_HEALTH_MAGE*ent->myskills.level;					break;
-	case CLASS_NECROMANCER:	value = INITIAL_HEALTH_NECROMANCER+LEVELUP_HEALTH_NECROMANCER*ent->myskills.level;		break;
+	case CLASS_ARCANIST:		value = INITIAL_HEALTH_MAGE+LEVELUP_HEALTH_MAGE*ent->myskills.level;					break;
 	case CLASS_POLTERGEIST:	value = INITIAL_HEALTH_POLTERGEIST+LEVELUP_HEALTH_POLTERGEIST*ent->myskills.level;		break;
-	case CLASS_KNIGHT:		value = INITIAL_HEALTH_KNIGHT+LEVELUP_HEALTH_KNIGHT*ent->myskills.level;				break;
-	case CLASS_CLERIC:		value = INITIAL_HEALTH_CLERIC+LEVELUP_HEALTH_CLERIC*ent->myskills.level;				break;
+	case CLASS_PALADIN:		value = INITIAL_HEALTH_KNIGHT+LEVELUP_HEALTH_KNIGHT*ent->myskills.level;				break;
 	case CLASS_WEAPONMASTER:value = INITIAL_HEALTH_WEAPONMASTER+LEVELUP_HEALTH_WEAPONMASTER*ent->myskills.level;	break;
-	case CLASS_SHAMAN:		value = INITIAL_HEALTH_SHAMAN+LEVELUP_HEALTH_SHAMAN*ent->myskills.level;				break;
-	case CLASS_ALIEN:		value = INITIAL_HEALTH_ALIEN+LEVELUP_HEALTH_ALIEN*ent->myskills.level;					break;
 	default:				value = 100+5*ent->myskills.level;
 	}
 
@@ -598,14 +596,10 @@ int MAX_POWERCUBES(edict_t *ent)
 	switch (ent->myskills.class_num)
 	{
 	case CLASS_SOLDIER: value=INITIAL_POWERCUBES_SOLDIER+ADDON_POWERCUBES_SOLDIER*clvl; break;
-	case CLASS_VAMPIRE: value=INITIAL_POWERCUBES_VAMPIRE+ADDON_POWERCUBES_VAMPIRE*clvl; break;
-	case CLASS_NECROMANCER: value=INITIAL_POWERCUBES_NECROMANCER+ADDON_POWERCUBES_NECROMANCER*clvl; break;
-	case CLASS_KNIGHT: value=INITIAL_POWERCUBES_KNIGHT+ADDON_POWERCUBES_KNIGHT*clvl; break;
-	case CLASS_MAGE: value=INITIAL_POWERCUBES_MAGE+ADDON_POWERCUBES_MAGE*clvl; break;
+	case CLASS_DEMON: value=INITIAL_POWERCUBES_VAMPIRE+ADDON_POWERCUBES_VAMPIRE*clvl; break;
+	case CLASS_PALADIN: value=INITIAL_POWERCUBES_KNIGHT+ADDON_POWERCUBES_KNIGHT*clvl; break;
+	case CLASS_ARCANIST: value=INITIAL_POWERCUBES_MAGE+ADDON_POWERCUBES_MAGE*clvl; break;
 	case CLASS_POLTERGEIST: value=INITIAL_POWERCUBES_POLTERGEIST+ADDON_POWERCUBES_POLTERGEIST*clvl; break;
-	case CLASS_CLERIC: value=INITIAL_POWERCUBES_CLERIC+ADDON_POWERCUBES_CLERIC*clvl; break;
-	case CLASS_ALIEN: value=INITIAL_POWERCUBES_ALIEN+ADDON_POWERCUBES_ALIEN*clvl; break;
-	case CLASS_SHAMAN: value=INITIAL_POWERCUBES_SHAMAN+ADDON_POWERCUBES_SHAMAN*clvl; break;
 	case CLASS_ENGINEER: value=INITIAL_POWERCUBES_ENGINEER+ADDON_POWERCUBES_ENGINEER*clvl; break;
 	case CLASS_WEAPONMASTER: value=INITIAL_POWERCUBES_WEAPONMASTER+ADDON_POWERCUBES_WEAPONMASTER*clvl; break;
 	}
@@ -1075,12 +1069,17 @@ char *V_GetClassSkin (edict_t *ent)
 	case CLASS_POLTERGEIST: 
 		c1 = class2_model->string;
 		c2 = class2_skin->string;
+		if (isMorphingPolt(ent))
+		{
+			c1 = class9_model->string;
+			c2 = class9_skin->string;
+		}
 		break;
-	case CLASS_VAMPIRE: 
+	case CLASS_DEMON: 
 		c1 = class3_model->string;
 		c2 = class3_skin->string;
 		break;
-	case CLASS_MAGE: 
+	case CLASS_ARCANIST: 
 		c1 = class4_model->string;
 		c2 = class4_skin->string;
 		break;
@@ -1088,22 +1087,23 @@ char *V_GetClassSkin (edict_t *ent)
 		c1 = class5_model->string;
 		c2 = class5_skin->string;
 		break;
-	case CLASS_KNIGHT: 
+	case CLASS_PALADIN: 
 		c1 = class6_model->string;
 		c2 = class6_skin->string;
 		break;
-	case CLASS_CLERIC: 
+	/*case CLASS_CLERIC: 
 		c1 = class7_model->string;
 		c2 = class7_skin->string;
-		break;
+		break;*/
 	case CLASS_WEAPONMASTER: 
 		c1 = class8_model->string;
 		c2 = class8_skin->string;
 		break;
-	case CLASS_NECROMANCER: 
+	/**case CLASS_NECROMANCER: 
 		c1 = class9_model->string;
 		c2 = class9_skin->string;
 		break;
+		
 	case CLASS_SHAMAN: 
 		c1 = class10_model->string;
 		c2 = class10_skin->string;
@@ -1116,6 +1116,7 @@ char *V_GetClassSkin (edict_t *ent)
 		c1 = class12_model->string;
 		c2 = class12_skin->string;
 		break;
+		*/
 	default: return "male/grunt";
 	}
 

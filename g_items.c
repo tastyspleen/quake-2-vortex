@@ -467,8 +467,8 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 	 if ((other->client || other->mtype) &&  // knights and polts can't get ammo in pvm modes
 		 (pvm->value || invasion->value) &&
 		 // polts only if the ammo is not cells
-		 (other->myskills.class_num == CLASS_POLTERGEIST && strcmp(ent->classname,"ammo_cells") ||
-		 other->myskills.class_num == CLASS_KNIGHT)) // and knights, never.
+		 (isMorphingPolt(ent) && strcmp(ent->classname,"ammo_cells") ||
+		 other->myskills.class_num == CLASS_PALADIN)) // and knights, never.
 		 return false;
 
 
@@ -1563,7 +1563,10 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		}
 	}
 	// Dont spawn quad, invuln, or power armor
-	if ((strcmp(ent->classname, "item_power_shield") == 0) || (strcmp(ent->classname, "item_power_shield") == 0) || (strcmp(ent->classname, "item_quad") == 0) || (strcmp(ent->classname, "item_invulnerability") == 0))
+	if ((strcmp(ent->classname, "item_power_shield") == 0) 
+		|| (strcmp(ent->classname, "item_power_shield") == 0) 
+		/*|| (strcmp(ent->classname, "item_quad") == 0)*/
+		|| (strcmp(ent->classname, "item_invulnerability") == 0))
 	{
 		G_FreeEdict (ent);
 		return;

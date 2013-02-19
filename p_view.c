@@ -734,7 +734,7 @@ void P_WorldEffects (void)
 
 		// if out of air, start drowning
 		if ((current_player->air_finished < level.time) 
-			&& !((current_player->myskills.class_num == CLASS_POLTERGEIST) && (current_player->mtype == 0))
+			&& !((!isMorphingPolt(current_player)) && (current_player->mtype == 0))
 			&& (current_player->myskills.abilities[WORLD_RESIST].current_level < 1 
 									|| HasFlag(current_player)) 
 			&& !(current_player->flags & FL_GODMODE))
@@ -778,7 +778,7 @@ void P_WorldEffects (void)
 	if (waterlevel && (current_player->watertype & (CONTENTS_LAVA|CONTENTS_SLIME)) 
 		&& (current_player->myskills.abilities[WORLD_RESIST].current_level < 1 || HasFlag(current_player)) 
 		&& !(current_player->flags & FL_GODMODE) 
-		&& !((current_player->myskills.class_num == CLASS_POLTERGEIST) && (current_player->mtype == 0)))
+		&& ((!isMorphingPolt(current_player)) && (current_player->mtype == 0)))
 	{
 		if (current_player->watertype & CONTENTS_LAVA)
 		{

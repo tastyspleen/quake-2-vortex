@@ -550,7 +550,7 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 	// can't use gun if we are just spawning, or we
 	// are a morphed player using anything other
 	// than a player model
-	if(ent->deadflag || (ent->s.modelindex != 255) || (ent->myskills.class_num == CLASS_POLTERGEIST)
+	if(ent->deadflag || (ent->s.modelindex != 255) || (isMorphingPolt(ent))
 		|| (ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent)) // special rules, fc can't attack
 		|| ((ent->client->respawn_time - (0.1*FRAME_ACTIVATE_LAST)) > level.time) // VWep animations screw up corpses
 		|| (ent->flags & FL_WORMHOLE)//4.2 can't use weapons in wormhole
@@ -1133,7 +1133,7 @@ void Weapon_Grenade(edict_t *ent)
 	// can't use gun if we are just spawning, or we
 	// are a morphed player using anything other
 	// than a player model
-	if(ent->deadflag || (ent->s.modelindex != 255) || (ent->myskills.class_num == CLASS_POLTERGEIST)
+	if(ent->deadflag || (ent->s.modelindex != 255) || (isMorphingPolt(ent))
 		|| (ctf->value && ctf_enable_balanced_fc->value && HasFlag(ent))
 		|| (ent->client->respawn_time > level.time)
 		|| (ent->flags & FL_WORMHOLE))
