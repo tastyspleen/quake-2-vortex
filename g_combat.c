@@ -78,7 +78,7 @@ qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take,
 		return false;
 
 	// can't knock weapon from morphs or poltergeists
-	if (targ->mtype || (targ->myskills.class_num == CLASS_POLTERGEIST))
+	if (targ->mtype || (isMorphingPolt(targ)))
 		return false;
 
 	if ((targ->health-take) > (0.5*targ->max_health))

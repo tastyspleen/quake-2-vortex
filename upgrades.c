@@ -6,41 +6,6 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype
 //************************************************************************************************
 //************************************************************************************************
 
-int GetAbilityUpgradeCost(int index)
-{
-	switch(index)
-	{
-		//Abilities that cost 2 points		
-		//case FREEZE_SPELL:
-		case SCANNER:
-		case DOUBLE_JUMP:
-		case JETPACK:
-		case ANTIGRAV:
-		case FLASH:
-		case ID:				return 2;			
-		//Abilities that cost 3 points
-		case CLOAK:
-		case WORLD_RESIST:
-		case BULLET_RESIST:
-		case SHELL_RESIST:
-		case ENERGY_RESIST:
-		case PIERCING_RESIST:
-		case BLACKHOLE:
-		case TELEPORT:
-		case BOOST_SPELL:
-		case SPLASH_RESIST:		return 3;
-		//Abilities that cost 4 points		
-		case CREATE_QUAD:
-		case CREATE_INVIN:
-		case SUPER_SPEED:
-		case WEAPON_KNOCK:		
-		case MORPH_MASTERY:	
-		case TOTEM_MASTERY:				
-		case SHIELD:			return 4;
-		default:				return 1;
-	}
-}
-
 
 //************************************************************************************************
 
@@ -132,7 +97,7 @@ void upgrademenu_handler (edict_t *ent, int option)
 {
 	if (option == 1)
 	{
-		OpenSpecialUpgradeMenu(ent, 0);
+		OpenMultiUpgradeMenu(ent, 0, 0, 0);
 	}
 	else if (option == 2)
 		OpenMultiUpgradeMenu(ent, 0, 0, 1);//OpenGeneralUpgradeMenu(ent, 0);
@@ -249,6 +214,46 @@ void UpgradeAbility(edict_t *ent, int ability_index)
 		// doon't close the menu. -az
 		//return;
 	}
+}
+
+void upgradeMultiMenu_class_handler (edict_t *ent, int option)
+{
+	int p, ability_index;
+
+	if (option == 999)
+	{
+		closemenu(ent);
+		return;
+	}
+
+	//gi.dprintf("option=%d\n", option);
+
+	// next menu
+	if (option < 300)
+	{
+		OpenMultiUpgradeMenu(ent, PAGE_NEXT, option-199, 0);
+		return;
+	}
+	// previous menu
+	else if (option < 400)
+	{
+		p = option-301;
+		if (p < 0)
+			OpenUpgradeMenu(ent);
+		else	
+			OpenMultiUpgradeMenu(ent, PAGE_PREVIOUS, p, 0);
+		return;
+	}
+
+	p = option/1000-1;
+	//gi.dprintf("page=%d\n", p);
+
+	ability_index = option%1000;
+	//gi.dprintf("ability = %s (%d)\n", GetAbilityString(ability_index), ability_index);
+	
+	UpgradeAbility(ent, ability_index);
+
+	OpenMultiUpgradeMenu(ent, ent->client->menustorage.currentline, p, 0);
 }
 
 void upgradeMultiMenu_handler (edict_t *ent, int option)
@@ -375,7 +380,7 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype
 	addlinetomenu(ent, va("You have %d ability points.", ent->myskills.speciality_points), 0);
 	addlinetomenu(ent, " ", 0);
 
-	if (i < MAX_ABILITIES || generaltype == 1)
+	if (i < getLastUpgradeIndex(ent))
 	{
 		addlinetomenu(ent, "Next", 200+page);	
 		total_lines++;
@@ -389,8 +394,10 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype
 	
 	if (generaltype == 1)
 		setmenuhandler(ent, upgradeMultiMenu_handler);
-	else
+	else if (generaltype == 2)
 		setmenuhandler(ent, upgradeMultiMenu_handler_mobility);
+	else
+		setmenuhandler(ent, upgradeMultiMenu_class_handler);
 
 	if (!lastline)
 	{

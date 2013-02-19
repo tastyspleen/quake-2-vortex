@@ -300,7 +300,7 @@ void BOT_VortexAssignSkills(edict_t *ent)
 void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 {
 	char *s;
-	int rnd = CLASS_KNIGHT;
+	//int rnd = CLASS_PALADIN;
 
 	if ( !BOT_JoinCTFTeam(ent, team_name) )
 		gi.bprintf (PRINT_HIGH,  "[BOT] %s joined the game.\n",
@@ -320,7 +320,7 @@ void BOT_DMClass_JoinGame (edict_t *ent, char *team_name)
 	/*while (1) // except the knight, any class.
 	{
 		rnd = GetRandom(1, CLASS_MAX);
-		if (rnd != CLASS_KNIGHT && rnd != CLASS_POLTERGEIST)
+		if (rnd != CLASS_PALADIN && rnd != CLASS_POLTERGEIST)
 			break;
 	}
 

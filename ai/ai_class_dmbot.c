@@ -381,9 +381,7 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 		if (OnSameTeam(AIEnemies[i], self)) // vortex chile 3.0
 			continue;
 
-		if( !AIEnemies[i]->deadflag/* && visible(self, AIEnemies[i]) &&
-			//trap_inPVS (self->s.origin, players[i]->s.origin))
-			gi.inPVS(self->s.origin, AIEnemies[i]->s.origin)*/)
+		if( !AIEnemies[i]->deadflag && visible1(self, AIEnemies[i]))
 		{
 			//(weight enemies from fusionbot) Is enemy visible, or is it too close to ignore 
 			VectorSubtract(self->s.origin, AIEnemies[i]->s.origin, dist);

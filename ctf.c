@@ -357,7 +357,7 @@ qboolean CTF_PickupFlag (edict_t *ent, edict_t *other)
 	if (!CTF_ApplySpecialFcRules(other))
 	{
 		// poltergeist class and morphed players can only return the flag
-		if (other->mtype || (other->myskills.class_num == CLASS_POLTERGEIST))
+		if (other->mtype || (isMorphingPolt(other)))
 			return false;
 	}
 

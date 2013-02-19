@@ -136,7 +136,7 @@ void check_for_levelup (edict_t *ent)
 		if (points_needed > plateau_points || ent->myskills.level > 5 || ent->myskills.level > plateau_level)
 		{
 			// calculate next level points based
-			points_needed = plateau_points + 5000*(ent->myskills.level-plateau_level);
+			points_needed = plateau_points + 3500*(ent->myskills.level-plateau_level);
 		}
 
 		ent->myskills.next_level += points_needed;

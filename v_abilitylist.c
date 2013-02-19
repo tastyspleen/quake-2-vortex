@@ -3,7 +3,7 @@
 abildefinition_t *abilities_by_index[MAX_ABILITIES];
 
 abildefinition_t GENERAL_abil[] = {
-	{ VITALITY          , 0 , 10                , 1  },
+	{ VITALITY          , 0 , 15                , 1  },
 	{ MAX_AMMO          , 0 , 10                , 1  },
 	{ POWER_REGEN       , 0 , 8                 , 1  },
 	{ WORLD_RESIST      , 0 , 1                 , 1  },
@@ -12,11 +12,11 @@ abildefinition_t GENERAL_abil[] = {
 	{ STRENGTH          , 0 , 5                 , 1  },
 	{ HASTE             , 0 , 5                 , 1  },
 	{ RESISTANCE        , 0 , 5                 , 1  },
-	{ SHELL_RESIST      , 0 , 1                 , 1  },
+	/*{ SHELL_RESIST      , 0 , 1                 , 1  },
 	{ BULLET_RESIST     , 0 , 1                 , 1  },
 	{ SPLASH_RESIST     , 0 , 1                 , 1  },
 	{ PIERCING_RESIST   , 0 , 1                 , 1  },
-	{ ENERGY_RESIST     , 0 , 1                 , 1  },
+	{ ENERGY_RESIST     , 0 , 1                 , 1  },*/
 	{ SCANNER           , 0 , 1                 , 1  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
@@ -29,45 +29,37 @@ abildefinition_t SOLDIER_abil[] = {
 	{ SPIKE_GRENADE     , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ EMP               , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ MIRV              , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ CREATE_QUAD       , 0 , 1                 , 0  },
-	{ CREATE_INVIN      , 0 , 1                 , 0  },
+	/*{ CREATE_QUAD       , 0 , 1                 , 0  },
+	{ CREATE_INVIN      , 0 , 1                 , 0  },*/
 	{ GRAPPLE_HOOK      , 3 , 3                 , 0  },
+	{ SELFDESTRUCT      , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ HA_PICKUP         , 1 , DEFAULT_SOFTMAX   , 0  },
+	{ PROXY             , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { AMNESIA           , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ MAGMINE           , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { FLASH             , 1 , 1                 , 0  },
+	// { BOOST_SPELL       , 1 , 1                 , 0  },
+	{ FURY              , 0 , DEFAULT_SOFTMAX   , 0  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
-abildefinition_t KNIGHT_abil[] = { // KNIGHT
-	{ ARMOR_UPGRADE     , 0 , 10                , 0  },
-	{ REGENERATION      , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ POWER_SHIELD      , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ ARMOR_REGEN       , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ EXPLODING_ARMOR   , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ BEAM              , 0 , INCREASED_SOFTMAX , 0  },
-	{ PLASMA_BOLT       , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ SHIELD            , 1 , 1                 , 0  },
-	{ BOOST_SPELL       , 1 , 1                 , 0  },
-	{-1, 0, 0, 0} // Guardian (Add skills above this)
-};
-
-abildefinition_t VAMPIRE_abil[] = { // VAMPIRE
+abildefinition_t DEMON_abil[] = { // DEMON
 	{ VAMPIRE           , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ GHOST             , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ LIFE_DRAIN        , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { LIFE_DRAIN        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ FLESH_EATER       , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ CORPSE_EXPLODE    , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ MIND_ABSORB       , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ AMMO_STEAL        , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { AMMO_STEAL        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ CLOAK             , 1 , 10                , 0  },
-	{-1, 0, 0, 0} // Guardian (Add skills above this)
-};
-
-abildefinition_t NECROMANCER_abil[] = { // NECROMANCER
 	{ MONSTER_SUMMON    , 0 , INCREASED_SOFTMAX , 0  },
 	{ HELLSPAWN         , 0 , INCREASED_SOFTMAX , 0  },
 	{ PLAGUE            , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ LOWER_RESIST      , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ AMP_DAMAGE        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ CRIPPLE           , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ CURSE             , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ WEAKEN            , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { WEAKEN            , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ CONVERSION        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ JETPACK           , 1 , 1                 , 0  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
@@ -83,11 +75,12 @@ abildefinition_t ENGINEER_abil[] = { // ENGINEER
 	{ AUTOCANNON        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ DETECTOR          , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ DECOY             , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ EXPLODING_ARMOR   , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ ANTIGRAV          , 1 , 1                 , 0  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
-abildefinition_t MAGE_abil[] = { // MAGE
+abildefinition_t ARCANIST_abil[] = { // ARCANIST
 	{ MAGICBOLT         , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ NOVA              , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ BOMB_SPELL        , 0 , DEFAULT_SOFTMAX   , 0  },
@@ -97,19 +90,35 @@ abildefinition_t MAGE_abil[] = { // MAGE
 	{ FIREBALL          , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ LIGHTNING_STORM   , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ TELEPORT          , 1 , 1                 , 0  },
+	{ FIRE_TOTEM        , 0 , INCREASED_SOFTMAX , 0  },
+	{ WATER_TOTEM       , 0 , INCREASED_SOFTMAX , 0  },
+	{ AIR_TOTEM         , 0 , INCREASED_SOFTMAX , 0  },
+	{ EARTH_TOTEM       , 0 , INCREASED_SOFTMAX , 0  },
+	{ DARK_TOTEM        , 0 , INCREASED_SOFTMAX , 0  },
+	{ NATURE_TOTEM      , 0 , INCREASED_SOFTMAX , 0  },
+	{ HASTE             , 0 , 5                 , 0  },
+	{ TOTEM_MASTERY     , 1 , 1                 , 0  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
-abildefinition_t CLERIC_abil[] = { // CLERIC
+abildefinition_t PALADIN_abil[] = { // paladin
 	{ SALVATION         , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ HEALING           , 0 , DEFAULT_SOFTMAX   , 0  },
+	// { HEALING           , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ BLESS             , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ YIN               , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ YANG              , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ HAMMER            , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ DEFLECT           , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ LOWER_RESIST      , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ DOUBLE_JUMP       , 1 , 1                 , 0  },
+	{ SUPER_SPEED       , 1 , 1                 , 0  },
+	// { DOUBLE_JUMP       , 1 , 1                 , 0  },
+	{ ARMOR_UPGRADE     , 0 , 10                , 0  },
+	{ REGENERATION      , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ POWER_SHIELD      , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ ARMOR_REGEN       , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ BEAM              , 0 , INCREASED_SOFTMAX , 0  },
+	{ PLASMA_BOLT       , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ SHIELD            , 1 , 1                 , 0  },
+	{ BOOST_SPELL       , 1 , 1                 , 0  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
@@ -122,27 +131,9 @@ abildefinition_t POLTERGEIST_abil[] = { // POLTERGEIST
 	{ MUTANT            , 1 , INCREASED_SOFTMAX , 0  },
 	{ TANK              , 1 , INCREASED_SOFTMAX , 0  },
 	{ MEDIC             , 1 , INCREASED_SOFTMAX , 0  },
-	{ GHOST             , 99, 99                , 0  },
-	{ MORPH_MASTERY     , 1 , 1                 , 0  },
+	{ GHOST             , 0 , DEFAULT_SOFTMAX   , 0  }, // given for free with morph mastery
+	{ MORPH_MASTERY     , 0 , 1                 , 0  },
 	{ MONSTER_SUMMON    , 0 , 1                 , 0  },
-	{-1, 0, 0, 0} // Guardian (Add skills above this)
-};
-
-abildefinition_t SHAMAN_abil[] = { // SHAMAN
-	{ FIRE_TOTEM        , 0 , INCREASED_SOFTMAX , 0  },
-	{ WATER_TOTEM       , 0 , INCREASED_SOFTMAX , 0  },
-	{ AIR_TOTEM         , 0 , INCREASED_SOFTMAX , 0  },
-	{ EARTH_TOTEM       , 0 , INCREASED_SOFTMAX , 0  },
-	{ DARK_TOTEM        , 0 , INCREASED_SOFTMAX , 0  },
-	{ NATURE_TOTEM      , 0 , INCREASED_SOFTMAX , 0  },
-	{ FURY              , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ HASTE             , 0 , 5                 , 0  },
-	{ SUPER_SPEED       , 1 , 1                 , 0  },
-	{ TOTEM_MASTERY     , 1 , 1                 , 0  },
-	{-1, 0, 0, 0} // Guardian (Add skills above this)
-};
-
-abildefinition_t ALIEN_abil[] = { // ALIEN
 	{ SPIKER            , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ OBSTACLE          , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ GASSER            , 0 , DEFAULT_SOFTMAX   , 0  },
@@ -159,33 +150,16 @@ abildefinition_t WEAPONMASTER_abil[] = {
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
-abildefinition_t KAMIKAZE_abil[] = { // KAMIKAZE
-	{ SELFDESTRUCT      , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ HA_PICKUP         , 1 , DEFAULT_SOFTMAX   , 0  },
-	{ PROXY             , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ CREATE_INVIN      , 0 , 1                 , 0  },
-	{ AMNESIA           , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ MAGMINE           , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ FLASH             , 1 , 1                 , 0  },
-	{ BOOST_SPELL       , 1 , 1                 , 0  },
-	{-1, 0, 0, 0} // Guardian (Add skills above this)
-};
-
 AbilList ablist [] = 
 {
 	GENERAL_abil,
 	SOLDIER_abil,
-	POLTERGEIST_abil,
-	VAMPIRE_abil,
-	MAGE_abil,
+	DEMON_abil,
 	ENGINEER_abil,
-	KNIGHT_abil,
-	CLERIC_abil,
-	NECROMANCER_abil,
-	SHAMAN_abil,
-	ALIEN_abil,
+	PALADIN_abil,
+	ARCANIST_abil,
+	POLTERGEIST_abil,
 	WEAPONMASTER_abil,
-	KAMIKAZE_abil
 };
 
 
@@ -248,7 +222,6 @@ int getHardMax(int index, qboolean general, int class)
 		case ENERGY_RESIST:
 		case PIERCING_RESIST:
 		case SPLASH_RESIST:
-		//case FREEZE_SPELL:
 		case CLOAK:
 		case CREATE_QUAD:
 		case CREATE_INVIN:
@@ -336,6 +309,41 @@ void disableAbilities (edict_t *ent)
 	}
 }
 
+int GetAbilityUpgradeCost(int index)
+{
+	switch(index)
+	{
+		//Abilities that cost 2 points		
+		//case FREEZE_SPELL:
+		case SCANNER:
+		case DOUBLE_JUMP:
+		case JETPACK:
+		case MORPH_MASTERY:	
+		case ANTIGRAV:
+		case FLASH:
+		case ID:				return 2;			
+		//Abilities that cost 3 points
+		case CLOAK:
+		case WORLD_RESIST:
+		case BULLET_RESIST:
+		case SHELL_RESIST:
+		case ENERGY_RESIST:
+		case PIERCING_RESIST:
+		case BLACKHOLE:
+		case TELEPORT:
+		case BOOST_SPELL:
+		case SPLASH_RESIST:		return 3;
+		//Abilities that cost 4 points		
+		case CREATE_QUAD:
+		case CREATE_INVIN:
+		case SUPER_SPEED:
+		case WEAPON_KNOCK:		
+		case TOTEM_MASTERY:				
+		case SHIELD:			return 4;
+		default:				return 1;
+	}
+}
+
 //************************************************************************************************
 //	CLASS RUNE ARRAYS
 //************************************************************************************************
@@ -405,4 +413,15 @@ void InitializeAbilityList()
 	}
 
 	gi.dprintf("Done.\n");
+}
+
+int getLastUpgradeIndex(edict_t *ent)
+{
+	int i, returnindex;
+	for (i = 0; i < MAX_ABILITIES; i++)
+	{
+		if (!ent->myskills.abilities[i].disable)
+			returnindex = i;
+	}
+	return returnindex;
 }

@@ -33,6 +33,10 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_BLOOD_OF_ARES, 5);
 			addTalent(ent, TALENT_BASIC_HA, 5);
 			addTalent(ent, TALENT_BOMBARDIER, 5);
+			addTalent(ent, TALENT_MARTYR, 5);
+			addTalent(ent, TALENT_BLAST_RESIST, 5);
+			addTalent(ent, TALENT_MAGMINESELF, 1);
+			addTalent(ent, TALENT_INSTANTPROXYS, 2);
 			return;
 		case CLASS_POLTERGEIST:
 			addTalent(ent, TALENT_MORPHING, 5);
@@ -40,51 +44,19 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_SUPERIORITY, 5);
 			addTalent(ent, TALENT_RETALIATION, 5);
 			addTalent(ent, TALENT_PACK_ANIMAL, 5);
+			addTalent(ent, TALENT_PHANTOM_OBSTACLE, 5);
+			addTalent(ent, TALENT_SUPER_HEALER, 5);
+			addTalent(ent, TALENT_PHANTOM_COCOON, 5);
+			addTalent(ent, TALENT_SWARMING, 5);
+			addTalent(ent, TALENT_EXPLODING_BODIES, 5);
 			return;
-		case CLASS_VAMPIRE:
+		case CLASS_DEMON:
 			addTalent(ent, TALENT_IMP_CLOAK, 4);
 			addTalent(ent, TALENT_ARMOR_VAMP, 3);
 			addTalent(ent, TALENT_SECOND_CHANCE, 4);
 			addTalent(ent, TALENT_IMP_MINDABSORB, 4);
 			addTalent(ent, TALENT_CANNIBALISM, 5);
 			addTalent(ent, TALENT_FATAL_WOUND, 5);
-			return;
-		case CLASS_MAGE:
-			addTalent(ent, TALENT_ICE_BOLT, 5);
-			addTalent(ent, TALENT_FROST_NOVA, 5);
-			addTalent(ent, TALENT_IMP_MAGICBOLT, 5);
-			addTalent(ent, TALENT_MANASHIELD, 5);
-			addTalent(ent, TALENT_MEDITATION, 5);
-			addTalent(ent, TALENT_OVERLOAD, 5);
-			return;
-		case CLASS_ENGINEER:
-			addTalent(ent, TALENT_LASER_PLATFORM, 5);
-            addTalent(ent, TALENT_ALARM, 5);
-			addTalent(ent, TALENT_RAPID_ASSEMBLY, 5);
-			addTalent(ent, TALENT_PRECISION_TUNING, 5);
-			addTalent(ent, TALENT_STORAGE_UPGRADE, 5);
-			return;
-		case CLASS_KNIGHT:
-			addTalent(ent, TALENT_REPEL, 5);
-			addTalent(ent, TALENT_MAG_BOOTS, 5);
-			addTalent(ent, TALENT_LEAP_ATTACK, 5);
-			addTalent(ent, TALENT_MOBILITY, 5);
-			addTalent(ent, TALENT_DURABILITY, 5);
-			return;
-		case CLASS_CLERIC:
-			addTalent(ent, TALENT_BALANCESPIRIT, 5);
-			addTalent(ent, TALENT_HOLY_GROUND, 5);
-			addTalent(ent, TALENT_UNHOLY_GROUND, 5);
-			addTalent(ent, TALENT_BOOMERANG, 5);
-			addTalent(ent, TALENT_PURGE, 5);
-			return;
-		case CLASS_WEAPONMASTER:
-			addTalent(ent, TALENT_BASIC_AMMO_REGEN, 5);
-			addTalent(ent, TALENT_COMBAT_EXP, 5);
-			addTalent(ent, TALENT_TACTICS, 3);
-			addTalent(ent, TALENT_SIDEARMS, 3);
-			return;
-		case CLASS_NECROMANCER:
 			addTalent(ent, TALENT_CHEAPER_CURSES, 5);
 			addTalent(ent, TALENT_CORPULENCE, 5);
 			addTalent(ent, TALENT_LIFE_TAP, 5);
@@ -92,7 +64,13 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_EVIL_CURSE, 5);
 			addTalent(ent, TALENT_FLIGHT, 5);
 			return;
-		case CLASS_SHAMAN:
+		case CLASS_ARCANIST:
+			addTalent(ent, TALENT_ICE_BOLT, 5);
+			addTalent(ent, TALENT_FROST_NOVA, 5);
+			addTalent(ent, TALENT_IMP_MAGICBOLT, 5);
+			addTalent(ent, TALENT_MANASHIELD, 5);
+			addTalent(ent, TALENT_MEDITATION, 5);
+			addTalent(ent, TALENT_OVERLOAD, 5);
 			addTalent(ent, TALENT_ICE, 4);
 			addTalent(ent, TALENT_WIND, 4);
 			addTalent(ent, TALENT_STONE, 4);
@@ -101,18 +79,31 @@ void setTalents(edict_t *ent)
 			addTalent(ent, TALENT_TOTEM, 6);
 			addTalent(ent, TALENT_VOLCANIC, 5);
 			return;
-		case CLASS_ALIEN:
-			addTalent(ent, TALENT_PHANTOM_OBSTACLE, 5);
-			addTalent(ent, TALENT_SUPER_HEALER, 5);
-			addTalent(ent, TALENT_PHANTOM_COCOON, 5);
-			addTalent(ent, TALENT_SWARMING, 5);
-			addTalent(ent, TALENT_EXPLODING_BODIES, 5);
+		case CLASS_ENGINEER:
+			addTalent(ent, TALENT_LASER_PLATFORM, 5);
+            addTalent(ent, TALENT_ALARM, 5);
+			addTalent(ent, TALENT_RAPID_ASSEMBLY, 5);
+			addTalent(ent, TALENT_PRECISION_TUNING, 5);
+			addTalent(ent, TALENT_STORAGE_UPGRADE, 5);
 			return;
-		case CLASS_KAMIKAZE:
-			addTalent(ent, TALENT_MARTYR, 5);
-			addTalent(ent, TALENT_BLAST_RESIST, 5);
-			addTalent(ent, TALENT_MAGMINESELF, 1);
-			addTalent(ent, TALENT_INSTANTPROXYS, 2);
+		case CLASS_PALADIN:
+			addTalent(ent, TALENT_BALANCESPIRIT, 5);
+			addTalent(ent, TALENT_HOLY_GROUND, 5);
+			addTalent(ent, TALENT_UNHOLY_GROUND, 5);
+			addTalent(ent, TALENT_BOOMERANG, 5);
+			addTalent(ent, TALENT_PURGE, 5);
+			addTalent(ent, TALENT_REPEL, 5);
+			addTalent(ent, TALENT_MAG_BOOTS, 5);
+			addTalent(ent, TALENT_LEAP_ATTACK, 5);
+			addTalent(ent, TALENT_MOBILITY, 5);
+			addTalent(ent, TALENT_DURABILITY, 5);
+			return;
+		case CLASS_WEAPONMASTER:
+			addTalent(ent, TALENT_BASIC_AMMO_REGEN, 5);
+			addTalent(ent, TALENT_COMBAT_EXP, 5);
+			addTalent(ent, TALENT_TACTICS, 3);
+			addTalent(ent, TALENT_SIDEARMS, 3);
+			return;
 	default: return;
 	}
 }

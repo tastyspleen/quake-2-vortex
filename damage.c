@@ -527,7 +527,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		return 0; // monsters get invincibility and quad in invasion mode
 	if (targ->flags & FL_COCOONED && targ->movetype == MOVETYPE_NONE && targ->svflags & SVF_NOCLIENT)
 		return 0; //4.4 don't hurt cocooned entities
-	if ((attacker->myskills.class_num == CLASS_POLTERGEIST) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
+	if ((isMorphingPolt(attacker)) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
 		return 0; // poltergeist cannot hurt anyone while in human form
 	
 	if (ffa->value)
@@ -755,7 +755,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 				return 0;	// no world damage if someone is warring
 			else if ((targ->myskills.abilities[WORLD_RESIST].current_level > 0) && (!targ->myskills.abilities[WORLD_RESIST].disable))
 				return 0;	// no world damage if you have world resist
-			else if ((targ->myskills.class_num == CLASS_POLTERGEIST) && (targ->mtype == 0))
+			else if ((isMorphingPolt(targ)) && (targ->mtype == 0))
 				return 0;	//Poltergeists can not take world damage in human form
 		}
 		if ((targ == attacker) && (mod == MOD_BOMBS))
@@ -821,10 +821,10 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			temp = 1.0/temp;
 
 			// cap ghost resistance to 75%
-			if (temp < 0.25 && targ->myskills.class_num == CLASS_POLTERGEIST)
+			if (isMorphingPolt(targ))
 				temp = 0.25;
 			
-			if (temp < 0.4 && targ->myskills.class_num != CLASS_POLTERGEIST)
+			if (temp < 0.4 && !isMorphingPolt(targ))
 			{
 				if (!pvm->value && !invasion->value) // PVP mode? cap it to 40%.
 					temp = 0.4;

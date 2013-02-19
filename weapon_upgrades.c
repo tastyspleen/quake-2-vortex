@@ -179,7 +179,7 @@ void OpenWeaponUpgradeMenu (edict_t *ent, int lastline)
 {
 	int i;
 
-	if (ent->myskills.class_num == CLASS_POLTERGEIST)
+	if (isMorphingPolt(ent))
 	{
 		safe_cprintf(ent, PRINT_HIGH, "You can't upgrade weapons.\n");
 		return;
@@ -196,7 +196,7 @@ void OpenWeaponUpgradeMenu (edict_t *ent, int lastline)
 	addlinetomenu(ent, " ", 0);
 
 	// todo: unuglyfy
-	if (ent->myskills.class_num == CLASS_KNIGHT) // only add the sword
+	if (ent->myskills.class_num == CLASS_PALADIN) // only add the sword
 	{
 		for (i = 0; i < MAX_WEAPONS; ++i)
 		{

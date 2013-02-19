@@ -22,4 +22,5 @@ void V_ShellAbilityEffects (edict_t *ent);
 int V_GetNumPlayerPrefs (qboolean monsters, qboolean players);//4.5
 qboolean V_MatchPlayerPrefs (edict_t *player, int monsters, int players);//4.5
 qboolean isMonster (edict_t *ent);
+qboolean isMorphingPolt(edict_t *ent);
 //************************************************************************************************
