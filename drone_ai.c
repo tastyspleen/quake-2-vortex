@@ -1410,7 +1410,7 @@ void M_ClearPath (edict_t *self)
 	// wait awhile before searching for another path
 	self->monsterinfo.path_time = level.time + 5.0 + random();
 }
-
+/*
 void M_FindPath (edict_t *self, vec3_t goalpos, qboolean compute_path_now)
 {
 	// update the path now or after a brief delay
@@ -1448,7 +1448,7 @@ void M_FindPath (edict_t *self, vec3_t goalpos, qboolean compute_path_now)
 			M_ClearPath(self);
 		}
 	}
-}
+}*/
 
 // returns true if this monster is on patrol
 //FIXME: it would probably be easier/smarter if spot1/2 were just entity pointers
@@ -1738,18 +1738,23 @@ Called when the monster is chasing an enemy or goal
 */
 void drone_ai_run (edict_t *self, float dist)
 {
-	/*float		time;
-	vec3_t		start, end, v;
-	trace_t		tr;
-	edict_t		*tempgoal=NULL;
-	qboolean	enemy_vis=false;*/
+	float           time;
+	vec3_t          start, end, v;
+	trace_t         tr;
+	edict_t         *tempgoal=NULL;
+	qboolean        enemy_vis=false;
 
-	drone_ai_run1(self, dist);
-	return;
+	if (Lua_GetIntSetting(va("%s_UsePathfinding", level.mapname)))
+	{
+		drone_ai_run1(self, dist);
+		return;
+	}
 
-/*	// if we're dead, we shouldn't be here
+
+	// if we're dead, we shouldn't be here
 	if (self->deadflag == DEAD_DEAD)
 		return;
+
 
 	// decoys make step sounds
 	if ((self->mtype == M_DECOY) && (level.time > self->wait)) 
@@ -1758,8 +1763,10 @@ void drone_ai_run (edict_t *self, float dist)
 		self->wait = level.time + 0.3;
 	}
 
+
 	// monster is no longer idle
 	self->monsterinfo.idle_frames = 0;
+
 
 	// if the drone is standing, we shouldn't be here
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
@@ -1768,22 +1775,23 @@ void drone_ai_run (edict_t *self, float dist)
 		return;
 	}
 
+
 	if (drone_ValidChaseTarget(self, self->enemy))
 	{
 		if ((self->monsterinfo.aiflags & AI_COMBAT_POINT) && !self->enemy->takedamage)
 		{
-			if (!drone_findtarget(self) && (entdist(self, self->enemy) <= 64))
+			if (!drone_findtarget(self, false) && (entdist(self, self->enemy) <= 64))
 			{
 				// the goal is a navi
 				if (self->enemy->mtype == INVASION_NAVI) 
 				{
 					edict_t *e;
-					
+
 					// we're close enough to this navi; follow the next one in the chain
 					if (self->enemy->target && self->enemy->targetname &&
 						((e = G_Find(NULL, FOFS(targetname), self->enemy->target)) != NULL))
 					{
-						gi.dprintf("following next navi in chain\n");
+						//gi.dprintf("following next navi in chain\n");
 						self->enemy = e;
 					}
 					else
@@ -1792,7 +1800,7 @@ void drone_ai_run (edict_t *self, float dist)
 						// we've reached our final destination
 						drone_cleargoal(self);
 						self->monsterinfo.aiflags &= ~AI_FIND_NAVI;
-						gi.dprintf("reached final destination\n");
+						//gi.dprintf("reached final destination\n");
 						return;
 					}
 				}
@@ -1806,7 +1814,9 @@ void drone_ai_run (edict_t *self, float dist)
 			}
 		}
 
+
 		drone_ai_checkattack(self); // try attacking
+
 
 		// constantly update the last place we remember
 		// seeing our enemy
@@ -1817,6 +1827,7 @@ void drone_ai_run (edict_t *self, float dist)
 			self->monsterinfo.teleport_delay = level.time + DRONE_TELEPORT_DELAY; // teleport delay
 			self->monsterinfo.search_frames = 0;
 			enemy_vis = true;
+
 
 			// circle-strafe our target if we are close
 			if ((entdist(self, self->enemy) < 256) 
@@ -1832,13 +1843,14 @@ void drone_ai_run (edict_t *self, float dist)
 			if ((self->monsterinfo.aiflags & AI_FIND_NAVI) && self->enemy->takedamage)
 			{
 				//gi.dprintf("can't see %s, trying another target...", self->enemy->classname);
-				
+
 				// save current target
 				self->oldenemy = self->enemy;
 				self->enemy = NULL; // must be cleared to find navi
 
+
 				// try to find a new target
-				if (drone_findtarget(self))
+				if (drone_findtarget(self, false))
 				{
 					//gi.dprintf("found %s!\n", self->enemy->classname);
 					drone_ai_checkattack(self);
@@ -1852,30 +1864,33 @@ void drone_ai_run (edict_t *self, float dist)
 				}
 			}
 
+
 			// drones give up if they can't reach their enemy
 			if (!self->enemy || (self->monsterinfo.search_frames > DRONE_SEARCH_TIMEOUT))
 			{
 				//gi.dprintf("drone gave up\n");
 
+
 				self->enemy = NULL;
 				self->oldenemy = NULL;
 				self->goalentity = NULL;
 
+
 				//self->monsterinfo.aiflags &= ~AI_COMBAT_POINT;
+
 
 				if (!self->monsterinfo.melee)
 					self->monsterinfo.aiflags  &= ~AI_NO_CIRCLE_STRAFE;
-				
-				if (self->monsterinfo.walk)
-					self->monsterinfo.walk(self);
-				else
-					self->monsterinfo.stand(self);
+
+
+				self->monsterinfo.stand(self);
 				self->monsterinfo.search_frames = 0;
 				return;
 			}
 			self->monsterinfo.search_frames++;
 			//gi.dprintf("%d\n", self->monsterinfo.search_frames);
 		}
+
 
 		if (dist < 1)
 		{
@@ -1885,12 +1900,13 @@ void drone_ai_run (edict_t *self, float dist)
 			return;
 		}
 
+
 		// if we are on a platform going up, wait around until we've reached the top
 		if (self->groundentity && (self->monsterinfo.aiflags & AI_PURSUE_PLAT_GOAL)
 			&& (self->groundentity->style == FUNC_PLAT) 
 			&& (self->groundentity->moveinfo.state == STATE_UP)) 
 		{
-		//	gi.dprintf("standing on plat!\n");
+			//      gi.dprintf("standing on plat!\n");
 			// divide by speed to get time to reach destination
 			time = 0.1 * (abs(self->groundentity->s.origin[2]) / self->groundentity->moveinfo.speed);
 			self->monsterinfo.pausetime = level.time + time;
@@ -1898,6 +1914,7 @@ void drone_ai_run (edict_t *self, float dist)
 			self->monsterinfo.aiflags &= ~AI_PURSUE_PLAT_GOAL;
 			return;
 		}
+
 
 		// if we're stuck, then follow new course
 		if (self->monsterinfo.bump_delay > level.time)
@@ -1907,11 +1924,21 @@ void drone_ai_run (edict_t *self, float dist)
 			return;
 		}
 
+
 		// we're following a temporary goal
 		if (self->movetarget && self->movetarget->inuse)
 		{
+			/*
+			gi.WriteByte (svc_temp_entity);
+			gi.WriteByte (TE_BFG_LASER);
+			gi.WritePosition (self->s.origin);
+			gi.WritePosition (self->movetarget->s.origin);
+			gi.multicast (self->s.origin, MULTICAST_PHS);
+			*/
+
 			// pursue the movetarget
 			M_MoveToGoal(self, dist);
+
 
 			// occasionally, a monster will bump to a better course
 			// than the one he was previously following
@@ -1937,18 +1964,29 @@ void drone_ai_run (edict_t *self, float dist)
 			}
 		}
 		else
-		{	
+		{       
+			// we don't already have a goal, make the enemy our goal
+			self->goalentity = self->enemy;
 
-				// we don't already have a goal, make the enemy our goal
-				self->goalentity = self->enemy;
 
 			// pursue enemy if he's visible, otherwise pursue the last place
 			// he was seen if we haven't already been there
 			if (!enemy_vis)
 			{
+				/*
+				if (level.time > self->monsterinfo.teleport_delay)
+				{
+				VectorSubtract(self->enemy->s.origin, self->s.origin, v);
+				VectorNormalize(v);
+				TeleportForward(self, v, 512);
+				self->monsterinfo.teleport_delay = level.time + DRONE_TELEPORT_DELAY;
+				}
+				*/
+
+
 				if (!(self->monsterinfo.aiflags & AI_LOST_SIGHT))
 					self->monsterinfo.aiflags |= (AI_LOST_SIGHT|AI_PURSUIT_LAST_SEEN);
-				
+
 				if (self->monsterinfo.aiflags & AI_PURSUIT_LAST_SEEN)
 				{
 					VectorCopy(self->monsterinfo.last_sighting, start);
@@ -1970,9 +2008,10 @@ void drone_ai_run (edict_t *self, float dist)
 					}
 				}
 			}
-			
+
 			// go get him!
 			drone_pursue_goal(self, dist);
+
 
 			if (tempgoal)
 				G_FreeEdict(tempgoal);
@@ -1980,13 +2019,9 @@ void drone_ai_run (edict_t *self, float dist)
 	}
 	else
 	{
-	//	gi.dprintf("stand was called because monster has no valid target!\n");
-		if (self->monsterinfo.walk)
-			self->monsterinfo.walk(self);
-		else
-			self->monsterinfo.stand(self);
+		//      gi.dprintf("stand was called because monster has no valid target!\n");
+		self->monsterinfo.stand(self);
 	}
-	*/
 }				
 
 void drone_togglelight (edict_t *self)

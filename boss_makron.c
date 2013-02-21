@@ -10,21 +10,6 @@
 #define MAKRON_FRAMES_BFG_START		18
 #define MAKRON_FRAMES_BFG_END		26//30
 
-#define MAKRON_MAXVELOCITY			200
-
-#define MAKRON_INITIAL_HEALTH		0
-#define MAKRON_ADDON_HEALTH			2500
-#define MAKRON_INITIAL_ARMOR		0
-#define MAKRON_ADDON_ARMOR			2500
-#define MAKRON_CG_INITIAL_DAMAGE	30
-#define MAKRON_CG_ADDON_DAMAGE		3
-#define MAKRON_BFG_INITIAL_DAMAGE	30
-#define MAKRON_BFG_ADDON_DAMAGE		2
-#define MAKRON_BFG_DELAY			0.8
-#define MAKRON_BFG_SPEED			950
-#define MAKRON_BFG_RADIUS			256
-#define MAKRON_TOUCH_DAMAGE			100
-
 void boss_makron_stepleft (edict_t *self)
 {
 	gi.sound (self, CHAN_BODY, gi.soundindex ("boss3/step1.wav"), 1, ATTN_NORM, 0);

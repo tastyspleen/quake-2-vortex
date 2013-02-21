@@ -19,8 +19,8 @@
 // *********************************
 
 #define DEFAULT_DATABASE "127.0.0.1"
-#define MYSQL_PW ""
-#define MYSQL_USER "root"
+#define MYSQL_PW "vortex_default_password"
+#define MYSQL_USER "vortex_user"
 #define MYSQL_DBNAME "vrxcl"
 
 /* 
@@ -1398,14 +1398,33 @@ void CreateProcessQueue()
 qboolean V_GDS_StartConn()
 {
 	int rc;
+	char* database, *user, *pw, *dbname;
+
 	gi.dprintf("DB: Initializing connection... ");
 
 	gds_singleserver = gi.cvar("gds_single", "1", 0); // default to a single server using sql.
 
+	database = Lua_GetStringSetting("dbaddress");
+	user = Lua_GetStringSetting("username");
+	pw = Lua_GetStringSetting("dbpass");
+	dbname = Lua_GetStringSetting("databasename");
+
+	if (!database)
+		database = DEFAULT_DATABASE;
+
+	if (!user)
+		user = MYSQL_USER;
+
+	if (!pw)
+		pw = MYSQL_PW;
+
+	if (!dbname)
+		dbname = MYSQL_DBNAME;
+
 	if (!GDS_MySQL)
 	{
 		GDS_MySQL = mysql_init(NULL);
-		if (mysql_real_connect(GDS_MySQL, DEFAULT_DATABASE, MYSQL_USER, MYSQL_PW, MYSQL_DBNAME, 0, NULL, 0) == NULL)
+		if (mysql_real_connect(GDS_MySQL, database, user, pw, , 0, NULL, 0) == NULL)
 		{
 			gi.dprintf("Failure: %s\n", mysql_error(GDS_MySQL));
 			mysql_close(GDS_MySQL);

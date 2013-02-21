@@ -88,6 +88,7 @@ typedef struct
 	int				goal_node;
 	int				next_node;
 	int				node_timeout;
+	int				lrgoal_node;
 
 	int				tries;
 

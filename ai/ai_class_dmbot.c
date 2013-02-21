@@ -258,9 +258,9 @@ void BOT_DMclass_Wander(edict_t *self, usercmd_t *ucmd)
 		self->s.angles[YAW] += random() * 180 - 90;
  
 		if (!self->ai.is_step)// if there is ground continue otherwise wait for next move
-			ucmd->forwardmove = 0; //0
+			AI_ResetNavigation(self);
 		else if( AI_CanMove( self, BOT_MOVE_FORWARD))
-			ucmd->forwardmove = 100;
+			ucmd->forwardmove = 400;
 
 		return;
 	}
@@ -268,9 +268,12 @@ void BOT_DMclass_Wander(edict_t *self, usercmd_t *ucmd)
 
 	// Otherwise move slowly, walking wondering what's going on
 	if( AI_CanMove( self, BOT_MOVE_FORWARD))
-		ucmd->forwardmove = 100;
+		ucmd->forwardmove = 400;
 	else
-		ucmd->forwardmove = -100;
+	{
+		AI_PickLongRangeGoal( self );
+		ucmd->forwardmove = -400;
+	}
 }
 
 
@@ -381,7 +384,7 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 		if (OnSameTeam(AIEnemies[i], self)) // vortex chile 3.0
 			continue;
 
-		if( !AIEnemies[i]->deadflag && visible1(self, AIEnemies[i]))
+		if( !AIEnemies[i]->deadflag && gi.inPVS(self->s.origin, AIEnemies[i]->s.origin))
 		{
 			//(weight enemies from fusionbot) Is enemy visible, or is it too close to ignore 
 			VectorSubtract(self->s.origin, AIEnemies[i]->s.origin, dist);
@@ -420,8 +423,11 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 //			self->ai.pers.netname,
 //			bestenemy->ai.pers.netname);
 
-		self->enemy = bestenemy;
-		return true;
+		if (bestenemy->takedamage != DAMAGE_NO && !strstr(bestenemy->classname,"tech_"))
+		{
+			self->enemy = bestenemy;
+			return true;
+		}
 	}
 
 	return false;	// NO enemy
@@ -788,7 +794,7 @@ void BOT_DMclass_WeightInventory(edict_t *self)
 	//weight weapon down if bot already has it
 	for (i=0; i<WEAP_TOTAL; i++) {
 		if ( AIWeapons[i].weaponItem && client->pers.inventory[ITEM_INDEX(AIWeapons[i].weaponItem)])
-			self->ai.status.inventoryWeights[ITEM_INDEX(AIWeapons[i].weaponItem)] *= LowNeedFactor;
+			self->ai.status.inventoryWeights[ITEM_INDEX(AIWeapons[i].weaponItem)] = 0;
 	}
 
 	//ARMOR

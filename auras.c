@@ -1,17 +1,5 @@
 #include "g_local.h"
 
-#define DEFAULT_AURA_COST			2		// power cube cost to maintain aura
-#define DEFAULT_AURA_INIT_COST		25		// power cube cost to start aura
-#define DEFAULT_AURA_FRAMES			10		// check aura cost every few frames
-#define DEFAULT_AURA_MIN_RADIUS		56		// minimum radius for aura
-#define DEFAULT_AURA_ADDON_RADIUS	25		// per level addon for aura radius
-#define DEFAULT_AURA_MAX_RADIUS		512		// maximum radius for aura
-#define DEFAULT_AURA_SCAN_FRAMES	5		// check for targets every few frames
-#define DEFAULT_AURA_DURATION		2		// duration of aura after target is out of range
-#define DEFAULT_AURA_DELAY			0.5		// ability delay
-
-#define MAX_AURAS					3	
-
 /*
 =============
 CheckAuraOwner

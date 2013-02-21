@@ -9,16 +9,6 @@
 #define MUTANT_FRAMES_SWING_END		14
 #define MUTANT_FRAMES_JUMP			4
 
-#define MUTANT_DELAY				1
-#define MUTANT_INIT_COST			50
-#define MUTANT_SWING_RANGE			64
-#define MUTANT_INITIAL_SWING_DMG	100	// refire rate is 4 attacks per second
-#define MUTANT_ADDON_SWING_DMG		15
-#define MUTANT_JUMPATTACK_VELOCITY	0 // minimum velocity required to inflict damage
-#define MUTANT_JUMPATTACK_DELAY		5 // cooldown/frames before next attack
-#define MUTANT_INITIAL_JUMP_DMG		100
-#define MUTANT_ADDON_JUMP_DMG		15
-#define MUTANT_JUMPATTACK_RADIUS	68
 
 qboolean curse_add(edict_t *target, edict_t *caster, int type, int curse_level, float duration);
 

@@ -10,7 +10,7 @@ INFANTRY
 #include "m_infantry.h"
 
 void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run1 (edict_t *self, float dist);
+void drone_ai_run (edict_t *self, float dist);
 void drone_ai_walk (edict_t *self, float dist);
 
 void InfantryMachineGun (edict_t *self);
@@ -150,14 +150,14 @@ void infantry_walk (edict_t *self)
 
 mframe_t infantry_frames_run [] =
 {
-	drone_ai_run1, 25, NULL,
-	drone_ai_run1, 25, NULL,
-	drone_ai_run1, 25,  NULL,
-	drone_ai_run1, 25,  NULL,
-	drone_ai_run1, 25, NULL,
-	drone_ai_run1, 25, NULL,
-	drone_ai_run1, 25,  NULL,
-	drone_ai_run1, 25,  NULL
+	drone_ai_run, 25, NULL,
+	drone_ai_run, 25, NULL,
+	drone_ai_run, 25,  NULL,
+	drone_ai_run, 25,  NULL,
+	drone_ai_run, 25, NULL,
+	drone_ai_run, 25, NULL,
+	drone_ai_run, 25,  NULL,
+	drone_ai_run, 25,  NULL
 };
 mmove_t infantry_move_run = {FRAME_run01, FRAME_run08, infantry_frames_run, NULL};
 

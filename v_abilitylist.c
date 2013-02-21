@@ -18,13 +18,13 @@ abildefinition_t GENERAL_abil[] = {
 	{ PIERCING_RESIST   , 0 , 1                 , 1  },
 	{ ENERGY_RESIST     , 0 , 1                 , 1  },*/
 	{ SCANNER           , 0 , 1                 , 1  },
+	{ HA_PICKUP         , 0 , DEFAULT_SOFTMAX   , 1  },
 	{-1, 0, 0, 0} // Guardian (Add skills above this)
 };
 
 abildefinition_t SOLDIER_abil[] = {
 	{ STRENGTH          , 0 , INCREASED_SOFTMAX , 0  },
 	{ RESISTANCE        , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ HA_PICKUP         , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ NAPALM            , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ SPIKE_GRENADE     , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ EMP               , 0 , DEFAULT_SOFTMAX   , 0  },
@@ -33,7 +33,6 @@ abildefinition_t SOLDIER_abil[] = {
 	{ CREATE_INVIN      , 0 , 1                 , 0  },*/
 	{ GRAPPLE_HOOK      , 3 , 3                 , 0  },
 	{ SELFDESTRUCT      , 0 , DEFAULT_SOFTMAX   , 0  },
-	{ HA_PICKUP         , 1 , DEFAULT_SOFTMAX   , 0  },
 	{ PROXY             , 0 , DEFAULT_SOFTMAX   , 0  },
 	// { AMNESIA           , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ MAGMINE           , 0 , DEFAULT_SOFTMAX   , 0  },

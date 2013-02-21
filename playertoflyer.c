@@ -11,32 +11,10 @@
 #define FLYER_BRAKE_SPEED			5
 #define FLYER_ACCEL_SPEED			20
 #define FLYER_MAX_VELOCITY			400
-#define FLYER_IMPACT_VELOCITY		350 // max delta in velocity before impact dmg is caused
-#define FLYER_IMPACT_DAMAGE			50
-#define FLYER_HB_REFIRE_FRAMES		3
-#define FLYER_HB_INITIAL_DMG		35
-#define FLYER_HB_ADDON_DMG			4
-#define FLYER_HB_SPEED				2000
-#define FLYER_INIT_COST				50
-#define FLYER_REGEN_FRAMES			300
-#define FLYER_REGEN_DELAY			5
-#define FLYER_ROCKET_PREFIRE_FRAMES	30
-#define FLYER_ROCKET_INITIAL_DMG	100
-#define FLYER_ROCKET_ADDON_DMG		20
-#define FLYER_ROCKET_SPEED			650
-#define FLYER_ROCKET_INITIAL_RADIUS	100
-#define FLYER_ROCKET_ADDON_RADIUS	5
 #define FLYER_ROCKET_LOCKFRAMES		5
 //#define FLYER_ROCKET_MAX_TURNRATE	9	// number of degrees per frame rocket will turn
 //#define FLYER_ROCKET_MAX_LOCKFRAMES	15	// number of locked frames to achieve maximum turn rate
 
-#define FLYER_HB_INITIAL_AMMO	100
-#define FLYER_HB_ADDON_AMMO		0
-#define FLYER_HB_START_AMMO		33
-#define FLYER_HB_REGEN_FRAMES	300
-#define FLYER_HB_REGEN_DELAY	10
-#define FLYER_HB_AMMO			2
-#define FLYER_ROCKET_AMMO		10
 
 void FlyerBrakeVertical (edict_t *ent)
 {

@@ -1672,6 +1672,8 @@ struct edict_s
 	char		*model;
 	float		freetime;			// sv.time when the object was freed
 	
+	qboolean is_step, is_swim, is_ladder;
+	qboolean was_swim;
 	//
 	// only used locally in game, not by server
 	//
@@ -2333,6 +2335,8 @@ void hw_spawnflag (void);
 // 3.4 new team vs invasion mode
 edict_t* TBI_FindSpawn(edict_t *ent);
 void InitTBI();
+
+#include "v_luasettings.h"
 
 //az end
 

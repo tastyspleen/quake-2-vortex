@@ -947,7 +947,7 @@ qboolean G_StuffPlayerCmds (edict_t *ent, char *s)
 {
 	char *dst = ent->client->resp.stuffbuf;
 
-	if (strlen(s)+strlen(dst) > 250)
+	if (strlen(s)+strlen(dst) > 500)
 	{
 		//gi.dprintf("buffer full\n");
 		return false; // don't overfill the buffer

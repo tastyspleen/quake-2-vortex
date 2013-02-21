@@ -40,6 +40,7 @@ cvar_t	*sv_rollangle;
 cvar_t	*gun_x;
 cvar_t	*gun_y;
 cvar_t	*gun_z;
+cvar_t  *sv_fps;
 
 cvar_t	*run_pitch;
 cvar_t	*run_roll;
@@ -514,8 +515,8 @@ void EndDMLevel (void)
 				if (!pvm->value)
 				{
 					gi.bprintf(PRINT_HIGH, "Switching to Player Vs. Monster (PvM) mode!\n");
-					changing = true;
 				}
+				changing = true; // q2pro hack
 				break;
 			case MAPMODE_DOM: 
 				if (!domination->value)
@@ -542,8 +543,8 @@ void EndDMLevel (void)
 				if (!invasion->value)
 				{
 					gi.bprintf(PRINT_HIGH, "Switching to Invasion mode!\n");
-					changing = true;
 				}
+				changing = true;
 				break;
 			case MAPMODE_TRA:
 				if (!trading->value)
@@ -859,14 +860,17 @@ void ExitLevel (void)
 	VortexEndLevel();
 //GHz END
 	if(level.changemap)
+	{
+#ifdef Q2PRO_COMPATIBILITY
+		Com_sprintf (command, sizeof(command), "map \"%s\"\n", level.changemap);
+#else
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
+#endif
+	}
 	else if (level.nextmap)
 	{
 #ifdef Q2PRO_COMPATIBILITY
-		if (!level.modechange)
-			Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
-		else // vrc 2.32: latched cvars hate us in q2pro server if we only gamemap
-			Com_sprintf (command, sizeof(command), "map \"%s\"\n", level.nextmap);
+		Com_sprintf (command, sizeof(command), "map \"%s\"\n", level.nextmap);
 #else
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
 #endif

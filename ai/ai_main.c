@@ -170,7 +170,7 @@ qboolean AI_BotRoamForLRGoal(edict_t *self, int current_node)
 //	if(AIDevel.debugChased && bot_showlrgoal->value)
 //		G_PrintMsg (AIDevel.chaseguy, PRINT_HIGH, "%s: selected a bot roam of weight %f at node %d for LR goal.\n",self->ai.pers.netname, nav.broams[best_broam].weight, goal_node);
 
-	AI_SetGoal(self,goal_node);
+	AI_SetGoal(self,goal_node, true);
 
 	return true;
 }
@@ -322,7 +322,7 @@ void AI_PickLongRangeGoal(edict_t *self)
 //	if(goal_ent != NULL && AIDevel.debugChased && bot_showlrgoal->value)
 //		G_PrintMsg (AIDevel.chaseguy, PRINT_HIGH, "%s: selected a %s at node %d for LR goal.\n",self->ai.pers.netname, goal_ent->classname, goal_node);
 
-	AI_SetGoal(self,goal_node);
+	AI_SetGoal(self,goal_node, true);
 }
 
 
@@ -337,6 +337,7 @@ void AI_PickShortRangeGoal(edict_t *self)
 	edict_t *target;
 	float	weight,best_weight=0.0;
 	edict_t *best = NULL;
+	float disttolr = 8192;
 
 	if( !self->client )
 		return;
@@ -365,9 +366,25 @@ void AI_PickShortRangeGoal(edict_t *self)
 		
 		if (AI_ItemIsReachable(self,target->s.origin))
 		{
-			if (infront(self, target))
+			//if (infront(self, target))
 			{
 				weight = AI_ItemWeight(self, target);
+
+				// We now modify the weight for proximity to LR goal.
+
+				if (self->ai.lrgoal_node != INVALID)
+				{
+					if (AI_Distance(target->s.origin, nodes[self->ai.lrgoal_node].origin) < disttolr)
+						disttolr = AI_Distance(target->s.origin, nodes[self->ai.lrgoal_node].origin);
+
+					weight *= (1 / disttolr) * 2;
+				}
+				
+				if(weight > best_weight)
+				{
+					best_weight = weight;
+					best = target;
+				}
 				
 				if(weight > best_weight)
 				{

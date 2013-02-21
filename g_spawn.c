@@ -752,6 +752,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 	AI_NewMap();//JABot
 
+	RunLuaMapSettings(mapname);
 
 	G_FindTeams ();
 
@@ -763,7 +764,10 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	InitMonsterEntity(false);
 	PrintNumEntities(false);
 	SpawnWorldAmmo();
-	CreateGrid(false);
+
+	if (Lua_GetIntSetting("UsePathfinding") > 0)
+		CreateGrid(false);
+
 //GHz END
 
 	if (invasion->value)
@@ -880,7 +884,7 @@ char *dm_statusbar =
 
 // health
 "xl	24 "
-"hnum "
+"num 4 1 "
 
 // ammo
 "if 2 "
@@ -1030,9 +1034,9 @@ char *dm_statusbar =
 "yb -56 "
 "string \"Cubes\" "
 
-"xr -50 "
+"xr -68 "
 "yb -48 "
-"num 3 28 "
+"num 4 28 "
 /*
 //print out our current level
 "xr -25 "
