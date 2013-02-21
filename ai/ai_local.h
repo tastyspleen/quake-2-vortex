@@ -131,7 +131,7 @@ qboolean	AI_IsStep (edict_t *ent);
 //----------------------------------------------------------
 int			AI_FindCost(int from, int to, int movetypes);
 int			AI_FindClosestReachableNode( vec3_t origin, edict_t *passent, int range, int flagsmask );
-void		AI_SetGoal(edict_t *self, int goal_node);
+void		AI_SetGoal(edict_t *self, int goal_node, qboolean LongRange);
 qboolean	AI_FollowPath(edict_t *self);
 
 

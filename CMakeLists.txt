@@ -13,6 +13,7 @@ option(VRX_ALLOW_ADMIN "Allow usage of admin commands via rcon/sv commands." TRU
 option(VRX_LOCKDEFAULTS "Disallow changing exp/credits rates via cvar." FALSE)
 option(VRX_REMOVERESPAWNS "Remove the usage of respawns." FALSE)
 option(VRX_USEHASH "Use hashing on commands instead of iterating through the list." TRUE)
+option(VRX_Q2PRO "Use map/gamemap differenciation (for q2pro)." TRUE)
 
 # Source files
 file (GLOB VRX_FILES ./*.c)
@@ -71,6 +72,10 @@ if (VRX_USEHASH)
   add_definitions(-DCMD_USEHASH)
 endif()
 
+if (VRX_Q2PRO)
+  add_definitions(-DQ2PRO_COMPATIBILITY)
+endif()
+
 if (VRX_ALLOW_ADMIN)
   add_definitions(-DALLOW_ADMIN)
 endif()
@@ -90,7 +95,7 @@ endif ()
 
 # If we're on windows. move it one step up.
 if (WIN32)
-  add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND mv ${CC_LIB_NAME}.dll ../${CC_LIB_NAME}.dll)
+  add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND move ${CC_LIB_NAME}.dll ../${CC_LIB_NAME}.dll)
 endif ()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

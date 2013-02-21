@@ -1,22 +1,5 @@
 #include "g_local.h"
 
-// carpet bomb
-#define	CARPETBOMB_INITIAL_DAMAGE	50	// level 0 damage of bomb spell
-#define CARPETBOMB_ADDON_DAMAGE		10	// per level addon damage
-#define CARPETBOMB_DAMAGE_RADIUS	100	// damage is inflicted within this radius
-//#define CARPETBOMB_ROOF_BUFFER		64	// used as a buffer for uneven ceilings
-#define CARPETBOMB_CARPET_WIDTH		128	// maximum width of our staggered bomb pattern
-#define CARPETBOMB_STEP_SIZE		128 // bombs will climb over obstacles this high
-#define CARPETBOMB_DURATION			2.0 // duration of spell (in seconds)
-// area bomb
-#define BOMBAREA_WIDTH				256	// maximum width of our bombed area
-#define BOMBAREA_FLOOR_HEIGHT		256	// maximum height of bombs aimed at floor
-#define BOMBAREA_DURATION			5	// duration of spell effects (in seconds)
-#define BOMBAREA_STARTUP_DELAY		1.5 // time before spell begins dropping bombs
-// person bomb
-#define BOMBPERSON_WIDTH			128	// maximum width of target area
-#define BOMBPERSON_DURATION			10	// duration of spell effects (in seconds)
-#define BOMBPERSON_RANGE			8192 // distance for bomb spell
 // misc
 #define CEILING_PITCH				90
 #define FLOOR_PITCH					270

@@ -70,6 +70,27 @@ qboolean AI_CanMove(edict_t *self, int direction)
 		return false;
 	}
 
+	// Try to not bump into a goddamn wall. -az
+
+	VectorSet(offset, 36, 0, 0);
+	G_ProjectSource (self->s.origin, offset, forward, right, start);
+
+	VectorSet(offset, 36, 65, 15);
+	G_ProjectSource (self->s.origin, offset, forward, right, end);
+
+	tr = gi.trace ( start, NULL, NULL, end, self, MASK_AISOLID );
+
+	if (tr.ent)
+	{
+		if (tr.ent->takedamage && tr.ent->solid != SOLID_NOT)
+			self->enemy = tr.ent;
+		return false;
+	}
+	if(tr.fraction != 1.0 || tr.contents & (CONTENTS_SOLID))
+	{
+		return false;
+	}
+
 	return true;// yup, can move
 }
 

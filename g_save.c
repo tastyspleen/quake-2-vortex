@@ -204,10 +204,16 @@ void InitGame (void)
 	savemethod = gi.cvar ("savemethod", "0", 0);
 	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
 
+#ifdef Q2PRO_COMPATIBILITY
+	gi.cvar_forceset("sv_allow_map", "2");
+#endif
+
+	InitLuaSettings();
+
 	// Before anything else, prepare TagMalloc's mutexes and a mysql connection
 	if (savemethod->value == 2)
 	{
-#if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
+#if (!defined NO_GDS)
 		V_GDS_StartConn(); // start connection to db
 #else
 		gi.dprintf("This server does not support MySQL. Forcing offline saving via SQLite.\n");
@@ -237,6 +243,8 @@ void InitGame (void)
 	gun_x = gi.cvar ("gun_x", "0", 0);
 	gun_y = gi.cvar ("gun_y", "0", 0);
 	gun_z = gi.cvar ("gun_z", "0", 0);
+
+	//sv_fps = gi.cvar("sv_fps", "30", CVAR_LATCH);
 
 	//FIXME: sv_ prefix is wrong for these
 	sv_rollspeed = gi.cvar ("sv_rollspeed", "200", 0);

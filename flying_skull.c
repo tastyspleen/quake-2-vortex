@@ -1,21 +1,5 @@
 #include "g_local.h"
 
-#define SKULL_INITIAL_HEALTH		200		// starting health
-#define SKULL_ADDON_HEALTH			30		// per level add-on health
-#define SKULL_INITIAL_DAMAGE		10
-#define SKULL_ADDON_DAMAGE			2
-#define SKULL_TARGET_RANGE			1024	// target searching range
-#define SKULL_MAX_RANGE				1024	// maximum distance between activator and enemy
-#define SKULL_MOVE_HORIZONTAL_SPEED	35
-#define SKULL_MOVE_VERTICAL_SPEED	35
-#define SKULL_MAX_DIST				96		// must be > 83 (vertical distance 48 + speed 35)
-#define SKULL_HEIGHT				48
-#define SKULL_ATTACK_RANGE			128
-#define SKULL_COST					100
-#define SKULL_REGEN_FRAMES			100
-#define SKULL_DELAY					2
-#define SKULL_SEARCH_TIMEOUT		100
-
 #define SKULL_FRAMES_ATTACK_START	10
 #define SKULL_FRAMES_ATTACK_END		14
 #define SKULL_FRAMES_IDLE_START		0

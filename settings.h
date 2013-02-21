@@ -10,7 +10,53 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "4.0"
+#define VRX_VERSION "4.1"
+
+//4.5 player combat preferences
+#define HOSTILE_PLAYERS				0x00000001			
+#define HOSTILE_MONSTERS			0x00000002
+
+//3.0 Special Flags
+#define SFLG_NONE					0x00000000
+#define SFLG_MATRIXJUMP				0x00000001
+#define SFLG_UNDERWATER				0x00000002
+#define SFLG_PARTIAL_INWATER		0x00000004
+#define SFLG_AUTO_TBALLED			0x00000008
+#define SFLG_DOUBLEJUMP				0x00000010
+
+//Other flag combinations
+#define SFLG_TOUCHING_WATER		SFLG_UNDERWATER | SFLG_PARTIAL_INWATER
+
+//Matrix jump
+#define MJUMP_VELOCITY				350
+#define MJUMP_GRAVITY_MULT			2.5
+
+// Cheat Stuff
+#define CLIENT_GL_MODULATE			1
+#define CLIENT_GL_DYNAMIC			2
+#define CLIENT_SW_DRAWFLAT			3
+#define CLIENT_GL_SHOWTRIS			4
+#define	CLIENT_R_FULLBRIGHT			5
+#define CLIENT_TIMESCALE			6
+#define CLIENT_GL_LIGHTMAP			7
+#define	CLIENT_GL_SATURATELIGHTING	8
+#define	CLIENT_R_DRAWFLAT			9
+#define	CLIENT_CL_TESTLIGHTS		10
+#define	CLIENT_FIXEDTIME			11
+
+// class numbers
+#define CLASS_SOLDIER			1
+#define CLASS_DEMON				2
+#define CLASS_ENGINEER			3
+#define CLASS_PALADIN			4
+#define CLASS_ARCANIST			5
+#define CLASS_POLTERGEIST		6
+#define CLASS_WEAPONMASTER		7
+
+#define CLASS_MAX				7		//Number of classes to choose from
+
+/* Start Game Specific Values Ahead */
+
 
 #define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
 
@@ -92,11 +138,8 @@ const char* Time();
 #define INITIAL_HEALTH_VAMPIRE		130
 #define INITIAL_HEALTH_POLTERGEIST	125
 #define INITIAL_HEALTH_KNIGHT		110
-#define INITIAL_HEALTH_CLERIC		90
 #define INITIAL_HEALTH_MAGE			100
 #define INITIAL_HEALTH_WEAPONMASTER	85
-#define INITIAL_HEALTH_SHAMAN		90
-#define INITIAL_HEALTH_ALIEN		105
 
 #define LEVELUP_HEALTH_SOLDIER		2
 #define LEVELUP_HEALTH_NECROMANCER	1
@@ -549,48 +592,6 @@ const char* Time();
 #define ARMORY_QTY_FIRE_RESIST		25
 #define ARMORY_QTY_AUTO_TBALL		3
 
-//4.5 player combat preferences
-#define HOSTILE_PLAYERS				0x00000001			
-#define HOSTILE_MONSTERS			0x00000002
-
-//3.0 Special Flags
-#define SFLG_NONE					0x00000000
-#define SFLG_MATRIXJUMP				0x00000001
-#define SFLG_UNDERWATER				0x00000002
-#define SFLG_PARTIAL_INWATER		0x00000004
-#define SFLG_AUTO_TBALLED			0x00000008
-#define SFLG_DOUBLEJUMP				0x00000010
-
-//Other flag combinations
-#define SFLG_TOUCHING_WATER		SFLG_UNDERWATER | SFLG_PARTIAL_INWATER
-
-//Matrix jump
-#define MJUMP_VELOCITY				350
-#define MJUMP_GRAVITY_MULT			2.5
-
-// Cheat Stuff
-#define CLIENT_GL_MODULATE			1
-#define CLIENT_GL_DYNAMIC			2
-#define CLIENT_SW_DRAWFLAT			3
-#define CLIENT_GL_SHOWTRIS			4
-#define	CLIENT_R_FULLBRIGHT			5
-#define CLIENT_TIMESCALE			6
-#define CLIENT_GL_LIGHTMAP			7
-#define	CLIENT_GL_SATURATELIGHTING	8
-#define	CLIENT_R_DRAWFLAT			9
-#define	CLIENT_CL_TESTLIGHTS		10
-#define	CLIENT_FIXEDTIME			11
-
-// class numbers
-#define CLASS_SOLDIER			1
-#define CLASS_DEMON				2
-#define CLASS_ENGINEER			3
-#define CLASS_PALADIN			4
-#define CLASS_ARCANIST			5
-#define CLASS_POLTERGEIST		6
-#define CLASS_WEAPONMASTER		7
-
-#define CLASS_MAX				7		//Number of classes to choose from
 
 //Trade stuff
 #define TRADE_MAX_DISTANCE		512		//Trade distance
@@ -651,5 +652,303 @@ const char* Time();
 #define CRIPPLE_MAX_DAMAGE		500
 
 #define TELEPORT_COST	20
+
+#define PLAYERSPAWN_REGEN_FRAMES		800
+#define PLAYERSPAWN_REGEN_DELAY			10
+#define PLAYERSPAWN_HEALTH				2500
+
+#define INVASION_BONUS_EXP				10000
+#define INVASION_BONUS_CREDITS			10000
+
+
+
+#define SHAMAN_CURSE_RADIUS_BASE	512
+#define SHAMAN_CURSE_RADIUS_BONUS	0
+
+#define CURSE_DEFAULT_INITIAL_RADIUS	256
+#define CURSE_DEFAULT_ADDON_RADIUS		0
+#define CURSE_DEFAULT_INITIAL_RANGE		512
+#define CURSE_DEFAULT_ADDON_RANGE		0
+
+//************************************************************
+//			Mind Absorb (passive skill)
+//************************************************************
+#define MIND_ABSORB_RADIUS_BASE		256
+#define MIND_ABSORB_RADIUS_BONUS	0
+#define MIND_ABSORB_AMOUNT_BASE		0
+#define MIND_ABSORB_AMOUNT_BONUS	10
+//************************************************************
+//			Lower Resist (Curse)
+//************************************************************
+#define LOWER_RESIST_INITIAL_RANGE			512
+#define LOWER_RESIST_ADDON_RANGE			0
+#define LOWER_RESIST_INITIAL_RADIUS			256
+#define LOWER_RESIST_ADDON_RADIUS			0
+#define LOWER_RESIST_INITIAL_DURATION		0
+#define LOWER_RESIST_ADDON_DURATION			1.0
+#define LOWER_RESIST_COST					50
+#define LOWER_RESIST_DELAY					1.0
+#define LOWER_RESIST_INITIAL_FACTOR			0.25
+#define LOWER_RESIST_ADDON_FACTOR			0.025
+//************************************************************
+//			Amp Damage (Curse)
+//************************************************************
+#define AMP_DAMAGE_DELAY			2
+#define AMP_DAMAGE_DURATION_BASE	0
+#define AMP_DAMAGE_DURATION_BONUS	1.0
+#define AMP_DAMAGE_COST				50
+#define AMP_DAMAGE_MULT_BASE		1.5
+#define AMP_DAMAGE_MULT_BONUS		0.1
+//************************************************************
+//			Weaken (Curse)
+// Weaken causes target to take extra damage, deal less damage
+// and slows them down
+//************************************************************
+#define WEAKEN_DELAY			2
+#define WEAKEN_DURATION_BASE	0
+#define WEAKEN_DURATION_BONUS	1.0
+#define WEAKEN_COST				50
+#define WEAKEN_MULT_BASE		1.25
+#define WEAKEN_MULT_BONUS		0.025
+#define WEAKEN_SLOW_BASE		0
+#define WEAKEN_SLOW_BONUS		0.1
+//************************************************************
+//			Life Drain (Curse)
+//************************************************************
+#define LIFE_DRAIN_DELAY			2
+#define LIFE_DRAIN_COST				50
+#define LIFE_DRAIN_HEALTH			10
+#define LIFE_DRAIN_DURATION_BASE	0
+#define LIFE_DRAIN_DURATION_BONUS	1.0
+#define LIFE_DRAIN_RANGE			256
+#define LIFE_DRAIN_UPDATETIME		1.0
+//************************************************************
+//			Amnesia (Curse)
+//************************************************************
+#define AMNESIA_DELAY			2
+#define AMNESIA_DURATION_BASE	0
+#define AMNESIA_DURATION_BONUS	2
+#define AMNESIA_COST			50
+//************************************************************
+//			Curse (Curse)
+//************************************************************
+#define CURSE_DELAY				2
+#define CURSE_DURATION_BASE		0
+#define CURSE_DURATION_BONUS	1
+#define CURSE_COST				25
+//************************************************************
+//			Healing (Blessing)
+//************************************************************
+#define HEALING_DELAY			2
+#define HEALING_DURATION_BASE	10.5	//allow for 10 "ticks"
+#define HEALING_DURATION_BONUS	0
+#define HEALING_COST			50
+#define HEALING_HEAL_BASE		0
+#define HEALING_HEAL_BONUS		1
+//************************************************************
+//			Bless (Blessing)
+//************************************************************
+#define BLESS_DELAY				0
+#define BLESS_DURATION_BASE		0
+#define BLESS_DURATION_BONUS	0.5
+#define BLESS_COST				50
+#define BLESS_BONUS				1.5		//Damage / Defense
+#define BLESS_MAGIC_BONUS		1.5
+//************************************************************
+//			Deflect (Blessing)
+//************************************************************
+#define DEFLECT_INITIAL_DURATION			0
+#define DEFLECT_ADDON_DURATION				1.0	
+#define DEFLECT_COST						50
+#define DEFLECT_DELAY						2.0
+#define DEFLECT_INITIAL_HITSCAN_CHANCE		0.1
+#define DEFLECT_ADDON_HITSCAN_CHANCE		0.023
+#define DEFLECT_INITIAL_PROJECTILE_CHANCE	0.1
+#define DEFLECT_ADDON_PROJECTILE_CHANCE		0.023
+#define DEFLECT_MAX_PROJECTILE_CHANCE		0.33
+#define DEFLECT_MAX_HITSCAN_CHANCE			0.33
+#define DEFLECT_HITSCAN_ABSORB_BASE			1.0
+#define DEFLECT_HITSCAN_ABSORB_ADDON		0
+#define DEFLECT_HITSCAN_ABSORB_MAX			1.0
+//************************************************************
+
+#define DEFAULT_AURA_COST			2		// power cube cost to maintain aura
+#define DEFAULT_AURA_INIT_COST		25		// power cube cost to start aura
+#define DEFAULT_AURA_FRAMES			10		// check aura cost every few frames
+#define DEFAULT_AURA_MIN_RADIUS		56		// minimum radius for aura
+#define DEFAULT_AURA_ADDON_RADIUS	25		// per level addon for aura radius
+#define DEFAULT_AURA_MAX_RADIUS		512		// maximum radius for aura
+#define DEFAULT_AURA_SCAN_FRAMES	5		// check for targets every few frames
+#define DEFAULT_AURA_DURATION		2		// duration of aura after target is out of range
+#define DEFAULT_AURA_DELAY			0.5		// ability delay
+
+#define MAX_AURAS					3	
+
+
+// carpet bomb
+#define	CARPETBOMB_INITIAL_DAMAGE	50	// level 0 damage of bomb spell
+#define CARPETBOMB_ADDON_DAMAGE		10	// per level addon damage
+#define CARPETBOMB_DAMAGE_RADIUS	100	// damage is inflicted within this radius
+//#define CARPETBOMB_ROOF_BUFFER		64	// used as a buffer for uneven ceilings
+#define CARPETBOMB_CARPET_WIDTH		128	// maximum width of our staggered bomb pattern
+#define CARPETBOMB_STEP_SIZE		128 // bombs will climb over obstacles this high
+#define CARPETBOMB_DURATION			2.0 // duration of spell (in seconds)
+// area bomb
+#define BOMBAREA_WIDTH				256	// maximum width of our bombed area
+#define BOMBAREA_FLOOR_HEIGHT		256	// maximum height of bombs aimed at floor
+#define BOMBAREA_DURATION			5	// duration of spell effects (in seconds)
+#define BOMBAREA_STARTUP_DELAY		1.5 // time before spell begins dropping bombs
+// person bomb
+#define BOMBPERSON_WIDTH			128	// maximum width of target area
+#define BOMBPERSON_DURATION			10	// duration of spell effects (in seconds)
+#define BOMBPERSON_RANGE			8192 // distance for bomb spell
+
+#define MAKRON_MAXVELOCITY			200
+
+#define MAKRON_INITIAL_HEALTH		0
+#define MAKRON_ADDON_HEALTH			2500
+#define MAKRON_INITIAL_ARMOR		0
+#define MAKRON_ADDON_ARMOR			2500
+#define MAKRON_CG_INITIAL_DAMAGE	30
+#define MAKRON_CG_ADDON_DAMAGE		3
+#define MAKRON_BFG_INITIAL_DAMAGE	30
+#define MAKRON_BFG_ADDON_DAMAGE		2
+#define MAKRON_BFG_DELAY			0.8
+#define MAKRON_BFG_SPEED			950
+#define MAKRON_BFG_RADIUS			256
+#define MAKRON_TOUCH_DAMAGE			100
+
+#define SKULL_INITIAL_HEALTH		200		// starting health
+#define SKULL_ADDON_HEALTH			30		// per level add-on health
+#define SKULL_INITIAL_DAMAGE		10
+#define SKULL_ADDON_DAMAGE			2
+#define SKULL_TARGET_RANGE			1024	// target searching range
+#define SKULL_MAX_RANGE				1024	// maximum distance between activator and enemy
+#define SKULL_MOVE_HORIZONTAL_SPEED	35
+#define SKULL_MOVE_VERTICAL_SPEED	35
+#define SKULL_MAX_DIST				96		// must be > 83 (vertical distance 48 + speed 35)
+#define SKULL_HEIGHT				48
+#define SKULL_ATTACK_RANGE			128
+#define SKULL_COST					100
+#define SKULL_REGEN_FRAMES			100
+#define SKULL_DELAY					2
+#define SKULL_SEARCH_TIMEOUT		100
+
+
+#define M_SOLDIER_INITIAL_HEALTH	50
+#define M_SOLDIER_ADDON_HEALTH		15
+#define M_SOLDIER_INITIAL_ARMOR		25
+#define M_SOLDIER_ADDON_ARMOR		15
+
+
+#define BERSERK_SLASH_INITIAL_DAMAGE	100
+#define BERSERK_SLASH_ADDON_DAMAGE		20
+#define BERSERK_SLASH_RANGE				96
+#define BERSERK_SLASH_KNOCKBACK			100
+
+#define BERSERK_PUNCH_INITIAL_DAMAGE	100
+#define BERSERK_PUNCH_ADDON_DAMAGE		20
+#define BERSERK_PUNCH_RANGE				64
+#define BERSERK_PUNCH_KNOCKBACK			100
+
+#define BERSERK_CRUSH_INITIAL_DAMAGE	100
+#define BERSERK_CRUSH_ADDON_DAMAGE		20
+#define BERSERK_CRUSH_RANGE				175
+#define BERSERK_COST						50
+#define BERSERK_DELAY						1.0
+#define BERSERK_REGEN_FRAMES				300
+#define BERSERK_REGEN_DELAY					10
+
+#define FLYER_IMPACT_VELOCITY		350 // max delta in velocity before impact dmg is caused
+#define FLYER_IMPACT_DAMAGE			50
+#define FLYER_HB_REFIRE_FRAMES		3
+#define FLYER_HB_INITIAL_DMG		35
+#define FLYER_HB_ADDON_DMG			4
+#define FLYER_HB_SPEED				2000
+#define FLYER_INIT_COST				50
+#define FLYER_REGEN_FRAMES			300
+#define FLYER_REGEN_DELAY			5
+#define FLYER_ROCKET_PREFIRE_FRAMES	30
+#define FLYER_ROCKET_INITIAL_DMG	100
+#define FLYER_ROCKET_ADDON_DMG		20
+#define FLYER_ROCKET_SPEED			650
+#define FLYER_ROCKET_INITIAL_RADIUS	100
+#define FLYER_ROCKET_ADDON_RADIUS	5
+
+#define FLYER_HB_INITIAL_AMMO	100
+#define FLYER_HB_ADDON_AMMO		0
+#define FLYER_HB_START_AMMO		33
+#define FLYER_HB_REGEN_FRAMES	300
+#define FLYER_HB_REGEN_DELAY	10
+#define FLYER_HB_AMMO			2
+#define FLYER_ROCKET_AMMO		10
+
+
+#define MEDIC_INIT_COST				50
+#define MEDIC_DELAY					1.0
+#define MEDIC_HB_INITIAL_DMG		20
+#define MEDIC_HB_ADDON_DMG			3.0
+#define MEDIC_HB_INITIAL_SPEED		2000
+#define MEDIC_HB_ADDON_SPEED		0
+#define MEDIC_HB_INITIAL_AMMO		50
+#define MEDIC_HB_ADDON_AMMO			0
+#define MEDIC_HB_START_AMMO			25
+#define MEDIC_HB_REGEN_FRAMES		100
+#define MEDIC_HB_REGEN_DELAY		10
+#define MEDIC_CABLE_RANGE			128
+#define MEDIC_REGEN_FRAMES			300
+#define MEDIC_REGEN_DELAY			10
+#define MEDIC_BOLT_INITIAL_DMG		60
+#define MEDIC_BOLT_ADDON_DMG		30
+#define MEDIC_BOLT_INITIAL_SPEED	1500
+#define MEDIC_BOLT_ADDON_SPEED		0
+#define MEDIC_BOLT_AMMO				10
+#define MEDIC_RESURRECT_DELAY		1.0
+#define MEDIC_RESURRECT_BONUS		0.25
+
+
+#define P_TANK_PUNCH_RADIUS			196
+#define P_TANK_PUNCH_INITIAL_DMG	200
+#define P_TANK_PUNCH_ADDON_DMG		20
+
+#define P_TANK_BLASTER_INITIAL_DMG	100
+#define P_TANK_BLASTER_ADDON_DMG	5
+#define P_TANK_BLASTER_INITIAL_SPD	1500
+#define P_TANK_BLASTER_ADDON_SPD	0
+
+#define P_TANK_ROCKET_INITIAL_DMG	100
+#define P_TANK_ROCKET_ADDON_DMG		2.5
+#define P_TANK_ROCKET_INITIAL_SPD	650
+#define P_TANK_ROCKET_ADDON_SPD		30
+#define P_TANK_BULLET_INITIAL_DMG	20
+#define P_TANK_BULLET_ADDON_DMG		2
+#define P_TANK_INITIAL_ROCKETS		25
+#define P_TANK_ADDON_ROCKETS		0
+#define P_TANK_SPAWN_ROCKETS		10
+#define P_TANK_INITIAL_BULLETS		100
+#define P_TANK_ADDON_BULLETS		0
+#define P_TANK_SPAWN_BULLETS		33
+#define P_TANK_INITIAL_CELLS		25
+#define P_TANK_ADDON_CELLS			0
+#define P_TANK_SPAWN_CELLS			10
+#define P_TANK_MAX_AMMO				50
+#define P_TANK_INIT_COST			50
+
+#define P_TANK_REGEN_FRAMES			300
+#define P_TANK_REGEN_DELAY			50
+#define P_TANK_AMMOREGEN_FRAMES		300
+#define P_TANK_AMMOREGEN_DELAY		50
+
+
+#define MUTANT_DELAY				1
+#define MUTANT_INIT_COST			50
+#define MUTANT_SWING_RANGE			64
+#define MUTANT_INITIAL_SWING_DMG	100	// refire rate is 4 attacks per second
+#define MUTANT_ADDON_SWING_DMG		15
+#define MUTANT_JUMPATTACK_VELOCITY	0 // minimum velocity required to inflict damage
+#define MUTANT_JUMPATTACK_DELAY		5 // cooldown/frames before next attack
+#define MUTANT_INITIAL_JUMP_DMG		100
+#define MUTANT_ADDON_JUMP_DMG		15
+#define MUTANT_JUMPATTACK_RADIUS	68
 
 #endif

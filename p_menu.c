@@ -387,20 +387,19 @@ void OpenJoinMenu (edict_t *ent)
 	//addlinetomenu(ent, "www.v2gamers.cl", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Original design by Kombat03.", 0);
-	addlinetomenu(ent, "Ideas borrowed from KOTS,", 0);
-	addlinetomenu(ent, "with input from our players!", 0);
+	addlinetomenu(ent, "Kill players and monsters", 0);
+    addlinetomenu(ent, "for EXP to earn levels.", 0);
+    addlinetomenu(ent, "Every level you recieve", 0);
+    addlinetomenu(ent, "ability and weapon points", 0);
+    addlinetomenu(ent, "to become stronger!", 0);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Programmers:", 0);
-	addlinetomenu(ent, "GHz, Kombat03, Chamooze", 0);
-	addlinetomenu(ent, "NewB, and doomie.", 0);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Start your reign", 1);
 	addlinetomenu(ent, "Toggle chasecam", 2);
 	addlinetomenu(ent, "Exit", 3);
 
 	setmenuhandler(ent, joinmenu_handler);
-	ent->client->menustorage.currentline = 12;
+	ent->client->menustorage.currentline = 11;
 	showmenu(ent);
 }
 
@@ -587,9 +586,8 @@ void classmenu_handler (edict_t *ent, int option)
 	if ((ctf->value || domination->value) && (level.time > pregame_time->value))
 		ent->teamnum = GetRandom(1, 2);
 
-	OpenCombatMenu(ent, 0);
-	//StartGame(ent);4.5
-	//SaveCharacter(ent);4.5
+	StartGame(ent);
+	SaveCharacter(ent);
 }
 
 void OpenClassMenu (edict_t *ent, int page_num)

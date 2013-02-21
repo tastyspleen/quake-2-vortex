@@ -896,7 +896,7 @@ edict_t *InitMonsterEntity (qboolean manual_spawn)
 {
 	edict_t *monster;
 
-	if (ctf->value || domination->value || ptr->value)
+	if (ctf->value || domination->value || ptr->value || tbi->value)
 		return NULL;//4.4
 
 	//if (!pvm->value && !ffa->value)

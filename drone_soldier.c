@@ -21,11 +21,6 @@ static int	sound_death;
 static int	sound_death_ss;
 static int	sound_cock;
 
-#define M_SOLDIER_INITIAL_HEALTH	50
-#define M_SOLDIER_ADDON_HEALTH		15
-#define M_SOLDIER_INITIAL_ARMOR		25
-#define M_SOLDIER_ADDON_ARMOR		15
-
 void m_soldier_stand (edict_t *self);
 void m_soldier_runandshoot_continue (edict_t *self);
 

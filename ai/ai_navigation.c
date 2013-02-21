@@ -108,9 +108,14 @@ int AI_SetupPath( edict_t *self, int from, int to, int movetypes )
 // AI_SetGoal
 // set the goal //jabot092
 //==========================================
-void AI_SetGoal(edict_t *self, int goal_node)
+void AI_SetGoal(edict_t *self, int goal_node, qboolean LongRange)
 {
 	int			node;
+
+	if (LongRange)
+	{
+		self->ai.lrgoal_node = goal_node;
+	}
 
 	self->ai.goal_node = goal_node;
 	node = AI_FindClosestReachableNode( self->s.origin, self, NODE_DENSITY*3, NODE_ALL );
@@ -164,7 +169,7 @@ qboolean AI_FollowPath( edict_t *self )
 		if(self->ai.tries++ > 3)
 			return false;
 		else
-			AI_SetGoal( self, self->ai.goal_node );
+			AI_SetGoal( self, self->ai.goal_node, false );
 	}
 
 	// Are we there yet?
