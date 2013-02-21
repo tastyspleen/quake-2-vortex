@@ -67,6 +67,7 @@ void cmd_mjump(edict_t *ent)
 
 qboolean CheckAuraOwner (edict_t *self, int aura_cost);
 
+/*
 void Cmd_AmmoStealer_f(edict_t *ent)
 {
 	edict_t		*other = NULL;
@@ -153,6 +154,7 @@ void Cmd_AmmoStealer_f(edict_t *ent)
 		ent->client->pers.inventory[power_cube_index] -= COST_FOR_STEALER;
 	}
 }
+*/
 
 void Cmd_BoostPlayer(edict_t *ent)
 {

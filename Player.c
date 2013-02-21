@@ -78,7 +78,7 @@ int canJoinGame(edict_t *ent)
 	
 	
 	if (!invasion->value || !pvm->value)
-		if (newbie_protection->value && IsNewbieBasher(ent) && (ent->myskills.level >= NEWBIE_BASHER_MAX))
+		if (newbie_protection->value && IsNewbieBasher(ent))
 			return -6;	//newbie basher can't play on non pvm modes
 	
 	

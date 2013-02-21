@@ -3858,10 +3858,7 @@ void ClientBeginServerFrame (edict_t *ent)
     
 	if (level.time > pregame_time->value)
 	{
-		if (ptr->value || domination->value || ctf->value)
-			frames = PTR_MAX_IDLE_FRAMES;
-		else
-			frames = MAX_IDLE_FRAMES;
+		frames = MAX_IDLE_FRAMES;
 
 		if (!ent->myskills.administrator && !trading->value)
 		{

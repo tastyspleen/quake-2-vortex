@@ -5,8 +5,15 @@
 
 lua_State* State = NULL;
 int errload = 0;
+void Lua_LoadVariables();
 
-#define CHECK_LUA_ERR(x) errload=x; if (errload) { char* reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); }
+#define CHECK_LUA_ERR(x) errload=x; if (errload) { char* reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); return; }
+
+void Lua_RunScript(const char* filename)
+{
+	CHECK_LUA_ERR(luaL_loadfile(State, va("%s/settings/lua/%s.lua", game_path->string, filename)));
+	CHECK_LUA_ERR(lua_pcall(State, 0, LUA_MULTRET, 0));
+}
 
 
 int printLuaError(lua_State* state)
@@ -30,10 +37,12 @@ int q2lua_dofile(lua_State *L)
 	return 0;
 }
 
-void Lua_RunScript(char* filename)
+int q2lua_cvar_get(lua_State *L)
 {
-	CHECK_LUA_ERR(luaL_loadfile(State, va("%s/settings/lua/%s.lua", game_path->string, filename)));
-	CHECK_LUA_ERR(lua_pcall(State, 0, LUA_MULTRET, 0));
+	char* name = luaL_checkstring(L, 1);
+	char* defaultvalue = luaL_checkstring(L, 2);
+	lua_pushstring(L, gi.cvar(name, defaultvalue, 0)->string);
+	return 1;
 }
 
 /* Called at InitGame time */
@@ -41,13 +50,14 @@ void InitLuaSettings()
 {
 	gi.dprintf("LUA: Initializing settings...");
 
-	State = lua_open();
+	State = luaL_newstate();
 	
 	if (State)
 	{
 		luaL_openlibs(State);
 		lua_register(State, "q2print", q2lua_Print);
 		lua_register(State, "q2dofile", q2lua_dofile);
+		lua_register(State, "cvar_get", q2lua_cvar_get);
 		lua_atpanic(State, printLuaError);
 	}else
 	{
@@ -55,8 +65,10 @@ void InitLuaSettings()
 		return;
 	}
 
+	Lua_LoadVariables(); // vrxcl 4.2
 	Lua_RunScript("settings");
 	gi.dprintf("done.\n");
+
 }
 
 void CleanupLua()
@@ -76,21 +88,31 @@ void RunLuaMapSettings(char* mapname)
 
 int Lua_GetIntSetting(char* varname)
 {
+	int setting;
 	lua_getglobal(State, varname);
 	if (lua_isnumber(State, -1))
-		return lua_tonumber(State, -1);
+	{
+		setting = lua_tonumber(State, -1); 
+		lua_pop(State, -1);
+		return setting;
+	}
 	return -1;
 }
 
 double Lua_GetDoubleSetting(char* varname)
 {
+	double setting;
 	lua_getglobal(State, varname);
 	if (lua_isnumber(State, -1))
-		return lua_tonumber(State, -1);
+	{
+		setting = lua_tonumber(State, -1);
+		lua_pop(State, -1);
+		return setting;
+	}
 	return -1;
 }
 
-char* Lua_GetStringSetting(char* varname)
+const char* Lua_GetStringSetting(char* varname)
 {
 	lua_getglobal(State, varname);
 	if (lua_isstring(State, -1))
@@ -100,9 +122,14 @@ char* Lua_GetStringSetting(char* varname)
 
 double Lua_GetVariable(char* varname, double default_var)
 {
+	double Setting;
 	lua_getglobal(State, varname);
 	if (lua_isnumber(State, -1))
-		return lua_tonumber(State, -1);
+	{
+		Setting = lua_tonumber(State, -1);
+		lua_pop(State,-1);
+		return Setting;
+	}
 	return default_var;
 }
 
@@ -179,6 +206,7 @@ double INITIAL_ARMOR_KNIGHT;
 double INITIAL_ARMOR_MAGE;
 double INITIAL_ARMOR_WEAPONMASTER;
 double LEVELUP_ARMOR_SOLDIER;
+double LEVELUP_ARMOR_VAMPIRE;
 double LEVELUP_ARMOR_ENGINEER;
 double LEVELUP_ARMOR_POLTERGEIST;
 double LEVELUP_ARMOR_KNIGHT;
@@ -338,7 +366,6 @@ double NATURETOTEM_HEALTH_BASE;
 double NATURETOTEM_HEALTH_MULT;
 double NATURETOTEM_ARMOR_BASE;
 double NATURETOTEM_ARMOR_MULT;
-double NATURETOTEM_REFIRE_BASE;
 double DARKNESSTOTEM_VAMP_MULT;
 double DARKNESSTOTEM_MAX_MULT;
 double PRECISION_TUNING_COST_FACTOR;
@@ -361,7 +388,7 @@ double MINISENTRY_ADDON_AMMO;
 double MINISENTRY_INITIAL_BULLET;
 double MINISENTRY_ADDON_BULLET;
 double MINISENTRY_INITIAL_ROCKET;
-double MINISENTRY_ADDON_ROCKET 15//4.4 - raised from;
+double MINISENTRY_ADDON_ROCKET;
 double MINISENTRY_MAX_BULLET;
 double MINISENTRY_MAX_ROCKET;
 double SENTRY_LEVEL1_DAMAGE;
@@ -598,11 +625,11 @@ double DEFLECT_HITSCAN_ABSORB_ADDON;
 double DEFLECT_HITSCAN_ABSORB_MAX;
 double DEFAULT_AURA_COST;
 double DEFAULT_AURA_INIT_COST;
-double DEFAULT_AURA_FRAMES;
+int DEFAULT_AURA_FRAMES;
 double DEFAULT_AURA_MIN_RADIUS;
 double DEFAULT_AURA_ADDON_RADIUS;
 double DEFAULT_AURA_MAX_RADIUS;
-double DEFAULT_AURA_SCAN_FRAMES;
+int DEFAULT_AURA_SCAN_FRAMES;
 double DEFAULT_AURA_DURATION;
 double DEFAULT_AURA_DELAY;
 double MAX_AURAS;
@@ -747,13 +774,17 @@ double MUTANT_JUMPATTACK_DELAY;
 double MUTANT_INITIAL_JUMP_DMG;
 double MUTANT_ADDON_JUMP_DMG;
 double MUTANT_JUMPATTACK_RADIUS;
-
-
+double MAGMINE_DEFAULT_PULL;
+double MAGMINE_ADDON_PULL;
 
 void Lua_LoadVariables()
 {
+	gi.dprintf("LUA: loading variables...");
 	Lua_RunScript("variables");
+	Lua_RunScript("variables2");
 
+	MAGMINE_DEFAULT_PULL = Lua_GetVariable("MAGMINE_DEFAULT_PULL", -40);
+	MAGMINE_ADDON_PULL = Lua_GetVariable("MAGMINE_ADDON_PULL", -4);
 	RUNE_PICKUP_DELAY = Lua_GetVariable("RUNE_PICKUP_DELAY", 2.0);
 	SENTRY_MAXIMUM = Lua_GetVariable("SENTRY_MAXIMUM", 1);
 	CHILL_DEFAULT_BASE = Lua_GetVariable("CHILL_DEFAULT_BASE", 0);
@@ -830,6 +861,7 @@ void Lua_LoadVariables()
 	LEVELUP_ARMOR_KNIGHT = Lua_GetVariable("LEVELUP_ARMOR_KNIGHT", 6);
 	LEVELUP_ARMOR_MAGE = Lua_GetVariable("LEVELUP_ARMOR_MAGE", 0);
 	LEVELUP_ARMOR_WEAPONMASTER = Lua_GetVariable("LEVELUP_ARMOR_WEAPONMASTER", 1);
+	LEVELUP_ARMOR_VAMPIRE = Lua_GetVariable("LEVELUP_ARMOR_VAMPIRE", 0);
 	INITIAL_POWERCUBES_SOLDIER = Lua_GetVariable("INITIAL_POWERCUBES_SOLDIER", 200);
 	ADDON_POWERCUBES_SOLDIER = Lua_GetVariable("ADDON_POWERCUBES_SOLDIER", 10);
 	INITIAL_POWERCUBES_VAMPIRE = Lua_GetVariable("INITIAL_POWERCUBES_VAMPIRE", 200);
@@ -984,7 +1016,6 @@ void Lua_LoadVariables()
 	NATURETOTEM_HEALTH_MULT = Lua_GetVariable("NATURETOTEM_HEALTH_MULT", 15);
 	NATURETOTEM_ARMOR_BASE = Lua_GetVariable("NATURETOTEM_ARMOR_BASE", 0);
 	NATURETOTEM_ARMOR_MULT = Lua_GetVariable("NATURETOTEM_ARMOR_MULT", 5);
-	NATURETOTEM_REFIRE_BASE = Lua_GetVariable("NATURETOTEM_REFIRE_BASE", 5.0);
 	DARKNESSTOTEM_VAMP_MULT = Lua_GetVariable("DARKNESSTOTEM_VAMP_MULT", 0.033);
 	DARKNESSTOTEM_MAX_MULT = Lua_GetVariable("DARKNESSTOTEM_MAX_MULT", 0.1);
 	PRECISION_TUNING_COST_FACTOR = Lua_GetVariable("PRECISION_TUNING_COST_FACTOR", 0.1);
@@ -1007,8 +1038,8 @@ void Lua_LoadVariables()
 	MINISENTRY_INITIAL_BULLET = Lua_GetVariable("MINISENTRY_INITIAL_BULLET", 10);
 	MINISENTRY_ADDON_BULLET = Lua_GetVariable("MINISENTRY_ADDON_BULLET", 1);
 	MINISENTRY_INITIAL_ROCKET = Lua_GetVariable("MINISENTRY_INITIAL_ROCKET", 50);
-	MINISENTRY_ADDON_ROCKET 15//4.4 - raised from = Lua_GetVariable("MINISENTRY_ADDON_ROCKET 15//4.4 - raised from", 10);
-		MINISENTRY_MAX_BULLET = Lua_GetVariable("MINISENTRY_MAX_BULLET", 100);
+	MINISENTRY_ADDON_ROCKET = Lua_GetVariable("MINISENTRY_ADDON_ROCKET", 15);
+	MINISENTRY_MAX_BULLET = Lua_GetVariable("MINISENTRY_MAX_BULLET", 100);
 	MINISENTRY_MAX_ROCKET = Lua_GetVariable("MINISENTRY_MAX_ROCKET", 1000);
 	SENTRY_LEVEL1_DAMAGE = Lua_GetVariable("SENTRY_LEVEL1_DAMAGE", 0.5);
 	SENTRY_LEVEL2_DAMAGE = Lua_GetVariable("SENTRY_LEVEL2_DAMAGE", 0.75);
@@ -1393,4 +1424,5 @@ void Lua_LoadVariables()
 	MUTANT_INITIAL_JUMP_DMG = Lua_GetVariable("MUTANT_INITIAL_JUMP_DMG", 100);
 	MUTANT_ADDON_JUMP_DMG = Lua_GetVariable("MUTANT_ADDON_JUMP_DMG", 15);
 	MUTANT_JUMPATTACK_RADIUS = Lua_GetVariable("MUTANT_JUMPATTACK_RADIUS", 68);
+	gi.dprintf("done.\n");
 }

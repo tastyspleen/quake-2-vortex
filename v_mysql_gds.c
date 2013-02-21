@@ -1424,7 +1424,7 @@ qboolean V_GDS_StartConn()
 	if (!GDS_MySQL)
 	{
 		GDS_MySQL = mysql_init(NULL);
-		if (mysql_real_connect(GDS_MySQL, database, user, pw, , 0, NULL, 0) == NULL)
+		if (mysql_real_connect(GDS_MySQL, database, user, pw, dbname, 0, NULL, 0) == NULL)
 		{
 			gi.dprintf("Failure: %s\n", mysql_error(GDS_MySQL));
 			mysql_close(GDS_MySQL);

@@ -203,6 +203,7 @@ void InitGame (void)
 
 	savemethod = gi.cvar ("savemethod", "0", 0);
 	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
+	game_path = gi.cvar ("game", ".", CVAR_LATCH);
 
 #ifdef Q2PRO_COMPATIBILITY
 	gi.cvar_forceset("sv_allow_map", "2");
@@ -402,7 +403,6 @@ void InitGame (void)
 	adminctrl = gi.cvar ("admin_forcevote", "0", CVAR_LATCH);
 
 	voting = gi.cvar ("voting", "1", CVAR_SERVERINFO);
-	game_path = gi.cvar ("game", ".", CVAR_LATCH);
 	pregame_time = gi.cvar ("pregame_time", "60.0", 0);
 #ifndef LOCK_DEFAULTS
 	nextlevel_mult = gi.cvar("nextlevel_mult","1.5",CVAR_LATCH);
