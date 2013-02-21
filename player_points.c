@@ -136,7 +136,7 @@ void check_for_levelup (edict_t *ent)
 		if (points_needed > plateau_points || ent->myskills.level > 5 || ent->myskills.level > plateau_level)
 		{
 			// calculate next level points based
-			points_needed = plateau_points + 3000*(ent->myskills.level-plateau_level);
+			points_needed = plateau_points + Lua_GetVariable("PlateauMult", 2000)*(ent->myskills.level-plateau_level);
 		}
 
 		ent->myskills.next_level += points_needed;
@@ -620,7 +620,7 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 		// players don't lose points in PvM mode since it is easy to kill yourself
 		if (!pvm->value)
 		{
-			lose_points = EXP_LOSE_SUICIDE * targ->myskills.level;
+			lose_points = 0;
 
 			// cap max exp lost at 50 points
 			if (lose_points > 50)

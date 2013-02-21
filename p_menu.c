@@ -267,11 +267,12 @@ qboolean CanJoinGame(edict_t *ent, int returned)
 		safe_cprintf(ent, PRINT_HIGH, "Can't join: %d hour play-time limit reached.\n", MAX_HOURS);
 		safe_cprintf(ent, PRINT_HIGH, "Please try a different character, or try again tommorow.\n");
 		return false;
-	case -6:	//newbie basher can't play
+/*	case -6:	//newbie basher can't play
 		safe_cprintf(ent, PRINT_HIGH, "Unable to join: The current maximum level is %d.\n", NEWBIE_BASHER_MAX);
 		safe_cprintf(ent, PRINT_HIGH, "Please return at a later time, or try a different character.\n");
 		gi.dprintf("INFO: %s exceeds maximum level allowed by server (level %d)!", ent->client->pers.netname, NEWBIE_BASHER_MAX);
 		return false;
+*/
 	case -7:	//boss can't play
 		safe_cprintf(ent, PRINT_HIGH, "Unable to join: Bosses are not allowed unless the server is at least half capacity.\n");
 		safe_cprintf(ent, PRINT_HIGH, "Please come back at a later time, or try a different character.\n");

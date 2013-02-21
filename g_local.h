@@ -443,6 +443,7 @@ typedef struct
 	int			r_monsters;			//4.5 recommended monster value for this map
 	qboolean	daytime; //GHz: Is the sun going up or down?
 	qboolean    modechange;
+	qboolean	pathfinding;
 /*	gdsfiles_t	gdsfiles[MAX_CLIENTS];*/
 
 	// experimental monster pathfinding
@@ -1985,9 +1986,9 @@ typedef struct armoryRune_s
 	item_t	rune;
 } armoryRune_t;
 
- armoryRune_t WeaponRunes[ARMORY_MAX_RUNES];
- armoryRune_t AbilityRunes[ARMORY_MAX_RUNES];
- armoryRune_t ComboRunes[ARMORY_MAX_RUNES];
+ armoryRune_t WeaponRunes[20];
+ armoryRune_t AbilityRunes[20];
+ armoryRune_t ComboRunes[20];
 
 //end runes you can buy
 

@@ -1410,7 +1410,7 @@ void M_ClearPath (edict_t *self)
 	// wait awhile before searching for another path
 	self->monsterinfo.path_time = level.time + 5.0 + random();
 }
-/*
+
 void M_FindPath (edict_t *self, vec3_t goalpos, qboolean compute_path_now)
 {
 	// update the path now or after a brief delay
@@ -1448,7 +1448,7 @@ void M_FindPath (edict_t *self, vec3_t goalpos, qboolean compute_path_now)
 			M_ClearPath(self);
 		}
 	}
-}*/
+}
 
 // returns true if this monster is on patrol
 //FIXME: it would probably be easier/smarter if spot1/2 were just entity pointers
@@ -1744,7 +1744,7 @@ void drone_ai_run (edict_t *self, float dist)
 	edict_t         *tempgoal=NULL;
 	qboolean        enemy_vis=false;
 
-	if (Lua_GetIntSetting(va("%s_UsePathfinding", level.mapname)))
+	if (level.pathfinding > 0)
 	{
 		drone_ai_run1(self, dist);
 		return;

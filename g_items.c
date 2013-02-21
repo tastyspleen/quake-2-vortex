@@ -470,7 +470,19 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 		 (isMorphingPolt(ent) && strcmp(ent->classname,"ammo_cells") ||
 		 other->myskills.class_num == CLASS_PALADIN)) // and knights, never.
 		 return false;
-
+	
+	 if (!strcmp(ent->classname,"ammo_shells"))
+		 ent->count = SHELLS_PICKUP;
+	 else if (!strcmp(ent->classname,"ammo_cells"))
+		ent->count = CELLS_PICKUP;
+	 else if (!strcmp(ent->classname,"ammo_slugs"))
+		ent->count = SLUGS_PICKUP;
+	 else if (!strcmp(ent->classname,"ammo_rockets"))
+		ent->count = ROCKETS_PICKUP;
+	 else if (!strcmp(ent->classname,"ammo_bullets"))
+		ent->count = BULLETS_PICKUP;
+	 else if (!strcmp(ent->classname,"ammo_grenades"))
+		ent->count = GRENADES_PICKUP;
 
      if (ent->count)
 		 count = ent->count; 
@@ -2114,7 +2126,7 @@ always owned, never in the world
 /* icon */		"a_shells",
 /* pickup */	"Shells",
 /* width */		3,
-		SHELLS_PICKUP,
+		0,
 		NULL,
 		IT_AMMO,
 		NULL,
@@ -2136,7 +2148,7 @@ always owned, never in the world
 /* icon */		"a_bullets",
 /* pickup */	"Bullets",
 /* width */		3,
-		BULLETS_PICKUP,
+		0,
 		NULL,
 		IT_AMMO,
 		NULL,
@@ -2158,7 +2170,7 @@ always owned, never in the world
 /* icon */		"a_cells",
 /* pickup */	"Cells",
 /* width */		3,
-		CELLS_PICKUP,
+		0,
 		NULL,
 		IT_AMMO,
 		NULL,
@@ -2180,7 +2192,7 @@ always owned, never in the world
 /* icon */		"a_grenades",
 /* pickup */	"Grenades",
 /* width */		3,
-		GRENADES_PICKUP,
+		0,
 		"grenades",
 		IT_AMMO|IT_WEAPON,
 		NULL,
@@ -2202,7 +2214,7 @@ always owned, never in the world
 /* icon */		"a_rockets",
 /* pickup */	"Rockets",
 /* width */		3,
-		ROCKETS_PICKUP,
+		0,
 		NULL,
 		IT_AMMO,
 		NULL,
@@ -2224,7 +2236,7 @@ always owned, never in the world
 /* icon */		"a_slugs",
 /* pickup */	"Slugs",
 /* width */		3,
-		SLUGS_PICKUP,
+		0,
 		NULL,
 		IT_AMMO,
 		NULL,

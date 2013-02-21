@@ -746,13 +746,14 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		ED_CallSpawn (ent);
 	}
 
-	level.r_monsters = saved; //4.5 restore saved r_monsters value
-
 //	gi.dprintf ("%i entities inhibited\n", inhibit);
 
 	AI_NewMap();//JABot
 
 	RunLuaMapSettings(mapname);
+
+	level.r_monsters = Lua_GetVariable(va("%s_monsters", mapname), saved);
+	level.pathfinding = Lua_GetVariable(va("%s_UsePathfinding", level.mapname), 0);
 
 	G_FindTeams ();
 
@@ -765,7 +766,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	PrintNumEntities(false);
 	SpawnWorldAmmo();
 
-	if (Lua_GetIntSetting("UsePathfinding") > 0)
+	if (level.pathfinding)
 		CreateGrid(false);
 
 //GHz END
