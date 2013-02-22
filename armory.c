@@ -334,7 +334,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31: // respawns
-			price = ARMORY_PRICE_RESPAWN * (250 - ent->myskills.weapon_respawns) / 250;
+			price = ARMORY_PRICE_RESPAWN * (ARMORY_QTY_RESPAWNS - ent->myskills.weapon_respawns) / ARMORY_QTY_RESPAWNS;
 			break;
 #endif
 		default:
@@ -468,7 +468,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31:
-			safe_cprintf(ent, PRINT_HIGH, "You bought %d respawns for %d credits - you now have %d.\n", 250 - ent->myskills.weapon_respawns, price, 250);
+			safe_cprintf(ent, PRINT_HIGH, "You bought %d respawns for %d credits - you now have %d.\n", 250 - ent->myskills.weapon_respawns, price, ent->myskills.weapon_respawns);
 			ent->myskills.weapon_respawns = 250;
 			break;
 #endif

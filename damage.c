@@ -415,12 +415,12 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			{
 				int		talentLevel;
 
-				temp = 1 + 0.1 * attacker->myskills.abilities[STRENGTH].current_level;
+				temp = 1 + STRENGTH_BONUS * attacker->myskills.abilities[STRENGTH].current_level;
 			
 				//Talent: Improved Strength
 				talentLevel = getTalentLevel(attacker, TALENT_IMP_STRENGTH);
 				if(talentLevel > 0)		
-					temp += 0.1 * talentLevel;
+					temp += IMP_STRENGTH_BONUS * talentLevel;
 				
 				//Talent: Improved Resist
 				talentLevel = getTalentLevel(attacker, TALENT_IMP_RESIST);

@@ -14,7 +14,7 @@
 
 /**************** v_abilitylist.c ***************/
 void enableAbility (edict_t *ent, int index, int level, int max_level, int general);
-int getLastUpgradeIndex(edict_t *ent);
+int getLastUpgradeIndex(edict_t *ent, int generalmode);
 void disableAbilities (edict_t *ent);
 int getHardMax(int index, qboolean general, int class);
 void AssignAbilities(edict_t *ent);

@@ -380,7 +380,7 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page, int generaltype
 	addlinetomenu(ent, va("You have %d ability points.", ent->myskills.speciality_points), 0);
 	addlinetomenu(ent, " ", 0);
 
-	if (i < getLastUpgradeIndex(ent))
+	if (i < getLastUpgradeIndex(ent, generaltype))
 	{
 		addlinetomenu(ent, "Next", 200+page);	
 		total_lines++;

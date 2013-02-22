@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "4.2"
+#define VRX_VERSION "4.2a"
 
 //4.5 player combat preferences
 #define HOSTILE_PLAYERS				0x00000001			
@@ -700,8 +700,47 @@ extern double MUTANT_ADDON_JUMP_DMG;
 extern double MUTANT_JUMPATTACK_RADIUS;
 extern double LEVELUP_ARMOR_VAMPIRE;
 
-#define MAX_MINISENTRIES 2
-#define NATURETOTEM_REFIRE_BASE 5.0
-#define NATURETOTEM_REFIRE_MULT	-0.25
+extern double BRAIN_ATTACK_RANGE;
+extern double BRAIN_DEFAULT_TENTACLE_DMG;
+extern double BRAIN_ADDON_TENTACLE_DMG;
+extern double BRAIN_BEAM_COST;
+extern double BRAIN_BEAM_DEFAULT_DMG;
+extern double BRAIN_BEAM_ADDON_DMG;
+extern double BRAIN_LOCKON_RANGE;
+extern double BRAIN_INIT_COST;
+extern double MAX_MINISENTRIES;
+
+extern double STRENGTH_BONUS;
+extern double IMP_STRENGTH_BONUS;
+
+extern double CACODEMON_DELAY;
+extern double CACODEMON_INIT_COST;
+extern double CACODEMON_REFIRE;
+extern double CACODEMON_INITIAL_DAMAGE;
+extern double CACODEMON_ADDON_DAMAGE;
+extern double CACODEMON_INITIAL_RADIUS;
+extern double CACODEMON_ADDON_RADIUS;
+extern double CACODEMON_ADDON_BURN;
+extern double CACODEMON_SKULL_SPEED;
+extern double CACODEMON_REGEN_FRAMES;
+extern double CACODEMON_REGEN_DELAY;
+extern double CACODEMON_SKULL_INITIAL_AMMO;
+extern double CACODEMON_SKULL_ADDON_AMMO;
+extern double CACODEMON_SKULL_START_AMMO;
+
+extern double DOMINATION_POINTS;
+extern double DOMINATION_CREDITS;
+extern int DOMINATION_AWARD_FRAMES;
+extern double DOMINATION_MINIMUM_PLAYERS;
+extern double DOMINATION_DEFEND_RANGE;
+extern double DOMINATION_DEFEND_BONUS;
+extern double DOMINATION_FRAG_POINTS;
+extern double DOMINATION_CARRIER_BONUS;
+extern double DOMINATION_OFFENSE_BONUS;
+extern double BRAIN_DEFAULT_KNOCKBACK;
+extern double BRAIN_ADDON_KNOCKBACK;
+extern double NATURETOTEM_REFIRE_BASE;
+extern double NATURETOTEM_REFIRE_MULT;
+
 
 #endif

@@ -11,17 +11,6 @@
 #define BRAIN_JUMP_HOLD				148
 #define BRAIN_JUMP_END				153
 
-#define BRAIN_ATTACK_RANGE			256
-#define BRAIN_DEFAULT_KNOCKBACK		-60
-#define BRAIN_ADDON_KNOCKBACK		-2
-#define BRAIN_DEFAULT_TENTACLE_DMG	40	// tentacle attack, damage per frame
-#define BRAIN_ADDON_TENTACLE_DMG	6
-#define BRAIN_BEAM_COST				2
-#define BRAIN_BEAM_DEFAULT_DMG		30	// beam attack, damage per frame
-#define BRAIN_BEAM_ADDON_DMG		2
-#define BRAIN_LOCKON_RANGE			96	// minimum range required for autoaim
-#define BRAIN_INIT_COST				50
-
 qboolean BrainValidTarget (edict_t *self, edict_t *target)
 {
 	// 3.6 this code is mostly redundant

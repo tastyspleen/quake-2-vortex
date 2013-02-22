@@ -10,9 +10,6 @@ void TBI_Reinitialize();
 #define DESTROYSPAWN_EXP (pow(self->monsterinfo.level, 1.3) / 7 * 50)
 #define ROUNDEND_EXP 220 * pow(AveragePlayerLevel(), 1.3) / 6
 
-#define PLAYERSPAWN_REGEN_FRAMES		800
-#define PLAYERSPAWN_REGEN_DELAY			10
-
 typedef struct
 {
 	int RedSpawns;
