@@ -8,21 +8,6 @@
 #define CACODEMON_FRAME_ATTACK_FIRE		11
 #define CACODEMON_FRAME_ATTACK_END		14
 
-#define CACODEMON_DELAY					1
-#define CACODEMON_INIT_COST				50
-#define CACODEMON_REFIRE				2
-#define CACODEMON_INITIAL_DAMAGE		100
-#define CACODEMON_ADDON_DAMAGE			20
-#define CACODEMON_INITIAL_RADIUS		125
-#define CACODEMON_ADDON_RADIUS			0
-#define CACODEMON_ADDON_BURN			1
-#define CACODEMON_SKULL_SPEED			950
-#define CACODEMON_REGEN_FRAMES			300
-#define CACODEMON_REGEN_DELAY			2
-
-#define CACODEMON_SKULL_INITIAL_AMMO	10
-#define CACODEMON_SKULL_ADDON_AMMO		0
-#define CACODEMON_SKULL_START_AMMO		3
 // additional parameters in morph.h
 
 void bskull_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)

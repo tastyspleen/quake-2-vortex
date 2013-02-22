@@ -110,7 +110,7 @@ gitem_t	*GetWeaponForNumber(int i)
 void check_for_levelup (edict_t *ent)
 {
 	double points_needed;
-	int plateau_points = 50000;
+	int plateau_points = Lua_GetIntVariable("PlateauPoints", 50000);
 	qboolean levelup = false;
 	int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
 
@@ -491,9 +491,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 
 	//vrxchile v1.3 Don't cap.
 	// min/max points awarded for a kill
-	/*if (exp_points > max_points)
-		exp_points = max_points;
-	else */if (exp_points < minimum_points)
+	if (exp_points < minimum_points)
 		exp_points = minimum_points;
 
 	// award experience to allied players
@@ -522,9 +520,6 @@ void VortexAddExp(edict_t *attacker, edict_t *targ)
 		AddBossExp(attacker, targ);
 		return; 
 	}
-
-	//if (ptr->value || pvm->value)
-	//	return;
 
 	if (domination->value)
 	{

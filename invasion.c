@@ -4,7 +4,6 @@
 //FIXME: need queue that holds all players that are waiting to respawn but all spawns are busy
 edict_t		*INV_SpawnQue[MAX_CLIENTS];
 int			invasion_max_playerspawns;
-int nolagoldval; 
 
 void INV_Init (void)
 {
@@ -15,8 +14,6 @@ void INV_Init (void)
 	INVASION_OTHERSPAWNS_REMOVED = false;
 	invasion_difficulty_level = 1;
 	invasion_max_playerspawns = 0;
-	nolagoldval = nolag->value;
-	gi.cvar_set("nolag", "1");
 }
 
 // initialize array values to NULL
@@ -162,8 +159,6 @@ void INV_AwardPlayers (void)
 	// no award if the humans were unable to defend their spawns
 	if (num_spawns < 1)
 		return;
-
-	gi.cvar_set("nolag", nolagoldval? "1" : "0");
 
 	for (i=0; i<game.maxclients; i++) 
 	{

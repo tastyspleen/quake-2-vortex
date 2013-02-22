@@ -414,13 +414,16 @@ void InitializeAbilityList()
 	gi.dprintf("Done.\n");
 }
 
-int getLastUpgradeIndex(edict_t *ent)
+int getLastUpgradeIndex(edict_t *ent, int mode)
 {
 	int i, returnindex;
 	for (i = 0; i < MAX_ABILITIES; i++)
 	{
 		if (!ent->myskills.abilities[i].disable)
-			returnindex = i;
+		{
+			if (ent->myskills.abilities[i].general_skill == mode)
+				returnindex = i;
+		}
 	}
 	return returnindex;
 }

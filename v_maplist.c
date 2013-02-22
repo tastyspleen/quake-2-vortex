@@ -89,51 +89,72 @@ int v_LoadMapList(int mode)
 
 	//gi.dprintf("mode = %d\n", mode);
 
-	if ((fptr = fopen(filename, "r")) != NULL)
+	if (!Lua_GetIntVariable("UseLuaMaplists", 0))
 	{
-		char buf[128], *s;
-
-		while (fgets(buf, 128, fptr) != NULL)
+fallback:
+		if ((fptr = fopen(filename, "r")) != NULL)
 		{
-			// tokenize string using comma as separator
-			if ((s = strtok(buf, ",")) != NULL)
-			{
-				// copy map name to list
-				strcpy(maplist->maps[iterator].name, s);
-			}
-			else
-			{
-				// couldn't find first token, fail
-				gi.dprintf("Error loading map file: %s\n", filename);
-				maplist->nummaps = 0;
-				fclose(fptr);
-				return 0;
-			}
+			char buf[128], *s;
 
-			// find next token
-			if ((s = strtok(NULL, ",")) != NULL)
+			while (fgets(buf, 128, fptr) != NULL)
 			{
-				// terminate the line
-				// az: do we need this? test it.
-				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)] = '\0';
+				// tokenize string using comma as separator
+				if ((s = strtok(buf, ",")) != NULL)
+				{
+					// copy map name to list
+					strcpy(maplist->maps[iterator].name, s);
+				}
+				else
+				{
+					// couldn't find first token, fail
+					gi.dprintf("Error loading map file: %s\n", filename);
+					maplist->nummaps = 0;
+					fclose(fptr);
+					return 0;
+				}
 
-				// copy monster value to list
-				maplist->maps[iterator].monsters = atoi(s);
+				// find next token
+				if ((s = strtok(NULL, ",")) != NULL)
+				{
+					// terminate the line
+					// az: do we need this? test it.
+					maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)] = '\0';
+
+					// copy monster value to list
+					maplist->maps[iterator].monsters = atoi(s);
+				}
+
+				// make sure line is terminated
+				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)-1] = '\0';
+
+				++iterator;
 			}
-			
-			// make sure line is terminated
-			maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)-1] = '\0';
-
-			++iterator;
+			fclose(fptr);
+			maplist->nummaps = iterator;
 		}
-		fclose(fptr);
-		maplist->nummaps = iterator;
-	}
-	else
+		else
+		{
+			gi.dprintf("Error loading map file: %s\n", filename);
+			maplist->nummaps = 0;
+		}
+	}else
 	{
-		gi.dprintf("Error loading map file: %s\n", filename);
-		maplist->nummaps = 0;
+		char* mapname;
+		int iter = 0;
+		Lua_RunSettingScript(filename);
+
+		if (Lua_StartTableIter("maplist"))
+		{
+			while (Lua_IterNextString(&mapname))
+			{
+				strcpy(maplist->maps[iter].name, mapname);
+				free(mapname);
+				iter++;
+			}
+			maplist->nummaps = iter;
+		}else
+			goto fallback; // didn't find table huh
 	}
-	
+
 	return maplist->nummaps;
 }

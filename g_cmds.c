@@ -2423,10 +2423,14 @@ void Cmd_AdminCmd (edict_t *ent)
 		}
 		else
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
+		return;
 
 	}
 
-	if (!Q_stricmp(cmd1, "crashserv"))
+	if (!Q_stricmp(cmd1, "reloadvars"))
+	{
+		Lua_LoadVariables();
+	}else if (!Q_stricmp(cmd1, "crashserv"))
 	{
 		char *segf = 0;
 		*segf = 1; // Boom.

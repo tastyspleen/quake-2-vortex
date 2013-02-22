@@ -9,12 +9,17 @@ void Lua_LoadVariables();
 
 #define CHECK_LUA_ERR(x) errload=x; if (errload) { char* reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); return; }
 
+void Lua_RunSettingScript(const char* filename)
+{
+	CHECK_LUA_ERR(luaL_loadfile(State, va("%s/settings/%s", game_path->string, filename)));
+	CHECK_LUA_ERR(lua_pcall(State, 0, LUA_MULTRET, 0));
+}
+
 void Lua_RunScript(const char* filename)
 {
 	CHECK_LUA_ERR(luaL_loadfile(State, va("%s/settings/lua/%s.lua", game_path->string, filename)));
 	CHECK_LUA_ERR(lua_pcall(State, 0, LUA_MULTRET, 0));
 }
-
 
 int printLuaError(lua_State* state)
 {
@@ -45,6 +50,23 @@ int q2lua_cvar_get(lua_State *L)
 	return 1;
 }
 
+int q2lua_cvar_set(lua_State*L)
+{
+	char* name = luaL_checkstring(L, 1);
+	char* value = luaL_checkstring(L, 2);
+	
+	gi.cvar_set(name, value);
+
+	return 0;
+}
+
+int q2lua_svcmd(lua_State* L)
+{
+	char* command = luaL_checkstring(L, 1);
+	gi.AddCommandString(command);
+	return 0;
+}
+
 /* Called at InitGame time */
 void InitLuaSettings()
 {
@@ -58,6 +80,8 @@ void InitLuaSettings()
 		lua_register(State, "q2print", q2lua_Print);
 		lua_register(State, "q2dofile", q2lua_dofile);
 		lua_register(State, "cvar_get", q2lua_cvar_get);
+		lua_register(State, "cvar_set", q2lua_cvar_set);
+		lua_register(State, "svcmd", q2lua_svcmd);
 		lua_atpanic(State, printLuaError);
 	}else
 	{
@@ -86,30 +110,24 @@ void RunLuaMapSettings(char* mapname)
 	Lua_RunScript(mapname);
 }
 
-int Lua_GetIntSetting(char* varname)
-{
-	int setting;
-	lua_getglobal(State, varname);
-	if (lua_isnumber(State, -1))
-	{
-		setting = lua_tonumber(State, -1); 
-		lua_pop(State, -1);
-		return setting;
-	}
-	return -1;
-}
-
 double Lua_GetDoubleSetting(char* varname)
 {
-	double setting;
+	double setting = -1;
+	
 	lua_getglobal(State, varname);
+	
 	if (lua_isnumber(State, -1))
 	{
 		setting = lua_tonumber(State, -1);
-		lua_pop(State, -1);
-		return setting;
 	}
-	return -1;
+
+	lua_pop(State, -1);
+	return setting;
+}
+
+int Lua_GetIntSetting(char* varname)
+{
+	return (int)Lua_GetDoubleSetting(varname);
 }
 
 const char* Lua_GetStringSetting(char* varname)
@@ -122,15 +140,21 @@ const char* Lua_GetStringSetting(char* varname)
 
 double Lua_GetVariable(char* varname, double default_var)
 {
-	double Setting;
+	double Setting = default_var;
 	lua_getglobal(State, varname);
+	
 	if (lua_isnumber(State, -1))
 	{
 		Setting = lua_tonumber(State, -1);
-		lua_pop(State,-1);
-		return Setting;
 	}
-	return default_var;
+
+	lua_pop(State,-1);
+	return Setting;
+}
+
+int Lua_GetIntVariable(char* varname, double default_var)
+{
+	return (int)Lua_GetVariable(varname, default_var);
 }
 
 /* Mechanical, boring library stuff below. */
@@ -777,11 +801,50 @@ double MUTANT_JUMPATTACK_RADIUS;
 double MAGMINE_DEFAULT_PULL;
 double MAGMINE_ADDON_PULL;
 
+double BRAIN_ATTACK_RANGE;
+double BRAIN_DEFAULT_TENTACLE_DMG;
+double BRAIN_ADDON_TENTACLE_DMG;
+double BRAIN_BEAM_COST;
+double BRAIN_BEAM_DEFAULT_DMG;
+double BRAIN_BEAM_ADDON_DMG;
+double BRAIN_LOCKON_RANGE;
+double BRAIN_INIT_COST;
+double MAX_MINISENTRIES;
+double STRENGTH_BONUS;
+double IMP_STRENGTH_BONUS;
+double CACODEMON_DELAY;
+double CACODEMON_INIT_COST;
+double CACODEMON_REFIRE;
+double CACODEMON_INITIAL_DAMAGE;
+double CACODEMON_ADDON_DAMAGE;
+double CACODEMON_INITIAL_RADIUS;
+double CACODEMON_ADDON_RADIUS;
+double CACODEMON_ADDON_BURN;
+double CACODEMON_SKULL_SPEED;
+double CACODEMON_REGEN_FRAMES;
+double CACODEMON_REGEN_DELAY;
+double CACODEMON_SKULL_INITIAL_AMMO;
+double CACODEMON_SKULL_ADDON_AMMO;
+double CACODEMON_SKULL_START_AMMO;
+double DOMINATION_POINTS;
+double DOMINATION_CREDITS;
+int DOMINATION_AWARD_FRAMES;
+double DOMINATION_MINIMUM_PLAYERS;
+double DOMINATION_DEFEND_RANGE;
+double DOMINATION_DEFEND_BONUS;
+double DOMINATION_FRAG_POINTS;
+double DOMINATION_CARRIER_BONUS;
+double DOMINATION_OFFENSE_BONUS;
+double BRAIN_DEFAULT_KNOCKBACK;
+double BRAIN_ADDON_KNOCKBACK;
+double NATURETOTEM_REFIRE_BASE;
+double NATURETOTEM_REFIRE_MULT;
+
+
 void Lua_LoadVariables()
 {
 	gi.dprintf("LUA: loading variables...");
 	Lua_RunScript("variables");
-	Lua_RunScript("variables2");
 
 	MAGMINE_DEFAULT_PULL = Lua_GetVariable("MAGMINE_DEFAULT_PULL", -40);
 	MAGMINE_ADDON_PULL = Lua_GetVariable("MAGMINE_ADDON_PULL", -4);
@@ -1386,6 +1449,7 @@ void Lua_LoadVariables()
 	MEDIC_BOLT_AMMO = Lua_GetVariable("MEDIC_BOLT_AMMO", 10);
 	MEDIC_RESURRECT_DELAY = Lua_GetVariable("MEDIC_RESURRECT_DELAY", 1.0);
 	MEDIC_RESURRECT_BONUS = Lua_GetVariable("MEDIC_RESURRECT_BONUS", 0.25);
+
 	P_TANK_PUNCH_RADIUS = Lua_GetVariable("P_TANK_PUNCH_RADIUS", 196);
 	P_TANK_PUNCH_INITIAL_DMG = Lua_GetVariable("P_TANK_PUNCH_INITIAL_DMG", 200);
 	P_TANK_PUNCH_ADDON_DMG = Lua_GetVariable("P_TANK_PUNCH_ADDON_DMG", 20);
@@ -1414,6 +1478,7 @@ void Lua_LoadVariables()
 	P_TANK_REGEN_DELAY = Lua_GetVariable("P_TANK_REGEN_DELAY", 50);
 	P_TANK_AMMOREGEN_FRAMES = Lua_GetVariable("P_TANK_AMMOREGEN_FRAMES", 300);
 	P_TANK_AMMOREGEN_DELAY = Lua_GetVariable("P_TANK_AMMOREGEN_DELAY", 50);
+
 	MUTANT_DELAY = Lua_GetVariable("MUTANT_DELAY", 1);
 	MUTANT_INIT_COST = Lua_GetVariable("MUTANT_INIT_COST", 50);
 	MUTANT_SWING_RANGE = Lua_GetVariable("MUTANT_SWING_RANGE", 64);
@@ -1424,5 +1489,70 @@ void Lua_LoadVariables()
 	MUTANT_INITIAL_JUMP_DMG = Lua_GetVariable("MUTANT_INITIAL_JUMP_DMG", 100);
 	MUTANT_ADDON_JUMP_DMG = Lua_GetVariable("MUTANT_ADDON_JUMP_DMG", 15);
 	MUTANT_JUMPATTACK_RADIUS = Lua_GetVariable("MUTANT_JUMPATTACK_RADIUS", 68);
-	gi.dprintf("done.\n");
+
+	BRAIN_ATTACK_RANGE = Lua_GetIntVariable("BRAIN_ATTACK_RANGE", 256);
+	BRAIN_DEFAULT_TENTACLE_DMG = Lua_GetIntVariable("BRAIN_DEFAULT_TENTACLE_DMG", 40);
+	BRAIN_ADDON_TENTACLE_DMG = Lua_GetIntVariable("BRAIN_ADDON_TENTACLE_DMG", 6);
+	BRAIN_BEAM_COST = Lua_GetIntVariable("BRAIN_BEAM_COST", 2);
+	BRAIN_BEAM_DEFAULT_DMG = Lua_GetIntVariable("BRAIN_BEAM_DEFAULT_DMG", 30);
+	BRAIN_BEAM_ADDON_DMG = Lua_GetIntVariable("BRAIN_BEAM_ADDON_DMG", 2);
+	BRAIN_LOCKON_RANGE = Lua_GetIntVariable("BRAIN_LOCKON_RANGE", 96);
+	BRAIN_INIT_COST = Lua_GetIntVariable("BRAIN_INIT_COST", 50);
+
+	MAX_MINISENTRIES = Lua_GetIntVariable("MAX_MINISENTRIES", 2);
+
+	STRENGTH_BONUS = Lua_GetVariable("STRENGTH_BONUS", 0.08);
+	IMP_STRENGTH_BONUS = Lua_GetVariable("IMP_STRENGTH_BONUS", 0.06);
+
+	CACODEMON_DELAY = Lua_GetIntVariable("CACODEMON_DELAY", 1);
+	CACODEMON_INIT_COST = Lua_GetIntVariable("CACODEMON_INIT_COST", 50);
+	CACODEMON_REFIRE = Lua_GetIntVariable("CACODEMON_REFIRE", 2);
+	CACODEMON_INITIAL_DAMAGE = Lua_GetIntVariable("CACODEMON_INITIAL_DAMAGE", 100);
+	CACODEMON_ADDON_DAMAGE = Lua_GetIntVariable("CACODEMON_ADDON_DAMAGE", 20);
+	CACODEMON_INITIAL_RADIUS = Lua_GetIntVariable("CACODEMON_INITIAL_RADIUS", 125);
+	CACODEMON_ADDON_RADIUS = Lua_GetIntVariable("CACODEMON_ADDON_RADIUS", 0);
+	CACODEMON_ADDON_BURN = Lua_GetVariable("CACODEMON_ADDON_BURN", 1);
+	CACODEMON_SKULL_SPEED = Lua_GetIntVariable("CACODEMON_SKULL_SPEED", 950);
+	CACODEMON_REGEN_FRAMES = Lua_GetIntVariable("CACODEMON_REGEN_FRAMES", 300);
+	CACODEMON_REGEN_DELAY = Lua_GetIntVariable("CACODEMON_REGEN_DELAY", 2);
+	CACODEMON_SKULL_INITIAL_AMMO = Lua_GetIntVariable("CACODEMON_SKULL_INITIAL_AMMO", 10);
+	CACODEMON_SKULL_ADDON_AMMO = Lua_GetVariable("CACODEMON_SKULL_ADDON_AMMO", 0);
+	CACODEMON_SKULL_START_AMMO = Lua_GetIntVariable("CACODEMON_SKULL_START_AMMO", 3);
+	DOMINATION_POINTS = Lua_GetVariable("DOMINATION_POINTS", 500);
+	DOMINATION_CREDITS = Lua_GetVariable("DOMINATION_CREDITS", 350);
+	DOMINATION_AWARD_FRAMES = Lua_GetVariable("DOMINATION_AWARD_FRAMES", 100);
+	DOMINATION_MINIMUM_PLAYERS = Lua_GetVariable("DOMINATION_MINIMUM_PLAYERS", 4);
+	DOMINATION_DEFEND_RANGE = Lua_GetVariable("DOMINATION_DEFEND_RANGE", 512);
+	DOMINATION_DEFEND_BONUS = Lua_GetVariable("DOMINATION_DEFEND_BONUS", 150);
+	DOMINATION_FRAG_POINTS = Lua_GetVariable("DOMINATION_FRAG_POINTS", 150);
+	DOMINATION_CARRIER_BONUS = Lua_GetVariable("DOMINATION_CARRIER_BONUS", 450);
+	DOMINATION_OFFENSE_BONUS = Lua_GetVariable("DOMINATION_OFFENSE_BONUS", 350);
+	BRAIN_DEFAULT_KNOCKBACK = Lua_GetVariable("BRAIN_DEFAULT_KNOCKBACK", -60);
+	BRAIN_ADDON_KNOCKBACK = Lua_GetVariable("BRAIN_ADDON_KNOCKBACK", -2);
+	NATURETOTEM_REFIRE_BASE = Lua_GetVariable("NATURETOTEM_REFIRE_BASE", 5.0);
+	NATURETOTEM_REFIRE_MULT = Lua_GetVariable("NATURETOTEM_REFIRE_MULT", -0.25);
+}
+
+qboolean Lua_StartTableIter(const char* tablename)
+{
+	lua_getglobal(State, tablename);
+
+	if(lua_istable(State, -1))
+	{
+		lua_pushnil(State);
+		return true;
+	}
+
+	return false;
+}
+
+int Lua_IterNextString(char** out)
+{
+	int retval = lua_next(State, -2);
+	if (retval != 0)
+	{
+		*out = strdup(lua_tostring(State, -1));
+		lua_pop(State, 1);
+	}
+	return retval;
 }

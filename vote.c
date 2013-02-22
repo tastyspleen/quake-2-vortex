@@ -44,7 +44,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		case MAPMODE_PVM:
 		{
 			// player versus monsters
-			timelimit = 10+pregame_time->value/60;
+			timelimit = Lua_GetVariable("pvm_timelimit", 10)+pregame_time->value/60;
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
 			gi.cvar_set("ctf", "0");
@@ -63,7 +63,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_DOM:
 		{
-			timelimit = 10+pregame_time->value/60;
+			timelimit = Lua_GetVariable("dom_timelimit", 10)+pregame_time->value/60;
 			// domination mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "1");
@@ -80,7 +80,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_CTF:
 		{
-			timelimit = 10+pregame_time->value/60;
+			timelimit = Lua_GetVariable("ctf_timelimit", 10)+pregame_time->value/60;
 			// ctf mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -97,7 +97,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_FFA:
 		{
-			timelimit = 20+pregame_time->value/60;
+			timelimit = Lua_GetVariable("ffa_timelimit", 15)+pregame_time->value/60;
 			// free for all mode
 			gi.cvar_set("ffa", "1");
 			gi.cvar_set("domination", "0");
@@ -117,7 +117,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_INV:
 		{
-			timelimit = 20+pregame_time->value/60;
+			timelimit = Lua_GetVariable("inv_timelimit", 20)+pregame_time->value/60;
 			// invasion mode
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -134,7 +134,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		break;
 		case MAPMODE_INH:
 		{
-			timelimit = 25+pregame_time->value/60;
+			timelimit = Lua_GetVariable("inh_timelimit", 25)+pregame_time->value/60;
 			// invasion mode - hard
 			gi.cvar_set("ffa", "0");
 			gi.cvar_set("domination", "0");
@@ -165,7 +165,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 		}
 		case MAPMODE_VHW: // vortex holy wars
 			{
-				timelimit = 15+pregame_time->value/60;
+				timelimit = Lua_GetVariable("vhw_timelimit", 10)+pregame_time->value/60;
 				gi.cvar_set("ffa", "0");
 				gi.cvar_set("domination", "0");
 				gi.cvar_set("ctf", "0");
@@ -180,7 +180,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 			}
 		case MAPMODE_TBI:
 			{
-				timelimit = 15+pregame_time->value/60;
+				timelimit = Lua_GetVariable("dts_timelimit", 15)+pregame_time->value/60;
 				gi.cvar_set("ffa", "0");
 				gi.cvar_set("domination", "0");
 				gi.cvar_set("ctf", "0");

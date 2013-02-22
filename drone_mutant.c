@@ -237,8 +237,8 @@ void mutant_hit_left (edict_t *self)
 	vec3_t	aim;
 
 	if (!self->activator->client)
-		damage = 40*self->monsterinfo.level;
-	else damage = 6*self->monsterinfo.level;
+		damage = 20*self->monsterinfo.level;
+	else damage = 10*self->monsterinfo.level;
 
 	VectorSet (aim, 100, self->mins[0], 8);
 	if (fire_hit (self, aim, damage, 100))
@@ -253,8 +253,8 @@ void mutant_hit_right (edict_t *self)
 	vec3_t	aim;
 
 	if (!self->activator->client)
-		damage = 40*self->monsterinfo.level;
-	else damage = 7*self->monsterinfo.level;
+		damage = 16*self->monsterinfo.level;
+	else damage = 12*self->monsterinfo.level;
 
 	VectorSet (aim, 100, self->maxs[0], 8);
 	if (fire_hit (self, aim, damage, 100))

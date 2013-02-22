@@ -240,6 +240,8 @@ void ShutdownGame (void)
 
 #ifndef _WINDOWS
 __attribute__ ((visibility ("default")))
+#else
+__declspec(dllexport) 
 #endif
 game_export_t *GetGameAPI (game_import_t *import)
 {

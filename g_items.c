@@ -470,24 +470,27 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 		 (isMorphingPolt(ent) && strcmp(ent->classname,"ammo_cells") ||
 		 other->myskills.class_num == CLASS_PALADIN)) // and knights, never.
 		 return false;
-	
-	 if (!strcmp(ent->classname,"ammo_shells"))
-		 ent->count = SHELLS_PICKUP;
-	 else if (!strcmp(ent->classname,"ammo_cells"))
-		ent->count = CELLS_PICKUP;
-	 else if (!strcmp(ent->classname,"ammo_slugs"))
-		ent->count = SLUGS_PICKUP;
-	 else if (!strcmp(ent->classname,"ammo_rockets"))
-		ent->count = ROCKETS_PICKUP;
-	 else if (!strcmp(ent->classname,"ammo_bullets"))
-		ent->count = BULLETS_PICKUP;
-	 else if (!strcmp(ent->classname,"ammo_grenades"))
-		ent->count = GRENADES_PICKUP;
 
      if (ent->count)
 		 count = ent->count; 
      else
+	 {
+		 gitem_t *item = ent->item;
+		 if (item->tag == AMMO_SHELLS)
+			item->quantity = SHELLS_PICKUP;
+		else if (item->tag == AMMO_CELLS)
+			item->quantity = CELLS_PICKUP;
+		else if (item->tag == AMMO_SLUGS)
+			item->quantity = SLUGS_PICKUP;
+		else if (item->tag == AMMO_ROCKETS)
+			item->quantity = ROCKETS_PICKUP;
+		else if (item->tag == AMMO_BULLETS)
+			item->quantity = BULLETS_PICKUP;
+		else if (item->tag == AMMO_GRENADES)
+			item->quantity = GRENADES_PICKUP;
+
 		 count = ent->item->quantity; 
+	 }
  
      //Give them the ammo 
     if (!Add_Ammo(other, ent->item, count))  
