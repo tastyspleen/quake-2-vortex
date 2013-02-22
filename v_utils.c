@@ -1605,7 +1605,7 @@ char *V_GetMonsterKind (int mtype)
 
 char *V_GetMonsterName (edict_t *monster)
 {
-	char buf[50];
+	static char buf[50];
 
 	buf[0] = 0;
 

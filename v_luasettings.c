@@ -11,7 +11,7 @@ void Lua_LoadVariables();
 
 void Lua_RunSettingScript(const char* filename)
 {
-	CHECK_LUA_ERR(luaL_loadfile(State, va("%s/settings/%s", game_path->string, filename)));
+	CHECK_LUA_ERR(luaL_loadfile(State, va("%s", filename)));
 	CHECK_LUA_ERR(lua_pcall(State, 0, LUA_MULTRET, 0));
 }
 
@@ -67,6 +67,12 @@ int q2lua_svcmd(lua_State* L)
 	return 0;
 }
 
+int q2lua_reloadvars(lua_State* L)
+{
+	Lua_LoadVariables();
+	return 0;
+}
+
 /* Called at InitGame time */
 void InitLuaSettings()
 {
@@ -82,6 +88,7 @@ void InitLuaSettings()
 		lua_register(State, "cvar_get", q2lua_cvar_get);
 		lua_register(State, "cvar_set", q2lua_cvar_set);
 		lua_register(State, "svcmd", q2lua_svcmd);
+		lua_register(State, "reloadvars", q2lua_reloadvars);
 		lua_atpanic(State, printLuaError);
 	}else
 	{
@@ -89,8 +96,11 @@ void InitLuaSettings()
 		return;
 	}
 
-	Lua_LoadVariables(); // vrxcl 4.2
 	Lua_RunScript("settings");
+	Lua_RunScript("variables");
+
+	Lua_LoadVariables(); // vrxcl 4.2
+
 	gi.dprintf("done.\n");
 
 }
@@ -258,8 +268,6 @@ double GRENADES_PICKUP;
 double ROCKETS_PICKUP;
 double CELLS_PICKUP;
 double SLUGS_PICKUP;
-double AMMO_UP_BASE;
-double AMMO_UP_MULT;
 double CTF_CAPTURE_BONUS;
 double CTF_TEAM_BONUS;
 double CTF_RETURN_FLAG_ASSIST_BONUS;
@@ -843,9 +851,6 @@ double NATURETOTEM_REFIRE_MULT;
 
 void Lua_LoadVariables()
 {
-	gi.dprintf("LUA: loading variables...");
-	Lua_RunScript("variables");
-
 	MAGMINE_DEFAULT_PULL = Lua_GetVariable("MAGMINE_DEFAULT_PULL", -40);
 	MAGMINE_ADDON_PULL = Lua_GetVariable("MAGMINE_ADDON_PULL", -4);
 	RUNE_PICKUP_DELAY = Lua_GetVariable("RUNE_PICKUP_DELAY", 2.0);
@@ -947,8 +952,6 @@ void Lua_LoadVariables()
 	ROCKETS_PICKUP = Lua_GetVariable("ROCKETS_PICKUP", 8);
 	CELLS_PICKUP = Lua_GetVariable("CELLS_PICKUP", 50);
 	SLUGS_PICKUP = Lua_GetVariable("SLUGS_PICKUP", 8);
-	AMMO_UP_BASE = Lua_GetVariable("AMMO_UP_BASE", 1.0);
-	AMMO_UP_MULT = Lua_GetVariable("AMMO_UP_MULT", 0.18);
 	CTF_CAPTURE_BONUS = Lua_GetVariable("CTF_CAPTURE_BONUS", 0.5);
 	CTF_TEAM_BONUS = Lua_GetVariable("CTF_TEAM_BONUS", 1);
 	CTF_RETURN_FLAG_ASSIST_BONUS = Lua_GetVariable("CTF_RETURN_FLAG_ASSIST_BONUS", 1.2);

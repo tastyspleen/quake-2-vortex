@@ -110,7 +110,7 @@ gitem_t	*GetWeaponForNumber(int i)
 void check_for_levelup (edict_t *ent)
 {
 	double points_needed;
-	int plateau_points = Lua_GetIntVariable("PlateauPoints", 50000);
+	int plateau_points = Lua_GetIntVariable("PlateauPoints", 38000);
 	qboolean levelup = false;
 	int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
 

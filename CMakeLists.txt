@@ -56,7 +56,7 @@ if (WIN32 AND VRX_USE_MULTITHREAD)
   set (CC_LINK_LIBS ${CC_LINK_LIBS} pthreadVC2)
 endif ()
 
-if (NOT VRX_REMOVERESPAWNS)
+if (VRX_REMOVERESPAWNS)
   add_definitions(-DREMOVE_RESPAWNS)
 endif ()
 
@@ -91,11 +91,6 @@ target_link_libraries (${CC_LIB_NAME} ${CC_LINK_LIBS})
 # If host is Unix-like, remove "lib" prefix from the library's file name
 if (UNIX)
   add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND mv lib${CC_LIB_NAME}.so ${CC_LIB_NAME}.so)
-endif ()
-
-# If we're on windows. move it one step up.
-if (WIN32)
-  add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND move ${CC_LIB_NAME}.dll ../${CC_LIB_NAME}.dll)
 endif ()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
