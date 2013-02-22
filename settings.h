@@ -155,8 +155,6 @@ extern double GRENADES_PICKUP;
 extern double ROCKETS_PICKUP;
 extern double CELLS_PICKUP;
 extern double SLUGS_PICKUP;
-extern double AMMO_UP_BASE;
-extern double AMMO_UP_MULT;
 extern double CTF_CAPTURE_BONUS;
 extern double CTF_TEAM_BONUS;
 extern double CTF_RETURN_FLAG_ASSIST_BONUS;
