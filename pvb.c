@@ -238,14 +238,6 @@ void AwardBossKill (edict_t *boss)
 		if (!player->inuse)
 			continue;
 
-		// award extra points for the player that did the most damage
-		if (slot && (player == slot->player))
-		{
-			dmgmod = 100*(slot->damage/GetTotalBossDamage(boss));
-			G_PrintGreenText(va("%s got a hi-damage bonus! %d damage (%.1f%c)", 
-				slot->player->client->pers.netname, (int)slot->damage, dmgmod, '%'));
-			exp_points *= BOSS_DAMAGE_BONUSMOD;
-		}
 
 		levelmod = ((float)boss->monsterinfo.level+1) / ((float)player->myskills.level+1);
 
@@ -257,6 +249,16 @@ void AwardBossKill (edict_t *boss)
 
 		exp_points = levelmod*dmgmod*PVB_BOSS_EXPERIENCE;
 		credits = levelmod*dmgmod*PVB_BOSS_CREDITS;
+
+		// award extra points for the player that did the most damage
+		if (slot && (player == slot->player))
+		{
+			dmgmod = 100*(slot->damage/GetTotalBossDamage(boss));
+			G_PrintGreenText(va("%s got a hi-damage bonus! %d damage (%.1f%c)", 
+				slot->player->client->pers.netname, (int)slot->damage, dmgmod, '%'));
+			exp_points *= BOSS_DAMAGE_BONUSMOD;
+		}
+
 
 		if (exp_points > PVB_BOSS_MAX_EXP)
 			exp_points = PVB_BOSS_MAX_EXP;

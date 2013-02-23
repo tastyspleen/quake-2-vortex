@@ -12,7 +12,8 @@ const char* StuffList[] =
 	"alias +sprint sprinton\nalias -sprint sprintoff\n",
 	"alias +shield shieldon\nalias -shield shieldoff\n",
 	"alias +lockon lockon_on\nalias -lockon lockon_off\n",
-	"alias +beam beam_on\nalias -beam beam_off\n"
+	"alias +beam beam_on\nalias -beam beam_off\n",
+	"alias +jetpack thrust on\nalias -jetpack thrust off\n",
 };
 
 const char* CommonAutobind[] = 

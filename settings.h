@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "4.2a"
+#define VRX_VERSION "4.2b"
 
 //4.5 player combat preferences
 #define HOSTILE_PLAYERS				0x00000001			
@@ -739,6 +739,18 @@ extern double BRAIN_DEFAULT_KNOCKBACK;
 extern double BRAIN_ADDON_KNOCKBACK;
 extern double NATURETOTEM_REFIRE_BASE;
 extern double NATURETOTEM_REFIRE_MULT;
+
+extern double SPIKEBALL_INITIAL_HEALTH;
+extern double SPIKEBALL_ADDON_HEALTH;
+extern double SPIKEBALL_INITIAL_DAMAGE;
+extern double SPIKEBALL_ADDON_DAMAGE;
+extern double SPIKEBALL_INITIAL_RANGE;
+extern double SPIKEBALL_MAX_DIST;
+extern double SPIKEBALL_ADDON_RANGE;
+extern double SPIKEBALL_INITIAL_DURATION;
+extern double SPIKEBALL_ADDON_DURATION;
+extern double SPIKEBALL_COST;
+extern double SPIKEBALL_DELAY;
 
 
 #endif
