@@ -84,19 +84,18 @@ const char* SQLITE_VRXSELECT = "SELECT * FROM %s";
 // az begin
 //************************************************
 
+#define QUERY(x) format=x;\
+	r=sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);\
+	r=sqlite3_step(statement);\
+	sqlite3_finalize(statement);
+
 void BeginTransaction(sqlite3* db)
 {
 	char* format;
 	int r;
 	sqlite3_stmt *statement;
 
-	format = "BEGIN TRANSACTION;";
-
-	r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-
-	r = sqlite3_step(statement);
-
-	sqlite3_finalize(statement);
+	QUERY("BEGIN TRANSACTION;");
 }
 
 void CommitTransaction(sqlite3 *db)
@@ -105,13 +104,7 @@ void CommitTransaction(sqlite3 *db)
 	int r;
 	sqlite3_stmt *statement;
 
-	format = "COMMIT;";
-
-	r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-
-	r = sqlite3_step(statement);
-
-	sqlite3_finalize(statement);
+	QUERY("COMMIT;")
 }
 
 
@@ -129,17 +122,10 @@ void VSF_SaveRunes(edict_t *player, char *path)
 
 	BeginTransaction(db);
 
-	format = "DELETE FROM runes_meta;";
+	QUERY( "DELETE FROM runes_meta;" );
 
-	sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-	sqlite3_step(statement);
-	sqlite3_finalize(statement);
 
-	format = "DELETE FROM runes_mods;";
-
-	sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-	sqlite3_step(statement);
-	sqlite3_finalize(statement);
+	QUERY("DELETE FROM runes_mods;");
 
 	//begin runes
 	for (i = 0; i < numRunes; ++i)
@@ -149,7 +135,7 @@ void VSF_SaveRunes(edict_t *player, char *path)
 		{
 			int j;
 
-			format = strdup(va(SQLITE_INSERTRMETA, 
+			QUERY(strdup(va(SQLITE_INSERTRMETA, 
 				index,
 				player->myskills.items[index].itemtype,
 				player->myskills.items[index].itemLevel,
@@ -159,25 +145,19 @@ void VSF_SaveRunes(edict_t *player, char *path)
 				player->myskills.items[index].name,
 				player->myskills.items[index].numMods,
 				player->myskills.items[index].setCode,
-				player->myskills.items[index].classNum));
+				player->myskills.items[index].classNum)));
 
-			r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-			r = sqlite3_step(statement);
-			sqlite3_finalize(statement);
 			free (format);
 
 			for (j = 0; j < MAX_VRXITEMMODS; ++j)
 			{
-				format = strdup(va(SQLITE_INSERTRMOD, 
+				QUERY( strdup(va(SQLITE_INSERTRMOD, 
 					index,
 					player->myskills.items[index].modifiers[j].type,
 					player->myskills.items[index].modifiers[j].index,
 					player->myskills.items[index].modifiers[j].value,
-					player->myskills.items[index].modifiers[j].set));
+					player->myskills.items[index].modifiers[j].set)) );
 
-				r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-				r = sqlite3_step(statement);
-				sqlite3_finalize(statement);
 				free (format);
 			}
 		}
@@ -211,17 +191,12 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 		gi.dprintf("SQLite: creating initial database [%d]... ", r);
 		for (i = 0; i < TOTAL_TABLES; i++)
 		{
-			r = sqlite3_prepare_v2(db, SQLITE_CREATEDBQUERY[i], strlen(SQLITE_CREATEDBQUERY[i]), &statement, NULL);
-			r = sqlite3_step(statement);
-			sqlite3_finalize(statement); // finish using statement
+			QUERY(SQLITE_CREATEDBQUERY[i])
 		}
 
 		for (i = 0; i < TOTAL_INSERTONCE; i++)
 		{
-			int len = strlen(SQLITE_INSERTONCE[i]);
-			r = sqlite3_prepare_v2(db, SQLITE_INSERTONCE[i], len, &statement, NULL); // reset tables
-			r = sqlite3_step(statement);
-			sqlite3_finalize(statement); // finish using statement
+			QUERY(SQLITE_INSERTONCE[i]);
 		}
 		gi.dprintf("inserted bases.\n", r);
 	}
@@ -232,12 +207,10 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 		// reset tables (remove records for reinsertion)
 		for (i = 0; i < TOTAL_RESETTABLES; i++)
 		{
-			r = sqlite3_prepare_v2(db, SQLITE_RESETTABLES[i], strlen(SQLITE_RESETTABLES[i]), &statement, NULL);
-			r = sqlite3_step(statement);
-			sqlite3_finalize(statement); // finish using statement
+			QUERY( SQLITE_RESETTABLES[i] );
 		}
 
-		format = strdup(va(SQLITE_UPDATEUDATA, 
+		QUERY(strdup(va(SQLITE_UPDATEUDATA, 
 		 player->myskills.title,
 		 playername,
 		 player->myskills.password,
@@ -246,23 +219,16 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
  		 player->myskills.member_since,
 		 player->myskills.last_played,
 		 player->myskills.total_playtime,
- 		 player->myskills.playingtime));
+ 		 player->myskills.playingtime)));
 
- 		 r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
- 		 r = sqlite3_step(statement);
-		 sqlite3_finalize(statement); // finish using statement
 		 free (format);
 
 		// talents
 		for (i = 0; i < player->myskills.talents.count; ++i)
 		{
-			format = strdup(va(SQLITE_INSERTTALENT, player->myskills.talents.talent[i].id,
+			QUERY( strdup(va(SQLITE_INSERTTALENT, player->myskills.talents.talent[i].id,
 				player->myskills.talents.talent[i].upgradeLevel,
-				player->myskills.talents.talent[i].maxLevel));
-			
-			r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-			r = sqlite3_step(statement);
-			sqlite3_finalize(statement);
+				player->myskills.talents.talent[i].maxLevel)) );
 			free (format);
 		}
 
@@ -298,7 +264,7 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 		//in-game stats
 		//*****************************
 
-		format = strdup(va(SQLITE_UPDATECDATA, 
+		QUERY(strdup(va(SQLITE_UPDATECDATA, 
 		 player->myskills.weapon_respawns,
 		 player->myskills.current_health,
 		 MAX_HEALTH(player),
@@ -306,18 +272,15 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
   		 MAX_ARMOR(player),
  		 player->myskills.nerfme,
 		 player->myskills.administrator, // flags
-		 player->myskills.boss));
+		 player->myskills.boss)));
 
-		r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);
-		r = sqlite3_step(statement);
-		sqlite3_finalize(statement);
 		free (format);
 
 		//*****************************
 		//stats
 		//*****************************
 
-		format = strdup(va(SQLITE_UPDATESTATS, 
+		QUERY( strdup(va(SQLITE_UPDATESTATS, 
 		 player->myskills.shots,
 		 player->myskills.shots_hit,
 		 player->myskills.frags,
@@ -329,18 +292,15 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 		 player->myskills.break_spree_wars,
 		 player->myskills.suicides,
 		 player->myskills.teleports,
-		 player->myskills.num_2fers));
+		 player->myskills.num_2fers)) );
 
-		r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-		r = sqlite3_step(statement);
-		sqlite3_finalize(statement);
 		free (format);
 		
 		//*****************************
 		//standard stats
 		//*****************************
 		
-		format = strdup(va(SQLITE_UPDATEPDATA, 
+		QUERY( strdup(va(SQLITE_UPDATEPDATA, 
 		 player->myskills.experience,
 		 player->myskills.next_level,
          player->myskills.level,
@@ -349,11 +309,8 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
  		 player->myskills.credits,
 		 player->myskills.weapon_points,
 		 player->myskills.respawn_weapon,
-		 player->myskills.talents.talentPoints));
+		 player->myskills.talents.talentPoints)) );
 		
-		r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-		r = sqlite3_step(statement);
-		sqlite3_finalize(statement);
 		free (format);
 
 		//begin weapons
@@ -363,27 +320,20 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 			if (index != -1)
 			{
 				int j;
-				format = strdup(va(SQLITE_INSERTWMETA, 
+				QUERY( strdup(va(SQLITE_INSERTWMETA, 
 				 index,
-				 player->myskills.weapons[index].disable));			
+				 player->myskills.weapons[index].disable)));			
 				
-				r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-				r = sqlite3_step(statement);
-				sqlite3_finalize(statement);
 				free (format);
 
 				for (j = 0; j < MAX_WEAPONMODS; ++j)
 				{
-					format = strdup(va(SQLITE_INSERTWMOD, 
+					QUERY( strdup(va(SQLITE_INSERTWMOD, 
 						index,
 						j,
 					    player->myskills.weapons[index].mods[j].level,
 					    player->myskills.weapons[index].mods[j].soft_max,
-					    player->myskills.weapons[index].mods[j].hard_max));
-
-					r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-					r = sqlite3_step(statement);
-					sqlite3_finalize(statement);
+					    player->myskills.weapons[index].mods[j].hard_max)) );
 					free (format);
 				}
 			}
@@ -398,7 +348,7 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 			{
 				int j;
 
-				format = strdup(va(SQLITE_INSERTRMETA, 
+				QUERY( strdup(va(SQLITE_INSERTRMETA, 
 				 index,
 				 player->myskills.items[index].itemtype,
 				 player->myskills.items[index].itemLevel,
@@ -408,43 +358,34 @@ qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* 
 				 player->myskills.items[index].name,
 				 player->myskills.items[index].numMods,
 				 player->myskills.items[index].setCode,
-				 player->myskills.items[index].classNum));
+				 player->myskills.items[index].classNum)));
 
-				r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-				r = sqlite3_step(statement);
-				sqlite3_finalize(statement);
 				free (format);
 
 				for (j = 0; j < MAX_VRXITEMMODS; ++j)
 				{
-					format = strdup(va(SQLITE_INSERTRMOD, 
+					QUERY( strdup(va(SQLITE_INSERTRMOD, 
 						index,
 					    player->myskills.items[index].modifiers[j].type,
 					    player->myskills.items[index].modifiers[j].index,
 					    player->myskills.items[index].modifiers[j].value,
-					    player->myskills.items[index].modifiers[j].set));
+					    player->myskills.items[index].modifiers[j].set)) );
 					
-					r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-					r = sqlite3_step(statement);
-					sqlite3_finalize(statement);
 					free (format);
 				}
 			}
 		}
 		//end runes
 
-		format = strdup(va(SQLITE_UPDATECTFSTATS, 
+		QUERY( strdup(va(SQLITE_UPDATECTFSTATS, 
 			player->myskills.flag_pickups,
 			player->myskills.flag_captures,
 			player->myskills.flag_returns,
 			player->myskills.flag_kills,
 			player->myskills.offense_kills,
 			player->myskills.defense_kills,
-			player->myskills.assists));
+			player->myskills.assists)) );
 
-		r = sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL); // insert ability
-		r = sqlite3_step(statement);
-		sqlite3_finalize(statement);
 		free (format);
 
 	} // end saving

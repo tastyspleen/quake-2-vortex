@@ -167,6 +167,31 @@ int Lua_GetIntVariable(char* varname, double default_var)
 	return (int)Lua_GetVariable(varname, default_var);
 }
 
+/* Table Iteration */
+qboolean Lua_StartTableIter(const char* tablename)
+{
+	lua_getglobal(State, tablename);
+
+	if(lua_istable(State, -1))
+	{
+		lua_pushnil(State);
+		return true;
+	}
+
+	return false;
+}
+
+int Lua_IterNextString(char** out)
+{
+	int retval = lua_next(State, -2);
+	if (retval != 0)
+	{
+		*out = strdup(lua_tostring(State, -1));
+		lua_pop(State, 1);
+	}
+	return retval;
+}
+
 /* Mechanical, boring library stuff below. */
 
 double RUNE_PICKUP_DELAY;
@@ -847,6 +872,17 @@ double BRAIN_DEFAULT_KNOCKBACK;
 double BRAIN_ADDON_KNOCKBACK;
 double NATURETOTEM_REFIRE_BASE;
 double NATURETOTEM_REFIRE_MULT;
+double SPIKEBALL_INITIAL_HEALTH;
+double SPIKEBALL_ADDON_HEALTH;
+double SPIKEBALL_INITIAL_DAMAGE;
+double SPIKEBALL_ADDON_DAMAGE;
+double SPIKEBALL_INITIAL_RANGE;
+double SPIKEBALL_MAX_DIST;
+double SPIKEBALL_ADDON_RANGE;
+double SPIKEBALL_INITIAL_DURATION;
+double SPIKEBALL_ADDON_DURATION;
+double SPIKEBALL_COST;
+double SPIKEBALL_DELAY;
 
 
 void Lua_LoadVariables()
@@ -1534,28 +1570,16 @@ void Lua_LoadVariables()
 	BRAIN_ADDON_KNOCKBACK = Lua_GetVariable("BRAIN_ADDON_KNOCKBACK", -2);
 	NATURETOTEM_REFIRE_BASE = Lua_GetVariable("NATURETOTEM_REFIRE_BASE", 5.0);
 	NATURETOTEM_REFIRE_MULT = Lua_GetVariable("NATURETOTEM_REFIRE_MULT", -0.25);
-}
+	SPIKEBALL_INITIAL_HEALTH = Lua_GetVariable("SPIKEBALL_INITIAL_HEALTH", 100);
+	SPIKEBALL_ADDON_HEALTH = Lua_GetVariable("SPIKEBALL_ADDON_HEALTH", 10);
+	SPIKEBALL_INITIAL_DAMAGE = Lua_GetVariable("SPIKEBALL_INITIAL_DAMAGE", 50);
+	SPIKEBALL_ADDON_DAMAGE = Lua_GetVariable("SPIKEBALL_ADDON_DAMAGE", 20);
+	SPIKEBALL_INITIAL_RANGE = Lua_GetVariable("SPIKEBALL_INITIAL_RANGE", 1024);
+	SPIKEBALL_MAX_DIST = Lua_GetVariable("SPIKEBALL_MAX_DIST", 1024);
+	SPIKEBALL_ADDON_RANGE = Lua_GetVariable("SPIKEBALL_ADDON_RANGE", 0);
+	SPIKEBALL_INITIAL_DURATION = Lua_GetVariable("SPIKEBALL_INITIAL_DURATION", 9999);
+	SPIKEBALL_ADDON_DURATION = Lua_GetVariable("SPIKEBALL_ADDON_DURATION", 0);
+	SPIKEBALL_COST = Lua_GetVariable("SPIKEBALL_COST", 25);
+	SPIKEBALL_DELAY = Lua_GetVariable("SPIKEBALL_DELAY", 1.0);
 
-qboolean Lua_StartTableIter(const char* tablename)
-{
-	lua_getglobal(State, tablename);
-
-	if(lua_istable(State, -1))
-	{
-		lua_pushnil(State);
-		return true;
-	}
-
-	return false;
-}
-
-int Lua_IterNextString(char** out)
-{
-	int retval = lua_next(State, -2);
-	if (retval != 0)
-	{
-		*out = strdup(lua_tostring(State, -1));
-		lua_pop(State, 1);
-	}
-	return retval;
 }

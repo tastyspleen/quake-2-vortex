@@ -2855,18 +2855,6 @@ void Cmd_TossMirv (edict_t *ent)
 	ent->client->pers.inventory[power_cube_index] -= cost;
 }
 
-#define SPIKEBALL_INITIAL_HEALTH	100
-#define SPIKEBALL_ADDON_HEALTH		10
-#define SPIKEBALL_INITIAL_DAMAGE	50
-#define SPIKEBALL_ADDON_DAMAGE		20
-#define SPIKEBALL_INITIAL_RANGE		1024		// search range (should always be less than or equal to max dist)
-#define SPIKEBALL_MAX_DIST			1024		// maximum distance between enemy and activator
-#define SPIKEBALL_ADDON_RANGE		0
-#define SPIKEBALL_INITIAL_DURATION	9999
-#define SPIKEBALL_ADDON_DURATION	0
-#define SPIKEBALL_COST				25
-#define SPIKEBALL_DELAY				1.0
-
 void organ_remove (edict_t *self, qboolean refund);
 
 void spikeball_findtarget (edict_t *self)

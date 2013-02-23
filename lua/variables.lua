@@ -673,6 +673,17 @@ BRAIN_DEFAULT_KNOCKBACK                  = -60
 BRAIN_ADDON_KNOCKBACK                    = -2
 NATURETOTEM_REFIRE_BASE                  = 5.0
 NATURETOTEM_REFIRE_MULT                  = -0.25
+SPIKEBALL_INITIAL_HEALTH                 = 100
+SPIKEBALL_ADDON_HEALTH                   = 10
+SPIKEBALL_INITIAL_DAMAGE                 = 50
+SPIKEBALL_ADDON_DAMAGE                   = 20
+SPIKEBALL_INITIAL_RANGE                  = 1024
+SPIKEBALL_MAX_DIST                       = 1024
+SPIKEBALL_ADDON_RANGE                    = 0
+SPIKEBALL_INITIAL_DURATION               = 9999
+SPIKEBALL_ADDON_DURATION                 = 0
+SPIKEBALL_COST                           = 25
+SPIKEBALL_DELAY                          = 1.0
 
 
 

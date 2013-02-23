@@ -309,8 +309,6 @@ typedef struct
 #define WEAP_BFG				11
 #define WEAP_PHALANX			12
 
-#define WEAP_TOTAL				12
-
 #define WEAP_BOOMER				13
 
 #define WEAP_DISRUPTOR			12		// PGM
@@ -322,6 +320,8 @@ typedef struct
 #define WEAP_TRAP				17
 
 #define WEAP_GRAPPLE			20
+
+#define WEAP_TOTAL				21
 
 #define MPI_QUAD				21
 #define	MPI_PENTA				22
