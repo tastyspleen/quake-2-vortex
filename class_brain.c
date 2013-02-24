@@ -21,37 +21,6 @@ qboolean BrainValidTarget (edict_t *self, edict_t *target)
 	if (!nearfov(self, target, 45, 45))
 		return false;
 	return true;
-
-	/*
-	if (!G_EntIsAlive(target))
-		return false;
-	if (target == self)
-		return false;
-	// don't target players with invulnerability
-	if (target->client && (target->client->invincible_framenum > level.framenum))
-		return false;
-	// don't target spawning players
-	if (target->client && (target->client->respawn_time > level.time))
-		return false;
-	// don't target players in chat-protect
-	if (!ptr->value && target->client && (target->flags & FL_CHATPROTECT))
-		return false;
-	// don't target spawning world monsters
-	if (target->activator && !target->activator->client && (target->svflags & SVF_MONSTER) 
-		&& (target->deadflag != DEAD_DEAD) && (target->nextthink-level.time > 2*FRAMETIME))
-		return false;
-	// target must be visible
-	if (!visible(self, target))
-		return false;
-	// target must be within range of attack
-	if (entdist(self, target) > BRAIN_ATTACK_RANGE)
-		return false;
-	// target must be within attack fov
-	if (!nearfov(self, target, 45, 45))
-		return false;
-	return (!(target->flags & FL_GODMODE) && !que_typeexists(target->curses, CURSE_FROZEN)
-		&& !OnSameTeam(self, target));
-	*/
 }
 
 void magmine_seteffects (edict_t *self)

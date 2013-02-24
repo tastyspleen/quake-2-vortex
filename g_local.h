@@ -112,7 +112,13 @@ extern long FLAG_FRAMES;
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
 
+#ifdef FIXED_FT
 #define	FRAMETIME		0.1
+#define ft(x)			x
+#else
+#define FRAMETIME		(1/sv_fps->value)
+#define ft(x)			(int)(x*10/sv_fps->value)
+#endif
 
 // memory tags to allow dynamic memory to be cleaned up
 #define	TAG_GAME	765		// clear when unloading the dll
@@ -401,6 +407,7 @@ typedef struct
 typedef struct
 {
 	int			framenum;
+	int			real_framenum;
 	float		time;
 
 	char		level_name[MAX_QPATH];	// the descriptive name (Outer Base, etc)
@@ -845,16 +852,7 @@ extern cvar_t *nextlevel_mult;
 
 extern cvar_t *vrx_creditmult;
 extern cvar_t *vrx_pointmult;
-extern cvar_t *vrx_pvppointmult;
-extern cvar_t *vrx_pvmpointmult;
 
-// az
-extern cvar_t *vrx_sub10mult;
-extern cvar_t *vrx_over10mult;
-// az end
-
-extern cvar_t *vrx_pvpcreditmult;
-extern cvar_t *vrx_pvmcreditmult;
 
 extern cvar_t *sv_maplist;
 extern cvar_t *flood_msgs;
@@ -926,8 +924,6 @@ extern cvar_t *world_min_shells;
 extern cvar_t *world_min_grenades;
 extern cvar_t *world_min_rockets;
 extern cvar_t *world_min_slugs;
-extern cvar_t *adminctrl;
-extern cvar_t *generalabmode;
 //K03 End
 
 //ZOID
@@ -937,6 +933,20 @@ extern	qboolean	is_quad;
 // az begin
 extern cvar_t *savemethod;
 extern cvar_t *tbi;
+
+extern cvar_t  *sv_fps;
+
+extern cvar_t *vrx_pvppointmult;
+extern cvar_t *vrx_pvmpointmult;
+
+extern cvar_t *vrx_sub10mult;
+extern cvar_t *vrx_over10mult;
+
+extern cvar_t *adminctrl;
+extern cvar_t *generalabmode;
+
+extern cvar_t *vrx_pvpcreditmult;
+extern cvar_t *vrx_pvmcreditmult;
 // az end
 
 #define world	(&g_edicts[0])
@@ -2310,6 +2320,14 @@ void SaveAllPlayers();
 // v_sqlite_character.c
 qboolean VSF_SavePlayer(edict_t *player, char *path, qboolean fileexists, char* playername);
 qboolean VSF_LoadPlayer(edict_t *player, char* path);
+
+// v_sqlite_unidb.c
+void VSFU_SavePlayer(edict_t *player);
+void VSFU_SaveRunes(edict_t *player);
+qboolean VSFU_LoadPlayer(edict_t *player);
+void V_VSFU_StartConn();
+void V_VSFU_Cleanup();
+int VSFU_GetID(char *playername);
 
 // missing definitions
 void OpenModeMenu(edict_t *ent);

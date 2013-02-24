@@ -179,7 +179,7 @@ void CTF_SummonableCheck (edict_t *self)
 		return;
 
 	// update every second
-	if (level.framenum % 10)
+	if (level.framenum % (int)sv_fps->value)
 		return;
 
 	//gi.dprintf("CTF_SummonableCheck()\n");

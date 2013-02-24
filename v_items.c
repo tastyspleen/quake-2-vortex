@@ -833,6 +833,9 @@ void PurchaseRandomRune(edict_t *ent, int runetype)
 		memset(path, 0, strlen(path));
 		VRXGetPath(path, ent);
 		VSF_SaveRunes(ent, path);
+	}else if (savemethod->value == 3)
+	{
+		VSFU_SaveRunes(ent);
 	}
 
 	//write to the log
