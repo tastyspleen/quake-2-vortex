@@ -125,6 +125,10 @@ void TradeItems(edict_t *player1, edict_t *player2)
 		VRXGetPath(path, player2);
 		VSF_SaveRunes(player2, path);
 
+	}else if (savemethod->value == 3)
+	{
+		VSFU_SaveRunes(player1);
+		VSFU_SaveRunes(player2);
 	}
 #ifndef NO_GDS
 	else if (savemethod->value == 2)

@@ -220,10 +220,12 @@ void ShutdownGame (void)
 	{
 		//ent->myskills.inuse = 0;
 #if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
-		SaveCharacterQuit(ent); //WriteMyCharacter(ent);
-#else
-		SaveCharacter(ent);
+		if (savemethod->value == 2)
+			SaveCharacterQuit(ent); //WriteMyCharacter(ent);
+		else
 #endif
+			SaveCharacter(ent);
+
 	}
 
 
@@ -918,17 +920,23 @@ void G_RunFrame (void)
 	int		i;//j;
 	static int ofs;
 	static float next_fragadd = 0;
+	qboolean delta = false;
 	edict_t	*ent;
 	qboolean haveflag;
 
 #if (defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	ProcessQueue(NULL);
 #endif
-	//vec3_t	v,vv;
-//	gitem_t	*item;
 
-	level.framenum++;
-	level.time = level.framenum*FRAMETIME;
+
+	level.real_framenum++;
+
+	if (!(level.real_framenum % (int)(sv_fps->value/10)))
+	{
+		delta = true;
+		level.framenum++;
+	}
+	level.time = level.real_framenum*FRAMETIME;
 
 	// choose a client for monsters to target this frame
 //	AI_SetSightClient ();
@@ -949,6 +957,10 @@ void G_RunFrame (void)
 #ifndef OLD_VOTE_SYSTEM // Paril
 	RunVotes();
 #endif
+
+	if (!delta)
+		return;
+
 	//
 	// treat each object in turn
 	// even the world gets a chance to think
@@ -976,6 +988,7 @@ void G_RunFrame (void)
 				M_CheckGround (ent);
 			}
 		}
+
 
 		if (i > 0 && i <= maxclients->value && !(ent->svflags & SVF_MONSTER))
 		{

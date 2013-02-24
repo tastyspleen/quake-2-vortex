@@ -630,6 +630,10 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 #endif
 		if (savemethod->value == 1)
 			SaveCharacter(ent);
+		else if (savemethod->value == 3)
+		{
+			VSFU_SaveRunes(ent);
+		}
 		else if (savemethod->value == 0)
 		{
 			char path[MAX_QPATH];
@@ -786,6 +790,13 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 			else if (savemethod->value == 2)
 				V_GDS_Queue_Add(ent, GDS_SAVERUNES);
 #endif
+			else if (savemethod->value == 3)
+			{
+				char path[MAX_QPATH];
+				memset(path, 0, strlen(path));
+				VRXGetPath(path, ent);
+				VSFU_SaveRunes(ent);
+			}
 			safe_cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);
 			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/gold.wav"), 1, ATTN_NORM, 0);
 		}

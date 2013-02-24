@@ -187,6 +187,9 @@ is loaded.
 // az begin
 void InitHash ();
 void InitializeAbilityList();
+
+// q2pro gmf
+#define GMF_VARIABLE_FPS            0x00000800
 // az end
 
 void InitGame (void)
@@ -201,7 +204,9 @@ void InitGame (void)
 
 	// az begin
 
-	savemethod = gi.cvar ("savemethod", "0", 0);
+	gi.cvar_forceset("g_features", va("%d", GMF_VARIABLE_FPS));
+
+	savemethod = gi.cvar ("savemethod", "3", 0);
 	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
 	game_path = gi.cvar ("game", ".", CVAR_LATCH);
 
@@ -218,11 +223,16 @@ void InitGame (void)
 		V_GDS_StartConn(); // start connection to db
 #else
 		gi.dprintf("This server does not support MySQL. Forcing offline saving via SQLite.\n");
-		gi.cvar_forceset("savemethod", "0");
+		gi.cvar_forceset("savemethod", "3");
 #endif
 	}
 	else
 		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
+
+	if (savemethod->value == 3)
+	{
+		V_VSFU_StartConn(); // open up sqlite single connection database
+	}
 
 #if (!defined GDS_NOMULTITHREADING) && (!defined NO_GDS)
 	Mem_PrepareMutexes();
@@ -245,7 +255,7 @@ void InitGame (void)
 	gun_y = gi.cvar ("gun_y", "0", 0);
 	gun_z = gi.cvar ("gun_z", "0", 0);
 
-	//sv_fps = gi.cvar("sv_fps", "30", CVAR_LATCH);
+	sv_fps = gi.cvar("sv_fps", "10", CVAR_LATCH);
 
 	//FIXME: sv_ prefix is wrong for these
 	sv_rollspeed = gi.cvar ("sv_rollspeed", "200", 0);

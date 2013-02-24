@@ -689,9 +689,11 @@ qboolean SavePlayer(edict_t *ent)
 		}
 	
 	// save the player
-	if (savemethod->value == 1)
+	if (savemethod->value == 3)
+		VSFU_SavePlayer(ent);
+	else if (savemethod->value == 1)
 		WritePlayer_v1(fwrite, ent->client->pers.netname, ent);	
-	else
+	else if (savemethod->value == 0)
 		VSF_SavePlayer(ent, path, file_exists, ent->client->pers.netname);
 	
 
@@ -731,11 +733,25 @@ qboolean openPlayer(edict_t *ent)
 	else if (savemethod->value == 1)
 		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
-	//Open file for loading
-	if ((fread = fopen(path, "rb")) == NULL)
+	if (savemethod->value != 3)
 	{
-		gi.dprintf("INFO: openPlayer can't open %s. This probably means the file does not exist.\n", path);
-		return false;
+		//Open file for loading
+		if ((fread = fopen(path, "rb")) == NULL)
+		{
+
+			gi.dprintf("INFO: openPlayer can't open %s. This probably means the file does not exist.\n", path);
+			return false;
+
+		}
+	}else
+	{
+		V_VSFU_StartConn();
+		if (VSFU_GetID(ent->client->pers.netname) == -1)
+		{
+			gi.dprintf("INFO: Player %s does not exist in the database.\n", ent->client->pers.netname);
+			return false;
+		}
+		V_VSFU_Cleanup();
 	}
 
 	//disable all abilities
@@ -747,7 +763,11 @@ qboolean openPlayer(edict_t *ent)
 	if (savemethod->value == 0)
 	{
 		return VSF_LoadPlayer(ent, path); // end right here- we're doing sqlite
-	}else if (savemethod->value == 2)
+	}else if (savemethod->value == 3)
+	{
+		return VSFU_LoadPlayer(ent);
+	}
+	else if (savemethod->value == 2)
 	{
 		// We can't load characters from mysql THIS way so
 		// what we do is disallow it unless we have

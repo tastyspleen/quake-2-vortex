@@ -2248,7 +2248,7 @@ void drone_think (edict_t *self)
 	
 	// this must come before M_MoveFrame() because a monster's dead
 	// function may set the nextthink to 0
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + 0.1;
 
 	M_MoveFrame (self);
 	M_CatagorizePosition (self);

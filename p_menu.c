@@ -324,7 +324,7 @@ void JoinTheGame (edict_t *ent)
 		return;
 	}
 
-	if (savemethod->value < 2)
+	if (savemethod->value != 2)
 		returned = OpenConfigFile(ent);
 	else
 	{
@@ -358,7 +358,7 @@ void joinmenu_handler (edict_t *ent, int option)
 		gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/startup.wav"), 1, ATTN_NORM, 0);
 		//If no GDS is running, join the game right away.
 #ifndef NO_GDS
-		if(savemethod->value < 2)
+		if(savemethod->value != 2)
 #endif
 			JoinTheGame(ent);
 #ifndef NO_GDS
