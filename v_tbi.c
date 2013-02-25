@@ -7,8 +7,8 @@ void TBI_Reinitialize();
 #define TBI_SPAWN_HEALTH (15000 + (250 * AveragePlayerLevel()))
 #define TBI_MAX_SPAWNS	 16
 #define TBI_MIN_PLAYERS	 4
-#define DESTROYSPAWN_EXP (pow(self->monsterinfo.level, 1.3) / 7 * 50)
-#define ROUNDEND_EXP 220 * pow(AveragePlayerLevel(), 1.3) / 6
+#define DESTROYSPAWN_EXP (pow(self->monsterinfo.level, 1.3) / 7 * 80)
+#define ROUNDEND_EXP 250 * pow(AveragePlayerLevel(), 1.4) / 5
 
 typedef struct
 {

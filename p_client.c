@@ -2335,7 +2335,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 
 	value = Info_ValueForKey (userinfo, "name");
 
-	if (strlen(value) < 5)
+	if (strlen(value) < 3)
 	{
 		Info_SetValueForKey(userinfo, "rejmsg", "Your nickname must be at least 5 characters long.");
 		return false;

@@ -31,14 +31,13 @@ const char* VSFU_CREATEDBQUERY[TOTAL_TABLES] =
 };
 
 // SAVING
-const char* VSFU_INSERTONCE[TOTAL_INSERTONCE] = 
-{
-	{"INSERT INTO character_data VALUES (%d,0,0,0,0,0,0,0,0)"},
-	{"INSERT INTO ctf_stats VALUES (%d,0,0,0,0,0,0,0)"},
-	{"INSERT INTO game_stats VALUES (%d,0,0,0,0,0,0,0,0,0,0,0,0)"},
-	{"INSERT INTO point_data VALUES (%d,0,0,0,0,0,0,0,0,0)"},
-	{"INSERT INTO userdata VALUES (%d,\"\",\"\",\"\",\"\",\"\",\"\",\"\",0,0)"}
-};
+
+const char *CA = "INSERT INTO character_data VALUES (%d,0,0,0,0,0,0,0,0)";
+const char *CB = "INSERT INTO ctf_stats VALUES (%d,0,0,0,0,0,0,0)";
+const char *CC = "INSERT INTO game_stats VALUES (%d,0,0,0,0,0,0,0,0,0,0,0,0)";
+const char *CD = "INSERT INTO point_data VALUES (%d,0,0,0,0,0,0,0,0,0)";
+const char *CE = "INSERT INTO userdata VALUES (%d,\"\",\"\",\"\",\"\",\"\",\"\",\"\",0,0)";
+
 const char* VSFU_RESETTABLES[TOTAL_RESETTABLES] =
 {
 	{"DELETE FROM abilities WHERE char_idx=%d;"},
@@ -81,7 +80,7 @@ const char* VSFU_UPDATEPDATA = "UPDATE point_data SET exp=%d, exptnl=%d, level=%
 const char* VSFU_UPDATECTFSTATS = "UPDATE ctf_stats SET flag_pickups=%d, flag_captures=%d, flag_returns=%d, flag_kills=%d, offense_kills=%d, defense_kills=%d, assists=%d WHERE char_idx=%d;";
 
 #define rck() if(r!=SQLITE_OK){\
-	if(r == 21 || r == 1)\
+	if(r != SQLITE_ROW && r != SQLITE_OK && r != SQLITE_DONE)\
 	gi.dprintf("sqlite error %d: %s\n", r, sqlite3_errmsg(db)); }
 
 #define QUERY(x) format=x;\
@@ -233,13 +232,29 @@ void VSFU_SavePlayer(edict_t *player)
 
 	if (id == -1)
 	{
+
 		// Create initial database.
 		id = VSFU_NewID();
 		
 		gi.dprintf("SQLite (single mode): creating initial data for player id %d..", id);
-		for (i = 0; i < TOTAL_INSERTONCE; i++)
+		
+		if (!Lua_GetIntVariable("useMysqlTablesOnSQLite", 0))
 		{
-			QUERY(va (VSFU_INSERTONCE[i], id));
+			for (i = 0; i < TOTAL_INSERTONCE; i++)
+			{
+				QUERY(va (CA, id));
+				QUERY(va (CB, id));
+				QUERY(va (CC, id));
+				QUERY(va (CD, id));
+				QUERY(va (CE, id));
+			}
+		}else
+		{
+			QUERY(va (CA, id));
+			QUERY(va (CB, id));
+			QUERY(va (CC, id));
+			QUERY(va (CD, id));
+			QUERY(va("INSERT INTO userdata VALUES (%d,\"\",\"\",\"\",\"\",\"\",\"\",\"\",0,0,0)", id));
 		}
 		gi.dprintf("inserted bases.\n", r);
 	}

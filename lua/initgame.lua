@@ -1,10 +1,17 @@
 q2print("Lua: Assigning nolag cvar.\n")
 
 is_pvm = ((cvar_get("pvm", "0") ~= "0") or (cvar_get("invasion", "0") ~= "0"))
+is_invasion = (cvar_get("invasion", "0") ~= "0")
+
+UsePathfinding = 0
 
 if is_pvm then
     cvar_set("nolag", "1")
 	q2dofile("variables_pvm")
+	if is_invasion then
+		q2print("INFO: Using grid pathfinding.\n")
+		UsePathfinding = 1
+	end
 else
 	cvar_set("nolag", "0")
 	q2dofile("variables_pvp")
