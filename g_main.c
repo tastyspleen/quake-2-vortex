@@ -457,10 +457,11 @@ void VortexEndLevel (void)
 		VortexRemovePlayerSummonables(tempent);
 		tempent->myskills.streak = 0;
 #ifndef NO_GDS
-		SaveCharacterQuit(tempent);
-#else
-		SaveCharacter(tempent);
+		if (savemethod->value == 2)
+			SaveCharacterQuit(tempent);
+		else
 #endif
+			SaveCharacter(tempent);
 		if (G_EntExists(tempent))
 			WriteToLogfile(tempent, "Logged out.\n");
 		else
