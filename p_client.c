@@ -1059,7 +1059,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 				{
 					// do the damage
 					self->exploded = true; // make sure we don't do it more than once
-					T_RadiusDamage(self, self, SELFDESTRUCT_BONUS * talentLevel, self, SELFDESTRUCT_RADIUS * talentLevel, MOD_SELFDESTRUCT);
+					T_RadiusDamage(self, self, SELFDESTRUCT_BONUS*0.7 * talentLevel, self, SELFDESTRUCT_RADIUS*0.6 * talentLevel, MOD_SELFDESTRUCT);
 
 					// GO BOOM!
 					gi.WriteByte (svc_temp_entity);

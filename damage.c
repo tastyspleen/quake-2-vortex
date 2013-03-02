@@ -527,8 +527,11 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		return 0; // monsters get invincibility and quad in invasion mode
 	if (targ->flags & FL_COCOONED && targ->movetype == MOVETYPE_NONE && targ->svflags & SVF_NOCLIENT)
 		return 0; //4.4 don't hurt cocooned entities
-	if ((isMorphingPolt(attacker)) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
-		return 0; // poltergeist cannot hurt anyone while in human form
+
+	// az: we don't need this clause.
+	// they can't use abilities nor weapons at all already, so this is overkill.
+	/*if ((isMorphingPolt(attacker)) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
+		return 0; // poltergeist cannot hurt anyone while in human form*/
 	
 	if (ffa->value)
 	{

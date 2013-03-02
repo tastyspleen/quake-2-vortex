@@ -406,7 +406,13 @@ void InitializeAbilityList()
 		// iterate through class' ability list
 		while (first->index != -1)
 		{
-			abilities_by_index[first->index] = first;
+			if (abilities_by_index[first->index])
+			{
+				// get the one with the highest softmax
+				if (abilities_by_index[first->index]->softmax < first->softmax) 
+					abilities_by_index[first->index] = first;
+			}else
+				abilities_by_index[first->index] = first;
 			first++;
 		}
 	}
