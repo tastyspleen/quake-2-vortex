@@ -479,9 +479,9 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 
 	exp_points = dmgmod * (level_diff * (vrx_pointmult->value * (base_exp * bonus)) + break_points);
 
-	if (targ->client) // chile v1.1: pvp has another value.
+	if (G_GetClient(targ)) // chile v1.1: pvp has another value.
 		exp_points *= vrx_pvppointmult->value;
-	else if (ffa->value && !targ->client) // Nonplayer entities give more exp.
+	else
 		exp_points *= vrx_pvmpointmult->value;
 
 	if (attacker->myskills.level > 10)

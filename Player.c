@@ -83,7 +83,7 @@ int canJoinGame(edict_t *ent)
 	
 	
 	if (ent->myskills.boss && total_players() < (0.5*maxclients->value) 
-		&& !trading->value && (!pvm->value || !invasion->value)) // trading, pvm or invasion modes means the boss actually can play.
+		&& !trading->value && (!pvm->value || !invasion->value) && IsNewbieBasher(ent)) // trading, pvm or invasion modes means the boss actually can play.
 		return -7; //boss can't play
 
 	if (!strcmp(ent->myskills.player_name, "Player"))
