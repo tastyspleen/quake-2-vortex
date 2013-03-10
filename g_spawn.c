@@ -882,7 +882,6 @@ char *single_statusbar =
 
 char *dm_statusbar =
 "yb	-72 "
-
 // health
 "xl	24 "
 "num 4 1 "
@@ -904,6 +903,7 @@ char *dm_statusbar =
 "endif "
 
 // selected item
+"ifeq 29 0 "
 "if 6 "
 //K03 Begin
 "   xr  -72 "
@@ -911,6 +911,8 @@ char *dm_statusbar =
 //K03 End
 "	xr -24 "
 "	pic 6 "
+"endif "
+
 "endif "
 
 "yb	-50 "
@@ -936,7 +938,7 @@ char *dm_statusbar =
 //K03 End
 "	xl	0 "
 "	pic	9 "
-"   yb -50"
+"   yb -50 "
 "endif "
 
 //  help / weapon icon 
@@ -1000,6 +1002,7 @@ char *dm_statusbar =
 //Rank stuff done
 */
 // az start
+// invasion time left
 "if 21 "
 "   xv 136 "
 "   yv  252 "
@@ -1008,6 +1011,7 @@ char *dm_statusbar =
 "   yv 260 "
 "   num 4 21 "
 "endif "
+// vote notifier
 "if 22 "
 "   xv 0 "
 "   yb  -60 "

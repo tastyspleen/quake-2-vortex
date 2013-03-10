@@ -691,11 +691,6 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 					gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/noammo.wav"), 1, ATTN_NORM, 0);
 					ent->pain_debounce_time = level.time + 1;
 				}
-/*if(ent->client->pers.weapon) gi.bprintf(PRINT_HIGH,"weapon %s %i\n"
-	,ent->client->pers.weapon->pickup_name
-	,ent->client->ammo_index);*/
-//	,ent->client->pers.inventory[ITEM_INDEX(FindItem(ent->client->pers.weapon->ammo))]
-//	);
 				NoAmmoWeaponChange (ent);
 			}
 		}

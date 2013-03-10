@@ -720,7 +720,7 @@ void OpenGeneralMenu (edict_t *ent)
 	addlinetomenu(ent, " ", 0);
 	if (!isMorphingPolt(ent) && 
 		ent->myskills.class_num != CLASS_PALADIN)
-	addlinetomenu(ent, "Set respawn weapon", 4);
+			addlinetomenu(ent, "Set respawn weapon", 4);
 	addlinetomenu(ent, "Set master password", 5);
 	addlinetomenu(ent, "Show character info", 6);
 	addlinetomenu(ent, "Access the armory", 7);

@@ -43,7 +43,7 @@ abildefinition_t SOLDIER_abil[] = {
 };
 
 abildefinition_t DEMON_abil[] = { // DEMON
-	{ VAMPIRE           , 0 , DEFAULT_SOFTMAX   , 0  },
+	{ VAMPIRE           , 0 , INCREASED_SOFTMAX , 0  },
 	{ GHOST             , 0 , DEFAULT_SOFTMAX   , 0  },
 	// { LIFE_DRAIN        , 0 , DEFAULT_SOFTMAX   , 0  },
 	{ FLESH_EATER       , 0 , DEFAULT_SOFTMAX   , 0  },

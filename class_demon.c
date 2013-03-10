@@ -184,7 +184,7 @@ void Cmd_PlayerToCacodemon_f (edict_t *ent)
 		return;
 	}
 
-	if (HasFlag(ent))
+	if (HasFlag(ent) && !hw->value)
 	{
 		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;
@@ -237,6 +237,8 @@ void Cmd_PlayerToCacodemon_f (edict_t *ent)
 
 	ent->client->refire_frames = 0; // reset charged weapon
 	ent->client->weapon_mode = 0; // reset weapon mode
+	ent->client->pers.weapon = NULL;
+	ent->client->ps.gunindex = 0;
 	lasersight_off(ent);
 
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/morph.wav") , 1, ATTN_NORM, 0);

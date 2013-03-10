@@ -2391,6 +2391,7 @@ void Cmd_MapSize_f (edict_t *ent)
 	free(nodes);
 }
 */
+void Lua_AdminLua(edict_t *ent, char* command);
 
 void Cmd_AdminCmd (edict_t *ent)
 {
@@ -2420,6 +2421,15 @@ void Cmd_AdminCmd (edict_t *ent)
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 		return;
 
+	}
+
+	if (!Q_stricmp(cmd1, "lua"))
+	{
+		if (ent->myskills.administrator > 1)
+		{
+			Lua_AdminLua(ent, cmd2);
+		}
+		return;
 	}
 
 	if (!Q_stricmp(cmd1, "reloadvars"))

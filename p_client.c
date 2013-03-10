@@ -1739,10 +1739,6 @@ void respawn (edict_t *self)
 			CopyToBodyQue (self);
 		self->mtype = 0;
 		self->svflags &= ~SVF_NOCLIENT;
-
-		if (self->myskills.respawns != self->client->pers.combat_changed)
-			safe_cprintf(self, PRINT_HIGH, "Combat preferences updated.\n");
-		self->myskills.respawns = self->client->pers.combat_changed;//4.5 use changed combat preferences
 		
 		PutClientInServer (self);
 
@@ -2305,7 +2301,12 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	s = Info_ValueForKey (userinfo, "hand");
 	if (strlen(s))
 	{
-		ent->client->pers.hand = atoi(s);
+		ent->client->pers.hand = 2;
+		if (ent->myskills.class_num > 0)
+		{
+			if ((!isMorphingPolt(ent) || !ent->mtype) && ent->myskills.class_num != CLASS_PALADIN)
+				ent->client->pers.hand = atoi(s);
+		}
 	}
 
 	// save off the userinfo in case we want to check something later
@@ -3849,10 +3850,16 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		ent->flags &= ~FL_CHATPROTECT;
 		if (!PM_PlayerHasMonster(ent))
-			ent->svflags &= ~SVF_NOCLIENT;//4.5
+		{
+			if (!pvm->value)
+			{
+				ent->solid = SOLID_BBOX;
+				ent->svflags &= ~SVF_NOCLIENT;//4.5
+			}
+		}
 
-		// if it's CTF or Domination mode, or FFA mode and the player is hostile against players, teleport them
-		if (ctf->value || domination->value || (ffa->value && V_MatchPlayerPrefs(ent, -1, 1)))
+		// in pvp modes, teleport them.
+		if (!pvm->value)
 			Teleport_them(ent);
 	}
     
@@ -3876,12 +3883,15 @@ void ClientBeginServerFrame (edict_t *ent)
 		}
 	}
 	// initialize chat-protect
-	/*else*/ if (!ptr->value && !domination->value && !ctf->value && !ent->myskills.administrator
-	&& !que_typeexists(ent->curses, 0) && (ent->myskills.streak < SPREE_START))
+	/*else*/ if (!ptr->value && !domination->value && !ctf->value && 
+		!(hw->value && HasFlag(ent))  // the game isn't holywars and the player doesn't have the flag
+		&& !ent->myskills.administrator // Not an admin
+		&& !que_typeexists(ent->curses, 0)  // Not cursed
+		&& (ent->myskills.streak < SPREE_START)) // Not on a spree
 	{
 		if(!((!ent->myskills.abilities[CLOAK].disable) && ((ent->myskills.abilities[CLOAK].current_level > 0))))
 		{
-			if (!trading->value || ent->automag) // trading mode no chat protection or if automagging either
+			if (!trading->value && !ent->automag) // trading mode no chat protection or if automagging either
 			{
 				if (ent->client->idle_frames == CHAT_PROTECT_FRAMES-100)
 					gi.centerprintf(ent, "10 seconds to chat-protect.\n");
@@ -3892,7 +3902,11 @@ void ClientBeginServerFrame (edict_t *ent)
 				{
 					gi.centerprintf(ent, "Now in chat-protect mode.\n");
 					ent->flags |= FL_CHATPROTECT;
-					ent->svflags |= SVF_NOCLIENT;//4.5
+					if (!pvm->value)
+					{
+						ent->solid = SOLID_NOT;
+						ent->svflags |= SVF_NOCLIENT;//4.5
+					}
 					VortexRemovePlayerSummonables(ent);
 					//3.0 Remove all active auras when entering chat protect
 					AuraRemove(ent, 0);

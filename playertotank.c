@@ -704,7 +704,7 @@ void Cmd_PlayerToTank_f (edict_t *ent)
 	if (!V_CanUseAbilities(ent, TANK, tank_cubecost, true))
 		return;
 
-	if (HasFlag(ent))
+	if (HasFlag(ent) && !hw->value)
 	{
 		safe_cprintf(ent, PRINT_HIGH, "Can't morph while carrying flag!\n");
 		return;

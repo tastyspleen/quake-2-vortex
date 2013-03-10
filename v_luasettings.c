@@ -6,8 +6,11 @@
 lua_State* State = NULL;
 int errload = 0;
 void Lua_LoadVariables();
+char* reason;
+edict_t *printent = NULL;
 
-#define CHECK_LUA_ERR(x) errload=x; if (errload) { char* reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); return; }
+#define CHECK_LUA_ERR(x) errload=x; if (errload) { reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); return; }
+#define CHECK_LUA_ERR_NRET(x, p) errload=x; if (errload) { reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); p; }
 
 void Lua_RunSettingScript(const char* filename)
 {
@@ -31,7 +34,11 @@ int printLuaError(lua_State* state)
 int q2lua_Print(lua_State *L)
 {
 	if (lua_isstring(L, -1))
-		gi.dprintf("%s", lua_tostring(L, -1));
+	{
+		if (!printent)
+			gi.dprintf("%s", lua_tostring(L, -1));
+		else gi.cprintf(printent, PRINT_HIGH, "%s\n", lua_tostring(L, -1));
+	}
 	return 0;
 }
 
@@ -171,6 +178,14 @@ double Lua_GetVariable(char* varname, double default_var)
 int Lua_GetIntVariable(char* varname, double default_var)
 {
 	return (int)Lua_GetVariable(varname, default_var);
+}
+
+void Lua_AdminLua(edict_t *ent, char* command)
+{
+	printent = ent;
+	CHECK_LUA_ERR_NRET(luaL_loadstring(State, command), gi.cprintf(ent, PRINT_HIGH, "Err: %s", reason));
+	CHECK_LUA_ERR_NRET(lua_pcall(State,0,0,0), gi.cprintf(ent, PRINT_HIGH, "Err: %s", reason));
+	printent = NULL;
 }
 
 /* Table Iteration */

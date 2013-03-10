@@ -14,9 +14,9 @@ float hw_getdamagefactor(edict_t *targ, edict_t* attacker)
 {
 	if (targ && G_GetClient(targ) && attacker && G_GetClient(attacker))
 	{
-		if (targ->client->pers.inventory[halo_index]) // increment damage to halo bearer by every kill
+		if (G_GetClient(targ)->client->pers.inventory[halo_index]) // increment damage to halo bearer by every kill
 			return 1 + targ->myskills.streak/8;
-		else if (!attacker->client->pers.inventory[halo_index]) // attacker doesn't have the halo
+		else if (!G_GetClient(attacker)->client->pers.inventory[halo_index]) // attacker doesn't have the halo
 			return 0.7; // lessened damage
 	}
 	// attacker has the halo, normal damage

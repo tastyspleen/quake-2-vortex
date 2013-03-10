@@ -340,7 +340,7 @@ void SpawnLaser (edict_t *ent, int cost, float skill_mult, float delay_mult)
 		cost *= 2;
 
 	ent->num_lasers++;
-	safe_cprintf(ent, PRINT_HIGH, "Laser built. You have %d/%d lasers.\n", ent->num_lasers, MAX_LASERS);
+	safe_cprintf(ent, PRINT_HIGH, "Laser built. You have %d/%d lasers.\n", ent->num_lasers, (int)MAX_LASERS);
 	ent->client->pers.inventory[power_cube_index] -= cost;
 	ent->client->ability_delay = level.time + 0.5 * delay_mult;
 	ent->holdtime = level.time + 0.5 * delay_mult;
