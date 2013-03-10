@@ -1751,7 +1751,7 @@ struct edict_s
 	float		dmg_radius;
 	int			sounds;			//make this a spawntemp var?
 	int			count;
-	qboolean exploded:1; // don't explode more than once at death. lol
+	qboolean exploded; // don't explode more than once at death. lol
 
 	edict_t		*chain;
 	edict_t		*enemy;
@@ -1807,12 +1807,12 @@ struct edict_s
 	edict_t		*orb;
 	float		PlasmaDelay;
 	float			holdtime;
-	qboolean	slow:1;
-	qboolean	superspeed:1;
-	qboolean	sucking:1;//GHz
-	qboolean	antigrav:1;
-	qboolean	automag:1; // az: magmining self?
-	qboolean	manacharging:1; // az: charging mana?
+	qboolean	slow;
+	qboolean	superspeed;
+	qboolean	sucking;//GHz
+	qboolean	antigrav;
+	qboolean	automag; // az: magmining self?
+	qboolean	manacharging; // az: charging mana?
 	int	lockon;
 
 	int FrameShot;
