@@ -909,7 +909,8 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 
 		//Talent: Dim Vision
 		if ((dtype & D_PHYSICAL) && targ->client && G_EntIsAlive(targ) && ((talentLevel = getTalentLevel(targ, TALENT_DIM_VISION)) > 0)
-			&& (level.framenum > targ->dim_vision_delay)) // 10% chance per 1 second
+			&& (level.framenum > targ->dim_vision_delay) && (targ != attacker)) // 10% chance per 1 second
+			// az- fix autocurse
 		{
 			int curse_level;
 			
@@ -922,7 +923,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 					curse_level = 1;
 
 				// add the curse
-				curse_add(attacker, targ, CURSE, curse_level, curse_level);
+				curse_add(attacker, targ, CURSE, curse_level, curse_level/2);
 				CurseMessage(targ, attacker, CURSE, curse_level, true);
 			}
 

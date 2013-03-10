@@ -652,7 +652,7 @@ void G_SetStats (edict_t *ent)
 
 	ent->client->ps.stats[STAT_HEALTH_ICON] = 0;
 
-	if (ent->health <= 32767)
+	if (ent->health <= 10000)
 		ent->client->ps.stats[STAT_HEALTH] = ent->health;
 	else
 		ent->client->ps.stats[STAT_HEALTH] = 666;
@@ -1033,12 +1033,20 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIMEMIN] = 0;
 	
 	// az invasion stuff.
-	if (invasion->value && level.time > pregame_time->value)
+	if (invasion->value && level.time > pregame_time->value && !level.intermissiontime)
 	{
-		ent->client->ps.stats[STAT_INVASIONTIME] = invasion_data.limitframe - level.time;
+		int invtime = invasion_data.limitframe - level.time;
+		if (invtime > 0)
+			ent->client->ps.stats[STAT_INVASIONTIME] = invtime;
+		else
+			ent->client->ps.stats[STAT_INVASIONTIME] = 0;
 	}else
 		ent->client->ps.stats[STAT_INVASIONTIME] = 0;
 	
+	if (V_VoteInProgress() && !G_IsSpectator(ent)) // show message only to spectators
+		ent->client->ps.stats[STAT_VOTESTRING] = CS_GENERAL + MAX_CLIENTS + 1;
+	else
+		ent->client->ps.stats[STAT_VOTESTRING] = 0;
 
 	if (ent->client->pers.selected_item == -1)
 		ent->client->ps.stats[STAT_SELECTED_NUM] = 0;

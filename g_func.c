@@ -1008,7 +1008,7 @@ void Touch_DoorTrigger (edict_t *self, edict_t *other, cplane_t *plane, csurface
 	if (other->health <= 0)
 		return;
 
-	if (!other->client && !isMonster(other))
+	if (!G_GetClient(other))
 		return;
 
 //	if ((self->owner->spawnflags & DOOR_NOMONSTER) && (other->svflags & SVF_MONSTER))
@@ -1152,7 +1152,7 @@ void door_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 {
 //	gi.dprintf("door_touch()\n");
 
-	if (!other->client && !isMonster(other))
+	if (!G_GetClient(other))
 		return;
 
 	if (level.time < self->touch_debounce_time)

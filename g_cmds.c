@@ -278,6 +278,9 @@ int NotHostile (edict_t *ent1, edict_t *ent2)
 	if (e1 && e2)
 	{
 		// one player is not hostile against players
+		if (IsBossTeam(e1) != IsBossTeam(e2)) // is one of these clients a boss, but the other is not?
+			return 0; // they're hostile -az
+
 		if (!(e1->myskills.respawns & HOSTILE_PLAYERS) || !(e2->myskills.respawns & HOSTILE_PLAYERS))
 			return 1;
 	}
@@ -319,7 +322,7 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 			|| (ent2->activator && !ent2->activator->client))
 			return 2;
 
-		return result;//4.5 FIXME: what if one boss is non-hostile towards players?
+		return result;
 	}
 
 	// make sure we're at the top of the food chain
@@ -385,19 +388,11 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	if ((!ent1->client) || (!ent2->client))
 		return result;
 
-	if (hw->value)
-	{
-		int hw_index = ITEM_INDEX(FindItem("Halo"));
-		if (ent1->client->pers.inventory[hw_index] || ent2->client->pers.inventory[hw_index])
-			return 0; // one of them has the halo. They're not friends.
-		else
-			return 1;
-	}
-
 	// check for allies
 	if (allies->value && IsAlly(ent1, ent2))
 		return 2;
 
+	/* az note: do we need this? */
 	// check dmflags for skin or model teams
 	if (!((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
 		return result;
@@ -2582,7 +2577,10 @@ void Cmd_TransCredits(edict_t *ent)
 	creditval = atoi(cmd2);
 
 	if (creditval < 0)
+	{
 		safe_cprintf(ent, PRINT_HIGH, "You can't really /give/ that amount of credits, you know.\n");
+		return;
+	}
 
 	if ( (player = FindPlayerByName(cmd1)) && 
 			!G_IsSpectator(player))

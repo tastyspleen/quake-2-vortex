@@ -1789,7 +1789,7 @@ void M_Notify (edict_t *monster)
 		monster->activator->num_monsters = 0;
 
 	safe_cprintf(monster->activator, PRINT_HIGH, "You lost a %s! (%d/%d)\n",
-		GetMonsterKindString(monster->mtype), monster->activator->num_monsters, MAX_MONSTERS);
+		GetMonsterKindString(monster->mtype), monster->activator->num_monsters, 100);
 
 	monster->monsterinfo.slots_freed = true;
 

@@ -171,7 +171,7 @@ void armoryConfirmOption(edict_t *ent, int selection)
 
 	switch (selection)
 	{
-	case 28: selectionc = "a reset"; break;
+	case 28: selectionc = "a character reset"; break;
 	case 29: selectionc = "an ability point"; break;
 	case 30: selectionc = "two weapon points"; break;
 	}
@@ -334,7 +334,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31: // respawns
-			price = ARMORY_PRICE_RESPAWN * (ARMORY_QTY_RESPAWNS - ent->myskills.weapon_respawns) / ARMORY_QTY_RESPAWNS;
+			price = (int)ARMORY_PRICE_RESPAWN * ((int)ARMORY_QTY_RESPAWNS - ent->myskills.weapon_respawns) / (int)ARMORY_QTY_RESPAWNS;
 			break;
 #endif
 		default:
@@ -468,7 +468,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 			break;
 #ifndef REMOVE_RESPAWNS
 		case 31:
-			safe_cprintf(ent, PRINT_HIGH, "You bought %d respawns for %d credits - you now have %d.\n", ARMORY_QTY_RESPAWNS - ent->myskills.weapon_respawns, price, ARMORY_QTY_RESPAWNS);
+			safe_cprintf(ent, PRINT_HIGH, "You bought %d respawns for %d credits - you now have %d.\n", (int)(ARMORY_QTY_RESPAWNS - ent->myskills.weapon_respawns), (int)(price), (int)(ARMORY_QTY_RESPAWNS));
 			ent->myskills.weapon_respawns = ARMORY_QTY_RESPAWNS;
 			break;
 #endif
@@ -741,9 +741,12 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 
 		switch(page_num)
 		{
-		case 1: firstItem = WeaponRunes;	break;
-		case 2: firstItem = AbilityRunes;	break;
-		case 3: firstItem = ComboRunes;		break;
+		case 1: firstItem = WeaponRunes;		break;
+		case 2: firstItem = &WeaponRunes[10];	break;
+		case 3: firstItem = AbilityRunes;		break;
+		case 4: firstItem = &AbilityRunes[10];	break;
+		case 5: firstItem = ComboRunes;			break;
+		case 6: firstItem = &ComboRunes[10];		break;
 		default: 
 			gi.dprintf("Error in BuyRuneConfirmMenu_handler(). Invalid page number: %d\n", page_num);
 			return;
@@ -780,7 +783,7 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 			if (savemethod->value == 0)
 			{
 				char path[MAX_QPATH];
-				memset (path, 0, strlen(path));
+				memset (path, 0, MAX_QPATH);
 				VRXGetPath(path, ent);
 				VSF_SaveRunes(ent, path);
 			}
@@ -792,9 +795,6 @@ void BuyRuneConfirmMenu_handler (edict_t *ent, int option)
 #endif
 			else if (savemethod->value == 3)
 			{
-				char path[MAX_QPATH];
-				memset(path, 0, strlen(path));
-				VRXGetPath(path, ent);
 				VSFU_SaveRunes(ent);
 			}
 			safe_cprintf(ent, PRINT_HIGH, "Rune purchased for %d credits.\nYou have %d credits left.\n", cost, ent->myskills.credits);

@@ -433,7 +433,7 @@ edict_t *drone_get_target (edict_t *self,
 		return target;
 
 	// find navi
-	if (get_navi && ((target = drone_get_navi(self)) != NULL))
+	if (invasion->value && get_navi && ((target = drone_get_navi(self)) != NULL))
 		return target;
 
 	return NULL;
@@ -1254,63 +1254,76 @@ void drone_cleargoal (edict_t *self)
 	else
 		self->monsterinfo.stand(self);
 }
+edict_t *INV_GiveRandomPSpawn();
 
 edict_t *drone_findpspawn(edict_t *self)
 {
-	edict_t *e=NULL;
+	/*edict_t *e=world;
 	edict_t *navis[5];
 	int count = 0;
 	int iters = 0;
 	int i;
 
-	
-
 	for (i =0; i < 5; i++)
 		navis[i] = NULL;
 
-	while ((e = findclosestradius1 (e, self->s.origin, 
-		self->monsterinfo.sight_range*6)) != NULL)
+	while ((e = G_Find(e, FOFS(classname), "info_player_invasion")) != NULL)
 	{
-		if (!drone_validpspawn(self, e))
-		{
-			iters++;
-			if (iters > 256)
-				break;
-			continue;
-		}
-		if (count == 5)
+		if (count > 3)
 			break;
+
 		navis[count] = e;
 		count++;
 	}
-	i = GetRandom(0,4);
+	i = GetRandom(0,2);
 	e = navis[i];
 	self->prev_navi = e;
-	//gi.dprintf("selected navi %i at %d\n", i, e);
-	return e;
+	return e;*/
+	return INV_GiveRandomPSpawn();
+
 }
 
 edict_t *drone_findnavi (edict_t *self)
 {
 	edict_t *e=NULL;
-	edict_t *navis[5];
-	int count = 0;
+	static edict_t *navis[5];
+	static qboolean initialized = false;
+	static int count = 0;
 	int iters = 0;
 	int i;
-	for (i = 0; i<5; i++ )
-		navis[i] = NULL;
+
+	if (!initialized)
+		for (i = 0; i<5; i++ )
+			navis[i] = NULL;
 
 	if(self->prev_navi)
 	{
 		if (self->prev_navi->target && self->prev_navi->targetname &&
 						((e = G_Find(NULL, FOFS(targetname), self->prev_navi->target)) != NULL))
 		{
+#ifdef navi_debug
+			gi.dprintf("advancing to navi %s %s\n", self->prev_navi->targetname, self->prev_navi->target);
+#endif
 			self->prev_navi = e;
 			return e;
 		}else // No navi points ahead.
 		{
+#ifdef navi_debug
+			gi.dprintf("advancing to player spawn\n");
+#endif
 			return drone_findpspawn(self);
 		}
+	}
+
+	if (count >= 2 || initialized) // should speed things up
+	{
+		i = GetRandom(0,count-1);
+		e = navis[i];
+		self->prev_navi = e;
+#ifdef navi_debug
+		gi.dprintf("choosing navi %s\n", e->targetname);
+#endif
+		return e;
 	}
 
 	while ((e = findclosestradius1 (e, self->s.origin, 
@@ -1319,15 +1332,21 @@ edict_t *drone_findnavi (edict_t *self)
 		if (!drone_validnavi(self, e, false))
 		{
 			iters++;
-			if (iters > 256)
+			if (iters > 512)
 				break;
 			continue;
 		}
 		if (count == 5)
+		{
 			break;
+		}
 		navis[count] = e;
 		count++;
 	}
+
+	if (count > 1)
+		initialized = true;
+
 	i = GetRandom(0,4);
 	e = navis[i];
 	self->prev_navi = e;

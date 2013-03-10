@@ -257,112 +257,11 @@ void PM_Effects (edict_t *ent)
 	if (ent->health < 1)
 		return;
 
-	// plague effect
-	if (que_typeexists(ent->curses, CURSE_PLAGUE))
-		ent->s.effects |= EF_FLIES;
-
 	// activator/owner dependant stuff
-	//FIXME: couldn't we just copy the player's effects?
 	if (ent->activator && ent->activator->inuse)
 	{
-		edict_t		*player = ent->activator;
-		
-		// are we cloaked?
-		if (player->client->cloaking && player->client->idle_frames >= 10)
-		{
-			ent->svflags |= SVF_NOCLIENT;
-		}
-		else
-		{
-			ent->svflags &= ~SVF_NOCLIENT;
-
-			if (!ctf->value && !domination->value && !ptr->value  && !invasion->value && !tbi->value)
-			{
-				// glow red if we are hostile against players (i.e. PvP/FFA combat preferences)
-				if(player->myskills.respawns & HOSTILE_PLAYERS)
-				{
-					ent->s.effects |= EF_COLOR_SHELL;
-					ent->s.renderfx |= RF_SHELL_RED;
-				}
-				// glow blue if we are not hostile (i.e. PvM combat preferences)
-				else
-				{
-					ent->s.effects |= EF_COLOR_SHELL;
-					ent->s.renderfx |= RF_SHELL_BLUE;
-				}
-
-				// stop processing effects to avoid confusion
-				return;
-			}
-
-			// just copy their effects
-			ent->s.effects = player->s.effects;
-			ent->s.renderfx = player->s.renderfx;
-
-			// if we aren't using cloak, then don't copy transparency effects from client
-			if ((level.time < player->client->ability_delay) || que_typeexists(player->auras, 0) 
-				|| player->myskills.abilities[CLOAK].disable || (player->myskills.abilities[CLOAK].current_level < 1))
-				ent->s.effects &= ~(EF_SPHERETRANS|EF_PLASMA);
-
-			// in team modes, we should glow with team color
-			if (domination->value || pvm->value || ptr->value || ctf->value || tbi->value)
-			{
-
-				ent->s.effects |= EF_COLOR_SHELL;
-				if (pvm->value)
-					ent->s.renderfx |= RF_SHELL_BLUE;
-				else if (player->teamnum == 1)
-					ent->s.renderfx |= RF_SHELL_RED;
-				else if (player->teamnum == 2)
-					ent->s.renderfx |= RF_SHELL_BLUE;
-			}
-
-		}
-		
-		// the above effects take priority above all other effects;
-		// additional effects would be confusing to players, so
-		// don't try to add any more
-
-		// don't add any more effects if we've copied some from the player (ignore IR visibility flag)
-		if (ent->s.effects || (ent->s.renderfx && ent->s.renderfx != RF_IR_VISIBLE))
-			return;
-	}
-
-	// detector effects
-	if (ent->flags & FL_DETECTED && ent->detected_time > level.time)
-	{
-		ent->s.effects |= EF_COLOR_SHELL|EF_TAGTRAIL;
-		ent->s.renderfx |= (RF_SHELL_YELLOW);
-	}
-
-	// glow white if frozen
-	if (que_typeexists(ent->curses, AURA_HOLYFREEZE)
-		|| que_typeexists(ent->curses, CURSE_FROZEN) || ent->chill_time > level.time)
-	{
-		ent->s.effects |= EF_COLOR_SHELL;
-		ent->s.renderfx |= (RF_SHELL_RED|RF_SHELL_GREEN|RF_SHELL_BLUE);
-        return;
-	}
-
-	// flash cyan if we are protected by an aura
-	if (que_typeexists(ent->auras, 0))
-	{
-		ent->s.effects |= EF_COLOR_SHELL;
-		ent->s.renderfx |= (RF_SHELL_CYAN);
-	}
-	
-	// powershield/screen effects
-	if (ent->powerarmor_time > level.time)
-	{
-		if (ent->monsterinfo.power_armor_type == POWER_ARMOR_SCREEN)
-		{
-			ent->s.effects |= EF_POWERSCREEN;
-		}
-		else if (ent->monsterinfo.power_armor_type == POWER_ARMOR_SHIELD)
-		{
-			ent->s.effects |= EF_COLOR_SHELL;
-			ent->s.renderfx |= RF_SHELL_GREEN;
-		}
+		ent->s.effects = ent->activator->s.effects;
+		ent->s.renderfx = ent->activator->s.renderfx;
 	}
 }
 

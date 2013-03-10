@@ -315,7 +315,7 @@ void InitGame (void)
 	//K03 Begin
 	
 	killboxspawn = gi.cvar("killboxatspawn", "1", 0);
-	save_path = gi.cvar("save_path", va("%s\\characters", gamedir->string), CVAR_LATCH);
+	save_path = gi.cvar("save_path", va("%s//characters", gamedir->string), CVAR_LATCH);
 	particles = gi.cvar ("particles", "0", 0);
 	// az 3.0
 	hw = gi.cvar("hw", "0", CVAR_LATCH);
@@ -359,7 +359,7 @@ void InitGame (void)
 	pvm_monstermult = gi.cvar ("pvm_monstermult", "1.0", 0);
 	ffa_respawntime = gi.cvar ("ffa_respawntime", "20", 0);
 	ffa_monstermult = gi.cvar ("ffa_monstermult", "1.0", 0);
-	server_email = gi.cvar ("server_email", "ghz@project-vortex.com", CVAR_SERVERINFO);
+	// server_email = gi.cvar ("server_email", "ghz@project-vortex.com", CVAR_SERVERINFO);
 	team1_skin = gi.cvar ("team1_skin", "female/ctf_r", 0);
 	team2_skin = gi.cvar ("team2_skin", "male/ctf_b", 0);
 

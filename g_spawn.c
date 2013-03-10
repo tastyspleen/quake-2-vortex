@@ -1008,6 +1008,11 @@ char *dm_statusbar =
 "   yv 260 "
 "   num 4 21 "
 "endif "
+"if 22 "
+"   xv 0 "
+"   yb  -60 "
+"   stat_string 22 "
+"endif "
 // az end
 
 //GHz START

@@ -23,6 +23,7 @@ int	power_cube_index;
 int flag_index;
 int	red_flag_index;
 int blue_flag_index;
+int halo_index;
 
 //ammo
 int	bullet_index;
@@ -3093,7 +3094,7 @@ void SetItemNames (void)
 	int		i;
 	gitem_t	*it;
 
-	for (i=0 ; i<game.num_items ; i++)
+	for (i=1 ; i<game.num_items ; i++)
 	{
 		it = &itemlist[i];
 		gi.configstring (CS_ITEMS+i, it->pickup_name);
@@ -3108,6 +3109,7 @@ void SetItemNames (void)
 	flag_index         = ITEM_INDEX(FindItem("Flag"));
 	red_flag_index     = ITEM_INDEX(FindItem("Red Flag"));
 	blue_flag_index    = ITEM_INDEX(FindItem("Blue Flag"));
+	halo_index		   = ITEM_INDEX(FindItem("Halo"));
 	resistance_index   = ITEM_INDEX(FindItem("Resistance"));
 	strength_index     = ITEM_INDEX(FindItem("Strength"));
 	regeneration_index = ITEM_INDEX(FindItem("Regeneration"));

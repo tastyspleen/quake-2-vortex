@@ -32,15 +32,15 @@ void CreateBoss (edict_t *ent);
 int p_tank_getFirePos (edict_t *self, vec3_t start, vec3_t forward);
 
 // tank commander stuff
-#define TANK_INITIAL_HEALTH			0
-#define TANK_ADDON_HEALTH			2000
+#define TANK_INITIAL_HEALTH			2000
+#define TANK_ADDON_HEALTH			1300
 #define TANK_MAXVELOCITY			200
-#define TANK_ROCKET_INITIAL_DAMAGE	100
+#define TANK_ROCKET_INITIAL_DAMAGE	80
 #define TANK_ROCKET_ADDON_DAMAGE	10
 #define TANK_ROCKET_SPEED			950
 #define TANK_ROCKET_MAXRADIUS		256
-#define TANK_PUNCH_INITIAL_DAMAGE	100
-#define TANK_PUNCH_ADDON_DAMAGE		40
+#define TANK_PUNCH_INITIAL_DAMAGE	70
+#define TANK_PUNCH_ADDON_DAMAGE		30
 #define TANK_PUNCH_RADIUS			256
 #define TANK_REGEN_IDLE_FRAMES		1200
 #define TANK_REGEN_ACTIVE_FRAMES	1800

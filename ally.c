@@ -133,13 +133,6 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 	//if (ent->myskills.respawns != other->myskills.respawns)
 	if (!invasion->value && !pvm->value && !ffa->value) // pvp, always allow no matter the preferences.
 		return true; 
-
-	if (((ent->myskills.respawns & HOSTILE_PLAYERS) != (other->myskills.respawns & HOSTILE_PLAYERS))
-		|| ((ent->myskills.respawns & HOSTILE_MONSTERS) != (other->myskills.respawns & HOSTILE_MONSTERS)))
-	{
-		//gi.dprintf("no2\n");
-		return false;
-	}
 	return true;
 }
 

@@ -734,7 +734,7 @@ void P_WorldEffects (void)
 
 		// if out of air, start drowning
 		if ((current_player->air_finished < level.time) 
-			&& !((!isMorphingPolt(current_player)) && (current_player->mtype == 0))
+			&& ((!isMorphingPolt(current_player)) && (current_player->mtype != 0))
 			&& (current_player->myskills.abilities[WORLD_RESIST].current_level < 1 
 									|| HasFlag(current_player)) 
 			&& !(current_player->flags & FL_GODMODE))

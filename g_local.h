@@ -25,6 +25,8 @@
 #include "gds.h" // 3.15
 #include "scanner.h"
 
+#define FIXED_FT
+
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"Vortex"//K03 "baseq2"
 //#define MAX_NODES	1024
@@ -629,6 +631,7 @@ extern int	power_cube_index;
 extern int	flag_index;  
 extern int	red_flag_index;
 extern int	blue_flag_index;
+extern int  halo_index;
 extern int	resistance_index;
 extern int	strength_index;
 extern int	regeneration_index;
@@ -1444,15 +1447,8 @@ typedef struct
 	int frags;
 	//K03 End
 	qboolean HasVoted; //GHz
+	int voteType; // 1 yes, 2 no, 0 neither
 	float VoteTimeout;
-
-	// gds stuff
-	qboolean	gds_downloading;	// are we downloading from GDS?
-	qboolean	gds_testing;		// are we testing for a connection?
-	qboolean	gds_complete;		// is the file transfer complete?
-	//qboolean	gds_waiting;			// download is complete, waiting to finish transaction
-	//float		gds_delay;			// delay before finishing GDS transaction
-	float		gds_timeout;		// time-out for GDS transaction
 
 	// 3.5 delayed stuffcmd commands
 	char	stuffbuf[500];			// commands that will be stuffed to client; delay prevents overflow
@@ -1683,8 +1679,6 @@ struct edict_s
 	char		*model;
 	float		freetime;			// sv.time when the object was freed
 	
-	qboolean is_step, is_swim, is_ladder;
-	qboolean was_swim;
 	//
 	// only used locally in game, not by server
 	//
@@ -1757,7 +1751,7 @@ struct edict_s
 	float		dmg_radius;
 	int			sounds;			//make this a spawntemp var?
 	int			count;
-	qboolean exploded; // don't explode more than once at death. lol
+	qboolean exploded:1; // don't explode more than once at death. lol
 
 	edict_t		*chain;
 	edict_t		*enemy;
@@ -1813,12 +1807,12 @@ struct edict_s
 	edict_t		*orb;
 	float		PlasmaDelay;
 	float			holdtime;
-	qboolean	slow;
-	qboolean	superspeed;
-	qboolean	sucking;//GHz
-	qboolean	antigrav;
-	qboolean	automag; // az: magmining self?
-	qboolean	manacharging; // az: charging mana?
+	qboolean	slow:1;
+	qboolean	superspeed:1;
+	qboolean	sucking:1;//GHz
+	qboolean	antigrav:1;
+	qboolean	automag:1; // az: magmining self?
+	qboolean	manacharging:1; // az: charging mana?
 	int	lockon;
 
 	int FrameShot;
@@ -1935,14 +1929,6 @@ struct edict_s
 	float		cocoon_factor;
 	int			showPathDebug;			// show path debug information (0=off,1=on)
 
-	//4.0 (multithreading support)
-	/*
-	unsigned long	hThread;			//Used for WIN32 multi-threading
-	qboolean		hThreadFinishTime;	//Records when the thread finished execution
-	qboolean		isSaving;
-	qboolean		isLoading;
-	int				threadReturnVal;
-	*/
 
 #ifndef NO_GDS
 
@@ -2338,7 +2324,7 @@ qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg);
 void SaveCharacterQuit (edict_t *ent);
 #endif
 
-// New AutoStuff (hopefully making life easier on newbies)
+// New AutoStuff
 void V_AutoStuff(edict_t* ent);
 
 // new command system
@@ -2350,6 +2336,9 @@ void hw_awardpoints (void);
 void hw_dropflag (edict_t *ent, gitem_t *item);
 qboolean hw_pickupflag (edict_t *ent, edict_t *other);
 void hw_spawnflag (void);
+float hw_getdamagefactor(edict_t *targ, edict_t* attacker);
+
+qboolean V_VoteInProgress();
 
 // 3.4 new team vs invasion mode
 edict_t* TBI_FindSpawn(edict_t *ent);

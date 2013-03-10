@@ -1021,7 +1021,8 @@ qboolean HasFlag (edict_t *ent)
 		return true;
 	if (ent->client->pers.inventory[blue_flag_index] > 0)
 		return true;
-
+	if (ent->client->pers.inventory[halo_index] > 0)
+		return true;
 	return false;
 }
 

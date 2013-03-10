@@ -71,7 +71,7 @@ void boss_punch (edict_t *self)
 		VectorSubtract(other->s.origin, self->s.origin, v);
 		VectorNormalize(v);
 		tr = gi.trace(self->s.origin, NULL, NULL, other->s.origin, self, (MASK_PLAYERSOLID | MASK_MONSTERSOLID));
-		T_Damage (other, self, self, v, other->s.origin, tr.plane.normal, damage, damage, 0, MOD_UNKNOWN);
+		T_Damage (other, self, self, v, other->s.origin, tr.plane.normal, damage, damage, 0, MOD_TANK_PUNCH);
 		other->velocity[2] += damage / 2;
 	}
 }
