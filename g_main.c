@@ -724,10 +724,6 @@ void CheckDMRules (void)
 	if (!deathmatch->value)
 		return;
 
-	//K03 Begin
-	//GetScorePosition();//Gets each persons rank and total players in game
-	//K03 End
-
 	if (timelimit->value)
 	{
 		//K03 Begin
@@ -837,12 +833,7 @@ void CheckDMRules (void)
 		}
 	}
 
-	if (INVASION_OTHERSPAWNS_REMOVED && (INV_GetNumPlayerSpawns() < 1))
-	{
-		gi.bprintf(PRINT_HIGH, "Humans were unable to stop the invasion. Game over.\n");
-		EndDMLevel();
-		return;
-	}
+	/* az: moved the invasion check to info_player_invasion_death */ 
 }
 
 
@@ -929,7 +920,7 @@ void G_RunFrame (void)
 	ProcessQueue(NULL);
 #endif
 
-
+#ifndef FIXED_FT
 	level.real_framenum++;
 
 	if (!(level.real_framenum % (int)(sv_fps->value/10)))
@@ -938,7 +929,10 @@ void G_RunFrame (void)
 		level.framenum++;
 	}
 	level.time = level.real_framenum*FRAMETIME;
-
+#else
+	level.framenum++;
+	level.time = level.framenum*FRAMETIME;
+#endif
 	// choose a client for monsters to target this frame
 //	AI_SetSightClient ();
 
@@ -955,12 +949,12 @@ void G_RunFrame (void)
 	if(spawncycle < 130) 
 		spawncycle = 130;
 
-#ifndef OLD_VOTE_SYSTEM // Paril
 	RunVotes();
-#endif
 
+#ifndef FIXED_FT
 	if (!delta)
 		return;
+#endif
 
 	//
 	// treat each object in turn

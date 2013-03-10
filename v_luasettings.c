@@ -73,6 +73,12 @@ int q2lua_reloadvars(lua_State* L)
 	return 0;
 }
 
+int q2lua_getplayercount(lua_State* L)
+{
+	lua_pushnumber(L, total_players());
+	return 1;
+}
+
 /* Called at InitGame time */
 void InitLuaSettings()
 {

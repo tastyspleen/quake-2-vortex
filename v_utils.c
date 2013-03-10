@@ -1827,7 +1827,7 @@ void V_ResetPlayerState (edict_t *ent)
 	VortexRemovePlayerSummonables(ent);
 
 	// if teamplay mode, set team skin
-	if (ctf->value || domination->value)
+	if (ctf->value || domination->value || tbi->value)
 	{
 		char *s = Info_ValueForKey(ent->client->pers.userinfo, "skin");
 		V_AssignClassSkin(ent, s);
@@ -1836,8 +1836,10 @@ void V_ResetPlayerState (edict_t *ent)
 		dom_dropflag(ent, FindItem("Flag"));
 		CTF_DropFlag(ent, FindItem("Red Flag"));
 		CTF_DropFlag(ent, FindItem("Blue Flag"));	
-		hw_dropflag(ent, FindItem("Halo"));
 	}
+
+	if (hw->value)
+		hw_dropflag(ent, FindItem("Halo"));
 
 	// drop all techs
 	tech_dropall(ent);
@@ -1988,7 +1990,7 @@ void V_ShellNonAbilityEffects (edict_t *ent)
 			}
 			
 			// if we have an aura or we are morphed/monster, ALWAYS apply a shell
-			if (que_typeexists(ent->auras, 0) || ent->mtype || !ent->client)
+			if (que_typeexists(ent->auras, 0) || ent->mtype || !ent->client || PM_PlayerHasMonster(ent))
 			{
 				ent->s.effects |= EF_COLOR_SHELL;
 				// red team shell

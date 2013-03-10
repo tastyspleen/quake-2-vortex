@@ -4,9 +4,12 @@
 //FIXME: need queue that holds all players that are waiting to respawn but all spawns are busy
 edict_t		*INV_SpawnQue[MAX_CLIENTS];
 int			invasion_max_playerspawns;
+int			invasion_spawncount; // current spawns
+edict_t		*INV_PlayerSpawns[32]; 
 
 void INV_Init (void)
 {
+	int i;
 	if (!pvm->value || !invasion->value)
 		return;
 
@@ -14,6 +17,10 @@ void INV_Init (void)
 	INVASION_OTHERSPAWNS_REMOVED = false;
 	invasion_difficulty_level = 1;
 	invasion_max_playerspawns = 0;
+	invasion_spawncount = 0;
+
+	for (i = 0; i < 32; i++)
+		INV_PlayerSpawns[i] = NULL;
 }
 
 // initialize array values to NULL
@@ -23,6 +30,26 @@ void INV_InitSpawnQue (void)
 
 	for (i=0; i < MAX_CLIENTS; i++)
 		INV_SpawnQue[i] = NULL;
+}
+
+edict_t *INV_GiveRandomPSpawn()
+{
+	int rand = GetRandom(0,31);
+	int i;
+	edict_t * rval = NULL;
+
+	for (i = 0; i < 32; i++) // validate if we can find at least one valid spawn
+		if (INV_PlayerSpawns[i] != NULL)
+		{
+			while (rval == NULL)
+			{
+				rval = INV_PlayerSpawns[i];
+				rand = GetRandom(0,31);
+			}
+			return rval;
+		}
+
+	return NULL;
 }
 
 qboolean INV_IsSpawnQueEmpty()
@@ -285,13 +312,13 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 float TimeFormula()
 {
 	int base = 4*60;
-	int playeramt = ActivePlayers() * 10;
-	int levelamt = invasion_difficulty_level * 8;
+	int playeramt = ActivePlayers() * 8;
+	int levelamt = invasion_difficulty_level * 7;
 	int cap = 60;
 	int rval = base - playeramt - levelamt;
 
 	if (invasion->value == 2) // hard mode
-		cap = 48;
+		cap = 50;
 
 	if (rval < cap)
 		rval = cap;
@@ -411,7 +438,7 @@ void INV_SpawnMonsters (edict_t *self)
 
 	switch (invasion_difficulty_level)
 	{
-	case 1: max_monsters = 15; break;
+	case 1: max_monsters = 10; break;
 	case 2: max_monsters = 20; break;
 	case 3: max_monsters = 25; break;
 	case 4: max_monsters = 30; break;
@@ -461,8 +488,8 @@ void INV_SpawnMonsters (edict_t *self)
 		max_monsters = 50;
 
 	// the dm_monsters cvar is the minimum of monsters that will spawn
-	if (max_monsters < dm_monsters->value)
-		max_monsters = dm_monsters->value;
+	/*if (max_monsters < dm_monsters->value)
+		max_monsters = dm_monsters->value;*/
 	
 	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && 
 		(total_monsters < max_monsters || invasion_data.mspawned < max_monsters) )
@@ -561,15 +588,25 @@ edict_t *INV_SelectPlayerSpawnPoint (edict_t *ent)
 
 int INV_GetNumPlayerSpawns (void)
 {
-	int		i=0;
-	edict_t *e;
+	return invasion_spawncount;
+}
 
-	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
-	{
-		if (e && e->inuse && (e->mtype == INVASION_PLAYERSPAWN))
-			i++;
-	}
-	return i;
+void INV_RemoveFromSpawnlist(edict_t *self)
+{
+	int i;
+	for (i = 0; i < 32; i++)
+		if (INV_PlayerSpawns[i] == self)
+		{
+			INV_PlayerSpawns[i] = NULL;
+			invasion_spawncount--;
+
+			if (invasion_spawncount == 0)
+			{
+				gi.bprintf(PRINT_HIGH, "Humans were unable to stop the invasion. Game over.\n");
+				EndDMLevel();
+				return;
+			}
+		}
 }
 
 void info_player_invasion_death (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
@@ -580,6 +617,7 @@ void info_player_invasion_death (edict_t *self, edict_t *inflictor, edict_t *att
 	G_UseTargets(self, self);
 	self->think = BecomeExplosion1;
 	self->nextthink = level.time + FRAMETIME;
+	INV_RemoveFromSpawnlist(self);
 }
 
 void info_player_invasion_think (edict_t *self)
@@ -635,7 +673,10 @@ void SP_info_player_invasion (edict_t *self)
 	VectorSet (self->maxs, 32, 32, -16);
 	gi.linkentity (self);
 
+	INV_PlayerSpawns[invasion_max_playerspawns] = self;
+
 	invasion_max_playerspawns++;
+	invasion_spawncount++;
 }
 
 void SP_info_monster_invasion (edict_t *self)
@@ -794,75 +835,3 @@ void SP_inv_defenderspawn (edict_t *self)
 
 float GetPlayerBossDamage (edict_t *player, edict_t *boss);
 float GetTotalBossDamage (edict_t *self);
-
-void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
-{
-	int		i, exp_points, credits, base_credits, max_credits, max_exp, base_exp;
-	float	bonus, dmgmod, levelmod, damage, invmod;
-	edict_t *player;
-
-	//gi.dprintf("INV_AwardMonsterKill()\n");
-
-	// don't award points for monsters that were just resurrected
-	if (target->monsterinfo.resurrected_time > level.time)
-		return;
-
-	// player-monsters don't award points
-	if (G_GetClient(target))
-		return;
-
-	// if a player (or his summon) scores a kill, then increment spree
-	if ((player = G_GetClient(attacker)) != NULL)
-		player->myskills.streak++;
-
-	for (i=0; i<game.maxclients; i++) 
-	{
-		player = g_edicts+1+i;
-
-		// award experience and credits to non-spectator clients
-		if (!player->inuse || G_IsSpectator(player))
-			continue;
-
-		damage = GetPlayerBossDamage(player, target);
-		if (damage < 1)
-			continue; // they get nothing if they didn't touch the boss
-
-		// calculate level modifier
-		levelmod = ((float)target->monsterinfo.level+1) / ((float)attacker->myskills.level+1);
-
-		// calculate damage modifier
-		dmgmod = damage / GetTotalBossDamage(target);
-
-		// calculate spree bonus
-		bonus = 1.0;
-		//bonus = 1 + 0.04 * player->myskills.streak;
-		//if (bonus > 2)
-		//	bonus = 2;
-
-		invmod = 0.5; // half the exp in invasion.
-
-		base_exp = target->monsterinfo.control_cost/10*EXP_WORLD_MONSTER*invmod;
-		exp_points = (int)ceil(base_exp*levelmod*dmgmod*bonus);
-		base_credits = target->monsterinfo.control_cost*CREDITS_OTHER_BASE;
-		credits = (int)ceil(base_credits*levelmod*dmgmod*bonus);
-
-		//gi.dprintf("exp=%d base=%d levelmod=%.1f dmgmod=%.1f bonus=%.1f\n", exp_points, base_exp, levelmod, dmgmod, bonus);
-
-		// cap max experience at 300% normal
-		max_exp = 3*base_exp;
-		if (exp_points > max_exp)
-			exp_points = max_exp;
-
-		max_credits = 3*base_credits;
-		if (credits > max_credits)
-			credits = max_credits;
-
-		// give player credits and experience
-		exp_points = V_AddFinalExp(player, exp_points);
-		player->myskills.credits += credits;
-
-		//safe_cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
-		safe_cprintf(player, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
-			damage, (dmgmod * 100), '%', V_GetMonsterName(target), target->monsterinfo.level, exp_points, credits);
-	}
-}

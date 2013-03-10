@@ -657,6 +657,7 @@ edict_t *G_Spawn (void)
 		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
 		{
 			G_InitEdict (e);
+			// gi.dprintf("allocating ent %d\n", i);
 			return e;
 		}
 	}
@@ -671,11 +672,6 @@ edict_t *G_Spawn (void)
 	}
 		
 	globals.num_edicts++;
-
-	if (globals.num_edicts == 128 || globals.num_edicts == 129) 
-	{
-		// safe_cprintf(NULL, PRINT_HIGH, "");
-	}
 
 	G_InitEdict (e);
 //GHz START

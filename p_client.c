@@ -2284,7 +2284,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	playernum = ent-g_edicts-1;
 
 	// combine name and skin into a configstring
-	if (!V_AssignClassSkin(ent, s))
+	if (!G_IsSpectator(ent) && !V_AssignClassSkin(ent, s))
 		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
 	// fov
@@ -3057,11 +3057,11 @@ void ClientThinkstuff(edict_t *ent)
 			//if (!ent->svflags & SVF_NOCLIENT)
 			//	que_list(ent->auras);
 
+			if (!ent->client->cloaking) // Only when a switch is done
+				VortexRemovePlayerSummonables(ent); // 3.75 no more cheap apps with cloak+laser/monster/etc
+
 			ent->svflags |= SVF_NOCLIENT;
 			ent->client->cloaking = true;
-
-			//FIXME: we really shouldnt be calling this every frame...
-			VortexRemovePlayerSummonables(ent); // 3.75 no more cheap apps with cloak+laser/monster/etc
 		}
 		else if (ent->movetype != MOVETYPE_NOCLIP && !(ent->flags & FL_CHATPROTECT) 
 			&& !(ent->flags & FL_COCOONED))// don't see player-monsters
@@ -3072,11 +3072,11 @@ void ClientThinkstuff(edict_t *ent)
 		}
 		else if ((ent->myskills.abilities[CLOAK].current_level == 10) && (talentlevel == 4))
 		{
+			if (!ent->client->cloaking) // Only when a switch is done
+				VortexRemovePlayerSummonables(ent); // 3.75 no more cheap apps with cloak+laser/monster/etc
+
 			ent->svflags |= SVF_NOCLIENT;
 			ent->client->cloaking = true;
-
-			//FIXME: we really shouldnt be calling this every frame...
-			VortexRemovePlayerSummonables(ent); // 3.75 no more cheap apps with cloak+laser/monster/etc
 		}
 		else
 			ent->client->cloaking = false;

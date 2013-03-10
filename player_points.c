@@ -340,7 +340,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	float		dmgmod			= 1;
 	float		damage;
 	char		name[50];
-	int			minimum_points	= 1;
+	int			minimum_points	= 2;
 	qboolean	is_mini=false;
 	
 	// sanity check
@@ -392,10 +392,10 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 	{
 		// spree break bonus points
 		if (target->myskills.streak >= SPREE_START)
-			break_points = 100;
+			break_points = 200;
 		// you get the same bonus for killing a newbie basher as you would breaking a spree war
 		else if (is_mini || (target->myskills.streak >= SPREE_WARS_START && SPREE_WARS))
-			break_points = 200;
+			break_points = 1000;
 
 		// award 2fer bonus
 		if (attacker->lastkill >= level.time)
@@ -477,17 +477,50 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 		}
 	}
 
-	exp_points = dmgmod * (level_diff * (vrx_pointmult->value * (base_exp * bonus)) + break_points);
+	exp_points = dmgmod * (level_diff * vrx_pointmult->value * base_exp * bonus + break_points);
 
 	if (G_GetClient(targ)) // chile v1.1: pvp has another value.
 		exp_points *= vrx_pvppointmult->value;
 	else
+	{
+		int player_count = total_players();
 		exp_points *= vrx_pvmpointmult->value;
+		// in normal pvm you get slightly more exp if you're alone.
+		// and much less if you're not.
+		// i passed these values through geogebra :v
+		if (invasion->value < 2) 
+		{
+			// normalize the modifier a bit
+			float modifier_per_person = 0.26;
+			float base = 0.4;
+			float mult;
 
-	if (attacker->myskills.level > 10)
+			// people above average level get a bit more experience for letting others play
+			if (attacker->myskills.level - AveragePlayerLevel() > 5) 
+			{
+				base = 0.7;	
+				modifier_per_person = 0.23;
+			}
+
+			mult = base+modifier_per_person*(6-player_count);
+
+			if (mult > 0)
+				exp_points *= mult;
+			else
+				exp_points = 0.1;
+		}
+	}
+
+	if (attacker->myskills.level >= 10)
 		exp_points *= vrx_over10mult->value;
 	else
 		exp_points *= vrx_sub10mult->value;
+
+	if (invasion->value == 1 && attacker->myskills.level >= 10) // less in easy invasion for level 10+.
+		exp_points *= 0.4;
+
+	if (hw->value && !attacker->client->pers.inventory[halo_index])
+		exp_points *= 0.7; // less experience for non-halo
 
 	//vrxchile v1.3 Don't cap.
 	// min/max points awarded for a kill
@@ -496,8 +529,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 
 	// award experience to allied players
 	max_points = exp_points;
-	if (invasion->value == 1 && attacker->myskills.level > 10) // 1/3 exp in easy invasion for level 10+.
-		max_points *= 0.33;
+
 	if (!allies->value || ((exp_points = AddAllyExp(attacker, max_points)) < 1))
 	// award experience to non-allied players
 		exp_points = V_AddFinalExp(attacker, max_points);
@@ -670,7 +702,7 @@ void VortexDeathCleanup(edict_t *attacker, edict_t *targ)
 	{
 		attacker->myskills.streak++;
 
-		if (((ffa->value && attacker->myskills.respawns & HOSTILE_PLAYERS) || V_IsPVP()) && attacker->myskills.streak > 15)
+		if ((ffa->value || V_IsPVP()) && attacker->myskills.streak > 15)
 		{
 			tech_dropall(attacker); // you can't use techs on a spree.
 		}

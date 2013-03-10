@@ -8,14 +8,26 @@ void ShowVoteMapMenu(edict_t *ent, int pagenum, int mapmode);
 
 #ifdef OLD_VOTE_SYSTEM // Paril
 static votes_t votes[MAX_VOTERS];
+int numVotes = 0;
+
+void CountVotes();
 #else
 votes_t currentVote = {false, 0, 0, "", ""};
-int numVotes = 0;
+int numVotes = 0, numVoteNo;
+char* text1 = NULL, *text2 = NULL, *smode = NULL;
 float voteTimeLeft = 0;
 edict_t *voter;
+static char strBuffer[1024];
 #endif
 
 //************************************************************************************************
+
+#ifndef OLD_VOTE_SYSTEM
+qboolean V_VoteInProgress()
+{
+	return voteTimeLeft > 0;
+}
+#endif
 
 void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 {
@@ -200,6 +212,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 	memset(votes, 0, sizeof(votes_t) * MAX_VOTERS);
 #else
 	numVotes = 0;
+	numVoteNo = 0;
 	voteTimeLeft = 0;
 	memset (&currentVote, 0, sizeof(currentVote));
 #endif
@@ -216,6 +229,9 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 
 v_maplist_t *GetMapList(int mode)
 {
+	if(Lua_GetIntVariable("UseLuaMaplists", 0))
+		v_LoadMapList(mode); // reload the map list (lua conditional maplists)
+
 	//Change the map
 	switch(mode)
 	{
@@ -341,7 +357,7 @@ qboolean AddVote(edict_t *ent, int mode, int mapnum)
 		myvote->used = true;
 
 		//Notify everyone
-		gi.bprintf(PRINT_HIGH, "%s voted for %s.\n", ent->myskills.player_name, maplist->mapnames[mapnum]);
+		gi.bprintf(PRINT_HIGH, "%s voted for %s.\n", ent->myskills.player_name, maplist->maps[mapnum].name);
 		switch(mode)
 		{
 			case MAPMODE_PVP:	gi.bprintf(PRINT_HIGH, "%s voted for Player Vs. Player (PvP).\n", ent->myskills.player_name);	break;
@@ -349,7 +365,11 @@ qboolean AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_DOM:	gi.bprintf(PRINT_HIGH, "%s voted for Domination.\n", ent->myskills.player_name);			break;
 			case MAPMODE_CTF:	gi.bprintf(PRINT_HIGH, "%s voted for Capture The Flag (CTF).\n", ent->myskills.player_name);					break;
 			case MAPMODE_FFA:	gi.bprintf(PRINT_HIGH, "%s voted for Free For All (FFA).\n", ent->myskills.player_name);	break;
-			case MAPMODE_INV:	gi.bprintf(PRINT_HIGH, "%s voted for Invasion (INV).\n", ent->myskills.player_name);
+			case MAPMODE_INV:	gi.bprintf(PRINT_HIGH, "%s voted for Invasion (INV).\n", ent->myskills.player_name); break;
+			case MAPMODE_TRA:	gi.bprintf(PRINT_HIGH, "%s voted for  Trading ", ent->myskills.player_name); break;
+			case MAPMODE_INH:	gi.bprintf(PRINT_HIGH, "%s voted for Invasion (Hard mode) ", ent->myskills.player_name); break;
+			case MAPMODE_VHW:	gi.bprintf(PRINT_HIGH, "%s voted for Vortex HolyWars ", ent->myskills.player_name); break;
+			case MAPMODE_TBI:   gi.bprintf(PRINT_HIGH, "%s voted for Destroy the Spawn ", ent->myskills.player_name); break;
 		}
 		return true;
 	}
@@ -366,6 +386,13 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 
 	if (!maplist)
 		return;
+
+	if(V_VoteInProgress())
+		return;
+
+#ifdef OLD_VOTE_SYSTEM
+	CountVotes();
+#endif
   
 	//check for valid choice
 	if (mode && (maplist->nummaps > mapnum))
@@ -374,6 +401,7 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 		//Add the vote
 		voter = ent;
 		numVotes = 1;
+		numVoteNo = 0;
 		ent->client->resp.HasVoted = true;
 		strcpy(currentVote.ip, ent->client->pers.current_ip);
 		strcpy(currentVote.name, ent->myskills.player_name);
@@ -386,18 +414,26 @@ void AddVote(edict_t *ent, int mode, int mapnum)
 		Com_sprintf (tempBuffer, 1024, "%s started a vote for ", ent->myskills.player_name);
 		switch(mode)
 		{
-			case MAPMODE_PVP:	Com_sprintf (tempBuffer, 1024, "%sPlayer vs. Player (PvP) ", tempBuffer);	break;
-			case MAPMODE_PVM:	Com_sprintf (tempBuffer, 1024, "%sPlayer vs. Monster (PvM) ", tempBuffer);	break;
-			case MAPMODE_DOM:	Com_sprintf (tempBuffer, 1024, "%sDomination ", tempBuffer);			break;
-			case MAPMODE_CTF:	Com_sprintf (tempBuffer, 1024, "%sCapture The Flag (CTF) ", tempBuffer);					break;
-			case MAPMODE_FFA:	Com_sprintf (tempBuffer, 1024, "%sFree For All (FFA) ", tempBuffer);	break;
-			case MAPMODE_INV:	Com_sprintf (tempBuffer, 1024, "%sInvasion ", tempBuffer); break;
-			case MAPMODE_TRA:	Com_sprintf (tempBuffer, 1024, "%sTrading ", tempBuffer); break;
-			case MAPMODE_INH:	Com_sprintf (tempBuffer, 1024, "%sInvasion (Hard mode) ", tempBuffer); break;
-			case MAPMODE_VHW:	Com_sprintf (tempBuffer, 1024, "%sVortex HolyWars ", tempBuffer); break;
-			case MAPMODE_TBI:   Com_sprintf (tempBuffer, 1024, "%sDestroy the Spawn ", tempBuffer); break;
+			case MAPMODE_PVP:	smode =  "Player vs. Player (PvP) ";	break;
+			case MAPMODE_PVM:	smode =  "Player vs. Monster (PvM) ";	break;
+			case MAPMODE_DOM:	smode =  "Domination (DOM) ";			break;
+			case MAPMODE_CTF:	smode =  "Capture The Flag (CTF) ";	break;
+			case MAPMODE_FFA:	smode =  "Free For All (FFA) ";		break;
+			case MAPMODE_INV:	smode =  "Invasion ";				break;
+			case MAPMODE_TRA:	smode =  "Trading ";					break;
+			case MAPMODE_INH:	smode =  "Invasion (Hard mode) ";	break;
+			case MAPMODE_VHW:	smode =  "Vortex HolyWars ";			break;
+			case MAPMODE_TBI:   smode =  "Destroy the Spawn ";		break;
 		}
-		Com_sprintf (tempBuffer, 1024, "%son %s\n", tempBuffer, maplist->maps[mapnum].name);
+		Com_sprintf (tempBuffer, 1024, "%s%son %s\n", tempBuffer, smode, maplist->maps[mapnum].name);
+
+		text1 = HiPrint(va("%s", smode));
+		text2 = HiPrint(va("%s", maplist->maps[mapnum].name));
+		Com_sprintf (strBuffer, 1024, "vote in progress: %son %s\n", text1, text2);
+		V_Free(text1); V_Free(text2);
+		
+		
+		gi.configstring(CS_GENERAL+MAX_CLIENTS+1, strBuffer);
 
 		G_PrintGreenText(tempBuffer);
 		gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/comp_up.wav"), 1, ATTN_NONE, 0);
@@ -453,6 +489,10 @@ int V_VoteDone ()
 
 	if (players < 1)
 		return 0;
+
+#ifdef OLD_VOTE_SYSTEM
+	CountVotes();
+#endif
 
 	if (numVotes >= 0.75*players)
 		return CHANGE_NOW;
@@ -511,12 +551,34 @@ int FindBestMap(int mode)
 #endif
 
 //************************************************************************************************
+#ifdef OLD_VOTE_SYSTEM
+void CountVotes()
+{
+	int pvp, pvm, dom, ctf, ffa, inv, players, total_votes;
+	int inh, vhw, tra, dts;
+	// count the votes for each mode
+	pvp = CountTotalModeVotes(MAPMODE_PVP);
+	pvm = CountTotalModeVotes(MAPMODE_PVM);
+	dom = CountTotalModeVotes(MAPMODE_DOM);
+	ctf = CountTotalModeVotes(MAPMODE_CTF);
+	ffa = CountTotalModeVotes(MAPMODE_FFA);
+	inv = CountTotalModeVotes(MAPMODE_INV);
+	inh = CountTotalModeVotes(MAPMODE_INH);
+	dts = CountTotalModeVotes(MAPMODE_TBI);
+	vhw = CountTotalModeVotes(MAPMODE_VHW);
+	tra = CountTotalModeVotes(MAPMODE_TRA);
+
+
+	total_votes = pvp + pvm + dom + ctf + ffa + inv + inh + dts + vhw + tra;
+	numVotes = total_votes;
+}
+#endif
 
 int V_AttemptModeChange(qboolean endlevel)
 {
 #ifdef OLD_VOTE_SYSTEM // Paril
 	int pvp, pvm, dom, ctf, ffa, inv, players, total_votes;
-	
+	int inh, vhw, tra, dts;
 	players = total_players();
 
 	if (players < 1)
@@ -529,8 +591,14 @@ int V_AttemptModeChange(qboolean endlevel)
 	ctf = CountTotalModeVotes(MAPMODE_CTF);
 	ffa = CountTotalModeVotes(MAPMODE_FFA);
 	inv = CountTotalModeVotes(MAPMODE_INV);
+	inh = CountTotalModeVotes(MAPMODE_INH);
+	dts = CountTotalModeVotes(MAPMODE_TBI);
+	vhw = CountTotalModeVotes(MAPMODE_VHW);
+	tra = CountTotalModeVotes(MAPMODE_TRA);
 
-	total_votes = pvp + pvm + dom + ctf + ffa + inv;
+
+	total_votes = pvp + pvm + dom + ctf + ffa + inv + inh + dts + vhw + tra;
+	numVotes = total_votes;
 
 	//gi.dprintf("total_votes=%d\n", total_votes);
 	//gi.dprintf("%d,%d,%d,%d,%d\n", pvp,pvm,dom,ctf,ffa);
@@ -543,18 +611,27 @@ int V_AttemptModeChange(qboolean endlevel)
 	if (!endlevel && (total_votes < 0.8*players))
 		return 0;
 
-	if (pvp && (pvp>pvm) && (pvp>dom) && (pvp>ctf) && (pvp>ffa) && (pvp>inv))
+	if (pvp && (pvp>pvm) && (pvp>dom) && (pvp>ctf) && (pvp>ffa) && (pvp>inv) && (pvp>inh) && (pvp>dts) && (pvp>vhw) && (pvp>tra))
 		return MAPMODE_PVP;
-	else if (pvm && (pvm>pvp) && (pvm>dom) && (pvm>ctf) && (pvm>ffa) && (pvm>inv))
+	else if (pvm && (pvm>pvp) && (pvm>dom) && (pvm>ctf) && (pvm>ffa) && (pvm>inv) && (pvm>inh) && (pvm>dts) && (pvm>vhw) && (pvm>tra))
 		return MAPMODE_PVM;
-	else if (dom && (dom>pvp) && (dom>pvm) && (dom>ctf) && (dom>ffa) && (dom>inv))
+	else if (dom && (dom>pvp) && (dom>pvm) && (dom>ctf) && (dom>ffa) && (dom>inv) && (dom>inh) && (dom>dts) && (dom>vhw) && (dom>tra))
 		return MAPMODE_DOM;
-	else if (ctf && (ctf>pvp) && (ctf>pvm) && (ctf>dom) && (ctf>ffa) && (ctf>inv))
+	else if (ctf && (ctf>pvp) && (ctf>pvm) && (ctf>dom) && (ctf>ffa) && (ctf>inv) && (ctf>inh) && (ctf>dts) && (ctf>vhw) && (ctf>tra))
 		return MAPMODE_CTF;
-	else if (ffa && (ffa>pvp) && (ffa>pvm) && (ffa>dom) && (ffa>ctf) && (ffa>inv))
+	else if (ffa && (ffa>pvp) && (ffa>pvm) && (ffa>dom) && (ffa>ctf) && (ffa>inv) && (ffa>inh) && (ffa>dts) && (ffa>vhw) && (ffa>tra))
 		return MAPMODE_FFA;
-	else if (inv && (inv>pvp) && (inv>pvm) && (inv>dom) && (inv>ctf) && (inv>ffa))
+	else if (inv && (inv>pvp) && (inv>pvm) && (inv>dom) && (inv>ctf) && (inv>ffa) && (inv>inh) && (inv>dts) && (inv>vhw) && (inv>tra))
 		return MAPMODE_INV;
+	else if (inh && (inh>pvp) && (inh>pvm) && (inh>dom) && (inh>ctf) && (inh>ffa) && (inh>inv) && (inh>dts) && (inh>vhw) && (inh>tra))
+		return MAPMODE_INH;
+	else if (tra && (tra>pvp) && (tra>pvm) && (tra>dom) && (tra>ctf) && (tra>ffa) && (tra>inh) && (tra>dts) && (tra>vhw) && (tra>inv))
+		return MAPMODE_TRA;
+	else if (dts && (dts>pvp) && (dts>pvm) && (dts>dom) && (dts>ctf) && (dts>ffa) && (dts>inh) && (dts>inv) && (dts>vhw) && (dts>tra))
+		return MAPMODE_TBI;
+	else if (vhw && (vhw>pvp) && (vhw>pvm) && (vhw>dom) && (vhw>ctf) && (vhw>ffa) && (vhw>inh) && (vhw>inv) && (vhw>dts) && (vhw>tra))
+		return MAPMODE_VHW;
+
 
 	return 0;
 #else
@@ -640,6 +717,20 @@ void RunVotes ()
 	}
 
 }
+#else
+
+void RunVotes()
+{
+	if (V_VoteDone() == CHANGE_NOW)
+	{
+		// Tell everyone
+		gi.sound(&g_edicts[0], CHAN_AUTO, gi.soundindex("misc/keyuse.wav"), 1, ATTN_NONE, 0);
+		G_PrintGreenText("A majority was reached! Vote passed!\n");
+		//Change the map
+		EndDMLevel();
+	}
+}
+
 #endif
 
 
@@ -790,17 +881,20 @@ void ShowVoteModeMenu_handler(edict_t *ent, int option)
 
 void KillMyVote (edict_t *ent)
 {
-	if (ent->client->resp.HasVoted)
+	if (ent->client->resp.HasVoted) // voted?
 	{
 		ent->client->resp.HasVoted = false;
-		numVotes--;
+		if (ent->client->resp.voteType == 1) // voted yes?
+			numVotes--;
+		else
+			numVoteNo--; // voted no..
 	}
 }
 
 void ShowVoteModeMenu(edict_t *ent)
 {
 #ifdef OLD_VOTE_SYSTEM // Paril
-	int pvp, pvmon, dom, ctf, ffa, total, inv;
+	int pvp, pvmon, dom, ctf, ffa, total, inv, inh, vhw, tra, dts;
 	int	players, lastline=8, min_players;
 
 	//Voting enabled?
@@ -821,6 +915,10 @@ void ShowVoteModeMenu(edict_t *ent)
 	ctf = CountTotalModeVotes(MAPMODE_CTF);
 	ffa = CountTotalModeVotes(MAPMODE_FFA);
 	inv = CountTotalModeVotes(MAPMODE_INV);
+	inh = CountTotalModeVotes(MAPMODE_INH);
+	dts = CountTotalModeVotes(MAPMODE_TBI);
+	vhw = CountTotalModeVotes(MAPMODE_VHW);
+	tra = CountTotalModeVotes(MAPMODE_TRA);
 
 	total = pvp + pvmon + dom + ctf + ffa + inv;
 	
@@ -843,10 +941,17 @@ void ShowVoteModeMenu(edict_t *ent)
 		lastline++;
 	}
 	// invasion mode
-	if (/*invasion->value ||*/ (players < min_players))
+	if (invasion_enabled->value && (players < min_players))
 	{
 		addlinetomenu(ent, va(" Invasion           (%d)", inv), MAPMODE_INV);
 		lastline++;
+	}else
+	{
+		if (invasion_enabled->value && AveragePlayerLevel() > 10)
+		{
+			addlinetomenu(ent, " Invasion (Hard mode)  (%d)", MAPMODE_INH);
+			lastline++;
+		}
 	}
 	
 	// domination available when there are at least 4 players
@@ -860,8 +965,24 @@ void ShowVoteModeMenu(edict_t *ent)
 	{
 		addlinetomenu(ent, va(" CTF                (%d)", ctf), MAPMODE_CTF);
 		lastline++;
+	
+		addlinetomenu(ent, va(" Vortex Holywars    (%d)", vhw), MAPMODE_VHW);
+		lastline++;
+
+		addlinetomenu(ent, va(" Destroy The Spawn  (%d)", dts), MAPMODE_TBI);
+		lastline++;
 	}
 //GHz END
+
+	// az begin
+	// vrx chile 2.5: trading mode
+	if (tradingmode_enabled->value)
+	{
+		addlinetomenu(ent, " Trading", MAPMODE_TRA);
+		lastline++;
+	}
+
+	// az end
 	//Menu footer
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, va("    %d votes total.", total), 0);
@@ -927,6 +1048,7 @@ void ShowVoteModeMenu(edict_t *ent)
 				safe_cprintf(ent, PRINT_HIGH, "You already placed your vote.\n");
 				return; // GTFO PLZ
 			}
+			numVoteNo++;
 			ent->client->resp.HasVoted = true;
 			gi.bprintf (PRINT_CHAT, "%s voted No.\n", ent->client->pers.netname);
 		}
@@ -957,19 +1079,19 @@ void ShowVoteModeMenu(edict_t *ent)
 	else
 		min_players = 0.25 * maxclients->value;
 #else
-		min_players = maxclients->value;
+		min_players = 6;
 #endif
 
 	if (players > 1) // how could you ever play pvp alone? -az (bots not functional yet)
 		addlinetomenu(ent, " Player vs. Player", MAPMODE_PVP);
 
 	addlinetomenu(ent, " Free For All", MAPMODE_FFA);
-	/*4.5
+
 	if (players < min_players)
-	{*/
+	{
 		addlinetomenu(ent, " Player vs. Monster", MAPMODE_PVM);
 		lastline++;
-	/*}*/
+	}
 
 		// vrx chile 2.5: trading mode
 		if (tradingmode_enabled->value)
@@ -988,7 +1110,7 @@ void ShowVoteModeMenu(edict_t *ent)
 		}
 	}
 
-	if (invasion_enabled->value && AveragePlayerLevel() > 10)
+	if (invasion_enabled->value && (AveragePlayerLevel() > 10 || total_players() >= min_players) )
 	{
 		addlinetomenu(ent, " Invasion (Hard mode)", MAPMODE_INH);
 		lastline++;
@@ -1006,8 +1128,11 @@ void ShowVoteModeMenu(edict_t *ent)
 		addlinetomenu(ent, " CTF", MAPMODE_CTF);
 		lastline++;
 
-		addlinetomenu(ent, " Vortex Holywars", MAPMODE_VHW);
-		lastline++;
+		if (gi.cvar("vhw_enabled", "1", 0)->value)
+		{
+			addlinetomenu(ent, " Vortex Holywars", MAPMODE_VHW);
+			lastline++;
+		}
 
 		addlinetomenu(ent, " Destroy The Spawn", MAPMODE_TBI);
 		lastline++;

@@ -180,10 +180,10 @@ void AssignAbilities(edict_t *ent)
 	if (ent->myskills.class_num == CLASS_WEAPONMASTER || generalabmode->value)
 	{
 		int i;
-		for (i = 0; i < CLASS_MAX; i++)
+		for (i = 0; i < MAX_ABILITIES; i++)
 		{
-			first = ablist[i+1];
-			while (first->index != -1)
+			first = abilities_by_index[i];
+			if (first)
 			{
 				int real_max = first->softmax;
 				
@@ -397,6 +397,9 @@ void InitializeAbilityList()
 	abildefinition_t *first;
 	int i;
 	gi.dprintf("INFO: Initializing ability list... ");
+
+	for (i = 0; i < MAX_ABILITIES; i++)
+		abilities_by_index[i] = NULL;
 
 	for (i = -1; i < CLASS_MAX; i++)
 	{

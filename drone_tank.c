@@ -1094,7 +1094,7 @@ void init_drone_tank (edict_t *self)
 	gi.soundindex ("tank/tnkatck3.wav");
 
 //	if (self->activator && self->activator->client)
-	self->health = 100 + 35*self->monsterinfo.level;
+	self->health = 70 + 45*self->monsterinfo.level;
 	//else self->health = 100 + 65*self->monsterinfo.level;
 
 	self->max_health = self->health;

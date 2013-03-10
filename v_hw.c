@@ -6,11 +6,22 @@
 #define HW_CREDITS 100
 #define HW_AWARD_FRAMES		50
 #define HW_MINIMUM_PLAYERS	3
-#define HW_FRAG_POINTS		75
-
-int hw_index = 0;
+#define HW_FRAG_POINTS		45
 
 int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target);
+
+float hw_getdamagefactor(edict_t *targ, edict_t* attacker)
+{
+	if (targ && G_GetClient(targ) && attacker && G_GetClient(attacker))
+	{
+		if (targ->client->pers.inventory[halo_index]) // increment damage to halo bearer by every kill
+			return 1 + targ->myskills.streak/8;
+		else if (!attacker->client->pers.inventory[halo_index]) // attacker doesn't have the halo
+			return 0.7; // lessened damage
+	}
+	// attacker has the halo, normal damage
+	return 1;
+}
 
 void hw_deathcleanup(edict_t *targ, edict_t *attacker)
 {
@@ -20,24 +31,25 @@ void hw_deathcleanup(edict_t *targ, edict_t *attacker)
 	clienttarg = G_GetClient(targ);
 	clientattacker = G_GetClient(attacker);
 
-	if (clienttarg->client->pers.inventory[hw_index])
+	// we got a client target, the target is the same that got killed, and it has the halo
+	if (clienttarg && clienttarg == targ && clienttarg->client->pers.inventory[halo_index])
 	{
-		hw_dropflag(clienttarg, FindItem("Halo")); // DROP IT WUB WUB
+		hw_dropflag(clienttarg, &itemlist[halo_index]); // DROP IT WUB WUB
 
-		gi.bprintf(PRINT_HIGH, "%s killed the saint!\n", 
-			clientattacker ? clientattacker->client->pers.netname : "Nobody (?)");
+				gi.bprintf(PRINT_HIGH, "%s killed the saint!\n", 
+			clientattacker ? clientattacker->client->pers.netname : "the world");
 
-		if (clientattacker && clienttarg)
+		if (clientattacker)
 		{
 			clientattacker->myskills.credits += 250; // prize
 			V_AddFinalExp(clientattacker, HW_FRAG_POINTS * clienttarg->myskills.streak);
 		}
 	}
 
-	if (clientattacker->client->pers.inventory[hw_index])
+	if (clientattacker && clientattacker->client->pers.inventory[halo_index])
 	{
 		// oh no saint be killan (bonus)
-		V_AddFinalExp(clientattacker, HW_FRAG_POINTS * sqrt(clientattacker->myskills.streak)); 
+		V_AddFinalExp(clientattacker, HW_FRAG_POINTS * pow(clientattacker->myskills.streak, 1.2)); // increase experience significantly
 	}
 
 	for (i=0; i<game.maxclients; i++) 
@@ -62,7 +74,7 @@ edict_t *hw_flagcarrier()
 	{
 		cl = &g_edicts[i+1];
 
-		if (cl->client && cl->client->pers.inventory[hw_index])
+		if (cl->client && cl->client->pers.inventory[halo_index])
 		{
 			return cl; // got our carrier
 		}
@@ -226,7 +238,7 @@ void hw_dropflag (edict_t *ent, gitem_t *item)
 	if (!ent || !ent->inuse || G_IsSpectator(ent))
 		return;
 
-	if (!hw->value || !ent->client->pers.inventory[hw_index])
+	if (!hw->value || !ent->client->pers.inventory[halo_index])
 		return;
 
 	gi.bprintf(PRINT_HIGH, "%s dropped the halo!\n", ent->client->pers.netname);
@@ -249,8 +261,6 @@ void hw_spawnflag (void)
 	flag->think = hw_flagthink;
 	flag->nextthink = level.time + FRAMETIME;
 	flag->takedamage = DAMAGE_NO; // this should fix a nasty bug. should.
-
-	hw_index = ITEM_INDEX(FindItemByClassname("item_flaghw"));
 
 	if (FindValidSpawnPoint(flag, false))
 		gi.dprintf("INFO: Flag spawned successfully.\n");

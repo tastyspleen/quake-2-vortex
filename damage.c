@@ -185,18 +185,6 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	if (mod == MOD_CRIPPLE)
 		return damage;
 
-	dclient = G_GetClient(targ);
-	if (dclient)
-	{
-		if (hw->value)
-		{
-			if (dclient->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
-			{
-				damage *= 2.5;
-			}
-		}
-	}
-
 	// spirits shoot a blaster, but it should be (D_MAGICAL | D_ENERGY)
 	if (attacker->mtype == M_YANGSPIRIT)	
 		dtype = D_MAGICAL | D_ENERGY;
@@ -497,18 +485,13 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	if (mod == MOD_TELEFRAG)
 		return damage;
 
-	if (M_IgnoreInferiorTarget(targ, attacker))//4.5
-	{
-		targ->enemy = attacker; // attack!
-		return 0; // no immediate damage to world monsters ignoring newbies
-	}
 	if (level.time < pregame_time->value)
 		return 0; // no damage in pre-game
 	if (trading->value)
 		return 0; // az 2.5 vrxchile: no damage in trading mode
 	if (OnSameTeam(attacker, targ) && (attacker != targ))
 	{
-		if (invasion->value > 1)
+		if (invasion->value > 1 && gi.cvar("inh_friendlyfire", "0", 0)->value)
 		{
 			// if none of them is a client and the target is not a piloted monster
 			if (!(G_GetClient(attacker) && G_GetClient(targ)))
@@ -528,33 +511,6 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	if (targ->flags & FL_COCOONED && targ->movetype == MOVETYPE_NONE && targ->svflags & SVF_NOCLIENT)
 		return 0; //4.4 don't hurt cocooned entities
 
-	// az: we don't need this clause.
-	// they can't use abilities nor weapons at all already, so this is overkill.
-	/*if ((isMorphingPolt(attacker)) && !attacker->mtype && !PM_PlayerHasMonster(attacker))
-		return 0; // poltergeist cannot hurt anyone while in human form*/
-	
-	if (ffa->value)
-	{
-		edict_t *ent1 = G_GetClient(attacker);
-		edict_t *ent2 = G_GetClient(targ);
-		edict_t *uattacker = ent1 ? ent1 : attacker;
-		edict_t *utarg = ent2 ? ent2 : targ;
-
-		if ((uattacker->myskills.respawns & HOSTILE_PLAYERS) &&  // attacker is hostile to players
-			// and target is hostile to players, is a client or is a piloted monster.
-			(!(utarg->myskills.respawns & HOSTILE_PLAYERS) && ent2 ))
-		{
-			return 0; // can't damage players that aren't hostile towards them
-		}
-		if (!ent2 && ent1) // attacking a monster with no owner (worldspawn)
-		{
-			// not hostile towards monsters, can't damage them.
-			if (!(uattacker->myskills.respawns & HOSTILE_MONSTERS))
-				return 0;
-		}
-	}
-
-
 	if (dflags & DAMAGE_NO_ABILITIES)
 		return damage; // ignore abilities		
 
@@ -566,6 +522,9 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	{
 		Resistance = min(Resistance, 0.5);
 	}
+
+	if (hw->value) // modify damage
+		damage *= hw_getdamagefactor(targ, attacker);
 
 	//Talent: Bombardier - reduces self-inflicted grenade damage
 	if (PM_GetPlayer(targ) == PM_GetPlayer(attacker) 
@@ -791,7 +750,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (!V_IsPVP() || !ffa->value)
 				temp = 1 + 0.1 * targ->myskills.abilities[RESISTANCE].current_level;
 			// PvP modes are getting frustrating with players that are too resisting
-			else if ( (!pvm->value && !invasion->value) && targ->myskills.respawns & HOSTILE_PLAYERS )
+			else if ( (!pvm->value && !invasion->value) )
 				temp = 1 + 0.066 * targ->myskills.abilities[RESISTANCE].current_level;
 
 			//Talent: Improved Resist
@@ -839,8 +798,8 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 					return 0;
 			}else
 			{
-				// Doesn't have the halo? Have ghost.
-				if (dclient && !dclient->client->pers.inventory[ITEM_INDEX(FindItem("Halo"))])
+				// Doesn't have the halo? Have ghost. (az remainder: this is if you do have ghost)
+				if (dclient && !dclient->client->pers.inventory[halo_index])
 					if (random() >= temp)
 						return 0;
 			}

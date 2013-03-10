@@ -27,7 +27,7 @@ const char* VSFU_CREATEDBQUERY[TOTAL_TABLES] =
 	{"CREATE TABLE [userdata] (  [char_idx] INTEGER,[title] CHAR(24), [playername] CHAR(64), [password] CHAR(24), [email] CHAR(64), [owner] CHAR(24), [member_since] CHAR(30), [last_played] CHAR(30), [playtime_total] INTEGER,[playingtime] INTEGER)"},
 	{"CREATE TABLE [weapon_meta] ([char_idx] INTEGER,[index] INTEGER, [disable] INTEGER)"},
 	{"CREATE TABLE [weapon_mods] ([char_idx] INTEGER,[weapon_index] INTEGER, [modindex] INTEGER, [level] INTEGER, [soft_max] INTEGER, [hard_max] INTEGER)"},
-	{"CREATE TABLE [character_data] ([char_idx] INTEGER,  [respawns] INTEGER,   [health] INTEGER,   [maxhealth] INTEGER,   [armour] INTEGER,   [maxarmour] INTEGER,   [nerfme] INTEGER,   [adminlevel] INTEGER,   [bosslevel] INTEGER)R"}
+	{"CREATE TABLE [character_data] ([char_idx] INTEGER,  [respawns] INTEGER,   [health] INTEGER,   [maxhealth] INTEGER,   [armour] INTEGER,   [maxarmour] INTEGER,   [nerfme] INTEGER,   [adminlevel] INTEGER,   [bosslevel] INTEGER)"}
 };
 
 // SAVING
@@ -169,8 +169,6 @@ void VSFU_SaveRunes(edict_t *player)
 					player->myskills.items[index].modifiers[j].index,
 					player->myskills.items[index].modifiers[j].value,
 					player->myskills.items[index].modifiers[j].set)) );
-				if (r != SQLITE_OK)
-					gi.dprintf("%d\n", r);
 				free (format);
 			}
 		}

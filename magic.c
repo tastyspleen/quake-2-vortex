@@ -1250,7 +1250,7 @@ void SpawnExplodingArmor (edict_t *ent, int time)
 	armor->touch = explodingarmor_touch;
 	armor->think = explodingarmor_think;
 	armor->dmg = EXPLODING_ARMOR_DMG_BASE + EXPLODING_ARMOR_DMG_ADDON * ent->myskills.abilities[EXPLODING_ARMOR].current_level;
-	armor->dmg_radius = armor->dmg;
+	armor->dmg_radius = 100 + armor->dmg/3;
 	
 	if (armor->dmg_radius > EXPLODING_ARMOR_MAX_RADIUS)
 		armor->dmg_radius = EXPLODING_ARMOR_MAX_RADIUS;
@@ -5897,8 +5897,9 @@ void Cmd_Fireball_f (edict_t *ent, float skill_mult, float cost_mult)
 #define PLASMABOLT_ADDON_SPEED			0
 #define PLASMABOLT_INITIAL_DURATION		2.0
 #define PLASMABOLT_ADDON_DURATION		0
-#define PLASMABOLT_COST					25
+#define PLASMABOLT_COST					20
 #define PLASMABOLT_DELAY				0.3
+#define PLASMABOLT_DELAY_PVP			0.7
 
 void plasmabolt_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
@@ -6006,7 +6007,11 @@ void Cmd_Plasmabolt_f (edict_t *ent)
 
 	fire_plasmabolt(ent, start, forward, damage, radius, speed, duration);
 
-	ent->client->ability_delay = level.time + PLASMABOLT_DELAY;
+	if (pvm->value)
+		ent->client->ability_delay = level.time + PLASMABOLT_DELAY;
+	else
+		ent->client->ability_delay = level.time + PLASMABOLT_DELAY_PVP;
+
 	ent->client->pers.inventory[power_cube_index] -= PLASMABOLT_COST;
 
 	// write a nice effect so everyone knows we've cast a spell

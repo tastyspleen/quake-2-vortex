@@ -108,9 +108,9 @@ void fire_sword ( edict_t *self, vec3_t start, vec3_t aimdir, int damage, int ki
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
 
-//	if (self->myskills.class_num == CLASS_PALADIN)	//doomie
-//		sword_bonus = 1.5;
-	swordrange = SABRE_INITIAL_RANGE + (SABRE_ADDON_RANGE * self->myskills.weapons[WEAPON_SWORD].mods[2].current_level * sword_bonus);
+	if (self->myskills.class_num == CLASS_PALADIN)	//doomie
+		sword_bonus = 1.3;
+	swordrange = SABRE_INITIAL_RANGE * sword_bonus + (SABRE_ADDON_RANGE * self->myskills.weapons[WEAPON_SWORD].mods[2].current_level * sword_bonus);
 
 	VectorSet( begin_offset,0,0,self->viewheight-8);
 	VectorAdd( self->s.origin, begin_offset, begin);

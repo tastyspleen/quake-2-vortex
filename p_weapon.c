@@ -1054,17 +1054,8 @@ void Weapon_Grenade2 (edict_t *ent)
 				if (ent->myskills.weapons[WEAPON_HANDGRENADE].mods[4].current_level < 1)//K03
 					ent->client->weapon_sound = gi.soundindex("weapons/hgrenc1b.wav");
 			}
-//GHz START	
-			// recycle grenade timer instead of blowing up
-			if (level.time >= ent->client->grenade_time)
-			{
-				ent->client->ps.gunframe = 1;
-				ent->client->grenade_time = 0;
-				ent->client->grenade_delay = 0;
-				return;
-			}
-//GHz END
-			/*
+
+			
 			// they waited too long, detonate it in their hand
 			if (!ent->client->grenade_blew_up && level.time >= ent->client->grenade_time)
 			{
@@ -1072,7 +1063,7 @@ void Weapon_Grenade2 (edict_t *ent)
 				weapon_grenade_fire (ent, true);
 				ent->client->grenade_blew_up = true;
 			}
-			*/
+			
 			if (ent->client->buttons & BUTTON_ATTACK)
 				return;
 
@@ -1119,7 +1110,7 @@ void Weapon_Grenade2 (edict_t *ent)
 		else
 			ent->client->ps.gunframe++;
 
-		if (ent->client->ps.gunframe == 16 && ent->client->grenade_delay == 0)
+		if (ent->client->ps.gunframe >= 16 && ent->client->grenade_delay == 0)
 		{
 			ent->client->grenade_time = 0;
 			ent->client->weaponstate = WEAPON_READY;

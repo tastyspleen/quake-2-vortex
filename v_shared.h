@@ -216,7 +216,6 @@ void INV_SpawnPlayers (void);
 qboolean INV_AddSpawnQue (edict_t *ent);
 int INV_GetNumPlayerSpawns (void);
 void INV_AwardPlayers (void);
-void INV_AwardMonsterKill (edict_t *attacker, edict_t *target);
 //************ invasion.c ************
 
 //************ totems.c ************
