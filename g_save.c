@@ -227,7 +227,7 @@ void InitGame (void)
 #endif
 	}
 	else
-		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value ? "Binary" : "SQLite");
+		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value == 1 ? "Binary" : "SQLite");
 
 	if (savemethod->value == 3)
 	{
@@ -255,7 +255,9 @@ void InitGame (void)
 	gun_y = gi.cvar ("gun_y", "0", 0);
 	gun_z = gi.cvar ("gun_z", "0", 0);
 
+#ifndef FIXED_FT
 	sv_fps = gi.cvar("sv_fps", "10", CVAR_LATCH);
+#endif
 
 	//FIXME: sv_ prefix is wrong for these
 	sv_rollspeed = gi.cvar ("sv_rollspeed", "200", 0);
@@ -267,7 +269,7 @@ void InitGame (void)
 	dedicated = gi.cvar ("dedicated", "0", CVAR_NOSET);
 
 	// latched vars
-	sv_cheats = gi.cvar ("cheats", "0", CVAR_SERVERINFO|CVAR_LATCH);
+	// sv_cheats = gi.cvar ("cheats", "0", CVAR_SERVERINFO|CVAR_LATCH);
 	gi.cvar ("gamename", GAMEVERSION , CVAR_SERVERINFO | CVAR_LATCH);
 	gi.cvar ("gamedate", __DATE__ , CVAR_SERVERINFO | CVAR_LATCH);
 
@@ -276,8 +278,6 @@ void InitGame (void)
 	coop = gi.cvar ("coop", "0", CVAR_LATCH);
 	skill = gi.cvar ("skill", "1", CVAR_SERVERINFO);
 	maxentities = gi.cvar ("maxentities", "1024", CVAR_LATCH);
-	//autospawn
-	autospawn = gi.cvar ("autospawn", "0", CVAR_LATCH);
 	//chain edit flag
 	//vwep support
 	vwep = gi.cvar ("vwep", "1", CVAR_LATCH);

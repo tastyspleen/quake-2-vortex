@@ -836,7 +836,6 @@ extern	cvar_t	*filterban;
 extern	cvar_t	*gamepath;
 extern	cvar_t	*chedit;
 extern	cvar_t	*vwep;
-extern	cvar_t	*autospawn;
 extern	float	spawncycle;
 //ponpoko
 
@@ -1754,6 +1753,7 @@ struct edict_s
 	qboolean exploded; // don't explode more than once at death. lol
 
 	edict_t		*chain;
+	edict_t		*memchain;
 	edict_t		*enemy;
 	edict_t		*oldenemy;
 	edict_t		*activator;

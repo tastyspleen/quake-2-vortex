@@ -220,9 +220,18 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode)
 	gi.dprintf("Votes have been reset.\n");
 
 	//Change the map
-	strcpy(level.nextmap, maplist->maps[mapindex].name);
-	level.r_monsters = maplist->maps[mapindex].monsters;//4.5
-	gi.dprintf("Next map is: %s\n", level.nextmap);
+	if (mapindex < maplist->nummaps) // Assume everyone has proper maplists? Nope -az
+	{
+		strcpy(level.nextmap, maplist->maps[mapindex].name);
+		level.r_monsters = maplist->maps[mapindex].monsters;//4.5
+		gi.dprintf("Next map is: %s\n", level.nextmap);
+	}else
+	{
+		gi.dprintf("Invalid map index (%d) defaulting to current map.\n", mapindex);
+		strcpy(level.nextmap, level.mapname);
+	}
+	if (total_players() == 0)
+		ExitLevel();
 }
 
 //************************************************************************************************

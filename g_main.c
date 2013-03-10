@@ -54,7 +54,6 @@ cvar_t	*sv_cheats;
 cvar_t	*gamepath;
 cvar_t	*vwep;
 cvar_t	*sv_maplist;
-cvar_t	*autospawn;
 float	spawncycle;
 //ponpoko
 
@@ -356,86 +355,6 @@ EndDMLevel
 The timelimit or fraglimit has been exceeded
 =================
 */
-/*
-void EndDMLevel (void)
-{
-	edict_t		*ent;
-	char *s, *t, *f;
-	static const char *seps = " ,\n\r";
-// GHz START
-	int		i;
-	edict_t	*tempent;
-
-	clearallmenus();
-	InitJoinedQueue();
-
-	if (SPREE_WAR) // terminate any spree wars
-	{
-		SPREE_WAR = false;
-		SPREE_DUDE = NULL;
-	}
-
-	// save all characters and append to log
-	for_each_player(tempent, i)
-	{
-		VortexRemovePlayerSummonables(tempent);
-		tempent->myskills.streak = 0;
-		WriteMyCharacter(tempent);
-		if (G_EntExists(tempent))
-			WriteToLogfile(tempent, "Logged out.\n");
-		else
-			WriteToLogfile(tempent, "Disconnected from server.\n");
-	}
-	gi.dprintf("Ready to end level.\n");
-//GHz END
-
-	// stay on same level flag
-	if ((int)dmflags->value & DF_SAME_LEVEL)
-	{
-		BeginIntermission (CreateTargetChangeLevel (level.mapname) );
-		return;
-	}
-
-	// see if it's in the map list
-	if (*sv_maplist->string) {
-		s = strdup(sv_maplist->string);
-		f = NULL;
-		t = strtok(s, seps);
-		while (t != NULL) {
-			if (Q_stricmp(t, level.mapname) == 0) {
-				// it's in the list, go to the next one
-				t = strtok(NULL, seps);
-				if (t == NULL) { // end of list, go to first one
-					if (f == NULL) // there isn't a first one, same level
-						BeginIntermission (CreateTargetChangeLevel (level.mapname) );
-					else
-						BeginIntermission (CreateTargetChangeLevel (f) );
-				} else
-					BeginIntermission (CreateTargetChangeLevel (t) );
-				free(s);
-				return;
-			}
-			if (!f)
-				f = t;
-			t = strtok(NULL, seps);
-		}
-		free(s);
-	}
-
-	if (level.nextmap[0]) // go to a specific map
-		BeginIntermission (CreateTargetChangeLevel (level.nextmap) );
-	else {	// search for a changelevel
-		ent = G_Find (NULL, FOFS(classname), "target_changelevel");
-		if (!ent)
-		{	// the map designer didn't include a changelevel,
-			// so create a fake ent that goes back to the same level
-			BeginIntermission (CreateTargetChangeLevel (level.mapname) );
-			return;
-		}
-		BeginIntermission (ent);
-	}
-}
-*/
 
 void VortexEndLevel (void)
 {
@@ -621,6 +540,11 @@ void EndDMLevel (void)
 				mode = MAPMODE_TBI;
 			else mode = MAPMODE_PVP;
 
+			if (tradingmode_enabled->value && total_players() == 0)
+			{
+				mode = MAPMODE_TRA; // default to trading mode when no people's in
+			}
+
 			//Point to the correct map list
 			maplist = GetMapList(mode);
 
@@ -634,7 +558,14 @@ void EndDMLevel (void)
 				//Select a random map for this game mode
 				while (1)
 				{
+					int max = maplist->nummaps-1;
 					// get a random map index from the map list
+					if (max <= 0)
+					{
+						mapnum = 0;
+						gi.dprintf("Maplist for mode %d has no maps.\n", mode);
+						break;
+					}
 					mapnum = GetRandom(0, maplist->nummaps-1);
 
 					// is this the same map?
@@ -733,7 +664,10 @@ void CheckDMRules (void)
 		if (voting->value && (level.time >= (timelimit->value - 3)*60) &&
 			(maplist.warning_given == false))
 				{
-					G_PrintGreenText(va("***** 3 Minute Warning: Type 'vote' to place your vote for the next map and game type *****\n"));
+					if (!invasion->value)
+						G_PrintGreenText(va("***** 3 Minute Warning: Type 'vote' to place your vote for the next map and game type *****\n"));
+					else
+						G_PrintGreenText("***** Only 3 minutes left! *****\n");
 					maplist.warning_given = true;
 				}
 

@@ -238,14 +238,12 @@ void VSFU_SavePlayer(edict_t *player)
 		
 		if (!Lua_GetIntVariable("useMysqlTablesOnSQLite", 0))
 		{
-			for (i = 0; i < TOTAL_INSERTONCE; i++)
-			{
+			/* sorry about this :( -az*/
 				QUERY(va (CA, id));
 				QUERY(va (CB, id));
 				QUERY(va (CC, id));
 				QUERY(va (CD, id));
 				QUERY(va (CE, id));
-			}
 		}else
 		{
 			QUERY(va (CA, id));

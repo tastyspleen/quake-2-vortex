@@ -1386,7 +1386,7 @@ void V_RestoreMorphed (edict_t *ent, int refund)
 
 	gi.sound (ent, CHAN_WEAPON, gi.soundindex("spells/morph.wav") , 1, ATTN_NORM, 0);
 
-	if (isMorphingPolt(ent))
+	// if (isMorphingPolt(ent)) // az- always remove summonables
 		VortexRemovePlayerSummonables(ent);
 
 	if (PM_PlayerHasMonster(ent))
@@ -1414,6 +1414,10 @@ void V_RestoreMorphed (edict_t *ent, int refund)
 	ent->mtype = 0;
 	ent->s.modelindex = 255;
 	ent->s.skinnum = ent-g_edicts-1;
+
+	if (!ent->client->pers.weapon)
+		Pick_respawnweapon(ent);
+
 	ShowGun(ent);
 
 	ent->client->lock_frames = 0;//4.2 reset smart-rocket lock-on counter
@@ -1839,7 +1843,9 @@ void V_ResetPlayerState (edict_t *ent)
 	}
 
 	if (hw->value)
+	{
 		hw_dropflag(ent, FindItem("Halo"));
+	}
 
 	// drop all techs
 	tech_dropall(ent);

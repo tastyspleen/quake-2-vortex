@@ -1091,7 +1091,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			int	*armor = &attacker->client->pers.inventory[body_armor_index];
 			int	max_health = attacker->max_health;
 
-			temp = 0.05*attacker->myskills.abilities[VAMPIRE].current_level;
+			temp = 0.075*attacker->myskills.abilities[VAMPIRE].current_level;
 			
 			// brains and mutants with morph mastery use vamp
 			if (attacker->mtype)

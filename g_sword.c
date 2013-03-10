@@ -229,7 +229,7 @@ void Weapon_Lance_Fire (edict_t *ent)
 
 	damage = SABRE_INITIAL_DAMAGE + (SABRE_ADDON_DAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[0].current_level * sword_bonus);
 	burn_damage = SABRE_ADDON_HEATDAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[3].current_level * sword_bonus;
-	speed = 500 + (10 * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level * sword_bonus);
+	speed = 700 + (15 * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level * sword_bonus);
 
 	// lance modifier
 	damage *= 2;

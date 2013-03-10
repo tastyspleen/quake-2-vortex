@@ -283,7 +283,7 @@ int	AStar_ResolvePath ( int n1, int n2, int movetypes )
 
 	AStar_ListsToPath();
 
-	printf("RESULT:\n Origin:%i\n Goal:%i\n numNodes:%i\n FirstInPath:%i\n LastInPath:%i\n", originNode, goalNode, Apath_numNodes, Apath[0], Apath[Apath_numNodes-1]);
+	// printf("RESULT:\n Origin:%i\n Goal:%i\n numNodes:%i\n FirstInPath:%i\n LastInPath:%i\n", originNode, goalNode, Apath_numNodes, Apath[0], Apath[Apath_numNodes-1]);
 
 	return 1;
 }
