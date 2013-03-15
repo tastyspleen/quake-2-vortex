@@ -394,16 +394,12 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 			weight *= (1.0 - self->ai.status.playersWeights[i]);
 
 			// wall between me and my potential enemy?
-			tr = gi.trace(self->s.origin, NULL, NULL, AIEnemies[i]->s.origin, NULL, MASK_PLAYERSOLID);
-
-			if (tr.fraction != 1.0)
+			if (!visible1(self, AIEnemies[i]))
 			{
 				weight = 299; // Low weight.
-				continue;
 			}
 
-			if( /*infront( self, AIEnemies[i] ) ||*/ // does not need to be "infront"
-				(weight < 500 ) )
+			if(weight < 500)
 			{
 				// Check if best target, or better than current target
 				if (weight < bestweight)

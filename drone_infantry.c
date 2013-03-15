@@ -337,6 +337,8 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
+	DroneList_Remove(self);
+
 // regular death
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
@@ -357,6 +359,13 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 		self->monsterinfo.currentmove = &infantry_move_death3;
 		gi.sound (self, CHAN_VOICE, sound_die2, 1, ATTN_NORM, 0);
 	}
+
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
+
 }
 
 

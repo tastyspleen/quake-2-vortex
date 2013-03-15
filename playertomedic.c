@@ -67,6 +67,8 @@ void p_medic_reanimate (edict_t *ent, edict_t *target)
 			target->monsterinfo.stand(target);
 
 			ent->num_monsters += target->monsterinfo.control_cost;
+			ent->num_monsters_real++;
+			// gi.bprintf(PRINT_HIGH, "adding %p (%d)\n", target, ent->num_monsters_real);
 			safe_cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", 
 				target->classname, ent->num_monsters, MAX_MONSTERS);
 		}
@@ -129,9 +131,11 @@ void p_medic_reanimate (edict_t *ent, edict_t *target)
 		e->nextthink = level.time + MEDIC_RESURRECT_DELAY;
 
 		ent->num_monsters += e->monsterinfo.control_cost;
+		ent->num_monsters_real++;
+		// gi.bprintf(PRINT_HIGH, "adding %p (%d) \n", target, ent->num_monsters_real);
 
 		safe_cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", 
-			ent->num_monsters, MAX_MONSTERS);
+			ent->num_monsters, (int)MAX_MONSTERS);
 	}
 	else if (!strcmp(target->classname, "spiker") && ent->num_spikers + 1 <= SPIKER_MAX_COUNT)
 	{

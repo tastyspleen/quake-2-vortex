@@ -306,7 +306,13 @@ void mychick_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		self->monsterinfo.currentmove = &mychick_move_death2;
 		gi.sound (self, CHAN_VOICE, sound_death2, 1, ATTN_NORM, 0);
 	}
-//	gi.dprintf("mychick_die end()\n");
+
+	DroneList_Remove(self);
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
 }
 
 void mychick_duck_down (edict_t *self)

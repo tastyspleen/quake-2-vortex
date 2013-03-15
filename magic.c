@@ -4917,9 +4917,13 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 
 		// decrement summonable counter for previous owner
 		old_owner->num_monsters -= other->monsterinfo.control_cost;
+		old_owner->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", other, old_owner->num_monsters_real);
 		
 		// increment summonable counter for new owner
 		ent->num_monsters += other->monsterinfo.control_cost;
+		ent->num_monsters_real++;
+		// gi.bprintf(PRINT_HIGH, "adding %p (%d)\n", other, ent->num_monsters_real);
 
 		// number of summonable slots in-use
 		current_num = old_owner->num_monsters;

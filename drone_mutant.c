@@ -512,6 +512,15 @@ void mutant_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		self->monsterinfo.currentmove = &mutant_move_death1;
 	else
 		self->monsterinfo.currentmove = &mutant_move_death2;
+	
+	DroneList_Remove(self);
+
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
+
 }
 
 
@@ -546,7 +555,7 @@ void init_drone_mutant (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 120 + 20*self->monsterinfo.level;
+	self->health = 90 + 35*self->monsterinfo.level;
 	//else
 		//self->health = 400 + 160*self->monsterinfo.level;
 

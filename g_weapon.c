@@ -1038,8 +1038,8 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	T_RadiusDamage(ent, ent->owner, ent->radius_dmg, other, ent->dmg_radius, mod);
 	//K03 End
 
-	if(Q_stricmp (ent->classname, "lockon rocket") == 0)
-		gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/locrexp.wav"), 1, ATTN_NONE, 0);
+	/*if(Q_stricmp (ent->classname, "lockon rocket") == 0)
+		gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/locrexp.wav"), 1, ATTN_NONE, 0);*/
 
 	gi.WriteByte (svc_temp_entity);
 	if (ent->waterlevel)

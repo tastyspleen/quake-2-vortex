@@ -638,11 +638,19 @@ void mygunnerdie (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
+	DroneList_Remove(self);
+
 // regular death
 	gi.sound (self, CHAN_VOICE, sound_death, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.currentmove = &mygunnermove_death;
+
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
 }
 
 void init_drone_gunner (edict_t *self)
@@ -666,7 +674,7 @@ void init_drone_gunner (edict_t *self)
 	VectorSet (self->maxs, 16, 16, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 50 + 16*self->monsterinfo.level;
+	self->health = 40 + 20*self->monsterinfo.level;
 	//else self->health = 100 + 30*self->monsterinfo.level;
 
 	self->max_health = self->health;

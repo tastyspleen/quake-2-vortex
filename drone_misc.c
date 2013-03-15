@@ -26,6 +26,63 @@ void init_drone_berserk (edict_t *self);
 void init_drone_infantry (edict_t *self);
 int crand (void);
 
+// Drone Lists -az
+
+/* The purpose of this is to decrease those silly G_Find calls for drones by chaining them together. */
+edict_t *firstDrone = NULL, *lastDrone = NULL;
+
+edict_t *DroneList_Iterate()
+{
+	return firstDrone;
+}
+
+edict_t *DroneList_Next(edict_t *ent)
+{
+	return ent->chain;
+}
+
+void DroneList_Insert(edict_t* new_ent)
+{
+	if (lastDrone)
+	{
+		lastDrone->chain = new_ent; // put them at the end
+		
+		new_ent->prev_chain = lastDrone; // the one that comes before is this one..
+
+		lastDrone = lastDrone->chain; // update last drone to the top of the list
+		lastDrone->chain = NULL; // clear list to null
+	}else
+	{
+		// get a first and last drone, this new entity in the list.
+		firstDrone = lastDrone = new_ent;
+		new_ent->chain = NULL;
+		new_ent->prev_chain = NULL;
+	}
+}
+
+/* we don't free it, we just remove it from the list */
+void DroneList_Remove(edict_t *ent)
+{
+	edict_t *current = firstDrone;
+	edict_t *prev = firstDrone;
+
+	// is it the first drone?
+	if (ent == firstDrone)
+	{
+		firstDrone = firstDrone->chain; 
+
+		if (!firstDrone) // end of the chain, firstDrone == lastDrone.
+			lastDrone = NULL;
+	}
+	
+	if (ent->prev_chain) // set our preivious entity in the list to the next.
+		ent->prev_chain->chain = ent->chain;
+
+	ent->chain = NULL;
+}
+
+// end Drone Lists
+
 qboolean drone_ValidChaseTarget (edict_t *self, edict_t *target)
 {
 	//if (target && target->inuse && target->classname)
@@ -781,13 +838,20 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	if (!ent->client && (drone_type == 30 || drone_type == 31)) // boss
 		ent->num_sentries++;
 	else
+	{
 		ent->num_monsters += drone->monsterinfo.control_cost;
+	}
+	
+	// boss or not, add it to the monster count
+	ent->num_monsters_real++;
+	// gi.bprintf(PRINT_HIGH, "adding %p (%d)\n", drone, ent->num_monsters_real);
 
 	VectorCopy (drone->s.origin, drone->s.old_origin);
 	gi.linkentity(drone);
 
 	// Addition to JABot
 	AI_EnemyAdded(drone);
+	DroneList_Insert(drone);
 
 	return drone;
 }
@@ -798,12 +862,16 @@ void RemoveAllDrones (edict_t *ent, qboolean refund_player)
 
 	DroneRemoveSelected(ent, NULL);
 
+	e = DroneList_Iterate();
+
 	// search for other drones
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
+	while (e)
 	{
 		// try to restore previous owner
 		if (e && e->activator && (e->activator == ent) && !RestorePreviousOwner(e))
 			M_Remove(e, refund_player, true);
+
+		e = DroneList_Next(e);
 	}
 }
 
@@ -811,7 +879,7 @@ void RemoveDrone (edict_t *ent)
 {
 	vec3_t	forward, right, start, end, offset;
 	trace_t	tr;
-	edict_t	*e=NULL;
+	edict_t	*e=NULL, *n = NULL;
 
 	// get muzzle origin
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
@@ -840,8 +908,12 @@ void RemoveDrone (edict_t *ent)
 	}
 
 	// search for other drones
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
+
+	e = DroneList_Iterate();
+
+	while (e)
 	{
+		n = DroneList_Next(e);
 		if (e && e->activator && (e->activator == ent))
 		{
 			// try to convert back to previous owner
@@ -850,6 +922,8 @@ void RemoveDrone (edict_t *ent)
 
 			M_Remove(e, true, true);
 		}
+
+		e = n;
 	}
 
 	// clear all slots
@@ -1521,6 +1595,7 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 			if (refund && !M_NeedRegen(self))
 				self->activator->client->pers.inventory[power_cube_index]
 				+= self->monsterinfo.cost;
+
 		}
 		else
 		{
@@ -1531,6 +1606,7 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 			// reduce boss count
 			if (self->monsterinfo.control_cost > 80)
 				self->activator->num_sentries--;
+
 
 			// end spree war if there are no more bosses remaining
 			//if (SPREE_WAR && (SPREE_DUDE == world) && world->num_sentries < 1)
@@ -1545,6 +1621,14 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 		self->activator->num_monsters -= self->monsterinfo.control_cost;
 		if (self->activator->num_monsters < 0)
 			self->activator->num_monsters = 0;
+	
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+
+		if (self->activator->num_monsters_real < 0)
+			self->activator->num_monsters_real = 0;
+
+		DroneList_Remove(self);
 
 		// mark the player slots as being refunded, so it can't happen again
 		self->monsterinfo.slots_freed = true;
@@ -1561,6 +1645,7 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 	self->deadflag = DEAD_DEAD;
 	self->nextthink = level.time + FRAMETIME;
 	gi.unlinkentity(self); //4.0 B15 another attempt to make killbox() happy
+
 }
 
 void M_PrepBodyRemoval (edict_t *self)
@@ -1692,7 +1777,7 @@ qboolean M_Initialize (edict_t *ent, edict_t *monster)
 	monster->pain = drone_pain;
 	monster->touch = drone_touch;
 	monster->think = drone_think;
-
+	DroneList_Insert(monster);
 	return true;
 }
 
@@ -1784,6 +1869,8 @@ void M_Notify (edict_t *monster)
 		return;
 
 	monster->activator->num_monsters -= monster->monsterinfo.control_cost;
+	monster->activator->num_monsters_real--;
+	// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", monster, monster->activator->num_monsters_real);
 
 	if (monster->activator->num_monsters < 0)
 		monster->activator->num_monsters = 0;
@@ -1793,6 +1880,7 @@ void M_Notify (edict_t *monster)
 
 	monster->monsterinfo.slots_freed = true;
 
+	DroneList_Remove(monster);
 	DroneRemoveSelected(monster->activator, monster);//4.2 remove from selection list
 }
 
@@ -2273,14 +2361,7 @@ void Cmd_Drone_f (edict_t *ent)
 
 	if (!Q_strcasecmp(s, "count"))
 	{
-		// search for other drones
-		while((e = G_Find(e, FOFS(classname), "drone")) != NULL)
-		{
-			if (e && e->activator && (e->activator == ent)
-				&& (e->deadflag != DEAD_DEAD))
-				i++;
-		}
-		gi.centerprintf(ent, "You have %d drones.\n%d/%d slots used.", i, ent->num_monsters, MAX_MONSTERS);
+		gi.centerprintf(ent, "You have %d drones.\n%d/%d slots used.", ent->num_monsters_real, ent->num_monsters, (int)MAX_MONSTERS);
 		return;
 	}
 /*

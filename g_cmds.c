@@ -2392,6 +2392,7 @@ void Cmd_MapSize_f (edict_t *ent)
 }
 */
 void Lua_AdminLua(edict_t *ent, char* command);
+void Lua_LoadVariables();
 
 void Cmd_AdminCmd (edict_t *ent)
 {

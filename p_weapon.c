@@ -41,7 +41,7 @@ to a noise in hopes of seeing the player from there.
 */
 void PlayerNoise(edict_t *who, vec3_t where, int type)
 {
-	edict_t		*noise;
+	/*edict_t		*noise;
 
 	if (type == PNOISE_WEAPON)
 	{
@@ -95,7 +95,7 @@ void PlayerNoise(edict_t *who, vec3_t where, int type)
 	VectorSubtract (where, noise->maxs, noise->absmin);
 	VectorAdd (where, noise->maxs, noise->absmax);
 	noise->teleport_time = level.time;
-	gi.linkentity (noise);
+	gi.linkentity (noise);*/
 }
 
 void ShowGun(edict_t *ent);

@@ -287,13 +287,14 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		for (n= 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		//ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
-		M_Remove(self, false, false);
+		M_Remove(self, false, true);
 		return;
 	}
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
+	DroneList_Remove(self);
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
@@ -302,6 +303,12 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		self->monsterinfo.currentmove = &berserk_move_death1;
 	else
 		self->monsterinfo.currentmove = &berserk_move_death2;
+
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
 }
 
 void berserk_attack (edict_t *self)
@@ -355,9 +362,9 @@ void init_drone_berserk (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
-	self->health = self->max_health = 85 + 15 * self->monsterinfo.level;
+	self->health = self->max_health = 65 + 22 * self->monsterinfo.level;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
-	self->monsterinfo.power_armor_power = self->monsterinfo.max_armor = 100 + 40 * self->monsterinfo.level;
+	self->monsterinfo.power_armor_power = self->monsterinfo.max_armor = 60 + 50 * self->monsterinfo.level;
 	self->gib_health = -60;
 	self->mass = 250;
 	self->monsterinfo.control_cost = 40;

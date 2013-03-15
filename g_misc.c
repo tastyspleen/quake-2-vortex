@@ -733,6 +733,7 @@ int AveragePlayerLevel (void)
 
 int PVM_TotalMonsters (edict_t *monster_owner)
 {
+	/*
 	int		monsters=0;
 	edict_t *scan=NULL;
 
@@ -751,6 +752,8 @@ int PVM_TotalMonsters (edict_t *monster_owner)
 	}
 
 	return monsters;
+	*/
+	return monster_owner->num_monsters_real; // will this work?
 }
 
 int PVM_RemoveAllMonsters (edict_t *monster_owner)
@@ -758,13 +761,16 @@ int PVM_RemoveAllMonsters (edict_t *monster_owner)
 	int		i = 0;
 	edict_t *e = NULL;
 
-	while((e = G_Find(e, FOFS(classname), "drone")) != NULL) 
+	e = DroneList_Iterate();
+
+	while(e) 
 	{
 		if (G_EntExists(e) && e->activator && (e->activator == monster_owner))
 		{
 			M_Remove(e, false, false);
 			i++;
 		} 
+		e = DroneList_Next(e);
 	}
 	return i;
 }
@@ -800,13 +806,17 @@ void FindMonsterSpot (edict_t *self)
 	{
 		if (total_monsters)
 		{
-			while((scan = G_Find(scan, FOFS(classname), "drone")) != NULL) 
+			edict_t *next;
+			scan = DroneList_Iterate();
+			while(scan) 
 			{
+				next = DroneList_Next(scan);
 				if (G_EntExists(scan) && scan->activator && (scan->activator == self)) 
 				{
 					M_Remove(scan, false, false);
 					num++;
 				} 
+				scan = next;
 			}
 			WriteServerMsg(va("Removed %d monsters due to insufficient players.", num), "Info", true, false);
 		}
@@ -909,6 +919,7 @@ edict_t *InitMonsterEntity (qboolean manual_spawn)
 	monster->classname = "MonsterSpawn";
 	monster->svflags |= SVF_NOCLIENT;
 	monster->mtype = M_WORLDSPAWN;
+	monster->num_monsters_real = 0;
 
 	/*if (V_IsPVP())
 		monster->think = SpawnRandomBoss;//4.4
@@ -1035,6 +1046,7 @@ void VortexRemovePlayerSummonables (edict_t *self)
 			DroneRemoveSelected(self, from);
 			M_Remove(from, false, true);
 			self->num_monsters = 0;
+			self->num_monsters_real = 0;
 			continue;
 		}
 
