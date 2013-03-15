@@ -759,18 +759,19 @@ int PVM_TotalMonsters (edict_t *monster_owner)
 int PVM_RemoveAllMonsters (edict_t *monster_owner)
 {
 	int		i = 0;
-	edict_t *e = NULL;
+	edict_t *e = NULL, *tmp;
 
 	e = DroneList_Iterate();
 
 	while(e) 
 	{
+		tmp = DroneList_Next(e);
 		if (G_EntExists(e) && e->activator && (e->activator == monster_owner))
 		{
 			M_Remove(e, false, false);
 			i++;
 		} 
-		e = DroneList_Next(e);
+		e = tmp;
 	}
 	return i;
 }
