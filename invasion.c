@@ -34,9 +34,19 @@ void INV_InitSpawnQue (void)
 
 edict_t *INV_GiveRandomPSpawn()
 {
-	int rand = GetRandom(0,31);
+	int rand;
 	int i;
 	edict_t * rval = NULL;
+
+	if (invasion_spawncount > 1)
+		rand = GetRandom(0,invasion_spawncount-1);
+	else if (invasion_spawncount == 1)
+		rand = 0;
+	else
+	{
+		gi.dprintf("Warning (INV_GiveRandomPSpawn()): No valid player spawns found\n");
+		rand = 0;
+	}
 
 	for (i = 0; i < 32; i++) // validate if we can find at least one valid spawn
 		if (INV_PlayerSpawns[i] != NULL)
@@ -263,6 +273,8 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 		{
 			// remove the monster and try again
 			G_FreeEdict(monster);
+			self->num_monsters_real--;
+			// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", monster, self->num_monsters_real);
 			//M_Remove(self, false, false);
 			return NULL;
 		}

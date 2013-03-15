@@ -135,6 +135,63 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 	return found;
 }
 
+
+/*
+=================
+findclosestradius
+
+Returns the closest entity that have origins within a spherical area
+
+findclosestradius (prev_edict, origin, radius)
+=================
+*/
+edict_t *findclosestradius_monmask (edict_t *prev_ed, vec3_t org, float rad)
+{
+	vec3_t	eorg;
+	int		j;
+	edict_t *from;
+	edict_t *found = NULL;
+	float	found_rad, prev_rad, vlen;
+	qboolean prev_found = false;
+
+	if (prev_ed) {
+		for (j=0 ; j<3 ; j++)
+			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
+		prev_rad = VectorLength(eorg);
+	} else
+	{
+		prev_rad = rad + 1;
+	}
+	found_rad = 0;
+
+	for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
+	{
+		if (!from->inuse)
+			continue;
+		if (from->solid == SOLID_NOT)
+			continue;
+		if (!G_ValidTargetEnt (from, true))
+			continue;
+		for (j=0 ; j<3 ; j++)
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+		vlen = VectorLength(eorg);
+		if (vlen > rad) // found edict is outside scanning radius
+			continue;
+		if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
+			continue; // thus this edict must have been returned in an earlier call
+		if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
+			continue; // from the center of scan, so if the current edict is "in front of" 
+		if (from == prev_ed) // the previously returned one, it must have been returned
+			prev_found = true; // in an earlier call
+		if ((!found) || (vlen <= found_rad)) {
+			found = from;
+			found_rad = vlen;
+		}
+	}
+
+	return found;
+}
+
 // same as above but without the solidity check
 edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 {
@@ -1345,7 +1402,7 @@ G_IsClearPath
 Returns true if the path is clear from obstruction
 =============
 */
-qboolean G_IsClearPath (edict_t *ignore, int mask, vec3_t spot1, vec3_t spot2) {
+__inline qboolean G_IsClearPath (edict_t *ignore, int mask, vec3_t spot1, vec3_t spot2) {
 	return (gi.trace(spot1, NULL, NULL, spot2, ignore, mask).fraction == 1.0);
 }
 

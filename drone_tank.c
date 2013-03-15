@@ -1046,12 +1046,19 @@ void mytank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
+	DroneList_Remove(self);
+
 	// begin death sequence
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.currentmove = &mytank_move_death;
 	
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
 }
 
 //
@@ -1094,14 +1101,14 @@ void init_drone_tank (edict_t *self)
 	gi.soundindex ("tank/tnkatck3.wav");
 
 //	if (self->activator && self->activator->client)
-	self->health = 70 + 45*self->monsterinfo.level;
+	self->health = 60 + 50*self->monsterinfo.level;
 	//else self->health = 100 + 65*self->monsterinfo.level;
 
 	self->max_health = self->health;
 	self->gib_health = -200;
 
 	//if (self->activator && self->activator->client)
-	self->monsterinfo.power_armor_power = 200 + 75*self->monsterinfo.level;
+	self->monsterinfo.power_armor_power = 100 + 95*self->monsterinfo.level;
 	//else self->monsterinfo.power_armor_power = 200 + 105*self->monsterinfo.level;
 
 	self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;

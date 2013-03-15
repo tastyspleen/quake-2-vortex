@@ -176,7 +176,6 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	float	temp;
 	que_t	*slot = NULL;
 	qboolean physicalDamage;
-	edict_t *dclient;
 	int talentLevel;
 
 	dtype = G_DamageType(mod, dflags);

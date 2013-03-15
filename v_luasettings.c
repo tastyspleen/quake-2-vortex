@@ -6,7 +6,7 @@
 lua_State* State = NULL;
 int errload = 0;
 void Lua_LoadVariables();
-char* reason;
+const char* reason;
 edict_t *printent = NULL;
 
 #define CHECK_LUA_ERR(x) errload=x; if (errload) { reason = lua_tostring(State, -1); gi.dprintf("Lua Error: %s\n", reason); return; }
@@ -51,16 +51,16 @@ int q2lua_dofile(lua_State *L)
 
 int q2lua_cvar_get(lua_State *L)
 {
-	char* name = luaL_checkstring(L, 1);
-	char* defaultvalue = luaL_checkstring(L, 2);
+	const char* name = luaL_checkstring(L, 1);
+	const char* defaultvalue = luaL_checkstring(L, 2);
 	lua_pushstring(L, gi.cvar(name, defaultvalue, 0)->string);
 	return 1;
 }
 
 int q2lua_cvar_set(lua_State*L)
 {
-	char* name = luaL_checkstring(L, 1);
-	char* value = luaL_checkstring(L, 2);
+	const char* name = luaL_checkstring(L, 1);
+	const char* value = luaL_checkstring(L, 2);
 	
 	gi.cvar_set(name, value);
 
@@ -69,7 +69,7 @@ int q2lua_cvar_set(lua_State*L)
 
 int q2lua_svcmd(lua_State* L)
 {
-	char* command = luaL_checkstring(L, 1);
+	const char* command = luaL_checkstring(L, 1);
 	gi.AddCommandString(command);
 	return 0;
 }

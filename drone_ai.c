@@ -366,12 +366,14 @@ edict_t *drone_get_medic_target (edict_t *self)
 	return NULL;
 }
 
+edict_t *findclosestradius_monmask (edict_t *prev_ed, vec3_t org, float rad);
+
 edict_t *drone_get_enemy (edict_t *self)
 {
 	edict_t *target = NULL;
 
 	// find an enemy
-	while ((target = findclosestradius (target, self->s.origin, 
+	while ((target = findclosestradius_monmask (target, self->s.origin, 
 		self->monsterinfo.sight_range)) != NULL)
 	{
 		// screen out invalid targets
@@ -554,9 +556,14 @@ void drone_ai_idle (edict_t *self)
 		if (self->monsterinfo.control_cost > 80) // we're a boss
 			self->activator->num_sentries--;
 		if (self->activator)
+		{
 			self->activator->num_monsters -= self->monsterinfo.control_cost;
+			self->activator->num_monsters_real = 0;
+		}
 		if (self->activator->num_monsters < 0)
 			self->activator->num_monsters = 0;
+		if (self->activator->num_monsters_real < 0)
+			self->activator->num_monsters_real = 0;
 		BecomeTE(self);
 		return;
 	}
@@ -735,6 +742,11 @@ qboolean FindPlat (edict_t *self, vec3_t plat_pos)
 		// this is an ugly hack, but it's the only way to test the distance
 		// or visiblity of a plat, since the origin and bbox yield no useful
 		// information
+
+		// az: avoid doing traces if it's down, it's useless anyway.
+		if (e->moveinfo.state != STATE_BOTTOM)
+			continue; // plat must be down
+
 		tr = gi.trace(self->s.origin, NULL, NULL, e->absmax, self, MASK_SOLID);
 		VectorCopy(tr.endpos, start);
 		VectorCopy(tr.endpos, end);
@@ -747,8 +759,6 @@ qboolean FindPlat (edict_t *self, vec3_t plat_pos)
 			continue; // we can't see this plat
 		if (distance(start, self->s.origin) > 512)
 			continue; // too far
-		if (e->moveinfo.state != STATE_BOTTOM)
-			continue; // plat must be down
 		if (start[2] > self->absmin[2]+2*STEPHEIGHT)
 			continue;
 

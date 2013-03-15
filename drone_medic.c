@@ -299,12 +299,20 @@ void mymedic_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
+	DroneList_Remove(self);
+
 // regular death
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
 	self->monsterinfo.currentmove = &mymedic_move_death;
+
+	if (self->activator && !self->activator->client)
+	{
+		self->activator->num_monsters_real--;
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+	}
 }
 
 void mymedic_duck_down (edict_t *self)
@@ -577,6 +585,8 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 			target->monsterinfo.stand(target);
 
 			ent->num_monsters += target->monsterinfo.control_cost;
+			ent->num_monsters_real++;
+			// gi.bprintf(PRINT_HIGH, "adding %p (%d)\n", target, ent->num_monsters_real);
 
 			// make sure invasion monsters hunt for navi
 			if (invasion->value && !ent->client && ent->activator && !ent->activator->client)
@@ -587,7 +597,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 
 			if (ent->client && printMsg)
 				safe_cprintf(ent, PRINT_HIGH, "Resurrected a %s. (%d/%d)\n", target->classname, 
-					ent->num_monsters, MAX_MONSTERS);
+					ent->num_monsters, (int)MAX_MONSTERS);
 		}
 	}
 	else if ((!strcmp(target->classname, "bodyque") || !strcmp(target->classname, "player")))
@@ -652,6 +662,8 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		e->nextthink = level.time + 1.0;
 
 		ent->num_monsters += e->monsterinfo.control_cost;
+		ent->num_monsters_real++;
+		// gi.bprintf(PRINT_HIGH, "adding %p (%d)\n", e, ent->num_monsters_real);
 
 		// make sure invasion monsters hunt for navi
 		if (invasion->value && !ent->client && ent->activator && !ent->activator->client)
@@ -661,7 +673,7 @@ void M_Reanimate (edict_t *ent, edict_t *target, int r_level, float r_modifier, 
 		}
 
 		if (ent->client && printMsg)
-			safe_cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", ent->num_monsters, MAX_MONSTERS);
+			safe_cprintf(ent, PRINT_HIGH, "Resurrected a soldier. (%d/%d)\n", ent->num_monsters, (int)MAX_MONSTERS);
 	}
 	else if (!strcmp(target->classname, "spiker"))
 	{
@@ -981,7 +993,7 @@ void init_drone_medic (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	//if (self->activator && self->activator->client)
-	self->health = 75 + 12*self->monsterinfo.level;
+	self->health = 55 + 20*self->monsterinfo.level;
 	//else self->health = 200 + 20*self->monsterinfo.level;
 
 	self->max_health = self->health;

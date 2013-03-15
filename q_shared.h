@@ -12,7 +12,7 @@
 
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4305)		// truncation from const double to float
-
+#pragma warning(disable : 4996)		// deprecation
 #endif
 
 //K03 Begin
@@ -144,6 +144,13 @@ extern vec3_t vec3_origin;
 extern long Q_ftol( float f );
 #else
 #define Q_ftol( f ) ( long ) (f)
+#endif
+
+#ifdef _WIN32
+double __fastcall sqrt14(double n);
+
+#undef sqrt
+#define sqrt(x) sqrt14(x)
 #endif
 
 #define DotProduct(x,y)			(x[0]*y[0]+x[1]*y[1]+x[2]*y[2])

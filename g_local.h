@@ -1737,7 +1737,6 @@ struct edict_s
 	long		max_health;
 	int			gib_health;
 	int			deadflag;
-	qboolean	show_hostile;
 
 	float		powerarmor_time;
 
@@ -1753,6 +1752,7 @@ struct edict_s
 	qboolean exploded; // don't explode more than once at death. lol
 
 	edict_t		*chain;
+	edict_t		*prev_chain;
 	edict_t		*memchain;
 	edict_t		*enemy;
 	edict_t		*oldenemy;
@@ -1762,11 +1762,7 @@ struct edict_s
 	edict_t		*teamchain;
 	edict_t		*teammaster;
 
-	edict_t		*mynoise;		// can go in client only
-	edict_t		*mynoise2;
-
 	int			noise_index;
-	int			noise_index2;
 	float		volume;
 	float		attenuation;
 
@@ -1802,9 +1798,6 @@ struct edict_s
 
 	//K03 Begin
 	int			packitems[MAX_ITEMS];
-	int			menutime;
-	edict_t     *laser;
-	edict_t		*orb;
 	float		PlasmaDelay;
 	float			holdtime;
 	qboolean	slow;
@@ -1844,6 +1837,7 @@ struct edict_s
 	int atype;	//3.0 used for new curses
 	int num_sentries;
 	int num_monsters;
+	int num_monsters_real;
 	int num_lasers;
 	int max_pipes;
 	int	num_armor; // 3.5 keep track of armor bombs out
@@ -1869,11 +1863,8 @@ struct edict_s
 	float shield_activate_time; // when shield will activate
 	int movetype_prev; // previous movetype, used by V_Push()
 	int movetype_frame;	// server frame to restore old movetype
-//	int max_blasters;
-	edict_t *getdata;
-	int in_database;
+
 	//K03 End
-	int			client_settings[5];//GHz: For cheat checks
 	edict_t		*selected[4];
 	edict_t		*other;
 	edict_t		*supplystation;
@@ -1943,21 +1934,14 @@ struct edict_s
 	edict_t		*prev_owner; // for conversion
 //GHz END
 	edict_t *prev_navi;
+	edict_t *laser;
 };
 
 #include "auras.h"
 //ZOID
 #include "g_ctf.h"
 //ZOID
-//#include "menu.h"
 
-//K03 Begin
-//#define MAX_MAPS           32
-//#define MAX_MAPNAME_LEN    16 
-
-//#define ML_ROTATE_SEQ          0 
-//#define ML_ROTATE_RANDOM       1 
-//#define ML_ROTATE_NUM_CHOICES  2 
 
 typedef struct 
 { 
@@ -2015,7 +1999,6 @@ void ClearJoinedSlot (joined_t *slot);
 int GetRandom(int min,int max);
 void stuffcmd(edict_t *e, char *s);
 void ApplyThrust (edict_t *ent);
-void Add_exp(edict_t *ent, edict_t *targ);
 int OpenConfigFile(edict_t *ent);
 void WriteMyCharacter(edict_t *ent);
 void modify_max(edict_t *ent);
@@ -2042,15 +2025,10 @@ int MAX_SLUGS(edict_t *ent);
 qboolean StartClient(edict_t *ent);
 void ChaseCam(edict_t *ent);
 void JoinTheGame(edict_t *ent);
-int UpdateJoinMenu(edict_t *ent);
 void OpenJoinMenu(edict_t *ent);
 void OpenCombatMenu (edict_t *ent, int lastline);//4.5
 qboolean StartClient(edict_t *ent);
-//void SetIDView(edict_t *ent);
 void OpenJoinMenu(edict_t *ent);
-void FillMapNames();
-void mapvote(edict_t *ent);
-void PickMap(edict_t *ent, pmenu_t *p);
 int config_map_list();
 void ClearMapVotes();
 int MapMaxVotes();
@@ -2106,7 +2084,6 @@ void Cmd_PlayerToParasite_f (edict_t *ent);
 void Cmd_MiniSentry_f (edict_t *ent);
 void Cmd_CreateSupplyStation_f (edict_t *ent);
 void Cmd_Decoy_f (edict_t *ent);
-int VortexModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t point, int damage, int dflags, int mod);
 qboolean M_Regenerate (edict_t *self, int regen_frames, int delay, float mult, qboolean regen_health, qboolean regen_armor, qboolean regen_ammo, int *nextframe);
 qboolean M_NeedRegen (edict_t *ent);
 qboolean M_IgnoreInferiorTarget (edict_t *self, edict_t *target);//4.5
@@ -2158,11 +2135,6 @@ void CTF_SummonableCheck (edict_t *self);
 #define FLIP_WATER                  2
 void Use_Lasers (edict_t *ent, gitem_t *item);
 void Cmd_LaserSight_f(edict_t *ent);
-void OpenAbilityUpgradeMenu6(edict_t *ent);
-void SP_Decoy(edict_t *self);
-void OpenAbilityUpgradeMenu7(edict_t *ent);
-void Cmd_Monsters_f2(edict_t *ent, int mtype);
-qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 
 //==========================================
 //========= TYPES OF MONSTERS ==============
@@ -2268,14 +2240,11 @@ qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 int V_GetRuneWeaponPts(edict_t *ent, item_t *rune);
 int V_GetRuneAbilityPts(edict_t *ent, item_t *rune);
 qboolean SavePlayer(edict_t *ent);
-void Cmd_BFGFireball(edict_t *ent);
 qboolean IsNewbieBasher (edict_t *player);
 qboolean TeleportNearTarget (edict_t *self, edict_t *target, float dist);
 qboolean FindValidSpawnPoint (edict_t *ent, qboolean air);
 void ValidateAngles (vec3_t angles);
-qboolean G_CanTarget (edict_t *self, edict_t *target);
 int InJoinedQueue (edict_t *ent);
-void RefundAbilityPoints(edict_t *ent);
 qboolean IsABoss(edict_t *ent);
 qboolean IsBossTeam (edict_t *ent);
 void AddBossExp (edict_t *attacker, edict_t *target);
@@ -2339,6 +2308,13 @@ void hw_spawnflag (void);
 float hw_getdamagefactor(edict_t *targ, edict_t* attacker);
 
 qboolean V_VoteInProgress();
+
+/* active drones linked list */ 
+
+edict_t *DroneList_Iterate();
+edict_t *DroneList_Next(edict_t *ent);
+void DroneList_Insert(edict_t* new_ent);
+void DroneList_Remove(edict_t *ent);
 
 // 3.4 new team vs invasion mode
 edict_t* TBI_FindSpawn(edict_t *ent);
