@@ -104,13 +104,17 @@ void GiveRuneToArmory(item_t *rune)
 	default: return;	//The armory only sells the above items
 	}
 
+	slot = NULL;
+
 	//find an empty slot
 	for (i = 0; i < ARMORY_MAX_RUNES; ++i)
 	{
-		slot = &((firstItem + i)->rune);
-		if (slot->itemtype == TYPE_NONE)
+		item_t *_slot = &((firstItem + i)->rune);
+		if (_slot->itemtype == TYPE_NONE)
+		{
+			slot = _slot;
 			break;
-		slot = NULL;
+		}
 	}
     
 	//if there is no empty slot, replace the slot with the
@@ -572,8 +576,8 @@ void OpenPurchaseMenu (edict_t *ent, int page_num, int lastline)
 		ent->client->menustorage.currentline = (lastline % 10) + 3;
 	else if (lastline)	//selected #10 in this page
 		ent->client->menustorage.currentline = 13;
-	else if (ARMORY_ITEMS > 10)	//menu is under 10 items
-		ent->client->menustorage.currentline = 15;
+	// else if (ARMORY_ITEMS > 10)	//menu is under 10 items
+	//	ent->client->menustorage.currentline = 15;
 	else ent->client->menustorage.currentline = 5 + i;
 
 	//Show the menu
@@ -637,7 +641,7 @@ void SellConfirmMenu_handler(edict_t *ent, int option)
 		else if (savemethod->value == 0)
 		{
 			char path[MAX_QPATH];
-			memset(path, 0, strlen(path));
+			memset(path, 0, MAX_QPATH);
 			VRXGetPath(path, ent);
 			VSF_SaveRunes(ent, path);
 		}

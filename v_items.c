@@ -377,7 +377,7 @@ edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, 
 void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 {
 	int		iRandom;
-	int		targ_level;
+	int		targ_level = 0;
 	float	temp = 0;
 	gitem_t *item;
 	edict_t *rune;
@@ -830,7 +830,7 @@ void PurchaseRandomRune(edict_t *ent, int runetype)
 	else if (savemethod->value == 0)
 	{
 		char path[MAX_QPATH];
-		memset(path, 0, strlen(path));
+		memset(path, 0, MAX_QPATH);
 		VRXGetPath(path, ent);
 		VSF_SaveRunes(ent, path);
 	}else if (savemethod->value == 3)
@@ -887,7 +887,7 @@ qboolean Pickup_Rune (edict_t *ent, edict_t *other)
 	else if (savemethod->value == 0)
 	{
 		char path[MAX_QPATH];
-		memset(path, 0, strlen(path));
+		memset(path, 0, MAX_QPATH);
 		VRXGetPath(path, other);
 		VSF_SaveRunes(other, path);
 	}

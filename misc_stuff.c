@@ -588,7 +588,7 @@ int MAX_SLUGS(edict_t *ent)
 
 int MAX_POWERCUBES(edict_t *ent)
 {
-	int value, clvl;
+	int value = 100, clvl;
 
 	if(ent->myskills.abilities[MAX_AMMO].disable)
 		return 0;

@@ -714,7 +714,7 @@ void m_soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	if (self->activator && !self->activator->client)
 	{
 		self->activator->num_monsters_real--;
-		gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
+		// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", self, self->activator->num_monsters_real);
 	}
 }
 

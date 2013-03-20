@@ -107,25 +107,7 @@ void TBI_SpawnPlayers()
 		// Alrighty, everyone's got spawns.
 		if (cl_ent->client && cl_ent->inuse && !G_IsSpectator(cl_ent))
 		{
-			if (cl_ent->deadflag != DEAD_DEAD)
-			{
-				trace_t tr;
-				VectorCopy(cl_ent->spawn->s.origin, start);
-				start[2] += 9;
-				VectorCopy(start, cl_ent->s.origin);
-				VectorCopy(cl_ent->spawn->s.angles, cl_ent->s.angles);
-				cl_ent->client->invincible_framenum = level.framenum + 30;
-				gi.linkentity(cl_ent);
-
-				tr = gi.trace (cl_ent->s.origin, cl_ent->mins, cl_ent->maxs, cl_ent->s.origin, cl_ent, MASK_SHOT);
-
-				if (tr.fraction != 1) // so there's someone in our spot. NUKE THEM
-					KillBox(cl_ent);
-
-			}else // Dead players must respawn.
-				respawn(cl_ent);
-
-			cl_ent->spawn = NULL;
+			respawn(cl_ent);
 		}
 	}
 	G_ResetPlayerState(NULL);
@@ -324,7 +306,7 @@ void TBI_SpawnDie(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 
 void TBI_InitPlayerSpawns(int teamnum)
 {
-	char *_classname;
+	char *_classname = "info_player_deathmatch";
 	edict_t *e = g_edicts;
 	int effects;
 
@@ -335,9 +317,6 @@ void TBI_InitPlayerSpawns(int teamnum)
 	else if (teamnum == BLUE_TEAM)
 	{
 		_classname = "info_player_team2";
-	}else if (teamnum == 3)
-	{
-		_classname = "info_player_deathmatch";
 	}
 
 	while((e = G_Find(e, FOFS(classname), _classname)) != NULL)

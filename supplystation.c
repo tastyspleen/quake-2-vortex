@@ -407,7 +407,7 @@ void supplystation_pain (edict_t *self, edict_t *other, float kick, int damage)
 		if (other->client)
 			gi.centerprintf(self->creator, "%s is attacking\nyour station!\n", other->client->pers.netname);
 		else
-			gi.centerprintf(self->creator, "Your station is under\nattack!", other->client->pers.netname);
+			gi.centerprintf(self->creator, "Your station is under\nattack!");
 		self->random = level.time + 5;
 	}
 }
