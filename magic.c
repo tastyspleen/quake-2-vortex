@@ -7842,9 +7842,7 @@ void cocoon_cloak (edict_t *self)
 		return;
 
 	// don't cloak if we're holding the flag carrier!
-	if (self->enemy->client && (self->enemy->client->pers.inventory[flag_index] || 
-		self->enemy->client->pers.inventory[flag_index] || 
-		self->enemy->client->pers.inventory[flag_index]))
+	if (self->enemy->client && self->enemy->client->pers.inventory[flag_index])
 		return;
 
 	// already cloaked

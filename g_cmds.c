@@ -2493,7 +2493,7 @@ void Cmd_AdminCmd (edict_t *ent)
 	else if (Q_stricmp(cmd1, "srune") == 0)
 	{
 		int index = atoi(cmd3);
-		int type;
+		int type = ITEM_ABILITY;
 
 		if (ent->myskills.administrator < 10)
 			return;

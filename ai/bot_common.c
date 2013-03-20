@@ -232,7 +232,7 @@ void debug_printf(char *fmt, ...)
 ///////////////////////////////////////////////////////////////////////
 void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 {
-	char	bigbuffer[0x10000];
+	char	bigbuffer[0x400];
 	va_list		argptr;
 	int len;
 
@@ -252,7 +252,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 ///////////////////////////////////////////////////////////////////////
 void safe_centerprintf (edict_t *ent, char *fmt, ...)
 {
-	char	bigbuffer[0x10000];
+	char	bigbuffer[0x0400];
 	va_list		argptr;
 	int len;
 
@@ -273,7 +273,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 void safe_bprintf (int printlevel, char *fmt, ...)
 {
 	int i;
-	char	bigbuffer[0x10000];
+	char	bigbuffer[0x0400];
 	int		len;
 	va_list		argptr;
 	edict_t	*cl_ent;
