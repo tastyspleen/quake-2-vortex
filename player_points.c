@@ -325,7 +325,6 @@ int V_AddFinalExp (edict_t *player, int exp)
 #define PLAYER_MONSTER_MIN_PLAYERS		4
 
 void VortexAddExp(edict_t *attacker, edict_t *targ);
-int PVM_TotalMonsters (edict_t *monster_owner);
 
 void hw_deathcleanup(edict_t *targ, edict_t *attacker);
 

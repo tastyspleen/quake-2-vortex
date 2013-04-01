@@ -81,11 +81,10 @@ void ApplyThrust (edict_t *ent)
 
     if (ent->client->next_thrust_sound < level.time)
     {
-		if (ent->client)
-		{
+		// wow this check is stupid.
+		/*if (ent->client) */
             gi.sound (ent, CHAN_BODY, gi.soundindex("weapons/rockfly.wav"), 1, ATTN_NORM, 0);
             ent->client->next_thrust_sound=level.time+1.0;
-		}
     }
 
 	ent->lastsound = level.framenum;

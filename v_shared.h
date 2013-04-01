@@ -49,7 +49,7 @@ int MaxAmmoType (edict_t *ent, int ammo_index);
 int PVM_RemoveAllMonsters (edict_t *monster_owner);
 int AveragePlayerLevel (void);
 int PvMAveragePlayerLevel (void);
-int PVM_TotalMonsters (edict_t *monster_owner);
+int PVM_TotalMonsters (edict_t *monster_owner, qboolean update);
 //************ g_misc.c ************
 
 //************ g_utils.c ************
