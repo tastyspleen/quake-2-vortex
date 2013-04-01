@@ -731,28 +731,26 @@ int AveragePlayerLevel (void)
 	return average;
 }
 
-int PVM_TotalMonsters (edict_t *monster_owner)
+int PVM_TotalMonsters (edict_t *monster_owner, qboolean update)
 {
-	/*
-	int		monsters=0;
-	edict_t *scan=NULL;
+	int		i = 0;
+	edict_t *e = NULL, *tmp;
 
-	while((scan = G_Find(scan, FOFS(classname), "drone")) != NULL)
+	if (update)
 	{
-		// found a live monster that we own
-		if (G_EntIsAlive(scan) && scan->activator 
-			&& (scan->activator == monster_owner))
-		{
-			//4.57 bosses should take a few monsters slots
-			if (scan->monsterinfo.control_cost > 80)
-				monsters += scan->monsterinfo.control_cost;
-			else
-				monsters++;
-		}
-	}
+		e = DroneList_Iterate();
 
-	return monsters;
-	*/
+		while(e) 
+		{
+			// found a live monster that we own
+			if (G_EntIsAlive(e)	&& (e->activator == monster_owner))
+			{
+				i++;
+			}
+			e = DroneList_Next(e);
+		}
+		return monster_owner->num_monsters_real;
+	}
 	return monster_owner->num_monsters_real; // will this work?
 }
 
@@ -765,13 +763,12 @@ int PVM_RemoveAllMonsters (edict_t *monster_owner)
 
 	while(e) 
 	{
-		tmp = DroneList_Next(e);
 		if (G_EntExists(e) && e->activator && (e->activator == monster_owner))
 		{
 			M_Remove(e, false, false);
 			i++;
 		} 
-		e = tmp;
+		e = DroneList_Next(e);
 	}
 	return i;
 }
@@ -786,7 +783,7 @@ void FindMonsterSpot (edict_t *self)
 	int		total_monsters, max_monsters=0;
 	int		mtype=0, num=0, i=0;
 
-	total_monsters = PVM_TotalMonsters(self);
+	total_monsters = PVM_TotalMonsters(self, false);
 
 	// get # of players with PvM only preference
 	pvm_players = V_GetNumPlayerPrefs(true, false);

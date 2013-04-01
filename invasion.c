@@ -268,14 +268,11 @@ edict_t* INV_SpawnDrone(edict_t* self, edict_t *e, int index)
 
 	// don't spawn here if a friendly monster occupies this space
 	if (index != 30) // not a boss?
-		if ((tr.fraction < 1) && tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
-			&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD))
+		if ((tr.fraction < 1) || (tr.ent && tr.ent->inuse && tr.ent->activator && tr.ent->activator->inuse 
+			&& (tr.ent->activator == self) && (tr.ent->deadflag != DEAD_DEAD)))
 		{
 			// remove the monster and try again
-			G_FreeEdict(monster);
-			self->num_monsters_real--;
-			// gi.bprintf(PRINT_HIGH, "releasing %p (%d)\n", monster, self->num_monsters_real);
-			//M_Remove(self, false, false);
+			M_Remove(monster, false, false);
 			return NULL;
 		}
 		
@@ -390,13 +387,14 @@ void BossCheck(edict_t *e, edict_t *self)
 void INV_SpawnMonsters (edict_t *self)
 {
 	int		players, max_monsters;
-	int		total_monsters = PVM_TotalMonsters(self);
 	edict_t *e=NULL;
+
+	PVM_TotalMonsters(self, true);
 
 	players = max_monsters = total_players();
 
 	// there are still monsters alive
-	if ((total_monsters > 0) && (self->count == MONSTERSPAWN_STATUS_IDLE))
+	if ((self->num_monsters_real > 0) && (self->count == MONSTERSPAWN_STATUS_IDLE))
 	{
 		// if there's nobody playing, remove all monsters
 		if (players < 1)
@@ -406,7 +404,7 @@ void INV_SpawnMonsters (edict_t *self)
 		}
 		if (level.intermissiontime)
 		{
-			if (total_monsters)
+			if (self->num_monsters_real)
 				PVM_RemoveAllMonsters(self);
 			return;
 		}
@@ -434,7 +432,6 @@ void INV_SpawnMonsters (edict_t *self)
 			else
 				invasion_difficulty_level += 2; // Hard mode.
 			invasion_data.printedmessage = 0;
-			invasion_data.mspawned = total_monsters;
 			gi.sound(&g_edicts[0], CHAN_VOICE, gi.soundindex("misc/tele_up.wav"), 1, ATTN_NONE, 0);
 		}
 	}
@@ -495,16 +492,8 @@ void INV_SpawnMonsters (edict_t *self)
 
 		invasion_data.printedmessage = 1;
 	}
-
-	if (max_monsters > 50) // cap the amount of monsters
-		max_monsters = 50;
-
-	// the dm_monsters cvar is the minimum of monsters that will spawn
-	/*if (max_monsters < dm_monsters->value)
-		max_monsters = dm_monsters->value;*/
 	
-	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && 
-		(total_monsters < max_monsters || invasion_data.mspawned < max_monsters) )
+	while ( ((e = INV_GetMonsterSpawn(e)) != NULL) && invasion_data.mspawned < max_monsters)
 	{
 		int randomval = GetRandom(1, 9);
 
@@ -517,12 +506,10 @@ void INV_SpawnMonsters (edict_t *self)
 		if (!INV_SpawnDrone(self, e, randomval))
 			continue;
 
-		total_monsters++;
 		invasion_data.mspawned++;
-		//gi.dprintf("World has %d/%d level %d monsters.\n", total_monsters, max_monsters, monster->monsterinfo.level);
 	}
 
-	if (total_monsters == max_monsters || invasion_data.mspawned >= max_monsters)
+	if (self->num_monsters_real == max_monsters || invasion_data.mspawned == max_monsters)
 	{
 		// increase the difficulty level for the next wave
 		invasion_difficulty_level += 1/* + (invasion_difficulty_level / 10)*/;

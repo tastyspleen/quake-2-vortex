@@ -249,6 +249,9 @@ void V_CreateAbilityModifier(edict_t* rune, qboolean is_class, int i)
 	// alright so we got a valid ability
 	rune->vrxitem.modifiers[i].index = ability->index;
 
+	// Assign it a type
+	rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
+
 	if (GetAbilityUpgradeCost(ability->index) > 1) // No runes that have cost 2+ stuff should get over...
 	{
 		// for class runes, having this kind of abilities that are one-pointed or more is stupid
@@ -271,7 +274,6 @@ void V_CreateAbilityModifier(edict_t* rune, qboolean is_class, int i)
 	if (rune->vrxitem.modifiers[i].value > hard_max) // this ability goes way too high? trim it
 		rune->vrxitem.modifiers[i].value = hard_max;
 
-	rune->vrxitem.modifiers[i].type = TYPE_ABILITY;
 	rune->vrxitem.itemLevel += rune->vrxitem.modifiers[i].value;
 
 	fixRuneIndexes(rune, i);

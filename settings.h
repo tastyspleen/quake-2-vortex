@@ -10,7 +10,7 @@ const char* Time();
 #define	CURRENT_DATE				s1 = Date()
 #define CURRENT_TIME				s2 = Time()
 
-#define VRX_VERSION "4.4"
+#define VRX_VERSION "4.4a"
 
 //4.5 player combat preferences
 #define HOSTILE_PLAYERS				0x00000001			
