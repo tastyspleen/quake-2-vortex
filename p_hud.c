@@ -1005,19 +1005,6 @@ void G_SetStats (edict_t *ent)
 	else
 		ent->client->ps.stats[STAT_HELPICON] = 0;
 
-//ponpoko
-	/*K03 if(ent->client->zc.aiming == 1)
-	{
-		ent->client->ps.stats[STAT_SIGHT_PIC] = gi.imageindex ("zsight");
-	}
-	else if(ent->client->zc.aiming == 3)
-	{
-		if(ent->client->zc.lockon) ent->client->ps.stats[STAT_SIGHT_PIC] = gi.imageindex ("zsight_l1");
-		else ent->client->ps.stats[STAT_SIGHT_PIC] = gi.imageindex ("zsight_l0");
-	}
-	else ent->client->ps.stats[STAT_SIGHT_PIC] = 0;*/
-//ponpoko
-
 	//K03 Begin
 	//ent->client->ps.stats[STAT_LEVEL] = ent->myskills.level;
 	ent->client->ps.stats[STAT_STREAK] = ent->myskills.streak;

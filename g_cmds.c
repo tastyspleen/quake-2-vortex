@@ -364,9 +364,9 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 		if (ent1->client && ent2->client)
 			return 2;
 		// only world monsters can hurt player spawns
-		if (ent1->client && (ent2->mtype == INVASION_PLAYERSPAWN))
+		if (G_GetClient(ent1) && (ent2->mtype == INVASION_PLAYERSPAWN))
 			return 2;
-		if (ent2->client && (ent1->mtype == INVASION_PLAYERSPAWN))
+		if (G_GetClient(ent2) && (ent1->mtype == INVASION_PLAYERSPAWN))
 			return 2;
 	}
 
