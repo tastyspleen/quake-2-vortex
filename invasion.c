@@ -44,8 +44,7 @@ edict_t *INV_GiveRandomPSpawn()
 		rand = 0;
 	else
 	{
-		gi.dprintf("Warning (INV_GiveRandomPSpawn()): No valid player spawns found\n");
-		rand = 0;
+		return NULL;
 	}
 
 	for (i = 0; i < 32; i++) // validate if we can find at least one valid spawn
