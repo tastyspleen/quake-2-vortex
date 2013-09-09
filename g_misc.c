@@ -749,6 +749,7 @@ int PVM_TotalMonsters (edict_t *monster_owner, qboolean update)
 			}
 			e = DroneList_Next(e);
 		}
+		monster_owner->num_monsters_real = i;
 		return monster_owner->num_monsters_real;
 	}
 	return monster_owner->num_monsters_real; // will this work?
@@ -816,11 +817,13 @@ void FindMonsterSpot (edict_t *self)
 				} 
 				scan = next;
 			}
+			total_monsters = PVM_TotalMonsters(self, true);
 			WriteServerMsg(va("Removed %d monsters due to insufficient players.", num), "Info", true, false);
 		}
 	}
 	else if (level.time > self->delay)
 	{
+		total_monsters = PVM_TotalMonsters(self, true);
 		// adjust spawning delay based on efficiency of player monster kills
 		if (total_monsters < max_monsters)
 		{

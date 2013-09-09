@@ -187,6 +187,7 @@ is loaded.
 // az begin
 void InitHash ();
 void InitializeAbilityList();
+void CheckDir(char* path);
 
 // q2pro gmf
 #define GMF_VARIABLE_FPS            0x00000800
@@ -196,15 +197,28 @@ void InitGame (void)
 {
 	gi.dprintf ("==== InitGame ====\n");
 #ifndef LOCK_DEFAULTS
-	gi.dprintf("INFO: Vortex v%s loaded.\n", VRX_VERSION);
+	gi.dprintf("INFO: Vortex v%s " 
+#ifndef NDEBUG
+		"(Debug)" 
+#endif
+		"loaded.\n", VRX_VERSION);
 #else
 	gi.dprintf("INFO: Vortex v%sL loaded.\n", VRX_VERSION);
 	gi.dprintf("INFO: This version is locked for distribution.\n");
 #endif
 
-	// az begin
+	//K03 Begin
+	srand((unsigned)time(0));
 
+	gamedir = gi.cvar ("gamedir", "", CVAR_SERVERINFO);
+	save_path = gi.cvar("save_path", va("%s//characters", gamedir->string), CVAR_LATCH);
+	//K03 End
+
+
+	// az begin
+#ifndef FIXED_FT
 	gi.cvar_forceset("g_features", va("%d", GMF_VARIABLE_FPS));
+#endif
 
 	savemethod = gi.cvar ("savemethod", "3", 0);
 	generalabmode = gi.cvar("generalabmode", "0", CVAR_LATCH);
@@ -215,6 +229,7 @@ void InitGame (void)
 #endif
 
 	InitLuaSettings();
+	CheckDir(va("%s/settings", gamedir->string));
 
 	// Before anything else, prepare TagMalloc's mutexes and a mysql connection
 	if (savemethod->value == 2)
@@ -227,7 +242,10 @@ void InitGame (void)
 #endif
 	}
 	else
+	{
 		gi.dprintf("DB: Using offline character saving (via %s)\n", savemethod->value == 1 ? "Binary" : "SQLite");
+		CheckDir(save_path->string);
+	}
 
 	if (savemethod->value == 3)
 	{
@@ -244,12 +262,6 @@ void InitGame (void)
 
 	InitializeAbilityList();
 	// az end
-
-	//K03 Begin
-	srand((unsigned)time(0));
-
-	gamedir = gi.cvar ("gamedir", "", CVAR_SERVERINFO);
-	//K03 End
 
 	gun_x = gi.cvar ("gun_x", "0", 0);
 	gun_y = gi.cvar ("gun_y", "0", 0);
@@ -281,8 +293,6 @@ void InitGame (void)
 	//chain edit flag
 	//vwep support
 	vwep = gi.cvar ("vwep", "1", CVAR_LATCH);
-	//game mode
-	//zigmode = gi.cvar ("zigmode", "0", CVAR_SERVERINFO| CVAR_LATCH);
 //ZOID
 //This game.dll only supports deathmatch
 	if (!deathmatch->value) 
@@ -315,8 +325,8 @@ void InitGame (void)
 	//K03 Begin
 	
 	killboxspawn = gi.cvar("killboxatspawn", "1", 0);
-	save_path = gi.cvar("save_path", va("%s//characters", gamedir->string), CVAR_LATCH);
 	particles = gi.cvar ("particles", "0", 0);
+
 	// az 3.0
 	hw = gi.cvar("hw", "0", CVAR_LATCH);
 
@@ -359,7 +369,6 @@ void InitGame (void)
 	pvm_monstermult = gi.cvar ("pvm_monstermult", "1.0", 0);
 	ffa_respawntime = gi.cvar ("ffa_respawntime", "20", 0);
 	ffa_monstermult = gi.cvar ("ffa_monstermult", "1.0", 0);
-	// server_email = gi.cvar ("server_email", "ghz@project-vortex.com", CVAR_SERVERINFO);
 	team1_skin = gi.cvar ("team1_skin", "female/ctf_r", 0);
 	team2_skin = gi.cvar ("team2_skin", "male/ctf_b", 0);
 
@@ -373,10 +382,12 @@ void InitGame (void)
 	class5_model = gi.cvar ("class5_model", "terminator", CVAR_LATCH); // engy
 	class6_model = gi.cvar ("class6_model", "pknight", CVAR_LATCH); // knight
 	class7_model = gi.cvar ("class7_model", "alita", CVAR_LATCH); // cleric
+
 	if (generalabmode->value)
 		class8_model = gi.cvar ("class8_model", "ratamahatta", CVAR_LATCH); // weapon master
 	else
 		class8_model = gi.cvar ("class8_model", "marine", CVAR_LATCH); // apprentice
+
 	class9_model = gi.cvar ("class9_model", "zumlin", CVAR_LATCH); // necromancer
 	class10_model = gi.cvar ("class10_model", "bauul", CVAR_LATCH); // shaman
 	class11_model = gi.cvar ("class11_model", "xenoid", CVAR_LATCH); // alien

@@ -2393,6 +2393,7 @@ void Cmd_MapSize_f (edict_t *ent)
 */
 void Lua_AdminLua(edict_t *ent, char* command);
 void Lua_LoadVariables();
+csurface_t* FindSky();
 
 void Cmd_AdminCmd (edict_t *ent)
 {
@@ -2422,6 +2423,13 @@ void Cmd_AdminCmd (edict_t *ent)
 			safe_cprintf(ent, PRINT_HIGH, "No match for %s was found.\n", cmd2);
 		return;
 
+	}
+
+	if (!Q_stricmp(cmd1, "sky"))
+	{
+		csurface_t *sky = FindSky();
+		if (sky)
+			sky->value = atoi(cmd2);
 	}
 
 	if (!Q_stricmp(cmd1, "lua"))

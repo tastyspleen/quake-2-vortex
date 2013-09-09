@@ -326,6 +326,35 @@ qboolean findspawnpoint (edict_t *ent)
   return true;
 }
 
+csurface_t* FindSky()
+{
+	trace_t	tr;
+	int mask,j,i;
+	vec3_t start, end;
+
+	mask = (MASK_MONSTERSOLID|MASK_PLAYERSOLID|MASK_SOLID);
+
+	for (j=0;j<10000;j++)
+	{
+		// get a random position within a map
+		for (i=0;i<3;i++)
+			start[i] = rand() % (8192 + 1) - 4096;
+		// is the point good?
+		if (gi.pointcontents(start) != 0)
+			continue;
+		VectorCopy(start, end);
+
+		// check above
+		end[2] += 8192;
+		tr = gi.trace(start, NULL, NULL, end, NULL, MASK_SOLID);
+		if (tr.surface->flags & (SURF_SKY)) //3.49 light flag indicates no-monster area
+		{
+			return tr.surface;
+		}
+	}
+	return NULL;
+}
+
 qboolean FindValidSpawnPoint (edict_t *ent, qboolean air)
 {
 	int		i, j=0, mask;

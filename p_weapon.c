@@ -212,6 +212,9 @@ qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg)
 	}
 	else
 	{
+		if (!item) // TODO: Should the check be here, or should togglesecondary not be called?
+			return false;
+
 		if (strcmp(item->pickup_name, "Sword") == 0) {
 			if (printmsg)
 				safe_cprintf(ent, PRINT_HIGH, "Lance mode\n");
