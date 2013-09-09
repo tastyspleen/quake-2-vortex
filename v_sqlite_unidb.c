@@ -79,9 +79,8 @@ const char* VSFU_UPDATEPDATA = "UPDATE point_data SET exp=%d, exptnl=%d, level=%
 
 const char* VSFU_UPDATECTFSTATS = "UPDATE ctf_stats SET flag_pickups=%d, flag_captures=%d, flag_returns=%d, flag_kills=%d, offense_kills=%d, defense_kills=%d, assists=%d WHERE char_idx=%d;";
 
-#define rck() if(r!=SQLITE_OK){\
-	if(r != SQLITE_ROW && r != SQLITE_OK && r != SQLITE_DONE)\
-	gi.dprintf("sqlite error %d: %s\n", r, sqlite3_errmsg(db)); }
+#define rck() if(r!=SQLITE_OK){ if(r != SQLITE_ROW && r != SQLITE_OK && r != SQLITE_DONE){gi.dprintf("sqlite error %d: %s\n", r, sqlite3_errmsg(db));return;}}
+#define rck2() if(r!=SQLITE_OK){ if(r != SQLITE_ROW && r != SQLITE_OK && r != SQLITE_DONE){gi.dprintf("sqlite error %d: %s\n", r, sqlite3_errmsg(db));}}
 
 #define QUERY(x) format=x;\
 	r=sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);\
@@ -92,9 +91,9 @@ const char* VSFU_UPDATECTFSTATS = "UPDATE ctf_stats SET flag_pickups=%d, flag_ca
 
 #define LQUERY(x) format=x;\
 	r=sqlite3_prepare_v2(db, format, strlen(format), &statement, NULL);\
-	rck()\
+	rck2()\
 	r=sqlite3_step(statement);\
-	rck()\
+	rck2()\
 
 #define DEFAULT_PATH va("%s/settings/characters.db", game_path->string)
 sqlite3 *db = NULL;

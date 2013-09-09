@@ -703,6 +703,27 @@ qboolean SavePlayer(edict_t *ent)
 	return true;
 }
 
+#ifdef WIN32
+#include <direct.h>
+#endif
+
+void CheckDir(char* path)
+{
+	struct stat st;
+	if (stat(path, &st))
+	{
+#ifdef WIN32
+		if (_mkdir(path) != 0)
+		{
+			gi.dprintf("Error creating missing directory %s.\n", path);
+		}else
+			gi.dprintf("Created directory %s.\n", path);
+#else
+		mkdir(path, S_IWUSR);
+#endif
+	}
+}
+
 //***********************************************************************
 //		open player from file
 //***********************************************************************

@@ -146,7 +146,7 @@ extern long Q_ftol( float f );
 #define Q_ftol( f ) ( long ) (f)
 #endif
 
-#ifdef _WIN32
+#if (defined _WIN32) && (defined ASMOPT)
 double __fastcall sqrt14(double n);
 
 #undef sqrt
