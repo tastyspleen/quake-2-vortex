@@ -784,7 +784,7 @@ void FindMonsterSpot (edict_t *self)
 	int		total_monsters, max_monsters=0;
 	int		mtype=0, num=0, i=0;
 
-	total_monsters = PVM_TotalMonsters(self, false);
+	total_monsters = PVM_TotalMonsters(self, true);
 
 	// get # of players with PvM only preference
 	pvm_players = V_GetNumPlayerPrefs(true, false);

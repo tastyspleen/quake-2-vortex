@@ -735,7 +735,7 @@ void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
 	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
-#ifdef _WIN32
+#if (defined _WIN32) && (defined ASMOPT)
 __inline double __declspec (naked) __fastcall sqrt14(double n)
 {
 	_asm fld qword ptr [esp+4]
