@@ -110,6 +110,7 @@ void SP_monster_chick (edict_t *self);
 void SP_monster_parasite (edict_t *self);
 void SP_monster_flyer (edict_t *self);
 void SP_monster_brain (edict_t *self);
+void SP_monster_tank_commander(edict_t *ent);
 void SP_monster_floater (edict_t *self);
 void SP_monster_hover (edict_t *self);
 void SP_monster_mutant (edict_t *self);
@@ -264,30 +265,29 @@ spawn_t	spawns[] = {
 	// RAFAEL 12-MAY-98
 	{"misc_nuke", SP_misc_nuke},
 
-#if 0 // remove monster code
 	{"monster_berserk", SP_monster_berserk},
 	{"monster_gladiator", SP_monster_gladiator},
 	{"monster_gunner", SP_monster_gunner},
-	{"monster_infantry", SP_monster_infantry},
-	{"monster_soldier_light", SP_monster_soldier_light},
 	{"monster_soldier", SP_monster_soldier},
-	{"monster_soldier_ss", SP_monster_soldier_ss},
 	{"monster_tank", SP_monster_tank},
-	{"monster_tank_commander", SP_monster_tank},
+	{"monster_tank_commander", SP_monster_tank_commander},
 	{"monster_medic", SP_monster_medic},
-	{"monster_flipper", SP_monster_flipper},
 	{"monster_chick", SP_monster_chick},
 	{"monster_parasite", SP_monster_parasite},
-	{"monster_flyer", SP_monster_flyer},
 	{"monster_brain", SP_monster_brain},
+	{"monster_mutant", SP_monster_mutant},
+	{"monster_infantry", SP_monster_infantry},
+	// {"monster_soldier_light", SP_monster_soldier_light},
+
+#if 0 // remove monster code
+	{"monster_flyer", SP_monster_flyer},
 	{"monster_floater", SP_monster_floater},
 	{"monster_hover", SP_monster_hover},
-	{"monster_mutant", SP_monster_mutant},
 	{"monster_supertank", SP_monster_supertank},
 	{"monster_boss2", SP_monster_boss2},
 	{"monster_boss3_stand", SP_monster_boss3_stand},
 	{"monster_jorg", SP_monster_jorg},
-
+	{"monster_flipper", SP_monster_flipper},
 	{"monster_commander_body", SP_monster_commander_body},
 
 	{"turret_breach", SP_turret_breach},
@@ -762,7 +762,10 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 //GHz START
 	InitScanEntity();
 	InitSunEntity();
-	InitMonsterEntity(false);
+
+	if (!coop->value)
+		InitMonsterEntity(false);
+
 	PrintNumEntities(false);
 	SpawnWorldAmmo();
 
@@ -1117,6 +1120,68 @@ char *dm_statusbar =
 "endif "
 //GHz END
 ;
+
+edict_t *SpawnDroneEnt (edict_t *drone, edict_t *ent, int drone_type, qboolean worldspawn);
+
+void SP_monster_berserk(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 9, true);
+}
+
+void SP_monster_gladiator(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 8, true);
+}
+
+void SP_monster_gunner(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 1, true);
+}
+
+void SP_monster_soldier(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 10, true);
+}
+
+void SP_monster_tank(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 6, true);
+}
+
+void SP_monster_tank_commander(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 30, true);
+}
+
+void SP_monster_infantry(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 11, true);
+}
+
+void SP_monster_medic(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 5, true);
+}
+
+void SP_monster_mutant(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 7, true);
+}
+
+void SP_monster_chick(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 3, true);
+}
+
+void SP_monster_parasite(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 2, true);
+}
+
+void SP_monster_brain(edict_t *ent) 
+{
+	SpawnDroneEnt(ent, g_edicts, 4, true);
+}
 
 
 /*QUAKED worldspawn (0 0 0) ?

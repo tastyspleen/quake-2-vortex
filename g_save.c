@@ -295,7 +295,7 @@ void InitGame (void)
 	vwep = gi.cvar ("vwep", "1", CVAR_LATCH);
 //ZOID
 //This game.dll only supports deathmatch
-	if (!deathmatch->value) 
+	/*if (!deathmatch->value) 
 	{
 		gi.dprintf("Forcing deathmatch.\n");
 		gi.cvar_set("deathmatch", "1");
@@ -303,6 +303,7 @@ void InitGame (void)
 	//force coop off
 	if (coop->value)
 		gi.cvar_set("coop", "0");
+		*/
 //ZOID
 
 	// change anytime vars

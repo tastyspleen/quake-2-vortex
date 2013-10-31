@@ -590,16 +590,14 @@ void AssignChampionStuff(edict_t *drone, int *drone_type)
 	}
 }
 
-edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
+edict_t *SpawnDroneEnt (edict_t *drone, edict_t *ent, int drone_type, qboolean worldspawn)
 {
 	vec3_t		forward, right, start, end, offset;
 	trace_t		tr;
-	edict_t		*drone;
 	float		mult;
 	int			talentLevel;
 	int			talentLevel2;
 
-	drone = G_Spawn();
 	drone->classname = "drone";
 
 	// set monster level
@@ -854,6 +852,11 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 	DroneList_Insert(drone);
 
 	return drone;
+}
+
+edict_t *SpawnDrone(edict_t *ent, int drone_type, qboolean worldspawn)
+{
+	SpawnDroneEnt(G_Spawn(), ent, drone_type, worldspawn);
 }
 
 void RemoveAllDrones (edict_t *ent, qboolean refund_player)
