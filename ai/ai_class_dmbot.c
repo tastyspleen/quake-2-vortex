@@ -361,7 +361,6 @@ qboolean BOT_DMclass_FindEnemy(edict_t *self)
 	float		bestweight = 99999;
 	float		weight;
 	vec3_t		dist;
-	trace_t tr;
 
 	// we already set up an enemy this frame (reacting to attacks)
 	if(self->enemy != NULL)

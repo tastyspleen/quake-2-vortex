@@ -742,9 +742,8 @@ __inline double __declspec (naked) __fastcall sqrt14(double n)
 	_asm fsqrt
 	_asm ret 8
 } 
-#endif
 
-
+#else
 vec_t VectorLength(vec3_t v)
 {
 	float	length;
@@ -757,7 +756,7 @@ vec_t VectorLength(vec3_t v)
 
 	return length;
 }
-
+#endif
 void VectorInverse (vec3_t v)
 {
 	v[0] = -v[0];
@@ -1039,7 +1038,7 @@ char	*va(char *format, ...)
 	static char		string[1024];
 	
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+	vsnprintf (string, 1024, format,argptr);
 	va_end (argptr);
 
 	return string;	

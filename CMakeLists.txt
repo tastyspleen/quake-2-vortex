@@ -92,7 +92,7 @@ target_link_libraries (${CC_LIB_NAME} ${CC_LINK_LIBS})
 if (UNIX)
   add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND mv lib${CC_LIB_NAME}.so ${CC_LIB_NAME}.so)
 else()
-  add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND copy lib${CC_LIB_NAME}.dll ${CC_LIB_NAME}.dll)
+  # add_custom_command (TARGET ${CC_LIB_NAME} POST_BUILD COMMAND copy lib${CC_LIB_NAME}.dll ${CC_LIB_NAME}.dll)
 endif ()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

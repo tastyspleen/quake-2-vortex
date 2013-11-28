@@ -173,6 +173,39 @@ void ClearBounds (vec3_t mins, vec3_t maxs);
 void AddPointToBounds (vec3_t v, vec3_t mins, vec3_t maxs);
 int VectorCompare (vec3_t v1, vec3_t v2);
 vec_t VectorLength (vec3_t v);
+
+#if (defined WIN32) && (defined ASMOPT)
+
+__inline vec_t VectorLength(vec3_t v)
+{
+	float len;
+	__asm {
+		fldz
+		push eax
+
+		mov eax,dword ptr[v]
+		fld dword ptr[eax]
+		fmul dword ptr[eax]
+
+		fld dword ptr[eax+4]
+		fmul dword ptr[eax+4]
+		faddp st(1),st(0)
+		fstp st(1)
+		
+		fld dword ptr[eax+8]
+		fmul dword ptr[eax+8]
+		faddp st(1),st(0)
+		fstp st(1)
+		fsqrt
+		pop eax
+		fstp dword ptr[len]
+	}
+	return len;
+}
+#else
+vec_t VectorLength(vec3_t v);
+#endif
+
 void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
 vec_t VectorNormalize (vec3_t v);		// returns vector length
 vec_t VectorNormalize2 (vec3_t v, vec3_t out);

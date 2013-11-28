@@ -734,7 +734,7 @@ int AveragePlayerLevel (void)
 int PVM_TotalMonsters (edict_t *monster_owner, qboolean update)
 {
 	int		i = 0;
-	edict_t *e = NULL, *tmp;
+	edict_t *e = NULL;
 
 	if (update)
 	{
@@ -758,7 +758,7 @@ int PVM_TotalMonsters (edict_t *monster_owner, qboolean update)
 int PVM_RemoveAllMonsters (edict_t *monster_owner)
 {
 	int		i = 0;
-	edict_t *e = NULL, *tmp;
+	edict_t *e = NULL;
 
 	e = DroneList_Iterate();
 
@@ -784,7 +784,7 @@ void FindMonsterSpot (edict_t *self)
 	int		total_monsters, max_monsters=0;
 	int		mtype=0, num=0, i=0;
 
-	total_monsters = PVM_TotalMonsters(self, true);
+	total_monsters = PVM_TotalMonsters(self, false);
 
 	// get # of players with PvM only preference
 	pvm_players = V_GetNumPlayerPrefs(true, false);
