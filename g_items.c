@@ -946,7 +946,8 @@ void Tball_Aura(edict_t *owner, vec3_t origin)
 				owner->client->pers.score += other->myskills.level;
 				owner->myskills.experience += other->myskills.level;
 
-				gi.bprintf(PRINT_MEDIUM, "%s was teleported away by %s.\n", other->client->pers.netname, owner->client->pers.netname);
+				// if the other wasn't teleported away... why put this at all?
+				// gi.bprintf(PRINT_MEDIUM, "%s was teleported away by %s.\n", other->client->pers.netname, owner->client->pers.netname);
 			}
 		}
 	}		

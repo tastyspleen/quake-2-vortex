@@ -45,12 +45,24 @@ void DroneList_Insert(edict_t* new_ent)
 {
 	if (lastDrone)
 	{
-		lastDrone->chain = new_ent; // put them at the end
+		edict_t *e = DroneList_Iterate();
 		
-		new_ent->prev_chain = lastDrone; // the one that comes before is this one..
+		// check if they're on the list already
+		while (e)
+		{
+			if (e == new_ent)
+				return; // they're on the list.
+			e = DroneList_Next(e);
+		}
 
-		lastDrone = lastDrone->chain; // update last drone to the top of the list
-		lastDrone->chain = NULL; // clear list to null
+		//they're not already in the list so
+		// put it on the top
+		new_ent->prev_chain = lastDrone;
+		lastDrone->chain = new_ent;
+
+		// update last drone
+		lastDrone = new_ent;
+		lastDrone->chain = NULL;
 	}else
 	{
 		// get a first and last drone, this new entity in the list.
@@ -856,7 +868,7 @@ edict_t *SpawnDroneEnt (edict_t *drone, edict_t *ent, int drone_type, qboolean w
 
 edict_t *SpawnDrone(edict_t *ent, int drone_type, qboolean worldspawn)
 {
-	SpawnDroneEnt(G_Spawn(), ent, drone_type, worldspawn);
+	return SpawnDroneEnt(G_Spawn(), ent, drone_type, worldspawn);
 }
 
 void RemoveAllDrones (edict_t *ent, qboolean refund_player)
@@ -1631,11 +1643,11 @@ void M_Remove (edict_t *self, qboolean refund, qboolean effect)
 		if (self->activator->num_monsters_real < 0)
 			self->activator->num_monsters_real = 0;
 
-		DroneList_Remove(self);
-
 		// mark the player slots as being refunded, so it can't happen again
 		self->monsterinfo.slots_freed = true;
 	}
+
+	DroneList_Remove(self);
 
 	// mark this entity for removal
 	if (effect)
