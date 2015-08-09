@@ -4,8 +4,8 @@ source = glob("*.c")
 # vars described here: http://www.scons.org/doc/HTML/scons-user.html
 
 env = Environment()
-env['CFLAGS'] = '-m32'
-env['CCFLAGS'] = '-m32'
+env['CFLAGS'] = '-O2 -m32'
+env['CCFLAGS'] = '-O2 -m32'
 env['LINKFLAGS'] = '-m32'
 env['SHLIBPREFIX'] = ''
 
