@@ -552,7 +552,7 @@ void SpawnTotem(edict_t *ent, int abilityID)
 		totem->s.renderfx |= RF_SHELL_YELLOW;
 		break;
 	case TOTEM_DARKNESS:
-		totem->s.effects |= 2147483648;		//strange darkness effect
+		totem->s.effects |= (unsigned int) 0x80000000UL;		//strange darkness effect
 		//totem->s.renderfx |= RF_SHELL_RED | RF_SHELL_BLUE;
 		break;
 	case TOTEM_NATURE:

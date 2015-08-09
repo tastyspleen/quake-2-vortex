@@ -1,5 +1,7 @@
 #include "g_local.h"
 
+#define MAX(x,y) ((x)>(y)?(x):(y))
+
 #define DRONE_TARGET_RANGE		1024	// maximum range for finding targets
 #define DRONE_ALLY_RANGE		512		// range allied units can be called for assistance
 #define DRONE_FOV				90		// viewing fov used by drone
@@ -1147,10 +1149,10 @@ void drone_pursue_goal (edict_t *self, float dist)
 		else
 		{
 			// is our enemy higher?
-			if (goal_elevation > self->absmin[2]+max(self->monsterinfo.jumpup, 2*STEPHEIGHT)+1)
+			if (goal_elevation > self->absmin[2]+MAX(self->monsterinfo.jumpup, 2*STEPHEIGHT)+1)
 				FindHigherGoal(self, dist);
 			// is our enemy lower?
-			else if (goal_elevation < self->absmin[2]-max(self->monsterinfo.jumpdn, 2*STEPHEIGHT))
+			else if (goal_elevation < self->absmin[2]-MAX(self->monsterinfo.jumpdn, 2*STEPHEIGHT))
 				FindLowerGoal(self, dist);
 			// is anyone standing in our way?
 			else

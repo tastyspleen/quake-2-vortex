@@ -2497,7 +2497,7 @@ void Cmd_GetFloorPos_f (edict_t *ent, int add)
 
 	
 void Cmd_BombPlayer(edict_t *ent, float skill_mult, float cost_mult);
-Cmd_Thorns(edict_t *ent);
+//Cmd_Thorns(edict_t *ent);
 //void Cmd_HolyShock(edict_t *ent);
 int ClassNum(edict_t *ent, int team);
 void Cmd_VampireMode (edict_t *ent);
