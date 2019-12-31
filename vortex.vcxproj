@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ally.c" />
+    <ClCompile Include="armory.c" />
+    <ClCompile Include="auras.c" />
+    <ClCompile Include="backpack.c" />
+    <ClCompile Include="bombspell.c" />
+    <ClCompile Include="boss_general.c" />
+    <ClCompile Include="boss_makron.c" />
+    <ClCompile Include="boss_tank.c" />
+    <ClCompile Include="class_brain.c" />
+    <ClCompile Include="class_demon.c" />
+    <ClCompile Include="cloak.c" />
+    <ClCompile Include="ctf.c" />
+    <ClCompile Include="damage.c" />
+    <ClCompile Include="domination.c" />
+    <ClCompile Include="drone_ai.c" />
+    <ClCompile Include="drone_berserk.c" />
+    <ClCompile Include="drone_bitch.c" />
+    <ClCompile Include="drone_brain.c" />
+    <ClCompile Include="drone_decoy.c" />
+    <ClCompile Include="drone_gladiator.c" />
+    <ClCompile Include="drone_gunner.c" />
+    <ClCompile Include="drone_infantry.c" />
+    <ClCompile Include="drone_jorg.c" />
+    <ClCompile Include="drone_makron.c" />
+    <ClCompile Include="drone_medic.c" />
+    <ClCompile Include="drone_misc.c" />
+    <ClCompile Include="drone_move.c" />
+    <ClCompile Include="drone_mutant.c" />
+    <ClCompile Include="drone_parasite.c" />
+    <ClCompile Include="drone_soldier.c" />
+    <ClCompile Include="drone_supertank.c" />
+    <ClCompile Include="drone_tank.c" />
+    <ClCompile Include="ents.c" />
+    <ClCompile Include="file_output.c" />
+    <ClCompile Include="flying_skull.c" />
+    <ClCompile Include="forcewall.c" />
+    <ClCompile Include="gds.c" />
+    <ClCompile Include="grid.c" />
+    <ClCompile Include="g_chase.c" />
+    <ClCompile Include="g_cmds.c" />
+    <ClCompile Include="g_combat.c" />
+    <ClCompile Include="g_flame.c" />
+    <ClCompile Include="g_func.c" />
+    <ClCompile Include="g_items.c" />
+    <ClCompile Include="g_lasers.c" />
+    <ClCompile Include="g_main.c" />
+    <ClCompile Include="g_misc.c" />
+    <ClCompile Include="g_monster.c" />
+    <ClCompile Include="g_phys.c" />
+    <ClCompile Include="g_save.c" />
+    <ClCompile Include="g_spawn.c" />
+    <ClCompile Include="g_svcmds.c" />
+    <ClCompile Include="g_sword.c" />
+    <ClCompile Include="g_target.c" />
+    <ClCompile Include="g_trigger.c" />
+    <ClCompile Include="g_utils.c" />
+    <ClCompile Include="g_weapon.c" />
+    <ClCompile Include="help.c" />
+    <ClCompile Include="invasion.c" />
+    <ClCompile Include="item_menu.c" />
+    <ClCompile Include="jetpack.c" />
+    <ClCompile Include="lasers.c" />
+    <ClCompile Include="lasersight.c" />
+    <ClCompile Include="laserstuff.c" />
+    <ClCompile Include="magic.c" />
+    <ClCompile Include="maplist.c" />
+    <ClCompile Include="menu.c" />
+    <ClCompile Include="minisentry.c" />
+    <ClCompile Include="misc_stuff.c" />
+    <ClCompile Include="m_flash.c" />
+    <ClCompile Include="player.c" />
+    <ClCompile Include="playertoberserk.c" />
+    <ClCompile Include="playertoflyer.c" />
+    <ClCompile Include="playertomedic.c" />
+    <ClCompile Include="playertomutant.c" />
+    <ClCompile Include="playertoparasite.c" />
+    <ClCompile Include="playertotank.c" />
+    <ClCompile Include="player_points.c" />
+    <ClCompile Include="pvb.c" />
+    <ClCompile Include="p_client.c" />
+    <ClCompile Include="p_hook.c" />
+    <ClCompile Include="p_hud.c" />
+    <ClCompile Include="p_menu.c" />
+    <ClCompile Include="p_parasite.c" />
+    <ClCompile Include="p_trail.c" />
+    <ClCompile Include="p_view.c" />
+    <ClCompile Include="p_weapon.c" />
+    <ClCompile Include="q_shared.c" />
+    <ClCompile Include="scanner.c" />
+    <ClCompile Include="sentrygun2.c" />
+    <ClCompile Include="shaman.c" />
+    <ClCompile Include="spirit.c" />
+    <ClCompile Include="supplystation.c" />
+    <ClCompile Include="talents.c" />
+    <ClCompile Include="teamplay.c" />
+    <ClCompile Include="totems.c" />
+    <ClCompile Include="trade.c" />
+    <ClCompile Include="upgrades.c" />
+    <ClCompile Include="vote.c" />
+    <ClCompile Include="v_file_IO.c" />
+    <ClCompile Include="v_items.c" />
+    <ClCompile Include="v_maplist.c" />
+    <ClCompile Include="v_utils.c" />
+    <ClCompile Include="weapons.c" />
+    <ClCompile Include="weapon_upgrades.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ability_def.h" />
+    <ClInclude Include="ally.h" />
+    <ClInclude Include="auras.h" />
+    <ClInclude Include="boss.h" />
+    <ClInclude Include="ctf.h" />
+    <ClInclude Include="damage.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="gds.h" />
+    <ClInclude Include="g_abilities.h" />
+    <ClInclude Include="g_ctf.h" />
+    <ClInclude Include="g_local.h" />
+    <ClInclude Include="invasion.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="morph.h" />
+    <ClInclude Include="m_actor.h" />
+    <ClInclude Include="m_berserk.h" />
+    <ClInclude Include="m_boss2.h" />
+    <ClInclude Include="m_boss31.h" />
+    <ClInclude Include="m_boss32.h" />
+    <ClInclude Include="m_brain.h" />
+    <ClInclude Include="m_chick.h" />
+    <ClInclude Include="m_flipper.h" />
+    <ClInclude Include="m_float.h" />
+    <ClInclude Include="m_flyer.h" />
+    <ClInclude Include="m_gladiator.h" />
+    <ClInclude Include="m_gunner.h" />
+    <ClInclude Include="m_hover.h" />
+    <ClInclude Include="m_infantry.h" />
+    <ClInclude Include="m_insane.h" />
+    <ClInclude Include="m_medic.h" />
+    <ClInclude Include="m_mutant.h" />
+    <ClInclude Include="m_parasite.h" />
+    <ClInclude Include="m_player.h" />
+    <ClInclude Include="m_rider.h" />
+    <ClInclude Include="m_soldier.h" />
+    <ClInclude Include="m_supertank.h" />
+    <ClInclude Include="m_tank.h" />
+    <ClInclude Include="p_hook.h" />
+    <ClInclude Include="p_menu.h" />
+    <ClInclude Include="q_shared.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="scanner.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="shaman.h" />
+    <ClInclude Include="special_items.h" />
+    <ClInclude Include="Spirit.h" />
+    <ClInclude Include="sqlstuff.h" />
+    <ClInclude Include="Talents.h" />
+    <ClInclude Include="teamplay.h" />
+    <ClInclude Include="v_items.h" />
+    <ClInclude Include="v_maplist.h" />
+    <ClInclude Include="v_shared.h" />
+    <ClInclude Include="v_utils.h" />
+    <ClInclude Include="weapon_def.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="game.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="GNUmakefile" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{90AA2D8E-E3D7-4A1C-A95A-778F67F9F490}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>vortex</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>gamex86</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>c:\quake2\vortex\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;VORTEX_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>game.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;VORTEX_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>game.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;VORTEX_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;VORTEX_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
