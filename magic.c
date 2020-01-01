@@ -15,7 +15,7 @@ void cmd_mjump(edict_t *ent)
 
 	if ((!(ent->v_flags & SFLG_MATRIXJUMP)) && (ent->velocity[2] == 0) && (!(ent->v_flags & SFLG_UNDERWATER)))
 	{
-		item_t *slot;
+		//item_t *slot;
 		int i;
 		qboolean found = false;
 
@@ -24,7 +24,7 @@ void cmd_mjump(edict_t *ent)
 		{
 			if (ent->myskills.items[i].itemtype & ITEM_GRAVBOOTS)
 			{
-				slot = &ent->myskills.items[i];
+				//slot = &ent->myskills.items[i];
 				found = true;
 				break;
 			}
@@ -941,8 +941,7 @@ void fire_magicbolt (edict_t *ent, int damage, int radius_damage, float damage_r
 
 void Cmd_Magicbolt_f (edict_t *ent, float skill_mult, float cost_mult)
 {
-	int damage, radius_damage=0, cost=BOLT_COST*cost_mult;
-	float radius=0;
+	int damage, cost=BOLT_COST*cost_mult;
 
 	if (!G_CanUseAbilities(ent, ent->myskills.abilities[MAGICBOLT].current_level, cost))
 		return;
@@ -1228,11 +1227,11 @@ void explodingarmor_think (edict_t *self)
 
 void SpawnExplodingArmor (edict_t *ent, int time)
 {
-	float	value;
+	//float	value;
 	vec3_t	forward, right, start, offset;
 	edict_t *armor;
 
-	value = 1+0.4*ent->myskills.abilities[EXPLODING_ARMOR].current_level;
+	//value = 1+0.4*ent->myskills.abilities[EXPLODING_ARMOR].current_level;
 
 	if (time < 2)
 		time = 2;
@@ -1302,7 +1301,7 @@ void Cmd_ExplodingArmor_f (edict_t *ent)
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: Cmd_ExplodingArmor_f()\n");
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		RemoveExplodingArmor(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All armor bombs removed.\n");
@@ -1728,14 +1727,14 @@ void Cmd_BuildProxyGrenade (edict_t *ent)
 	if(ent->myskills.abilities[PROXY].disable)
 		return;
 
-	if (Q_strcasecmp (gi.args(), "count") == 0)
+	if (Q_stricmp (gi.args(), "count") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You have %d/%d proxy grenades.\n",
 			ent->num_proxy, PROXY_MAX_COUNT);
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		RemoveProxyGrenades(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All proxy grenades removed.\n");
@@ -2018,14 +2017,14 @@ void Cmd_Napalm_f (edict_t *ent)
 	if(ent->myskills.abilities[NAPALM].disable)
 		return;
 
-	if (Q_strcasecmp (gi.args(), "count") == 0)
+	if (Q_stricmp (gi.args(), "count") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You have %d/%d napalm grenades.\n",
 			ent->num_napalm, NAPALM_MAX_COUNT);
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		RemoveNapalmGrenades(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All napalm grenades removed.\n");
@@ -2441,7 +2440,6 @@ void ChainLightning (edict_t *ent, vec3_t start, vec3_t aimdir, int damage, int 
 	trace_t	tr;
 	edict_t	*target=NULL;
 	edict_t	*prev_ed[CLIGHTNING_MAX_HOPS]; // list of entities we've previously hit
-	qboolean	found=false;
 
 	memset(prev_ed, 0, CLIGHTNING_MAX_HOPS*sizeof(prev_ed[0]));
 
@@ -3197,19 +3195,19 @@ void Cmd_AutoCannon_f (edict_t *ent)
 
 	arg = gi.args();
 
-	if (!Q_strcasecmp(arg, "remove"))
+	if (!Q_stricmp(arg, "remove"))
 	{
 		RemoveAutoCannons(ent);
 		return;
 	}
 
-	if (!Q_strcasecmp(arg, "aim"))
+	if (!Q_stricmp(arg, "aim"))
 	{
 		Cmd_AutoCannonAim_f(ent,0);
 		return;
 	}
 
-	if (!Q_strcasecmp(arg, "aimall"))
+	if (!Q_stricmp(arg, "aimall"))
 	{
 		Cmd_AutoCannonAim_f(ent,1);
 		return;
@@ -3581,7 +3579,7 @@ void wormhole_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t 
 
 		// can't stay in wormhole long if we're warring
 		if (SPREE_WAR == true && SPREE_DUDE == other)
-			time = 10.0;
+			time = BLACKHOLE_DELAY;
 		else
 			time = BLACKHOLE_EXIT_TIME;
 
@@ -3594,7 +3592,7 @@ void wormhole_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t 
 		other->flags |= FL_WORMHOLE;
 		other->movetype = MOVETYPE_NOCLIP;
 		other->svflags |= SVF_NOCLIENT;
-		other->client->wormhole_time = level.time + BLACKHOLE_EXIT_TIME; // must exit wormhole by this time
+		other->client->wormhole_time = level.time + time; // must exit wormhole by this time
 
 		self->nextthink = level.time + FRAMETIME; // close immediately
 	}
@@ -3869,7 +3867,7 @@ void Cmd_Caltrops_f (edict_t *ent)
 {
 	vec3_t forward, start;
 
-	if (!Q_strcasecmp(gi.args(), "remove"))
+	if (!Q_stricmp(gi.args(), "remove"))
 	{
 		caltrops_removeall(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All caltrops removed.\n");
@@ -4767,7 +4765,7 @@ void Cmd_Detector_f (edict_t *ent)
 	int cost=DETECTOR_COST, talentLevel;
 	vec3_t forward, start;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "All detectors removed.\n");
 		detector_removeall(ent);
@@ -4815,7 +4813,7 @@ void Cmd_LaserTrap_f (edict_t *ent)
 	int		talentLevel=getTalentLevel(ent, TALENT_ALARM);
 	vec3_t	forward, start;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "All detectors and laser traps removed.\n");
 		detector_removeall(ent);
@@ -6701,7 +6699,6 @@ int FindPath(vec3_t start, vec3_t destination);
 void spiker_think (edict_t *self)
 {
 	vec3_t v1,v2;
-	edict_t *e=NULL;
 
 	if (!organ_checkowner(self))
 		return;
@@ -6876,7 +6873,7 @@ void Cmd_Spiker_f (edict_t *ent)
 	edict_t *spiker;
 	vec3_t	start;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "spiker", true);
 		gi.cprintf(ent, PRINT_HIGH, "Spikers removed\n");
@@ -7186,7 +7183,7 @@ void Cmd_Obstacle_f (edict_t *ent)
 	edict_t *obstacle;
 	vec3_t	start;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "obstacle", true);
 		gi.cprintf(ent, PRINT_HIGH, "Obstacles removed\n");
@@ -7690,7 +7687,7 @@ void Cmd_Gasser_f (edict_t *ent)
 	edict_t *gasser;
 	vec3_t	start;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "gasser", true);
 		gi.cprintf(ent, PRINT_HIGH, "Gassers removed\n");

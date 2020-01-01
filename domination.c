@@ -376,7 +376,6 @@ void dom_init (void)
 
 void jointeam_handler (edict_t *ent, int option)
 {
-	int	num=0;
 	joined_t	*slot=NULL;
 
 	// exit menu

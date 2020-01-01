@@ -30,7 +30,7 @@ char *ReadTextFile(char *filename) {
 	char		*filestring = NULL;
 	long int	i = 0;
 
-	while (true) {
+	while (1) {
 		fp = fopen(filename, "rb");
 		if (!fp) break;
 

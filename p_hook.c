@@ -336,4 +336,3 @@ void hook_fire (edict_t *ent) {
 		ent->client->pers.inventory[power_cube_index] -= COST_FOR_HOOK;
 
 }
-

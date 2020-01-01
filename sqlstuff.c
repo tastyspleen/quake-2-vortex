@@ -1,4 +1,7 @@
 #include "g_local.h"
+
+#if 0
+
 #include "bot.h"
 #include "mysql/mysql.h"
 
@@ -15,4 +18,5 @@ void Print_ConnectionGDS(edict_t *ent)
 	//else if (!(ent->svflags & SVF_MONSTER))
 		gi.cprintf(ent, PRINT_HIGH, "GDS CONNECTION: LOCAL\n");
 }
+#endif
 

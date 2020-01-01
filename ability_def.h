@@ -13,7 +13,7 @@
 #define MAX_AMMO		12
 #define GRAPPLE_HOOK	13
 #define SUPPLY_STATION	14
-//#define FREEZE_SPELL	15
+#define FREEZE_SPELL	15
 #define CREATE_QUAD		15
 #define CREATE_INVIN	16
 #define POWER_SHIELD	17

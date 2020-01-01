@@ -5,7 +5,8 @@ void InitializeGDS(void);
 //#define LOCK_DEFAULTS 1
 //K03 End
 
-field_t fields[] = {
+field_t fields[] = 
+{
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
 	{"model", FOFS(model), F_LSTRING},
@@ -56,7 +57,9 @@ field_t fields[] = {
 	{"maxyaw", STOFS(maxyaw), F_FLOAT, FFL_SPAWNTEMP},
 	{"minpitch", STOFS(minpitch), F_FLOAT, FFL_SPAWNTEMP},
 	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
-	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP}
+	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
+
+	{NULL, 0, F_INT}
 };
 
 // -------- just for savegames ----------
@@ -65,7 +68,7 @@ field_t fields[] = {
 // this wasn't just tacked on to the fields array, because
 // these don't need names, we wouldn't want map fields using
 // some of these, and if one were accidentally present twice
-// it would double swizzle (fuck) the pointer.
+// it would double swizzle the pointer.
 
 field_t		savefields[] =
 {
@@ -127,19 +130,19 @@ int config_map_list()
 {
 	int  numberOfMapsInFile = 0;
 	char sMapName[80];
-	char *s, *t, *f;
+	char *s, *t;
 	static const char *seps = " ,\n\r";
 
 	// see if it's in the map list
 	if (*sv_maplist->string) {
-		s = strdup(sv_maplist->string);
-		f = NULL;
+		s = gi.TagMalloc(strlen(sv_maplist->string) + 1, TAG_GAME);
+		Q_strncpy(s, sv_maplist->string, sizeof s);
 		t = strtok(s, seps);
 		while (t != NULL) {
 				if (t != NULL)
 				{
 					sprintf(sMapName, "%s", t);
-					strncpy(maplist.mapnames[numberOfMapsInFile], sMapName, MAX_MAPNAME_LEN);
+					Q_strncpy(maplist.mapnames[numberOfMapsInFile], sMapName, MAX_MAPNAME_LEN);
 					maplist.voteonly[numberOfMapsInFile] = false;
 					numberOfMapsInFile++;
 				}
@@ -147,7 +150,7 @@ int config_map_list()
 					break;
 			t = strtok(NULL, seps);
 		}
-		free(s);
+		gi.TagFree(s);
 	}
 
 	if (numberOfMapsInFile == 0)
@@ -463,6 +466,9 @@ void WriteField2 (FILE *f, field_t *field, byte *base)
 			fwrite (*(char **)p, len, 1, f);
 		}
 		break;
+	
+	default: 
+		break;
 	}
 }
 
@@ -605,9 +611,10 @@ void WriteGame (char *filename, qboolean autosave)
 		SaveClientData ();
 
 	f = fopen (filename, "wb");
-	if (!f)
+	if (!f) {
 		gi.error ("Couldn't open %s", filename);
-
+		exit(1); // never gets here
+	}
 	memset (str, 0, sizeof(str));
 	strcpy (str, __DATE__);
 	fwrite (str, sizeof(str), 1, f);
@@ -631,11 +638,12 @@ void ReadGame (char *filename)
 	gi.FreeTags (TAG_GAME);
 
 	f = fopen (filename, "rb");
-	if (!f)
+	if (!f) {
 		gi.error ("Couldn't open %s", filename);
-
+		exit(1); // never gets here
+	}
 	fread (str, sizeof(str), 1, f);
-	if (strcmp (str, __DATE__))
+	if (Q_stricmp (str, __DATE__))
 	{
 		fclose (f);
 		gi.error ("Savegame from an older version.\n");
@@ -768,25 +776,26 @@ void WriteLevel (char *filename)
 	int		i;
 	edict_t	*ent;
 	FILE	*f;
-	void	*base;
+	void	(*base)(void);
 
 	f = fopen (filename, "wb");
-	if (!f)
+	if (!f){
 		gi.error ("Couldn't open %s", filename);
-
+		exit(1); // never gets here
+	}
 	// write out edict size for checking
 	i = sizeof(edict_t);
 	fwrite (&i, sizeof(i), 1, f);
 
 	// write out a function pointer for checking
-	base = (void *)InitGame;
+	base = InitGame;
 	fwrite (&base, sizeof(base), 1, f);
 
 	// write out level_locals_t
 	WriteLevelLocals (f);
 
 	// write out all the entities
-	for (i=0 ; i<globals.num_edicts ; i++)
+	for (i=0 ; i < globals.num_edicts ; i++)
 	{
 		ent = &g_edicts[i];
 		if (!ent->inuse)
@@ -822,20 +831,21 @@ void ReadLevel (char *filename)
 	int		entnum;
 	FILE	*f;
 	int		i;
-	void	*base;
+	void	(*base)(void);
 	edict_t	*ent;
 
 	f = fopen (filename, "rb");
-	if (!f)
+	if (!f) {
 		gi.error ("Couldn't open %s", filename);
-
+		exit(1); // never gets here. gi.error doesn't return
+	}
 	// free any dynamic memory allocated by loading the level
 	// base state
 	gi.FreeTags (TAG_LEVEL);
 
 	// wipe all the entities
-	memset (g_edicts, 0, game.maxentities*sizeof(g_edicts[0]));
-	globals.num_edicts = maxclients->value+1;
+	memset (g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
+	globals.num_edicts = maxclients->value + 1;
 
 	// check edict size
 	fread (&i, sizeof(i), 1, f);
@@ -847,7 +857,7 @@ void ReadLevel (char *filename)
 
 	// check function pointer base address
 	fread (&base, sizeof(base), 1, f);
-	if (base != (void *)InitGame)
+	if (base != InitGame)
 	{
 		fclose (f);
 		gi.error ("ReadLevel: function pointers have moved");
@@ -867,7 +877,7 @@ void ReadLevel (char *filename)
 		if (entnum == -1)
 			break;
 		if (entnum >= globals.num_edicts)
-			globals.num_edicts = entnum+1;
+			globals.num_edicts = entnum + 1;
 
 		ent = &g_edicts[entnum];
 		ReadEdict (f, ent);
@@ -880,7 +890,7 @@ void ReadLevel (char *filename)
 	fclose (f);
 
 	// mark all clients as unconnected
-	for (i=0 ; i<maxclients->value ; i++)
+	for (i=0 ; i < maxclients->value ; i++)
 	{
 		ent = &g_edicts[i+1];
 		ent->client = game.clients + i;
@@ -888,7 +898,7 @@ void ReadLevel (char *filename)
 	}
 
 	// do any load time things at this point
-	for (i=0 ; i<globals.num_edicts ; i++)
+	for (i=0 ; i < globals.num_edicts ; i++)
 	{
 		ent = &g_edicts[i];
 

@@ -38,9 +38,9 @@ Misc functions
 */
 void VelocityForDamage (int damage, vec3_t v)
 {
-	v[0] = 100.0 * crandom();
-	v[1] = 100.0 * crandom();
-	v[2] = 200.0 + 100.0 * random();
+	v[0] = 100.0f * crandom();
+	v[1] = 100.0f * crandom();
+	v[2] = 200.0f + 100.0f * random();
 
 	if (damage < 50)
 		VectorScale (v, 0.7, v);
@@ -163,8 +163,8 @@ void ThrowGib (edict_t *self, char *gibname, int damage, int type)
 
 void ThrowHead (edict_t *self, char *gibname, int damage, int type)
 {
-	vec3_t	vd;
-	float	vscale;
+//	vec3_t	vd;
+//	float	vscale;
 
 	self->think = G_FreeEdict;
 	self->nextthink = level.time + FRAMETIME;
@@ -173,44 +173,44 @@ void ThrowHead (edict_t *self, char *gibname, int damage, int type)
 	self->takedamage = DAMAGE_NO;
 	return; // 3.2 FIXME: this function is buggy, replace it!
 
-	self->s.skinnum = 0;
-	self->s.frame = 0;
-	VectorClear (self->mins);
-	VectorClear (self->maxs);
+	//self->s.skinnum = 0;
+	//self->s.frame = 0;
+	//VectorClear (self->mins);
+	//VectorClear (self->maxs);
 
-	self->s.modelindex2 = 0;
-	gi.setmodel (self, gibname);
-	self->solid = SOLID_NOT;
-	self->s.effects |= EF_GIB;
-	self->s.effects &= ~EF_FLIES;
-	self->s.sound = 0;
-	self->flags |= FL_NO_KNOCKBACK;
-	self->svflags &= ~SVF_MONSTER;
-	self->takedamage = DAMAGE_YES;
-	self->die = gib_die;
+	//self->s.modelindex2 = 0;
+	//gi.setmodel (self, gibname);
+	//self->solid = SOLID_NOT;
+	//self->s.effects |= EF_GIB;
+	//self->s.effects &= ~EF_FLIES;
+	//self->s.sound = 0;
+	//self->flags |= FL_NO_KNOCKBACK;
+	//self->svflags &= ~SVF_MONSTER;
+	//self->takedamage = DAMAGE_YES;
+	//self->die = gib_die;
 
-	if (type == GIB_ORGANIC)
-	{
-		self->movetype = MOVETYPE_TOSS;
-		self->touch = gib_touch;
-		vscale = 0.5;
-	}
-	else
-	{
-		self->movetype = MOVETYPE_BOUNCE;
-		vscale = 1.0;
-	}
+	//if (type == GIB_ORGANIC)
+	//{
+	//	self->movetype = MOVETYPE_TOSS;
+	//	self->touch = gib_touch;
+	//	vscale = 0.5;
+	//}
+	//else
+	//{
+	//	self->movetype = MOVETYPE_BOUNCE;
+	//	vscale = 1.0;
+	//}
 
-	VelocityForDamage (damage, vd);
-	VectorMA (self->velocity, vscale, vd, self->velocity);
-	ClipGibVelocity (self);
+	//VelocityForDamage (damage, vd);
+	//VectorMA (self->velocity, vscale, vd, self->velocity);
+	//ClipGibVelocity (self);
 
-	self->avelocity[YAW] = crandom()*600;
+	//self->avelocity[YAW] = crandom()*600;
 
-	self->think = G_FreeEdict;
-	self->nextthink = level.time + 10 + random()*10;
+	//self->think = G_FreeEdict;
+	//self->nextthink = level.time + 10 + random()*10;
 
-	gi.linkentity (self);
+	//gi.linkentity (self);
 }
 
 void ThrowHead2 (edict_t *self, char *gibname, int damage, int type)
@@ -694,7 +694,7 @@ void FindMonsterSpot (edict_t *self)
 	int		players=total_players();
 	int		pvm_players=1;//4.5
 	int		total_monsters, max_monsters=0;
-	int		mtype=0, num=0, i=0;
+	int		num=0;
 
 	total_monsters = PVM_TotalMonsters(self);
 
@@ -1635,14 +1635,14 @@ health (80), and dmg (150).
 void barrel_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 {
-	float	ratio;
-	vec3_t	v;
+//	float	ratio;
+//	vec3_t	v;
 
 	if ((!other->groundentity) || (other->groundentity == self))
 		return;
 
-	ratio = (float)other->mass / (float)self->mass;
-	VectorSubtract (self->s.origin, other->s.origin, v);
+//	ratio = (float)other->mass / (float)self->mass;
+//	VectorSubtract (self->s.origin, other->s.origin, v);
 //	M_walkmove (self, vectoyaw(v), 20 * ratio * FRAMETIME);
 }
 

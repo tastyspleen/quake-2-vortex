@@ -49,7 +49,7 @@ float ArmorLevel (edict_t *ent) {
 
 edict_t *DropRandomAmmo (edict_t *self)
 {
-	gitem_t *item;
+	gitem_t *item = NULL;
 
 	switch (GetRandom(1, 6))
 	{
@@ -261,7 +261,6 @@ void station_dropitem (edict_t *self)
 	int		index;
 	float	health, armor, ammo;
 	gitem_t	*item=NULL;
-	edict_t *item_ent;
 
 	// if there's nobody around, drop a random item
 	if (!self->enemy)
@@ -272,12 +271,13 @@ void station_dropitem (edict_t *self)
 
 		switch (GetRandom(1,3))
 		{
-		case 1: item_ent = SpawnHealthBox(self, HEALTHBOX_LARGE); break;
+		case 1: SpawnHealthBox(self, HEALTHBOX_LARGE); break;
 		case 2: item = FindItemByClassname("item_armor_combat"); break;
-		case 3: item_ent = DropRandomAmmo(self); break;
+		case 3: DropRandomAmmo(self); break;
 		}
 
-		if (item)	item_ent = Drop_Item(self, item);
+		if (item)
+			Drop_Item(self, item);
 	}
 	else
 	{
@@ -313,7 +313,7 @@ void station_dropitem (edict_t *self)
 		}
 		// drop health
 		if ((health < 1) && (health <= armor) && (health <= ammo))
-			item_ent = SpawnHealthBox(self, HEALTHBOX_LARGE);
+			SpawnHealthBox(self, HEALTHBOX_LARGE);
 		// drop armor
 		else if ((armor < 1) && (armor <= health) && (armor <= ammo))
 			item = FindItemByClassname("item_armor_combat");
@@ -326,12 +326,12 @@ void station_dropitem (edict_t *self)
 			if (random() > 0.5)
 				item = FindItemByClassname("item_armor_shard");
 			else
-				item_ent = SpawnHealthBox(self, HEALTHBOX_SMALL);
+				SpawnHealthBox(self, HEALTHBOX_SMALL);
 		}
 
 		// drop selected item
 		if (item)
-			item_ent = Drop_Item(self, item);
+			Drop_Item(self, item);
 	}
 }
 
@@ -407,7 +407,7 @@ void supplystation_pain (edict_t *self, edict_t *other, float kick, int damage)
 		if (other->client)
 			gi.centerprintf(self->creator, "%s is attacking\nyour station!\n", other->client->pers.netname);
 		else
-			gi.centerprintf(self->creator, "Your station is under\nattack!", other->client->pers.netname);
+			gi.centerprintf(self->creator, "Your station is under\nattack!\n");
 		self->random = level.time + 5;
 	}
 }

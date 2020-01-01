@@ -803,7 +803,7 @@ qboolean openPlayer(edict_t *ent)
 	ReadString(version, fread);
 
 	//check for correct version number
-	if (Q_strcasecmp(version + 19, "v1.0") == 0)	//"Vortex Player File " is 19 chars long, start comparison at the end
+	if (Q_stricmp(version + 19, "v1.0") == 0)	//"Vortex Player File " is 19 chars long, start comparison at the end
 	{
 		//begin reading player, if there was an error, return false :)
 		if (ReadPlayer_v1(fread, ent) == false)

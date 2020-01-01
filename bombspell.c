@@ -416,14 +416,14 @@ void Cmd_BombPlayer(edict_t *ent, float skill_mult, float cost_mult)
 	ent->lastsound = level.framenum;
 
 	// bomb an area
-	//if (!Q_strcasecmp(gi.args(), "forward")) 
+	//if (!Q_stricmp(gi.args(), "forward")) 
 	if (strstr(gi.args(), "forward"))
 	{
 		CarpetBomb(ent, skill_mult, cost_mult);
 		return;
 	}
 	// bomb ahead of us
-	//if (!Q_strcasecmp(gi.args(), "area")) 
+	//if (!Q_stricmp(gi.args(), "area")) 
 	if (strstr(gi.args(), "area"))
 	{
 		BombArea(ent, skill_mult, cost_mult);

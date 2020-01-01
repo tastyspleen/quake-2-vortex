@@ -208,7 +208,7 @@ votes_t *FindVote(edict_t *ent)
 			return &votes[i];
 		}
 		
-		if (Q_strcasecmp(votes[i].name, ent->client->pers.netname) == 0)
+		if (Q_stricmp(votes[i].name, ent->client->pers.netname) == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
 			return &votes[i];
@@ -487,7 +487,7 @@ int V_AttemptModeChange(qboolean endlevel)
 #ifndef OLD_VOTE_SYSTEM // Paril
 
 
-void RunVotes ()
+void RunVotes(void)
 {
 	if (voteTimeLeft == -1)
 		return;
@@ -899,4 +899,3 @@ void ShowVoteModeMenu(edict_t *ent)
 	showmenu(ent);
 #endif
 }
-

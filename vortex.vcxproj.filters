@@ -300,9 +300,6 @@
     <ClCompile Include="upgrades.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="v_file_IO.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="v_items.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -328,6 +325,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="spirit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="runes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_ctf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_freeze.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="special_items.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlstuff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="v_file_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -464,16 +479,7 @@
     <ClInclude Include="shaman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="special_items.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spirit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sqlstuff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Talents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="teamplay.h">
@@ -492,6 +498,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="weapon_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spirit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="talents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="special_items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

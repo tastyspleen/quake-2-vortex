@@ -34,96 +34,96 @@ void mymedic_idle (edict_t *self)
 
 mframe_t mymedic_frames_stand [] =
 {
-	drone_ai_stand, 0, mymedic_idle,	//12
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,	//101
+	{drone_ai_stand, 0, mymedic_idle},	//12
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},	//101
 
 };
 mmove_t mymedic_move_stand = {FRAME_wait1, FRAME_wait90, mymedic_frames_stand, NULL};
@@ -135,18 +135,18 @@ void mymedic_stand (edict_t *self)
 }
 mframe_t medic_frames_walk [] =
 {
-	drone_ai_walk, 6.2,	NULL,
-	drone_ai_walk, 18.1,  NULL,
-	drone_ai_walk, 1,		NULL,
-	drone_ai_walk, 9,		NULL,
-	drone_ai_walk, 10,	NULL,
-	drone_ai_walk, 9,		NULL,
-	drone_ai_walk, 11,	NULL,
-	drone_ai_walk, 11.6,  NULL,
-	drone_ai_walk, 2,		NULL,
-	drone_ai_walk, 9.9,	NULL,
-	drone_ai_walk, 14,	NULL,
-	drone_ai_walk, 9.3,	NULL
+	{drone_ai_walk, 6.2,	NULL},
+	{drone_ai_walk, 18.1,	NULL},
+	{drone_ai_walk, 1,		NULL},
+	{drone_ai_walk, 9,		NULL},
+	{drone_ai_walk, 10,		NULL},
+	{drone_ai_walk, 9,		NULL},
+	{drone_ai_walk, 11,		NULL},
+	{drone_ai_walk, 11.6,	NULL},
+	{drone_ai_walk, 2,		NULL},
+	{drone_ai_walk, 9.9,	NULL},
+	{drone_ai_walk, 14,		NULL},
+	{drone_ai_walk, 9.3,	NULL}
 };
 mmove_t medic_move_walk = {FRAME_walk1, FRAME_walk12, medic_frames_walk, NULL};
 
@@ -159,12 +159,12 @@ void medic_walk (edict_t *self)
 
 mframe_t mymedic_frames_run [] =
 {
-	drone_ai_run, 30,	NULL,	//102
-	drone_ai_run, 30,	NULL,
-	drone_ai_run, 30,	NULL,
-	drone_ai_run, 30,	NULL,
-	drone_ai_run, 30,	NULL,
-	drone_ai_run, 30,	NULL	//107
+	{drone_ai_run, 30,	NULL},	//102
+	{drone_ai_run, 30,	NULL},
+	{drone_ai_run, 30,	NULL},
+	{drone_ai_run, 30,	NULL},
+	{drone_ai_run, 30,	NULL},
+	{drone_ai_run, 30,	NULL}	//107
 	
 };
 mmove_t mymedic_move_run = {FRAME_run1, FRAME_run6, mymedic_frames_run, NULL};
@@ -227,36 +227,36 @@ void mymedic_dead (edict_t *self)
 
 mframe_t mymedic_frames_death [] =
 {
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL}
 };
 mmove_t mymedic_move_death = {FRAME_death1, FRAME_death30, mymedic_frames_death, mymedic_dead};
 
@@ -360,46 +360,46 @@ void mymedic_jump_hold (edict_t *self)
 
 mframe_t mymedic_frames_duck [] =
 {
-	ai_move, 0,	mymedic_duck_down,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,//mymedic_duck_down,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	mymedic_duck_up
+	{ai_move, 0,	mymedic_duck_down},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},//mymedic_duck_down,
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	mymedic_duck_up}
 	/*
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL
 	*/
 };
 mmove_t mymedic_move_duck = {FRAME_duck1, FRAME_duck7, mymedic_frames_duck, mymedic_run};
 
 mframe_t mymedic_frames_leap [] =
 {
-	ai_move, 0,	mymedic_jump_takeoff,	//131
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	mymedic_jump_hold,		//137
+	{ai_move, 0,	mymedic_jump_takeoff},	//131
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	mymedic_jump_hold},		//137
 	/*
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL,
-	ai_move, 0,	NULL
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL
 	*/
 };
 mmove_t mymedic_move_leap = {FRAME_duck1, FRAME_duck7, mymedic_frames_leap, mymedic_run};
@@ -445,22 +445,22 @@ void medic_checktarget (edict_t *self)
 
 mframe_t mymedic_frames_attackHyperBlaster [] =
 {
-	ai_charge, 0,	mymedic_fire_blaster,	//191
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,	//195
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget,
-	ai_charge, 0,	mymedic_fire_blaster,
-	ai_charge, 0,	medic_checktarget			//206
+	{ai_charge, 0,	mymedic_fire_blaster},	//191
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},	//195
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget},
+	{ai_charge, 0,	mymedic_fire_blaster},
+	{ai_charge, 0,	medic_checktarget}			//206
 };
 mmove_t mymedic_move_attackHyperBlaster = {FRAME_attack15, FRAME_attack30, mymedic_frames_attackHyperBlaster, mymedic_refire};
 
@@ -488,20 +488,20 @@ void mymedic_continue (edict_t *self)
 
 mframe_t mymedic_frames_attackBlaster [] =
 {
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	mymedic_fire_bolt,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	mymedic_fire_bolt,	
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	mymedic_continue
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	mymedic_fire_bolt},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	mymedic_fire_bolt},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	mymedic_continue}
 };
 mmove_t mymedic_move_attackBlaster = {FRAME_attack1, FRAME_attack14, mymedic_frames_attackBlaster, mymedic_run};
 
@@ -524,16 +524,16 @@ void ED_CallSpawn (edict_t *ent);
 
 static vec3_t	mymedic_cable_offsets[] =
 {
-	45.0,  -9.2, 15.5,
-	48.4,  -9.7, 15.2,
-	47.8,  -9.8, 15.8,
-	47.3,  -9.3, 14.3,
-	45.4, -10.1, 13.1,
-	41.9, -12.7, 12.0,
-	37.8, -15.8, 11.2,
-	34.3, -18.4, 10.7,
-	32.7, -19.7, 10.4,
-	32.7, -19.7, 10.4
+	{45.0,  -9.2, 15.5},
+	{48.4,  -9.7, 15.2},
+	{47.8,  -9.8, 15.8},
+	{47.3,  -9.3, 14.3},
+	{45.4, -10.1, 13.1},
+	{41.9, -12.7, 12.0},
+	{37.8, -15.8, 11.2},
+	{34.3, -18.4, 10.7},
+	{32.7, -19.7, 10.4},
+	{32.7, -19.7, 10.4}
 };
 
 edict_t *CreateSpiker (edict_t *ent, int skill_level);
@@ -827,34 +827,34 @@ void mymedic_cable_continue (edict_t *self)
 
 mframe_t mymedic_frames_attackCable [] =
 {
-	ai_charge, 0,		NULL,					//209
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		mymedic_hook_launch,	//218
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_cable_continue,	//227--loop from 218 to here
-	ai_charge, 0,		mymedic_cable_attack,
-	ai_charge, 0,		mymedic_hook_retract,	//229
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		NULL,
-	ai_charge, 0,		mymedic_delay			//236
+	{ai_charge, 0,		NULL},					//209
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		mymedic_hook_launch},	//218
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_cable_continue},	//227--loop from 218 to here
+	{ai_charge, 0,		mymedic_cable_attack},
+	{ai_charge, 0,		mymedic_hook_retract},	//229
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		NULL},
+	{ai_charge, 0,		mymedic_delay}			//236
 };
 mmove_t mymedic_move_attackCable = {FRAME_attack33, FRAME_attack60, mymedic_frames_attackCable, mymedic_heal};
 

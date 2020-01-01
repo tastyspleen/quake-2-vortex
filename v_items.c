@@ -297,7 +297,7 @@ edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, 
 void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 {
 	int		iRandom;
-	int		targ_level;
+	int		targ_level = 0;
 	float	temp = 0;
 	gitem_t *item;
 	edict_t *rune;
@@ -558,11 +558,11 @@ int UniqueParseInteger(char **iterator)
 
 qboolean spawnUnique(edict_t *rune, int index)
 {
-	int j, i;
+	int i;
 	char filename[256];
 	char buf[256];
 	FILE *fptr;
-	j = i = 0;
+	i = 0;
 
 	//determine path
 	#if defined(_WIN32) || defined(WIN32)
@@ -576,7 +576,6 @@ qboolean spawnUnique(edict_t *rune, int index)
 		int linenumber, maxlines;
 		char *iterator;
 		long size;
-		int count = 0;
 
 		//Determine file size
 		fseek (fptr, 0, SEEK_END);
@@ -808,14 +807,16 @@ qboolean Pickup_Rune (edict_t *ent, edict_t *other)
 
 void V_ItemCopy(item_t *source, item_t *dest)
 {
-	memcpy(dest, source, sizeof(item_t));
+	if (source && dest) /* guard against NULL ptr */
+		memcpy(dest, source, sizeof(item_t));
 }
 
 //************************************************************************************************
 
 void V_ItemClear(item_t *item)
 {
-	memset(item, 0, sizeof(item_t));
+	if (item) /* guard against NULL ptr */
+		memset(item, 0, sizeof(item_t));
 }
 
 //************************************************************************************************
@@ -878,7 +879,7 @@ qboolean V_CanPickUpItem (edict_t *ent)
 
 //************************************************************************************************
 
-void V_PrintItemProperties(edict_t *player, item_t *item)
+void V_PrintItemProperties(edict_t* player, item_t* item)
 {
 	char buf[256];
 	int i;
@@ -891,8 +892,8 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 	}
 
 	strcpy(buf, GetRuneValString(item));
-	
-	switch(item->itemtype)
+
+	switch (item->itemtype)
 	{
 	case ITEM_WEAPON:	strcat(buf, " weapon rune ");	break;
 	case ITEM_ABILITY:	strcat(buf, " ability rune ");	break;
@@ -900,7 +901,7 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 	case ITEM_CLASSRUNE:strcpy(buf, va(" %s rune ", GetRuneValString(item)));	break;
 	}
 
-	if(item->numMods == 1) strcat(buf, "(1 mod)");
+	if (item->numMods == 1) strcat(buf, "(1 mod)");
 	else strcat(buf, va("(%d mods)", item->numMods));
 
 	for (i = 0; i < MAX_VRXITEMMODS; ++i)
@@ -908,20 +909,25 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 		char temp[32];
 
 		//skip bad mod types
-		if ((item->modifiers[i].type != TYPE_ABILITY) && (item->modifiers[i].type != TYPE_WEAPON) || item->modifiers[i].value < 1)
+		if (item->modifiers[i].value < 1 ||
+			((item->modifiers[i].type != TYPE_ABILITY) && (item->modifiers[i].type != TYPE_WEAPON)))
 			continue;
 
-		switch(item->modifiers[i].type)
+		switch (item->modifiers[i].type)
 		{
-		case TYPE_ABILITY:	strcpy(temp, va("%s:", GetAbilityString(item->modifiers[i].index)));				break;
-		case TYPE_WEAPON:	strcpy(temp, va("%s %s:", 
-								GetShortWeaponString((item->modifiers[i].index / 100)-10), 
-								GetModString((item->modifiers[i].index / 100)-10, item->modifiers[i].index % 100)));	break;
+		case TYPE_ABILITY:
+			strcpy(temp, va("%s:", GetAbilityString(item->modifiers[i].index)));
+			break;
+		case TYPE_WEAPON:
+			strcpy(temp, va("%s %s:",
+				GetShortWeaponString((item->modifiers[i].index / 100) - 10),
+				GetModString((item->modifiers[i].index / 100) - 10, item->modifiers[i].index % 100)));
+			break;
 		}
 		padRight(temp, 20);
 		strcat(buf, va("\n    %s(%d)", temp, item->modifiers[i].value));
 	}
-	
+
 	gi.centerprintf(player, "%s\n", buf);
 }
 
@@ -963,7 +969,7 @@ void V_ResetAllStats(edict_t *ent)
 
 void V_EquipItem(edict_t *ent, int index)
 {
-	int i, wpts, apts, total_pts, clvl = ent->myskills.level;
+	int i, wpts, apts, total_pts;
 
 	// calculate number of weapon and ability points separately
 	wpts = V_GetRuneWeaponPts(ent, &ent->myskills.items[index]);
@@ -1049,7 +1055,6 @@ void V_EquipItem(edict_t *ent, int index)
 
 void cmd_Drink(edict_t *ent, int itemtype, int index)
 {
-	int i;
 	item_t *slot = NULL;
 	qboolean found = false;
 
@@ -1068,7 +1073,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 	else
 	{
 		//Find item in inventory
-		for (i = 3; i < MAX_VRXITEMS; ++i)
+		for (int i = 3; i < MAX_VRXITEMS; ++i)
 		{
 			if (ent->myskills.items[i].itemtype == itemtype)
 			{

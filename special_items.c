@@ -1,5 +1,7 @@
 #include "g_local.h"
-/*
+
+#if 0
+
 #define	ITEM_TRADE_MAXCLIENTS		10	// max number of clients for player select menu
 #define	ITEM_TRADE_MAX_DISTANCE		128	// max trading distance
 #define ITEM_TRADE_QUEUE_SIZE		3	// max number of items that can be traded at a time
@@ -1076,7 +1078,7 @@ void inventorymenu_handler (edict_t *ent, int option)
 	}
 	ShowInventoryMenu(ent, ent->client->menustorage.currentline);
 }
-/*
+
 void ShowInventoryMenu (edict_t *ent, int lastline)
 {
 	int i, value;
@@ -1165,4 +1167,4 @@ void ShowInventoryMenu (edict_t *ent, int lastline)
 
 //	gi.dprintf("%d\n", ent->client->menustorage.currentline);
 }
-*/
+#endif

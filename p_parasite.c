@@ -78,8 +78,3 @@ void ParasiteAttack (edict_t *ent)
 		parasite_endattack(ent);
 
 }
-
-
-
-
-

@@ -1126,10 +1126,10 @@ void drone_pursue_goal (edict_t *self, float dist)
 		else
 		{
 			// is our enemy higher?
-			if (goal_elevation > self->absmin[2]+max(self->monsterinfo.jumpup, 2*STEPHEIGHT)+1)
+			if (goal_elevation > self->absmin[2] + MAX(self->monsterinfo.jumpup, 2*STEPHEIGHT)+1)
 				FindHigherGoal(self, dist);
 			// is our enemy lower?
-			else if (goal_elevation < self->absmin[2]-max(self->monsterinfo.jumpdn, 2*STEPHEIGHT))
+			else if (goal_elevation < self->absmin[2] - MAX(self->monsterinfo.jumpdn, 2*STEPHEIGHT))
 				FindLowerGoal(self, dist);
 			// is anyone standing in our way?
 			else
@@ -1420,7 +1420,7 @@ qboolean M_CanCircleStrafe (edict_t *self, edict_t *target)
 	if (entdist(self, target) > 256)
 		return false;
 	// target must be within +/- 18 units (1 step) on the Z axis
-	if (fabs(self->absmin[2] - target->absmin[2]) > 18)
+	if (fabsf(self->absmin[2] - target->absmin[2]) > 18)
 		return false;
 	// check if anything is blocking our attack
 	G_EntMidPoint(self, start);
@@ -1437,7 +1437,9 @@ void drone_ai_run1 (edict_t *self, float dist)
 {
 	edict_t		*goal;
 	vec3_t		v, dest;
-	qboolean	goalVisible=false, posChanged=false, goalChanged=false;
+	qboolean	goalVisible = false;
+	qboolean	posChanged = false;
+	qboolean	goalChanged = false;
 
 	// if we're dead, we shouldn't be here
 	if (self->deadflag == DEAD_DEAD)
@@ -1497,6 +1499,11 @@ void drone_ai_run1 (edict_t *self, float dist)
 			if (distance(goal->s.origin, self->monsterinfo.last_sighting) > 64)
 				posChanged = true;
 
+			if (posChanged)
+			{
+				/* do something else */
+			}
+
 			// is the goal our enemy?
 			if (self->enemy)
 			{
@@ -1524,7 +1531,7 @@ void drone_ai_run1 (edict_t *self, float dist)
 
 		// goal position is within +/- 1 step of our elevation and we have a clear line of sight
 		//FIXME: if goal entity is taller than us (e.g. jorg), this wont work very well!
-		if (fabs(self->s.origin[2]-self->monsterinfo.last_sighting[2]) <= 18 
+		if (fabsf(self->s.origin[2]-self->monsterinfo.last_sighting[2]) <= 18 
 			&& G_IsClearPath(NULL, MASK_SOLID, self->s.origin, self->monsterinfo.last_sighting))
 		{
 			float dst = distance(self->s.origin, self->monsterinfo.last_sighting);
@@ -2070,9 +2077,9 @@ void drone_think (edict_t *self)
 		}
 		// warn the converted monster's current owner
 		else if (converted && self->activator && self->activator->inuse && self->activator->client 
-			&& (level.time > self->removetime-5) && !(level.framenum%10))
+			&& (level.time > self->removetime - 5.0f) && !(level.framenum%10))
 				gi.cprintf(self->activator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
-					V_GetMonsterName(self), self->removetime-level.time);	
+					V_GetMonsterName(self), self->removetime - level.time);	
 	}
 
 	// if owner can't pay upkeep, monster dies

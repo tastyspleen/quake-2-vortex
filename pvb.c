@@ -275,10 +275,3 @@ void AwardBossKill (edict_t *boss)
 		gi.cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
 	}
 }
-
-
-
-
-
-
-

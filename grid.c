@@ -753,7 +753,7 @@ void GetNodePosition (int nodenum, vec3_t pos)
 // returns the waypoint index closest to start along the path leading to our final destination
 int NearestWaypointNum (vec3_t start, int *wp)
 {
-	int		i, bestNodeNum;
+	int		i, bestNodeNum = 0;
 	float	dist, best = 0;
 
 	if (!numpts)

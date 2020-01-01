@@ -6,7 +6,7 @@
 qboolean playingtoomuch(edict_t *ent)
 {
 	//Char played today?
-	if( Q_strncasecmp(ent->myskills.last_played, CURRENT_DATE, strlen(CURRENT_DATE)) == 0)
+	if( Q_stricmp(ent->myskills.last_played, CURRENT_DATE) == 0)
 	{
 		//Has char been playing too long?
 		if(ent->myskills.playingtime > (MAX_HOURS * 3600) )	//Playing time in seconds?
@@ -16,7 +16,7 @@ qboolean playingtoomuch(edict_t *ent)
 	{
 		//Reset playing time for today
 		ent->myskills.total_playtime += (ent->myskills.playingtime / 60);
-		strcpy(ent->myskills.last_played, CURRENT_DATE);
+		Q_strncpy(ent->myskills.last_played, CURRENT_DATE, sizeof ent->myskills.last_played - 1);
 		ent->myskills.playingtime = 0;
 	}
 
@@ -26,9 +26,6 @@ qboolean playingtoomuch(edict_t *ent)
 
 void newPlayer(edict_t *ent)
 {
-	char tmpbuf[120];
-	char tmpbuf2[120];
-
 	ent->myskills.next_level = start_nextlevel->value;
 	ent->myskills.respawn_weapon = 7;
 
@@ -36,10 +33,7 @@ void newPlayer(edict_t *ent)
 
 	Q_strncpy (ent->myskills.password, CryptString(Info_ValueForKey	(ent->client->pers.userinfo, "vrx_password"), false), sizeof(ent->myskills.password)-1);
 
-	_strdate( tmpbuf );
-	_strtime( tmpbuf2 );
-
-	strcpy(ent->myskills.member_since, va("%s at %s", tmpbuf, tmpbuf2));
+	strcpy(ent->myskills.member_since, va("%s at %s", CURRENT_DATE, CURRENT_TIME));
 }
 
 //Returns true if the player is able to join the game.

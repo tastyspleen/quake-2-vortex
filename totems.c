@@ -156,7 +156,8 @@ void FireTotem_think(edict_t *self, edict_t *caster)
 				VectorNormalize(forward);
 				
 				// don't fire in a perfectly straight line
-				forward[1] += 0.05*crandom(); 
+				forward[1] += 0.05f*crandom(); 
+				forward[1] += 0.05f*crandom(); 
 
 				// spawn flames
 				if (fireball)

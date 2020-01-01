@@ -7,27 +7,27 @@
 //Takes the class string and returns the index
 int getClassNum(char *newclass)
 {
-	if (Q_strcasecmp(newclass, "Soldier") == 0)
+	if (Q_stricmp(newclass, "Soldier") == 0)
 		return CLASS_SOLDIER;
-	else if (Q_strcasecmp(newclass, "Mage") == 0)
+	else if (Q_stricmp(newclass, "Mage") == 0)
 		return CLASS_MAGE;
-	else if (Q_strcasecmp(newclass, "Necromancer") == 0)
+	else if (Q_stricmp(newclass, "Necromancer") == 0)
 		return CLASS_NECROMANCER;
-	else if (Q_strcasecmp(newclass, "Vampire") == 0)
+	else if (Q_stricmp(newclass, "Vampire") == 0)
 		return CLASS_VAMPIRE;
-	else if (Q_strcasecmp(newclass, "Engineer") == 0)
+	else if (Q_stricmp(newclass, "Engineer") == 0)
 		return CLASS_ENGINEER;
-	else if (Q_strcasecmp(newclass, "Poltergeist") == 0)
+	else if (Q_stricmp(newclass, "Poltergeist") == 0)
 		return CLASS_POLTERGEIST;
-	else if (Q_strcasecmp(newclass, "Knight") == 0)
+	else if (Q_stricmp(newclass, "Knight") == 0)
 		return CLASS_KNIGHT;
-	else if (Q_strcasecmp(newclass, "Cleric") == 0)
+	else if (Q_stricmp(newclass, "Cleric") == 0)
 		return CLASS_CLERIC;
-	else if (Q_strcasecmp(newclass, "Shaman") == 0)
+	else if (Q_stricmp(newclass, "Shaman") == 0)
 		return CLASS_SHAMAN;
-	else if (Q_strcasecmp(newclass, "Alien") == 0)
+	else if (Q_stricmp(newclass, "Alien") == 0)
 		return CLASS_ALIEN;
-	else if ((Q_strcasecmp(newclass, "Weapon Master") == 0) || (Q_strcasecmp(newclass, "WeaponMaster") == 0))
+	else if ((Q_stricmp(newclass, "Weapon Master") == 0) || (Q_stricmp(newclass, "WeaponMaster") == 0))
 		return CLASS_WEAPONMASTER;
 	return 0;
 }
@@ -892,7 +892,7 @@ float V_EntDistance(edict_t *ent1, edict_t *ent2)
 	dist[1] = ent1->s.origin[1] - ent2->s.origin[1];
 	dist[2] = ent1->s.origin[2] - ent2->s.origin[2];
 
-    return sqrt((dist[0] * dist[0]) + (dist[1] * dist[1]) + (dist[2] * dist[2]));
+    return sqrtf((dist[0] * dist[0]) + (dist[1] * dist[1]) + (dist[2] * dist[2]));
 }
 
 //************************************************************************************************
@@ -1366,7 +1366,7 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 		player = &g_edicts[i];
 		if (!player->inuse)
 			continue;
-		if (Q_strcasecmp(playername, player->myskills.player_name) != 0)
+		if (Q_stricmp(playername, player->myskills.player_name) != 0)
 			continue;
 
 		if (newclass == CLASS_KNIGHT)
@@ -1441,9 +1441,10 @@ void ChangeClass (char *playername, int newclass, int msgtype)
 	gi.dprintf("Can't find player: %s\n", playername);
 }
 
+static char vts_buf[512];
+
 char *V_TruncateString (char *string, int newStringLength)
 {
-	char buf[512];
 
 	if (!newStringLength || (newStringLength > 512))
 		return string;
@@ -1452,10 +1453,10 @@ char *V_TruncateString (char *string, int newStringLength)
 	if (strlen(string) <= newStringLength)
 		return string;
 
-	strncpy(buf, string, newStringLength);
-	buf[newStringLength-1] = '\0';
+	strncpy(vts_buf, string, newStringLength);
+	vts_buf[newStringLength-1] = '\0';
 
-	return &buf[0];
+	return &vts_buf[0];
 }
 
 void V_RegenAbilityAmmo (edict_t *ent, int ability_index, int regen_frames, int regen_delay)
@@ -1603,7 +1604,7 @@ void V_UpdatePlayerAbilities (edict_t *ent)
 {
 	int			i, refunded = 0;
 	upgrade_t	old_abilities[MAX_ABILITIES];
-	qboolean	points_refunded = false;
+	//QW//qboolean	points_refunded = false;
 
 	UpdateFreeAbilities(ent);
 
@@ -1775,40 +1776,41 @@ char *V_GetMonsterKind (int mtype)
 	}
 }
 
+static char vgmn_buf[50];
+
 char *V_GetMonsterName (edict_t *monster)
 {
-	char buf[50];
 
-	buf[0] = 0;
+	vgmn_buf[0] = 0;
 
 	if (monster->monsterinfo.bonus_flags & BF_UNIQUE_FIRE)
 	{
-		strcat(buf, "Hephaestus");
-		return &buf[0];
+		strcat(vgmn_buf, "Hephaestus");
+		return &vgmn_buf[0];
 	}
 
 	if (monster->monsterinfo.bonus_flags & BF_UNIQUE_LIGHTNING)
 	{
-		strcat(buf, "Zeus");
-		return &buf[0];
+		strcat(vgmn_buf, "Zeus");
+		return &vgmn_buf[0];
 	}
 
 	if (monster->monsterinfo.bonus_flags & BF_GHOSTLY)
-		strcat(buf, "ghostly ");
+		strcat(vgmn_buf, "ghostly ");
 	else if (monster->monsterinfo.bonus_flags & BF_BERSERKER)
-		strcat(buf, "berserker ");
+		strcat(vgmn_buf, "berserker ");
 	else if (monster->monsterinfo.bonus_flags & BF_FANATICAL)
-		strcat(buf, "fanatical ");
+		strcat(vgmn_buf, "fanatical ");
 	else if (monster->monsterinfo.bonus_flags & BF_POSESSED)
-		strcat(buf, "posessed ");
+		strcat(vgmn_buf, "posessed ");
 	else if (monster->monsterinfo.bonus_flags & BF_STYGIAN)
-		strcat(buf, "stygian ");
+		strcat(vgmn_buf, "stygian ");
 	else if (monster->monsterinfo.bonus_flags & BF_CHAMPION)
-		strcat(buf, "champion ");
+		strcat(vgmn_buf, "champion ");
 
-	strcat(buf, V_GetMonsterKind(monster->mtype));
+	strcat(vgmn_buf, V_GetMonsterKind(monster->mtype));
 
-	return &buf[0];
+	return &vgmn_buf[0];
 }
 
 qboolean V_IsPVP (void)

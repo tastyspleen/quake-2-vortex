@@ -54,38 +54,38 @@ void mybrain_dead (edict_t *self);
 
 mframe_t mybrain_frames_stand [] =
 {
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
 
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
 
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL}
 };
 mmove_t mybrain_move_stand = {FRAME_stand01, FRAME_stand30, mybrain_frames_stand, NULL};
 
@@ -101,38 +101,38 @@ void mybrain_stand (edict_t *self)
 
 mframe_t mybrain_frames_idle [] =
 {
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
 
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
 
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL,
-	drone_ai_stand,	0,	NULL
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL},
+	{drone_ai_stand,	0,	NULL}
 };
 mmove_t mybrain_move_idle = {FRAME_stand31, FRAME_stand60, mybrain_frames_idle, mybrain_stand};
 
@@ -144,17 +144,17 @@ void mybrain_idle (edict_t *self)
 
 mframe_t brain_frames_walk1 [] =
 {
-	drone_ai_walk,	7,	NULL,
-	drone_ai_walk,	2,	NULL,
-	drone_ai_walk,	3,	NULL,
-	drone_ai_walk,	3,	NULL,
-	drone_ai_walk,	1,	NULL,
-	drone_ai_walk,	0,	NULL,
-	drone_ai_walk,	0,	NULL,
-	drone_ai_walk,	9,	NULL,
-	drone_ai_walk,	-4,	NULL,
-	drone_ai_walk,	-1,	NULL,
-	drone_ai_walk,	2,	NULL
+	{drone_ai_walk,	7,	NULL},
+	{drone_ai_walk,	2,	NULL},
+	{drone_ai_walk,	3,	NULL},
+	{drone_ai_walk,	3,	NULL},
+	{drone_ai_walk,	1,	NULL},
+	{drone_ai_walk,	0,	NULL},
+	{drone_ai_walk,	0,	NULL},
+	{drone_ai_walk,	9,	NULL},
+	{drone_ai_walk,	-4,	NULL},
+	{drone_ai_walk,	-1,	NULL},
+	{drone_ai_walk,	2,	NULL}
 };
 mmove_t brain_move_walk1 = {FRAME_walk101, FRAME_walk111, brain_frames_walk1, NULL};
 
@@ -167,15 +167,15 @@ void mybrain_walk (edict_t *self)
 
 mframe_t mybrain_frames_defense [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_defense = {FRAME_defens01, FRAME_defens08, mybrain_frames_defense, NULL};
 
@@ -241,27 +241,27 @@ void mybrain_jump_hold (edict_t *self)
 
 mframe_t mybrain_frames_duck [] =
 {
-	ai_move,	0,	mybrain_duck_down,
-	ai_move,	0,	NULL,//mybrain_duck_down,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	mybrain_duck_up,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	mybrain_duck_down},
+	{ai_move,	0,	NULL},//mybrain_duck_down,
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	mybrain_duck_up},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_duck = {FRAME_duck01, FRAME_duck08, mybrain_frames_duck, mybrain_run};
 
 mframe_t mybrain_frames_jump [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	mybrain_jump_takeoff,
-	ai_move,	0,	mybrain_jump_hold,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	mybrain_jump_takeoff},
+	{ai_move,	0,	mybrain_jump_hold},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_jump = {FRAME_duck01, FRAME_duck08, mybrain_frames_jump, mybrain_run};
 
@@ -346,14 +346,14 @@ void mybrain_jumpattack_hold (edict_t *self)
 
 mframe_t mybrain_frames_jumpattack [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	mybrain_jumpattack_takeoff,
-	ai_move,	0,	mybrain_jumpattack_hold,
-	ai_move,	0,	NULL,
-	ai_move,	0,	mybrain_jumpattack_landing,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	mybrain_jumpattack_takeoff},
+	{ai_move,	0,	mybrain_jumpattack_hold},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	mybrain_jumpattack_landing},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_jumpattack = {FRAME_duck01, FRAME_duck08, mybrain_frames_jumpattack, mybrain_run};
 
@@ -388,34 +388,34 @@ void mybrain_dodge (edict_t *self, edict_t *attacker, vec3_t dir, int radius)
 
 mframe_t mybrain_frames_death2 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	9,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	9,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_death2 = {FRAME_death201, FRAME_death205, mybrain_frames_death2, mybrain_dead};
 
 mframe_t mybrain_frames_death1 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	-2,	NULL,
-	ai_move,	9,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	-2,	NULL},
+	{ai_move,	9,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mybrain_move_death1 = {FRAME_death101, FRAME_death118, mybrain_frames_death1, mybrain_dead};
 
@@ -472,24 +472,24 @@ void mybrain_hit_left (edict_t *self)
 
 mframe_t mybrain_frames_attack1 [] =
 {
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_swing_right,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_hit_right,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_swing_left,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_hit_left,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,NULL
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_swing_right},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_hit_right},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_swing_left},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_hit_left},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,NULL}
 };
 mmove_t mybrain_move_attack1 = {FRAME_attak101, FRAME_attak118, mybrain_frames_attack1, mybrain_run};
 
@@ -526,19 +526,19 @@ void mybrain_chest_closed (edict_t *self)
 
 mframe_t mybrain_frames_attack2 [] =
 {
-	ai_charge,	0,	mybrain_chest_open,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_tentacle_attack,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_chest_closed,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL
+	{ai_charge,	0,	mybrain_chest_open},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_tentacle_attack},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_chest_closed},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL}
 };
 mmove_t mybrain_move_attack2 = {FRAME_attak205, FRAME_attak217, mybrain_frames_attack2, mybrain_run};
 
@@ -612,19 +612,19 @@ void mybrain_delay (edict_t *self)
 
 mframe_t mybrain_frames_attack3 [] =
 {
-	ai_charge,	0,	mybrain_chest_open,
-	ai_charge,	0,	mybrain_suxor,
-	ai_charge,	0,	mybrain_suxor,
-	ai_charge,	0,	mybrain_suxor,
-	ai_charge,	0,	mybrain_suxor,
-	ai_charge,	0,	mybrain_continue,
-	ai_charge,	0,	mybrain_chest_closed,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mybrain_delay
+	{ai_charge,	0,	mybrain_chest_open},
+	{ai_charge,	0,	mybrain_suxor},
+	{ai_charge,	0,	mybrain_suxor},
+	{ai_charge,	0,	mybrain_suxor},
+	{ai_charge,	0,	mybrain_suxor},
+	{ai_charge,	0,	mybrain_continue},
+	{ai_charge,	0,	mybrain_chest_closed},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mybrain_delay}
 };
 mmove_t mybrain_move_attack3 = {FRAME_attak205, FRAME_attak217, mybrain_frames_attack3, mybrain_run};
 
@@ -670,17 +670,17 @@ void mybrain_attack (edict_t *self)
 
 mframe_t mybrain_frames_run [] =
 {
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL,
-	drone_ai_run,	15,	NULL
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL},
+	{drone_ai_run,	15,	NULL}
 };
 mmove_t mybrain_move_run = {FRAME_walk101, FRAME_walk111, mybrain_frames_run, NULL};
 

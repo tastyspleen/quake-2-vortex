@@ -320,7 +320,7 @@ qboolean CanCurseTarget (edict_t *caster, edict_t *target, int type, qboolean is
 		return false;
 	// don't target spawning world monsters
 	if (target->activator && !target->activator->client && (target->svflags & SVF_MONSTER) 
-		&& (target->deadflag != DEAD_DEAD) && (target->nextthink-level.time > 2*FRAMETIME))
+		&& (target->deadflag != DEAD_DEAD) && (target->nextthink-level.time > 2.0f * FRAMETIME))
 		return false;
 	// don't target cloaked players
 	if (target->client && target->svflags & SVF_NOCLIENT)
@@ -529,7 +529,6 @@ void Cmd_Curse(edict_t *ent)
 {
 	int range, radius, talentLevel, cost=CURSE_COST;
 	float duration;
-	edict_t *target = NULL;
 
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_Curse()\n", ent->client->pers.netname);
@@ -560,7 +559,7 @@ void Cmd_Curse(edict_t *ent)
 	ent->myskills.abilities[CURSE].delay = level.time + CURSE_DELAY;
 	ent->client->pers.inventory[power_cube_index] -= cost;
 
-	target = curse_Attack(ent, CURSE, radius, duration, true);
+	curse_Attack(ent, CURSE, radius, duration, true);
 
 	//Play the spell sound!
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("curses/curse.wav"), 1, ATTN_NORM, 0);
@@ -827,7 +826,7 @@ void Cmd_Healing(edict_t *ent)
 	duration = HEALING_DURATION_BASE + (HEALING_DURATION_BONUS * ent->myskills.abilities[HEALING].current_level);
 
 	//Blessing self?
-	if (Q_strcasecmp(gi.argv(1), "self") == 0)
+	if (Q_stricmp(gi.argv(1), "self") == 0)
 	{
 		if (!curse_add(ent, ent, HEALING, 0, duration))
 		{
@@ -900,7 +899,7 @@ void Cmd_Bless(edict_t *ent)
 	duration = BLESS_DURATION_BASE + (BLESS_DURATION_BONUS * ent->myskills.abilities[BLESS].current_level);
 
 	//Blessing self?
-	if (Q_strcasecmp(gi.argv(1), "self") == 0)
+	if (Q_stricmp(gi.argv(1), "self") == 0)
 	{
 		if (HasFlag(ent))
 		{
@@ -1014,7 +1013,7 @@ void Cmd_Deflect_f(edict_t *ent)
 		target = target->owner;
 
 	//Blessing self?
-	if (Q_strcasecmp(gi.argv(1), "self") == 0)
+	if (Q_stricmp(gi.argv(1), "self") == 0)
 	{
 		if (!curse_add(target, ent, DEFLECT, 0, duration))
 		{

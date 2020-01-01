@@ -254,7 +254,7 @@ void	PlaceLaser (edict_t *ent)
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0) {
+	if (Q_stricmp (gi.args(), "remove") == 0) {
 		RemoveLaserDefense(ent);
 		return;
 	}
@@ -486,7 +486,3 @@ void Use_Lasers (edict_t *ent, gitem_t *item)
 
 	PlaceLaser (ent);*/
 }
-
-
-
-

@@ -826,9 +826,6 @@ void RemoveDrone (edict_t *ent)
 
 void combatpoint_think (edict_t *self)
 {
-	edict_t		*e=NULL;
-	qboolean	q=false;;
-
 	// if the goal times-out, then reset all drones
 	if (!G_EntExists(self->owner) || (level.time > self->delay) 
 		|| (self->owner->selectedsentry != self))
@@ -2157,37 +2154,37 @@ void Cmd_Drone_f (edict_t *ent)
 
 	s = gi.args();
 
-	if (!Q_strcasecmp(s, "remove"))
+	if (!Q_stricmp(s, "remove"))
 	{
 		RemoveDrone(ent);
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "command"))
+	if (!Q_stricmp(s, "command"))
 	{
 		MonsterCommand(ent);
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "follow me"))
+	if (!Q_stricmp(s, "follow me"))
 	{
 		MonsterFollowMe(ent);
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "showpath"))
+	if (!Q_stricmp(s, "showpath"))
 	{
 		MonsterToggleShowpath(ent);
 		return;
 	}
 
-	if (ent->myskills.administrator && !Q_strcasecmp(s, "attack"))
+	if (ent->myskills.administrator && !Q_stricmp(s, "attack"))
 	{
 		MonsterAttack(ent);
 		return;
 	}
 /*
-	if (!Q_strcasecmp(s, "stand"))
+	if (!Q_stricmp(s, "stand"))
 	{
 		gi.centerprintf(ent, "Drones will hold position.\n");
 		for (i=0; i<3; i++) {
@@ -2212,7 +2209,7 @@ void Cmd_Drone_f (edict_t *ent)
 		return;
 	}*/
 
-	if (!Q_strcasecmp(s, "count"))
+	if (!Q_stricmp(s, "count"))
 	{
 		// search for other drones
 		while((e = G_Find(e, FOFS(classname), "drone")) != NULL) 
@@ -2225,7 +2222,7 @@ void Cmd_Drone_f (edict_t *ent)
 		return;
 	}
 /*
-	if (!Q_strcasecmp(s, "hunt"))
+	if (!Q_stricmp(s, "hunt"))
 	{
 		gi.centerprintf(ent, "Drones will hunt.\n");
 		for (i=0; i<3; i++) {
@@ -2240,19 +2237,19 @@ void Cmd_Drone_f (edict_t *ent)
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "select"))
+	if (!Q_stricmp(s, "select"))
 	{
 		DroneSelect(ent);
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "move"))
+	if (!Q_stricmp(s, "move"))
 	{
 		DroneMove(ent);
 		return;
 	}*/
 
-	if (!Q_strcasecmp(s, "help"))
+	if (!Q_stricmp(s, "help"))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Available monster commands:\n");
 		//gi.cprintf(ent, PRINT_HIGH, "monster gunner\nmonster parasite\nmonster brain\nmonster bitch\nmonster medic\nmonster tank\nmonster mutant\nmonster select\nmonster move\nmonster remove\nmonster hunt\nmonster count\n");
@@ -2272,30 +2269,29 @@ void Cmd_Drone_f (edict_t *ent)
 		return;
 	}
 
-	if (!Q_strcasecmp(s, "gunner"))
+	if (!Q_stricmp(s, "gunner"))
 		SpawnDrone(ent, 1, false);
-	else if (!Q_strcasecmp(s, "parasite"))
+	else if (!Q_stricmp(s, "parasite"))
 		SpawnDrone(ent, 2, false);
-	else if (!Q_strcasecmp(s, "brain"))
+	else if (!Q_stricmp(s, "brain"))
 		SpawnDrone(ent, 4, false);
-	else if (!Q_strcasecmp(s, "bitch"))
+	else if (!Q_stricmp(s, "bitch"))
 		SpawnDrone(ent, 3, false);
-	else if (!Q_strcasecmp(s, "medic"))
+	else if (!Q_stricmp(s, "medic"))
 		SpawnDrone(ent, 5, false);
-	else if (!Q_strcasecmp(s, "tank"))
+	else if (!Q_stricmp(s, "tank"))
 		SpawnDrone(ent, 6, false);
-	else if (!Q_strcasecmp(s, "mutant"))
+	else if (!Q_stricmp(s, "mutant"))
 		SpawnDrone(ent, 7, false);
-	else if (!Q_strcasecmp(s, "gladiator") && ent->myskills.administrator)
+	else if (!Q_stricmp(s, "gladiator") && ent->myskills.administrator)
 		SpawnDrone(ent, 8, false);
-	else if (!Q_strcasecmp(s, "berserker"))
+	else if (!Q_stricmp(s, "berserker"))
 		SpawnDrone(ent, 9, false);
-	else if (!Q_strcasecmp(s, "soldier") && ent->myskills.administrator)
+	else if (!Q_stricmp(s, "soldier") && ent->myskills.administrator)
 		SpawnDrone(ent, 10, false);
-	else if (!Q_strcasecmp(s, "infantry") && ent->myskills.administrator)
+	else if (!Q_stricmp(s, "infantry") && ent->myskills.administrator)
 		SpawnDrone(ent, 11, false);
 	else
 		gi.cprintf(ent, PRINT_HIGH, "Additional parameters required.\nType 'monster help' for a list of commands.\n");
 	//gi.dprintf("%d\n", CTF_GetNumSummonable("drone", ent->teamnum));
 }
-

@@ -7,49 +7,49 @@ void drone_ai_run (edict_t *self, float dist);
 
 mframe_t decoy_frames_stand1 [] =
 {
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
 
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
 
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
 
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL,
-    drone_ai_stand, 0, NULL
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+    {drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t decoy_move_stand = {FRAME_stand01, FRAME_stand40, decoy_frames_stand1, NULL};
 
@@ -59,12 +59,12 @@ void decoy_stand (edict_t *self)
 }
 mframe_t decoy_frames_run [] =
 {
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL}
 };
 mmove_t decoy_move_run = {FRAME_run1, FRAME_run6, decoy_frames_run, NULL};
 
@@ -72,40 +72,40 @@ void actor_run (edict_t *self);
 
 mframe_t decoy_frames_runandtaunt [] =
 {
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL}
 };
 mmove_t decoy_move_runandtaunt = {FRAME_taunt01, FRAME_taunt17, decoy_frames_runandtaunt, actor_run};
 
 mframe_t decoy_frames_runandflipoff [] =
 {
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL,
-    drone_ai_run, 30, NULL
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL},
+    {drone_ai_run, 30, NULL}
 };
 mmove_t decoy_move_runandflipoff = {FRAME_flip01, FRAME_flip12, decoy_frames_runandflipoff, actor_run};
 
@@ -203,23 +203,23 @@ void actor_dead (edict_t *self)
 
 mframe_t actor_frames_death1 [] =
 {
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0, NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,  NULL,
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
 };
 mmove_t actor_move_death1 = {FRAME_death101, FRAME_death106, actor_frames_death1, actor_dead};
 
 mframe_t actor_frames_death2 [] =
 {
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
 };
 mmove_t actor_move_death2 = {FRAME_death201, FRAME_death206, actor_frames_death2, actor_dead};
 
@@ -271,16 +271,16 @@ void decoy_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 	else			self->monsterinfo.currentmove = &actor_move_death2;	
 }
 
-mframe_t actor_frames_attack [] =
+mframe_t actor_frames_attack[] =
 {
-	drone_ai_run, 30,  decoy_rocket,
-	drone_ai_run, 30,  NULL,
-	drone_ai_run, 30,   NULL,
-	drone_ai_run, 30,   NULL,
-	drone_ai_run, 30,  NULL,
-	drone_ai_run, 30,  NULL,
-	drone_ai_run, 30,   NULL,
-	drone_ai_run, 30,   NULL
+	{drone_ai_run, 30, decoy_rocket},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL},
+	{drone_ai_run, 30, NULL}
 };
 mmove_t actor_move_attack = {FRAME_attack1, FRAME_attack8, actor_frames_attack, actor_run};
 

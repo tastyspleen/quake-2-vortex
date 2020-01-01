@@ -226,10 +226,10 @@ void upgrademenu_handler (edict_t *ent, int option)
 
 //************************************************************************************************
 
-void OpenUpgradeMenu (edict_t *ent)
+void OpenUpgradeMenu(edict_t* ent)
 {
-   if (!ShowMenu(ent))
-        return;
+	if (!ShowMenu(ent))
+		return;
 	clearmenu(ent);
 	//					xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 	addlinetomenu(ent, "Player Upgrades Menu", MENU_GREEN_CENTERED);
@@ -250,8 +250,8 @@ void OpenUpgradeMenu (edict_t *ent)
 	showmenu(ent);
 
 	// try to shortcut to chat-protect mode
-	if (ent->client->idle_frames < CHAT_PROTECT_FRAMES-51)
-		ent->client->idle_frames = CHAT_PROTECT_FRAMES-51;
+	if (ent->client->idle_frames < CHAT_PROTECT_FRAMES - 51)
+		ent->client->idle_frames = CHAT_PROTECT_FRAMES - 51;
 }
 
 //************************************************************************************************
@@ -440,7 +440,3 @@ void OpenMultiUpgradeMenu (edict_t *ent, int lastline, int page)
 
 	ent->client->menustorage.menu_index = MENU_MULTI_UPGRADE;
 }
-
-
-
-

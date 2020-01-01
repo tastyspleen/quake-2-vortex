@@ -1,6 +1,6 @@
 // g_local.h -- local definitions for game module
-#ifndef G_LOCAL
-#define G_LOCAL
+#ifndef G_LOCAL_H
+#define G_LOCAL_H
 
 //Uncomment this and recompile to get debug printouts.
 //The higher number, the more detailed printouts.
@@ -24,6 +24,13 @@
 #include "ally.h" // 3.12
 #include "gds.h" // 3.15
 #include "scanner.h"
+
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
 
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"Vortex"//K03 "baseq2"
@@ -111,7 +118,7 @@ extern long FLAG_FRAMES;
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
 
-#define	FRAMETIME		0.1
+#define	FRAMETIME		0.1f
 
 // memory tags to allow dynamic memory to be cleaned up
 #define	TAG_GAME	765		// clear when unloading the dll
@@ -768,16 +775,17 @@ int	skullindex;
 
 extern	int	meansOfDeath;
 
+#define q_offsetof(t, m)    ((size_t)&((t *)0)->m)
 
 extern	edict_t			*g_edicts;
 
-#define	FOFS(x) (int)&(((edict_t *)0)->x)
-#define	STOFS(x) (int)&(((spawn_temp_t *)0)->x)
-#define	LLOFS(x) (int)&(((level_locals_t *)0)->x)
-#define	CLOFS(x) (int)&(((gclient_t *)0)->x)
+#define FOFS(x)     q_offsetof(edict_t, x)
+#define STOFS(x)    q_offsetof(spawn_temp_t, x)
+#define	LLOFS(x) (size_t)&(((level_locals_t *)0)->x)
+#define	CLOFS(x) (size_t)&(((gclient_t *)0)->x)
 
 #define random()	((rand () & 0x7fff) / ((float)0x7fff))
-#define crandom()	(2.0 * (random() - 0.5))
+#define crandom()	(2.0f * (random() - 0.5f))
 
 extern	cvar_t	*maxentities;
 extern	cvar_t	*deathmatch;
@@ -974,7 +982,9 @@ edict_t *Spawn_Item (gitem_t *item);
 //
 // g_utils.c
 //
-qboolean	KillBox (edict_t *ent);
+const char* Date(void);
+const char* Time(void);
+qboolean	KillBox(edict_t* ent);
 void	G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
 edict_t *G_Find (edict_t *from, int fieldofs, char *match);
 edict_t *findradius (edict_t *from, vec3_t org, float rad);
@@ -2004,6 +2014,7 @@ void Pick_respawnweapon(edict_t *ent);
 #define for_each_player(JOE_BLOGGS,INDEX)				\
 for(INDEX=1;INDEX<=maxclients->value;INDEX++)			\
 	if ((JOE_BLOGGS=&g_edicts[i]) && JOE_BLOGGS->inuse && JOE_BLOGGS->client)
+
 int total_players();
 void Cmd_CreateBreather_f(edict_t *ent);
 void Cmd_CreateEnviro_f(edict_t *ent);
@@ -2230,9 +2241,11 @@ int V_AddFinalExp (edict_t *player, int exp);
 #include "ctf.h" // 3.7
 #endif
 
+/*
 //r1: terminating strncpy
 #define Q_strncpy(dst, src, len) \
 do { \
 	strncpy ((dst), (src), (len)); \
 	(dst)[(len)] = 0; \
 } while (0)
+*/

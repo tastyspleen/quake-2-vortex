@@ -60,7 +60,9 @@
     <ClCompile Include="g_chase.c" />
     <ClCompile Include="g_cmds.c" />
     <ClCompile Include="g_combat.c" />
+    <ClCompile Include="g_ctf.c" />
     <ClCompile Include="g_flame.c" />
+    <ClCompile Include="g_freeze.c" />
     <ClCompile Include="g_func.c" />
     <ClCompile Include="g_items.c" />
     <ClCompile Include="g_lasers.c" />
@@ -107,10 +109,13 @@
     <ClCompile Include="p_view.c" />
     <ClCompile Include="p_weapon.c" />
     <ClCompile Include="q_shared.c" />
+    <ClCompile Include="runes.c" />
     <ClCompile Include="scanner.c" />
     <ClCompile Include="sentrygun2.c" />
     <ClCompile Include="shaman.c" />
+    <ClCompile Include="special_items.c" />
     <ClCompile Include="spirit.c" />
+    <ClCompile Include="sqlstuff.c" />
     <ClCompile Include="supplystation.c" />
     <ClCompile Include="talents.c" />
     <ClCompile Include="teamplay.c" />
@@ -118,7 +123,7 @@
     <ClCompile Include="trade.c" />
     <ClCompile Include="upgrades.c" />
     <ClCompile Include="vote.c" />
-    <ClCompile Include="v_file_IO.c" />
+    <ClCompile Include="v_file_io.c" />
     <ClCompile Include="v_items.c" />
     <ClCompile Include="v_maplist.c" />
     <ClCompile Include="v_utils.c" />
@@ -171,9 +176,9 @@
     <ClInclude Include="settings.h" />
     <ClInclude Include="shaman.h" />
     <ClInclude Include="special_items.h" />
-    <ClInclude Include="Spirit.h" />
+    <ClInclude Include="spirit.h" />
     <ClInclude Include="sqlstuff.h" />
-    <ClInclude Include="Talents.h" />
+    <ClInclude Include="talents.h" />
     <ClInclude Include="teamplay.h" />
     <ClInclude Include="v_items.h" />
     <ClInclude Include="v_maplist.h" />
@@ -198,15 +203,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

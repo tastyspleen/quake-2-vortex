@@ -52,9 +52,9 @@
 #define WEAKEN_SLOW_BASE		0
 #define WEAKEN_SLOW_BONUS		0.1
 /*
-//************************************************************
-//			Iron Maiden (Curse)
-//************************************************************
+ ************************************************************
+ *			Iron Maiden (Curse)
+ ************************************************************
 #define IRON_MAIDEN_DELAY			2
 #define IRON_MAIDEN_DURATION_BASE	2
 #define IRON_MAIDEN_DURATION_BONUS	0.5

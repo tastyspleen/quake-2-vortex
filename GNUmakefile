@@ -75,7 +75,7 @@ GAME_OBJS = \
 		drone_misc.o drone_move.o drone_mutant.o drone_parasite.o \
 		drone_soldier.o drone_supertank.o drone_tank.o ents.o \
 		file_output.o flying_skull.o forcewall.o \
-		g_chase.o g_cmds.o g_combat.o g_flame.o \
+		g_chase.o g_cmds.o g_combat.o g_ctf.o g_flame.o g_freeze.o \
 		g_func.o g_items.o g_main.o g_misc.o g_monster.o \
 		g_phys.o g_save.o g_spawn.o g_svcmds.o g_sword.o g_target.o \
 		g_trigger.o g_utils.o g_weapon.o \
@@ -86,9 +86,9 @@ GAME_OBJS = \
 		p_weapon.o player.o player_points.o playertoberserk.o playertoflyer.o \
 		playertomedic.o playertomutant.o playertoparasite.o playertotank.o \
 		pvb.o q_shared.o repairstation.o runes.o scanner.o \
-		sentrygun2.o shaman.o special_items.o spirit.o \
+		sentrygun2.o shaman.o special_items.o spirit.o sqlstuff.o \
 		supplystation.o talents.o teamplay.o totems.o trade.o upgrades.o \
-		v_file_IO.o v_items.o v_maplist.o v_utils.o vote.o weapon_upgrades.o \
+		v_file_io.o v_items.o v_maplist.o v_utils.o vote.o weapon_upgrades.o \
 		weapons.o
 
 game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)

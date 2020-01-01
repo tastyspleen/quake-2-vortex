@@ -619,7 +619,8 @@ void CTF_AwardTeam (edict_t *ent, int teamnum, int points, int credits)
 {
 	int		i, groupnum=0;
 	float	dist;
-	edict_t	*cl_ent, *base;
+	edict_t* cl_ent;
+	edict_t* base = NULL;
 
 	// determine whether or not points should be divided between
 	// defenders or attackers, or--if ent isn't specified--everyone
@@ -863,7 +864,7 @@ void CTF_InitSpawnPoints (int teamnum)
 void CTF_AwardFrag (edict_t *attacker, edict_t *target)
 {
 	int		points=0, credits=0;
-	int		enemy_teamnum;
+	int		enemy_teamnum = 0;
 	float	mult=1.0;
 	edict_t	*team_fc, *enemy_fc, *team_base, *enemy_base, *team_spawn, *enemy_spawn;
 
@@ -1062,7 +1063,8 @@ void CTF_AwardFlagCapture (edict_t *carrier, int teamnum)
 
 void flagbase_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	int	enemy_flag_index, enemy_teamnum;
+	int	enemy_flag_index = 0;
+	int	enemy_teamnum = 0;
 
 	//if (!G_EntExists(other))
 	//	return;
@@ -1588,17 +1590,17 @@ void CTF_SpawnPlayersInBase (int teamnum)
 float CTF_DistanceFromBase(edict_t *ent, vec3_t start, int base_teamnum)
 {
 	edict_t *base;
-	vec3_t	org;
+	//vec3_t	org = { 0 };
 
 	if (!ctf->value || !base_teamnum)
 		return 8192;
 
-	if (ent && ent->inuse)
-		VectorCopy(ent->s.origin, org);
-	else if (start)
-		VectorCopy(start, org);
-	else
-		return 8192;
+	//if (ent && ent->inuse)
+	//	VectorCopy(ent->s.origin, org);
+	//else if (start)
+	//	VectorCopy(start, org);
+	//else
+	//	return 8192;
 
 	// return distance to flag base
 	if ((base = CTF_GetFlagBaseEnt(base_teamnum)) != NULL)
@@ -1611,8 +1613,7 @@ float CTF_DistanceFromBase(edict_t *ent, vec3_t start, int base_teamnum)
 
 void CTF_JoinMenuHandler (edict_t *ent, int option)
 {
-	int			num=0;
-	joined_t	*slot=NULL;
+	joined_t	*slot = NULL;
 
 	// exit menu
 	if (option == 3)

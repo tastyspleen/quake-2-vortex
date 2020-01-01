@@ -680,7 +680,7 @@ void Cmd_MiniSentry_f (edict_t *ent)
 	if (ent->myskills.abilities[BUILD_SENTRY].disable)
 		return;
 
-	if (!Q_strcasecmp(gi.args(), "remove"))
+	if (!Q_stricmp(gi.args(), "remove"))
 	{
 		RemoveMiniSentries(ent);
 		return;

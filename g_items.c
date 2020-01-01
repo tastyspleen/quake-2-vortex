@@ -6,14 +6,14 @@ void		Use_Weapon (edict_t *ent, gitem_t *inv);
 void		Use_Weapon2 (edict_t *ent, gitem_t *inv);
 void		Drop_Weapon (edict_t *ent, gitem_t *inv);
 
-void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
+static void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 //K03 End
 gitem_armor_t jacketarmor_info	= { 25, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t combatarmor_info	= { 50, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t bodyarmor_info	= {100, 200, .80, .60, ARMOR_BODY};
 
-static int	jacket_armor_index;
-static int	combat_armor_index;
+int	jacket_armor_index;
+int	combat_armor_index;
 int resistance_index;
 int	strength_index;
 int regeneration_index;
@@ -130,6 +130,7 @@ void DoRespawn (edict_t *ent)
 			;
 	}
 
+	assert(ent != NULL);
 	ent->svflags &= ~SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	gi.linkentity (ent);
@@ -881,7 +882,10 @@ void Teleport_them(edict_t *ent)
 				spot = G_Find (spot, FOFS(classname), "info_player_start");
 			}
 			if (!spot)
-				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+			{
+				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
+				return;
+			}
 		}
 	}
 
@@ -1075,7 +1079,7 @@ void fire_tball (edict_t *self, vec3_t start, vec3_t aimdir, int speed, float ti
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
+	VectorMA (grenade->velocity, 200.0f + crandom() * 10.0f, up, grenade->velocity);
 	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
@@ -1621,7 +1625,7 @@ void PrecacheItem (gitem_t *it)
 		if (len >= MAX_QPATH || len < 5)
 			gi.error ("PrecacheItem: %s has bad precache string", it->classname);
 		memcpy (data, start, len);
-		data[len] = 0;
+		data[len - 1] = 0;
 		if (*s)
 			s++;
 

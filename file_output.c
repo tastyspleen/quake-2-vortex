@@ -15,7 +15,7 @@ int OpenConfigFile(edict_t *ent)
 void SaveCharacter (edict_t *ent)
 {
 	int					health, i;
-	int					temp[MAX_ITEMS];
+	int					temp[MAX_ITEMS] = { 0 };
 	char				userinfo[MAX_INFO_STRING];
 	//char				password[24];
 	//char				savedpass[24];

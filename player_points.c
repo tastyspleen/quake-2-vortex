@@ -13,28 +13,28 @@ int mypower(int x, int y)
 	return (1);
 }
 
-char *LoPrint(char *text)
+char* LoPrint(char* text)
 {
 	int i;
 
 	if (!text)
 		return NULL;
-	for (i=0; i<strlen(text) ; i++)
+	for (i = 0; i < strlen(text); i++)
 		if ((byte)text[i] > 127)
-			text[i]=(byte)text[i]-128;
+			text[i] = (byte)text[i] - 128;
 
 	return text;
 }
 
-char *HiPrint(char *text)
+char* HiPrint(char* text)
 {
 	int i;
 
 	if (!text)
 		return NULL;
-	for (i=0; i<strlen(text) ; i++)
+	for (i = 0; i < strlen(text); i++)
 		if ((byte)text[i] <= 127)
-			text[i]=(byte)text[i]+128;
+			text[i] = (byte)text[i] + 128;
 	return text;
 }
 

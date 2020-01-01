@@ -15,10 +15,10 @@ static int	sound_hit;
 static int	sound_hit2;
 static int	sound_death;
 static int	sound_idle;
-static int	sound_pain1;
-static int	sound_pain2;
+//static int	sound_pain1;
+//static int	sound_pain2;
 static int	sound_sight;
-static int	sound_search;
+//static int	sound_search;
 static int	sound_step1;
 static int	sound_step2;
 static int	sound_step3;
@@ -61,62 +61,62 @@ void mutant_swing (edict_t *self)
 
 mframe_t mutant_frames_stand [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 10
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 10
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 20
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 20
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 30
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 30
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 40
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 40
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 50
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 50
 
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t mutant_move_stand = {FRAME_stand101, FRAME_stand151, mutant_frames_stand, NULL};
 
@@ -140,19 +140,19 @@ void mutant_idle_loop (edict_t *self)
 
 mframe_t mutant_frames_idle [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,					// scratch loop start
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mutant_idle_loop,		// scratch loop end
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},					// scratch loop start
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mutant_idle_loop},		// scratch loop end
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t mutant_move_idle = {FRAME_stand152, FRAME_stand164, mutant_frames_idle, mutant_stand};
 
@@ -166,18 +166,18 @@ void mutant_walk (edict_t *self);
 
 mframe_t mutant_frames_walk [] =
 {
-	drone_ai_walk,	3,		NULL,
-	drone_ai_walk,	1,		NULL,
-	drone_ai_walk,	5,		NULL,
-	drone_ai_walk,	10,		NULL,
-	drone_ai_walk,	13,		NULL,
-	drone_ai_walk,	10,		NULL,
-	drone_ai_walk,	0,		NULL,
-	drone_ai_walk,	5,		NULL,
-	drone_ai_walk,	6,		NULL,
-	drone_ai_walk,	16,		NULL,
-	drone_ai_walk,	15,		NULL,
-	drone_ai_walk,	6,		NULL
+	{drone_ai_walk,	3,		NULL},
+	{drone_ai_walk,	1,		NULL},
+	{drone_ai_walk,	5,		NULL},
+	{drone_ai_walk,	10,		NULL},
+	{drone_ai_walk,	13,		NULL},
+	{drone_ai_walk,	10,		NULL},
+	{drone_ai_walk,	0,		NULL},
+	{drone_ai_walk,	5,		NULL},
+	{drone_ai_walk,	6,		NULL},
+	{drone_ai_walk,	16,		NULL},
+	{drone_ai_walk,	15,		NULL},
+	{drone_ai_walk,	6,		NULL}
 };
 mmove_t mutant_move_walk = {FRAME_walk05, FRAME_walk16, mutant_frames_walk, NULL};
 
@@ -188,10 +188,10 @@ void mutant_walk_loop (edict_t *self)
 
 mframe_t mutant_frames_start_walk [] =
 {
-	drone_ai_walk,	5,		NULL,
-	drone_ai_walk,	5,		NULL,
-	drone_ai_walk,	-2,		NULL,
-	drone_ai_walk,	1,		NULL
+	{drone_ai_walk,	5,		NULL},
+	{drone_ai_walk,	5,		NULL},
+	{drone_ai_walk,	-2,		NULL},
+	{drone_ai_walk,	1,		NULL}
 };
 mmove_t mutant_move_start_walk = {FRAME_walk01, FRAME_walk04, mutant_frames_start_walk, mutant_walk_loop};
 
@@ -209,12 +209,12 @@ void mutant_walk (edict_t *self)
 
 mframe_t mutant_frames_run [] =
 {
-	drone_ai_run,	30,		NULL,
-	drone_ai_run,	30,		mutant_step,
-	drone_ai_run,	30,		NULL,
-	drone_ai_run,	30,		mutant_step,
-	drone_ai_run,	30,		NULL,
-	drone_ai_run,	30,		NULL
+	{drone_ai_run,	30,		NULL},
+	{drone_ai_run,	30,		mutant_step},
+	{drone_ai_run,	30,		NULL},
+	{drone_ai_run,	30,		mutant_step},
+	{drone_ai_run,	30,		NULL},
+	{drone_ai_run,	30,		NULL}
 };
 mmove_t mutant_move_run = {FRAME_run03, FRAME_run08, mutant_frames_run, NULL};
 
@@ -271,13 +271,13 @@ void mutant_check_refire (edict_t *self)
 
 mframe_t mutant_frames_attack [] =
 {
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	ai_charge,	0,	mutant_hit_left,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mutant_hit_right,
-	ai_charge,	0,	mutant_check_refire
+	//{ai_charge,	0,	NULL},
+	//{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mutant_hit_left},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mutant_hit_right},
+	{ai_charge,	0,	mutant_check_refire}
 };
 mmove_t mutant_move_attack = {FRAME_attack11, FRAME_attack15, mutant_frames_attack, mutant_run};
 
@@ -381,14 +381,14 @@ void mutant_check_landing (edict_t *self)
 
 mframe_t mutant_frames_jump [] =
 {
-	ai_charge,	 0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mutant_jump_takeoff,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	mutant_check_landing,
-	ai_charge,	 0,	NULL,
-//	ai_charge,	 0,	NULL,
-//	ai_charge,	 0,	NULL
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mutant_jump_takeoff},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	mutant_check_landing},
+	{ai_charge,	0,	NULL},
+//	{ai_charge,	0,	NULL},
+//	{ai_charge,	0,	NULL}
 };
 mmove_t mutant_move_jump = {FRAME_attack01, FRAME_attack06, mutant_frames_jump, mutant_run};
 
@@ -436,30 +436,30 @@ void mutant_dead (edict_t *self)
 
 mframe_t mutant_frames_death1 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mutant_move_death1 = {FRAME_death101, FRAME_death109, mutant_frames_death1, mutant_dead};
 
 mframe_t mutant_frames_death2 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mutant_move_death2 = {FRAME_death201, FRAME_death210, mutant_frames_death2, mutant_dead};
 
@@ -519,10 +519,10 @@ void init_drone_mutant (edict_t *self)
 	sound_hit2 = gi.soundindex ("mutant/mutatck3.wav");
 	sound_death = gi.soundindex ("mutant/mutdeth1.wav");
 	sound_idle = gi.soundindex ("mutant/mutidle1.wav");
-	0;//sound_pain1 = gi.soundindex ("mutant/mutpain1.wav");
-	0;//sound_pain2 = gi.soundindex ("mutant/mutpain2.wav");
+	//sound_pain1 = gi.soundindex ("mutant/mutpain1.wav");
+	//sound_pain2 = gi.soundindex ("mutant/mutpain2.wav");
 	sound_sight = gi.soundindex ("mutant/mutsght1.wav");
-	0;//sound_search = gi.soundindex ("mutant/mutsrch1.wav");
+	//sound_search = gi.soundindex ("mutant/mutsrch1.wav");
 	sound_step1 = gi.soundindex ("mutant/step1.wav");
 	sound_step2 = gi.soundindex ("mutant/step2.wav");
 	sound_step3 = gi.soundindex ("mutant/step3.wav");

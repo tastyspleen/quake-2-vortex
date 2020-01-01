@@ -314,7 +314,7 @@ void AuraRemove (edict_t *ent, int type)
 void holyfreeze_think (edict_t *self)
 {
 	int		radius;
-	edict_t *target=NULL, *curse=NULL;
+	edict_t *target=NULL;
 	que_t	*slot;
 
 	// check status of owner
@@ -399,7 +399,6 @@ void aura_holyfreeze(edict_t *ent)
 
 void Cmd_HolyFreeze(edict_t *ent)
 {
-	qboolean sameaura=false;
 
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_HolyFreeze()\n", ent->client->pers.netname);
@@ -505,7 +504,6 @@ void aura_salvation(edict_t *ent)
 void Cmd_Salvation(edict_t *ent)
 {
 	que_t		*slot=NULL;
-	qboolean	sameaura=false;
 
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_Salvation()\n", ent->client->pers.netname);

@@ -3152,7 +3152,7 @@ void Cmd_TossSpikeball (edict_t *ent)
 	float	range = SPIKEBALL_INITIAL_RANGE + SPIKEBALL_ADDON_RANGE * ent->myskills.abilities[SPORE].current_level;
 	vec3_t	forward, right, start, offset;
 	
-	if (ent->num_spikeball > 0 && Q_strcasecmp (gi.args(), "move") == 0)
+	if (ent->num_spikeball > 0 && Q_stricmp (gi.args(), "move") == 0)
 	{
 		// toggle movement setting
 		if (ent->spikeball_follow)
@@ -3168,7 +3168,7 @@ void Cmd_TossSpikeball (edict_t *ent)
 		return;
 	}
 /*
-	if (ent->num_spikeball > 0 && Q_strcasecmp (gi.args(), "recall") == 0)
+	if (ent->num_spikeball > 0 && Q_stricmp (gi.args(), "recall") == 0)
 	{
 		// toggle recall setting
 		if (ent->spikeball_recall)
@@ -3184,13 +3184,13 @@ void Cmd_TossSpikeball (edict_t *ent)
 		return;
 	}
 */
-	if (Q_strcasecmp (gi.args(), "help") == 0)
+	if (Q_stricmp (gi.args(), "help") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "syntax: spore [move|remove]\n");
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "spikeball", true);
 		gi.cprintf(ent, PRINT_HIGH, "Spores removed\n");

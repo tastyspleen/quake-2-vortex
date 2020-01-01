@@ -353,7 +353,7 @@ void Cmd_BuildLaser (edict_t *ent)
 	if(ent->myskills.abilities[BUILD_LASER].disable)
 		return;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		RemoveLasers(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All lasers removed.\n");

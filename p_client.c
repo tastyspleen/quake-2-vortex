@@ -49,9 +49,9 @@ static void SP_FixCoopSpots (edict_t *self)
 		VectorSubtract(self->s.origin, spot->s.origin, d);
 		if (VectorLength(d) < 384)
 		{
-			if ((!self->targetname) || stricmp(self->targetname, spot->targetname) != 0)
+			if ((!self->targetname) || Q_stricmp(self->targetname, spot->targetname) != 0)
 			{
-//				gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
+				//gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
 				self->targetname = spot->targetname;
 			}
 			return;
@@ -67,7 +67,7 @@ static void SP_CreateCoopSpots (edict_t *self)
 {
 	edict_t	*spot;
 
-	if(stricmp(level.mapname, "security") == 0)
+	if(Q_stricmp(level.mapname, "security") == 0)
 	{
 		spot = G_Spawn();
 		spot->classname = "info_player_coop";
@@ -103,9 +103,7 @@ The normal starting point for a level.
 */
 void SP_info_player_start(edict_t *self)
 {
-	if (!coop->value)
-		return;
-	if(stricmp(level.mapname, "security") == 0)
+	if (coop->value && Q_stricmp(level.mapname, "security") == 0)
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_CreateCoopSpots;
@@ -123,6 +121,7 @@ void SP_info_player_deathmatch(edict_t *self)
 		G_FreeEdict (self);
 		return;
 	}
+
 	SP_misc_teleporter_dest (self);
 }
 
@@ -138,20 +137,20 @@ void SP_info_player_coop(edict_t *self)
 		return;
 	}
 
-	if((stricmp(level.mapname, "jail2") == 0)   ||
-	   (stricmp(level.mapname, "jail4") == 0)   ||
-	   (stricmp(level.mapname, "mine1") == 0)   ||
-	   (stricmp(level.mapname, "mine2") == 0)   ||
-	   (stricmp(level.mapname, "mine3") == 0)   ||
-	   (stricmp(level.mapname, "mine4") == 0)   ||
-	   (stricmp(level.mapname, "lab") == 0)     ||
-	   (stricmp(level.mapname, "boss1") == 0)   ||
-	   (stricmp(level.mapname, "fact3") == 0)   ||
-	   (stricmp(level.mapname, "biggun") == 0)  ||
-	   (stricmp(level.mapname, "space") == 0)   ||
-	   (stricmp(level.mapname, "command") == 0) ||
-	   (stricmp(level.mapname, "power2") == 0) ||
-	   (stricmp(level.mapname, "strike") == 0))
+	if((Q_stricmp(level.mapname, "jail2") == 0)   ||
+	   (Q_stricmp(level.mapname, "jail4") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine1") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine2") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine3") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine4") == 0)   ||
+	   (Q_stricmp(level.mapname, "lab") == 0)     ||
+	   (Q_stricmp(level.mapname, "boss1") == 0)   ||
+	   (Q_stricmp(level.mapname, "fact3") == 0)   ||
+	   (Q_stricmp(level.mapname, "biggun") == 0)  ||
+	   (Q_stricmp(level.mapname, "space") == 0)   ||
+	   (Q_stricmp(level.mapname, "command") == 0) ||
+	   (Q_stricmp(level.mapname, "power2") == 0) ||
+	   (Q_stricmp(level.mapname, "strike") == 0))
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_FixCoopSpots;
@@ -235,112 +234,112 @@ qboolean MonsterObits (edict_t *player, edict_t *monster)
 }
 
 //K03 Begin
-qboolean Monster_Obits (edict_t *victim, edict_t *attacker)
+qboolean Monster_Obits(edict_t* victim, edict_t* attacker)
 {
-    char *message1="";
-    char *message2="";
+	char* message1 = "";
+	char* message2 = "";
 
-    // Make sure both attacker and victim still in game!
-    if (attacker == NULL || 
-		attacker->activator == NULL || 
+	// Make sure both attacker and victim still in game!
+	if (attacker == NULL ||
+		attacker->activator == NULL ||
 		attacker->activator->client == NULL ||
 		victim == NULL)
-        return false;
+		return false;
 
 	if (!victim->client)
 		return true;
 
-    message1="was killed by";
+	message1 = "was killed by";
 
-    // What type of monster was this?
-    switch (attacker->mtype)
-    {
-        case M_BERSERK:
-            message2="'s Berserker";
-            break;
-        case M_BOSS2:
-            message2="'s Boss";
-            break;
-        case M_SOLDIERSS:
-            message2="'s Machinegun Soldier";
-            break;
-        case M_JORG:
-            message2="'s Jorg";
-            break;
-        case M_BRAIN:
-            message2="'s Brain";
-            break;
-        case M_CHICK:
-            message2="'s Chick";
-            break;
-        case M_FLIPPER:
-            message2="'s Shark";
-            break;
-        case M_FLOATER:
-            break;
-        case M_FLYER:
-            message2="'s Flyer";
-            break;
-        case M_INSANE:
-            message2="'s Insane"; // how the hell does this work? -(nobody)
-            break;
-        case M_GLADIATOR:
-            message2="'s Gladiator";
-            break;
-        case M_HOVER:
-            message2="'s Icarus";
-            break;
-        case M_INFANTRY:
-            message2="'s Infantry";
-            break;
-        case M_SOLDIERLT:
-            message2="'s Blaster Guard";
-            break;
-        case M_SOLDIER:
-            message2="'s Shark";
-            break;
-        case M_MEDIC:
-            message2="'s Medic";
-            break;
-        case M_MUTANT:
-            message2="'s Mutant";
-            break;
-        case M_PARASITE:
-            message2="'s Parasite";
-            break;
-        case M_TANK:
-            message2="'s Tank";
-            break;
-        case M_MAKRON:
-            message2="'s Makron";
-            break;
-        case M_GUNNER:
-            message2="'s Gunner";
-            break;
-        case M_SUPERTANK:
-            message2="'s Supertank";
-            break;
-		case M_YANGSPIRIT:
-		case M_YINSPIRIT:
-		case M_BALANCESPIRIT:
-			message1 = "was defeated by";
-			message2 = va("'s %s", attacker->classname);				
-			break;	//3.03 Spirit skill
-        default:
-			return false;
-    } // end switch
+	// What type of monster was this?
+	switch (attacker->mtype)
+	{
+	case M_BERSERK:
+		message2 = "'s Berserker";
+		break;
+	case M_BOSS2:
+		message2 = "'s Boss";
+		break;
+	case M_SOLDIERSS:
+		message2 = "'s Machinegun Soldier";
+		break;
+	case M_JORG:
+		message2 = "'s Jorg";
+		break;
+	case M_BRAIN:
+		message2 = "'s Brain";
+		break;
+	case M_CHICK:
+		message2 = "'s Chick";
+		break;
+	case M_FLIPPER:
+		message2 = "'s Shark";
+		break;
+	case M_FLOATER:
+		break;
+	case M_FLYER:
+		message2 = "'s Flyer";
+		break;
+	case M_INSANE:
+		message2 = "'s Insane"; // how the hell does this work? -(nobody)
+		break;
+	case M_GLADIATOR:
+		message2 = "'s Gladiator";
+		break;
+	case M_HOVER:
+		message2 = "'s Icarus";
+		break;
+	case M_INFANTRY:
+		message2 = "'s Infantry";
+		break;
+	case M_SOLDIERLT:
+		message2 = "'s Blaster Guard";
+		break;
+	case M_SOLDIER:
+		message2 = "'s Shark";
+		break;
+	case M_MEDIC:
+		message2 = "'s Medic";
+		break;
+	case M_MUTANT:
+		message2 = "'s Mutant";
+		break;
+	case M_PARASITE:
+		message2 = "'s Parasite";
+		break;
+	case M_TANK:
+		message2 = "'s Tank";
+		break;
+	case M_MAKRON:
+		message2 = "'s Makron";
+		break;
+	case M_GUNNER:
+		message2 = "'s Gunner";
+		break;
+	case M_SUPERTANK:
+		message2 = "'s Supertank";
+		break;
+	case M_YANGSPIRIT:
+	case M_YINSPIRIT:
+	case M_BALANCESPIRIT:
+		message1 = "was defeated by";
+		message2 = va("'s %s", attacker->classname);
+		break;	//3.03 Spirit skill
+	default:
+		return false;
+	} // end switch
 
-    // Print the obituary message..
+	// Print the obituary message..
 	if (victim->client && attacker && attacker->activator && attacker->activator->client) {
-		gi.bprintf(PRINT_MEDIUM,"%s %s %s%s\n", victim->client->pers.netname, message1, attacker->activator->client->pers.netname, message2);
-//		attacker->activator->client->resp.score++;
-//		attacker->activator->myskills.max_experience++;
-//		attacker->activator->myskills.streak++;
+		gi.bprintf(PRINT_MEDIUM, "%s %s %s%s\n", victim->client->pers.netname, message1, attacker->activator->client->pers.netname, message2);
+		//		attacker->activator->client->resp.score++;
+		//		attacker->activator->myskills.max_experience++;
+		//		attacker->activator->myskills.streak++;
 	}
 
 	//3.0 Monster killed the enemy
 	attacker->enemy = NULL;
-    return true;
+	return true;
 }
 //K03 End
 
@@ -352,11 +351,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char		*message2;
 	qboolean	ff;
 
+	assert(attacker != NULL);
 	//K03 Begin
 	if (attacker && (attacker->creator) &&(!attacker->client) && (meansOfDeath == MOD_SENTRY || meansOfDeath == MOD_SENTRY_ROCKET))
 		attacker = attacker->creator;
 	// fire totem
-	if ((attacker->mtype == TOTEM_FIRE) && attacker->owner && attacker->owner->inuse)
+	if ((attacker && attacker->mtype == TOTEM_FIRE) && attacker->owner && attacker->owner->inuse)
 		attacker = attacker->owner;
 	// Is this a monster doing the killing??
 	//if (Monster_Obits(self, attacker))
@@ -368,7 +368,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	//K03 End
 
-	if (coop->value && attacker->client)
+	if (attacker && coop->value && attacker->client)
 		meansOfDeath |= MOD_FRIENDLY_FIRE;
 
 	if (deathmatch->value || coop->value)
@@ -842,7 +842,8 @@ void TossClientWeapon (edict_t *self)
 			
 			VectorSubtract(self->s.origin,self->enemy->s.origin,v);
 			dist = VectorLength(v);
-			if(dist < 200) enemy = self->enemy;
+			if(dist < 200) 
+				enemy = self->enemy;
 		}
 	}
 
@@ -1677,7 +1678,7 @@ void respawn (edict_t *self)
 		self->mtype = 0;
 		self->svflags &= ~SVF_NOCLIENT;
 
-		if (self->myskills.respawns != self->client->pers.combat_changed)
+		if (self->myskills.respawns != (unsigned int)self->client->pers.combat_changed)
 			gi.cprintf(self, PRINT_HIGH, "Combat preferences updated.\n");
 		self->myskills.respawns = self->client->pers.combat_changed;//4.5 use changed combat preferences
 		
@@ -1709,7 +1710,7 @@ void spectator_respawn (edict_t *ent)
 	int i, numspec;
 
 	if (debuginfo->value > 1)
-		gi.dprintf("specatator_respawn()\n");
+		gi.dprintf("spectator_respawn()\n");
 	// if the user wants to become a spectator, make sure he doesn't
 	// exceed max_spectators
 
@@ -1878,8 +1879,6 @@ void PutClientInServer (edict_t *ent)
 		talentLevel = getTalentLevel(ent, TALENT_SIDEARMS);
 		if(talentLevel > 0)
 		{
-			int i;
-
 			//Give the player one additional respawn weapon for every point in the talent.
 			//This does not give them ammo.
 			for(i = 0; i < talentLevel+1; ++i)
@@ -2205,13 +2204,13 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 
 	if (s[0])
 	{
-		Q_strncpy (ip, s, sizeof(ip)-1);
+		Q_strncpy (ip, s, sizeof(ip));
 
 		s = strchr (ip, ':');
 		if (s)
 			s[0] = '\0';
 
-		strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
+		Q_strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip));
 	}
 
 	// name changes not allowed
@@ -2220,7 +2219,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	if (strcmp(s, ent->client->pers.netname))
 		WriteToLogfile(ent, va("Changed name to %s.\n", s));
 	if (strlen( ent->client->pers.netname) < 1)
-		strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
+		Q_strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname));
 	Info_SetValueForKey(userinfo, "name", ent->client->pers.netname);
 
 	if (!ClientCanConnect(ent, userinfo))
@@ -2263,7 +2262,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 
 	// save off the userinfo in case we want to check something later
-	strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
+	Q_strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 }
 
 
@@ -2390,6 +2389,10 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	return true;
 }
 
+void KillMyVote(edict_t* ent);
+void soldier_die(edict_t* ent);
+void turret_remove(edict_t* ent);
+
 /*
 ===========
 ClientDisconnect
@@ -2398,16 +2401,11 @@ Called when a player drops from the server.
 Will not be called between levels.
 ============
 */
-void KillMyVote (edict_t *ent);
-void soldier_die(edict_t *ent);
-void turret_remove(edict_t *ent);
 void ClientDisconnect (edict_t *ent)
 {
 	int		i;
-	edict_t	*scan = NULL;
 	edict_t *player;
-    vec3_t zvec={0,0,0};
-	int		playernum;
+ 	int		playernum;
 
 	if (debuginfo->value > 1)
 		gi.dprintf("ClientDisconnect()\n");
@@ -3558,8 +3556,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	//If this player isn't showing a menu any more, cancel the trade
 	if (ent->trade_with && !ent->client->menustorage.menu_active)
 	{
-		int i;
-
 		//alert both players
 		gi.cprintf(ent, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
 		gi.cprintf(ent->trade_with, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);

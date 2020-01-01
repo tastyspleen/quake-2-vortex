@@ -1,5 +1,6 @@
 #include "g_local.h"
-/*
+
+#if (0) /* disable all code */
 #define RUNE_SPAWN_BASE			0.02	// base chance of a rune spawning, before level modifiers
 #define RUNE_WEAPON_MAXVALUE	5		// maximum modifier for weapon runes	
 #define RUNE_ABILITY_MAXVALUE	3		// maximum modifier for ability runes
@@ -81,8 +82,11 @@ void RemoveWeaponRune (edict_t *ent)
 			ent->myskills.weapons[WEAPON_BLASTER].mods[1].current_level -= ent->myskills.hand.modifiers[2];
 			ent->myskills.weapons[WEAPON_BLASTER].mods[2].current_level -= ent->myskills.hand.modifiers[3];
 			break;
+		default:
+			break;
 	}
 }
+
 void ApplyWeaponRune (edict_t *ent)
 {
 	if(!ent->myskills.hand.type) // Check for a rune again!
@@ -154,6 +158,8 @@ void ApplyWeaponRune (edict_t *ent)
 			ent->myskills.weapons[WEAPON_BLASTER].mods[0].current_level += ent->myskills.hand.modifiers[1];
 			ent->myskills.weapons[WEAPON_BLASTER].mods[1].current_level += ent->myskills.hand.modifiers[2];
 			ent->myskills.weapons[WEAPON_BLASTER].mods[2].current_level += ent->myskills.hand.modifiers[3];
+			break;
+		default:
 			break;
 	}
 }
@@ -239,7 +245,8 @@ void rune_getweaponstrings (items_t *item, char *s1, char *s2, char *s3, char *s
 	default: gi.dprintf("ERROR: rune_getweaponstrings() called with invalid item %d!\n", item->modifiers[0]);
 	}
 }
-/*
+
+
 qboolean Pickup_Rune (edict_t *ent, edict_t *other)
 {
 
@@ -292,7 +299,7 @@ int rune_getmodifier (edict_t *targ, edict_t *attacker, int type)
 		mod = val;
 	return mod;
 }
-/*
+
 void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 {
 	int		i, max_mods, num_mods;
@@ -414,5 +421,5 @@ void PurchaseRandomRune (edict_t *ent)
 	WriteToLogfile(ent, va("Purchased a level %d rune (%s) for %d credits. Player has %d credits left.\n",
 		slot->level, slot->item_id, cost, ent->myskills.credits));
 }
+#endif
 
-*/

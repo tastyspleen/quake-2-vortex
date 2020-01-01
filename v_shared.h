@@ -155,6 +155,7 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode);
 int FindBestMap(int mode);
 v_maplist_t *GetMapList(int mode);
 int V_AttemptModeChange(qboolean endlevel);
+void RunVotes(void);
 //************ vote.c *************
 
 //*********** weapons.c ***********

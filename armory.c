@@ -147,7 +147,7 @@ void Cmd_Armory_f(edict_t *ent, int selection)
 	gitem_t		*item = 0;
 	int			price = 0;
 	int			qty = 0;
-	item_t		*slot;
+	item_t		*slot = NULL;
 	int			type = ITEM_NONE;
 	//int			talentLevel;
 

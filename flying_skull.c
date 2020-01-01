@@ -663,13 +663,13 @@ void Cmd_HellSpawn_f (edict_t *ent)
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_HellSpawn_f()\n", ent->client->pers.netname);
 
-	if (!Q_strcasecmp(gi.args(), "attack") && ent->skull && ent->skull->inuse)
+	if (!Q_stricmp(gi.args(), "attack") && ent->skull && ent->skull->inuse)
 	{
 		skull_attackcmd(ent->skull);
 		return;
 	}
 /*
-	if (!Q_strcasecmp(gi.args(), "recall") && ent->skull && ent->skull->inuse)
+	if (!Q_stricmp(gi.args(), "recall") && ent->skull && ent->skull->inuse)
 	{
 		// toggle
 		if (!ent->skull->lockon)

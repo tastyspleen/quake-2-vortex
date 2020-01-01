@@ -41,59 +41,59 @@ void mygunnerstand (edict_t *self);
 
 mframe_t mygunnerframes_fidget [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mygunneridlesound,
-	drone_ai_stand, 0, NULL,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mygunneridlesound},
+	{drone_ai_stand, 0, NULL},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t	mygunnermove_fidget = {FRAME_stand31, FRAME_stand70, mygunnerframes_fidget, mygunnerstand};
 
@@ -107,38 +107,38 @@ void mygunnerfidget (edict_t *self)
 
 mframe_t mygunnerframes_stand [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mygunnerfidget,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mygunnerfidget},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mygunnerfidget,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mygunnerfidget},
 
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mygunnerfidget
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mygunnerfidget}
 };
 mmove_t	mygunnermove_stand = {FRAME_stand01, FRAME_stand30, mygunnerframes_stand, NULL};
 
@@ -149,19 +149,19 @@ void mygunnerstand (edict_t *self)
 
 mframe_t gunner_frames_walk [] =
 {
-	drone_ai_walk, 0, NULL,
-	drone_ai_walk, 3, NULL,
-	drone_ai_walk, 4, NULL,
-	drone_ai_walk, 5, NULL,
-	drone_ai_walk, 7, NULL,
-	drone_ai_walk, 2, NULL,
-	drone_ai_walk, 6, NULL,
-	drone_ai_walk, 4, NULL,
-	drone_ai_walk, 2, NULL,
-	drone_ai_walk, 7, NULL,
-	drone_ai_walk, 5, NULL,
-	drone_ai_walk, 7, NULL,
-	drone_ai_walk, 4, NULL
+	{drone_ai_walk, 0, NULL},
+	{drone_ai_walk, 3, NULL},
+	{drone_ai_walk, 4, NULL},
+	{drone_ai_walk, 5, NULL},
+	{drone_ai_walk, 7, NULL},
+	{drone_ai_walk, 2, NULL},
+	{drone_ai_walk, 6, NULL},
+	{drone_ai_walk, 4, NULL},
+	{drone_ai_walk, 2, NULL},
+	{drone_ai_walk, 7, NULL},
+	{drone_ai_walk, 5, NULL},
+	{drone_ai_walk, 7, NULL},
+	{drone_ai_walk, 4, NULL}
 };
 mmove_t gunner_move_walk = {FRAME_walk07, FRAME_walk19, gunner_frames_walk, NULL};
 
@@ -174,14 +174,14 @@ void gunner_walk (edict_t *self)
 
 mframe_t mygunnerframes_run [] =
 {
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL}
 };
 
 mmove_t mygunnermove_run = {FRAME_run01, FRAME_run08, mygunnerframes_run, NULL};
@@ -220,37 +220,37 @@ void myGunnerGrenade (edict_t *self)
 
 mframe_t mygunner_frames_attack_grenade_start [] =
 {
-	ai_charge, 0, NULL,					// 108
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL					// 111
+	{ai_charge, 0, NULL},					// 108
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL}					// 111
 };
 mmove_t mygunner_move_attack_grenade_start = {FRAME_attak101, FRAME_attak104, mygunner_frames_attack_grenade_start, gunner_attack_grenade};
 
 mframe_t mygunner_frames_attack_grenade_end [] =
 {
-	ai_charge, 0, NULL,					// 122
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, mygunner_delay		// 128
+	{ai_charge, 0, NULL},					// 122
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, mygunner_delay}		// 128
 };
 mmove_t mygunner_move_attack_grenade_end = {FRAME_attak115, FRAME_attak121, mygunner_frames_attack_grenade_end, mygunnerrun};
 
 mframe_t mygunner_frames_attack_grenade [] =
 {
-	ai_charge, 0, myGunnerGrenade,		// 112
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, myGunnerGrenade,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, myGunnerGrenade,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL
-	//ai_charge, 0, myGunnerGrenade		// 121
+	{ai_charge, 0, myGunnerGrenade},		// 112
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, myGunnerGrenade},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, myGunnerGrenade},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL}
+	//{ai_charge, 0, myGunnerGrenade}		// 121
 };
 mmove_t mygunner_move_attack_grenade = {FRAME_attak105, FRAME_attak113, mygunner_frames_attack_grenade, gunner_refire_grenade};
 
@@ -278,27 +278,27 @@ void gunner_attack_grenade (edict_t *self)
 /*
 mframe_t mygunner_frames_attack_grenade [] =
 {
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, myGunnerGrenade,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, myGunnerGrenade,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0, NULL
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, myGunnerGrenade,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, myGunnerGrenade,
+	{drone_ai_run, 0, NULL,
+	{drone_ai_run, 0, NULL
 };
 mmove_t mygunner_move_attack_grenade = {FRAME_attak101, FRAME_attak110, mygunner_frames_attack_grenade, mygunnerrun};
 */
 mframe_t mygunner_frames_runandshoot [] =
 {
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, myGunnerGrenade,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25, NULL
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, myGunnerGrenade},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL}
 };
 
 mmove_t mygunner_move_runandshoot = {FRAME_runs01, FRAME_runs06, mygunner_frames_runandshoot, mygunner_continue};
@@ -346,26 +346,26 @@ void mygunner_opengun (edict_t *self)
 
 mframe_t mygunner_frames_attack_chain [] =
 {
-	ai_charge, 0, mygunner_opengun,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL
+	{ai_charge, 0, mygunner_opengun},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL}
 };
 mmove_t mygunner_move_attack_chain = {FRAME_attak209, FRAME_attak215, mygunner_frames_attack_chain, mygunner_fire_chain};
 
 mframe_t mygunner_frames_fire_chain [] =
 {
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire,
-	ai_charge,   0, myGunnerFire
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire},
+	{ai_charge,   0, myGunnerFire}
 };
 mmove_t mygunner_move_fire_chain = {FRAME_attak216, FRAME_attak223, mygunner_frames_fire_chain, mygunner_refire_chain};
 
@@ -382,13 +382,13 @@ void mygunner_delay (edict_t *self)
 
 mframe_t mygunner_frames_endfire_chain [] =
 {
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL}
 };
 mmove_t mygunner_move_endfire_chain = {FRAME_attak224, FRAME_attak230, mygunner_frames_endfire_chain, mygunnerrun};
 
@@ -483,11 +483,11 @@ void mygunner_duck_up (edict_t *self)
 
 mframe_t mygunner_frames_duck [] =
 {
-	ai_move, 0,  mygunner_duck_down,
-	ai_move, 0,  NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0,  mygunner_duck_up,
+	{ai_move, 0,  mygunner_duck_down},
+	{ai_move, 0,  NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0,  mygunner_duck_up},
 };
 mmove_t	mygunner_move_duck = {FRAME_duck03, FRAME_duck07, mygunner_frames_duck, mygunnerrun};
 
@@ -530,14 +530,14 @@ void mygunner_jump_hold (edict_t *self)
 
 mframe_t mygunner_frames_leap [] =
 {
-	ai_move,	0,	mygunner_jump_takeoff,
-	ai_move,	0,	NULL,
-	ai_move,	0,	mygunner_jump_hold,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	mygunner_jump_takeoff},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	mygunner_jump_hold},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t mygunner_move_leap = {FRAME_duck01, FRAME_duck08, mygunner_frames_leap, mygunnerrun};
 
@@ -585,17 +585,17 @@ void mygunnerdead (edict_t *self)
 
 mframe_t mygunnerframes_death [] =
 {
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, -7, NULL,
-	ai_move, -3, NULL,
-	ai_move, -5, NULL,
-	ai_move, 8,	 NULL,
-	ai_move, 6,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, -7,	NULL},
+	{ai_move, -3,	NULL},
+	{ai_move, -5,	NULL},
+	{ai_move, 8,	NULL},
+	{ai_move, 6,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL},
+	{ai_move, 0,	NULL}
 };
 mmove_t mygunnermove_death = {FRAME_death01, FRAME_death11, mygunnerframes_death, mygunnerdead};
 

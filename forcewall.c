@@ -432,7 +432,7 @@ void Cmd_Forcewall(edict_t *ent)
 	if(ent->myskills.abilities[FORCE_WALL].disable)
 		return;
 
-	if (Q_strcasecmp(gi.args(), "solid") == 0)
+	if (Q_stricmp(gi.args(), "solid") == 0)
 		solid = true;
 
 	// remove any existing wall owned by this player

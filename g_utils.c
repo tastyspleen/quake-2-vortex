@@ -286,7 +286,7 @@ edict_t *FindPlayerByName(char *name)
 		//	continue;
 		if (!player || !player->inuse)
 			continue;
-		if (Q_strcasecmp(name, player->client->pers.netname) != 0)
+		if (Q_stricmp(name, player->client->pers.netname) != 0)
 			continue;
 		if (!G_IsSpectator(player))
 			found = player;
@@ -326,7 +326,7 @@ edict_t *FindPlayer(char *s)
 		}
 		
 		// does the name match?
-		if (!Q_strcasecmp(s, player->client->pers.netname))
+		if (!Q_stricmp(s, player->client->pers.netname))
 			return player;
 	}
 
@@ -1883,5 +1883,29 @@ edict_t *G_FindEntityByMtype (int mtype, edict_t *from)
 
 float Get2dDistance (vec3_t v1, vec3_t v2)
 {
-	return (sqrt((v2[0]-v1[0])*(v2[0]-v1[0])+(v2[1]-v1[1])*(v2[1]-v1[1])));
+	return (sqrtf((v2[0]-v1[0])*(v2[0]-v1[0])+(v2[1]-v1[1])*(v2[1]-v1[1])));
+}
+
+const char* Date()
+{
+	static char buf[100];
+	time_t now;
+	struct tm* ltime;
+
+	now = time(NULL);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%x", ltime);
+	return buf;
+}
+
+const char* Time()
+{
+	static char buf[100];
+	time_t now;
+	struct tm* ltime;
+
+	now = time(NULL);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%X", ltime);
+	return buf;
 }
