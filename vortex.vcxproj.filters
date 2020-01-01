@@ -514,6 +514,7 @@
     <None Include="game.def">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include=".travis.yml" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="GNUmakefile" />

@@ -187,6 +187,7 @@
     <ClInclude Include="weapon_def.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".travis.yml" />
     <None Include="game.def" />
   </ItemGroup>
   <ItemGroup>
