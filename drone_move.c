@@ -225,7 +225,7 @@ qboolean M_Move (edict_t *ent, vec3_t move, qboolean relink)
 	float		stepsize=STEPSIZE;
 
 // try the move	
-	VectorCopy (ent->s.origin, oldorg);
+	_VectorCopy (ent->s.origin, oldorg);
 	VectorAdd (ent->s.origin, move, neworg);
 
 	neworg[2] += stepsize;
@@ -599,10 +599,10 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist, qboolean try_sma
 {
 	vec3_t		move, oldorigin;
 	//float		delta;
-	float		old_dist;
+	//float		old_dist;
 	
 	//gi.dprintf("SV_StepDirection\n");
-	old_dist = dist;
+	//old_dist = dist;
 	ent->ideal_yaw = yaw;
 	M_ChangeYaw (ent);
 
@@ -610,7 +610,7 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist, qboolean try_sma
 		return true;
 
 	yaw = yaw*M_PI*2 / 360;
-	VectorCopy (ent->s.origin, oldorigin);
+	_VectorCopy (ent->s.origin, oldorigin);
 
 	// loop until we can move successfully
 	while ((int)dist != 0)
