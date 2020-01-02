@@ -1225,12 +1225,14 @@ qboolean LoadGrid (void)
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{
-		fread(&pathnode[0], sizeof(vec3_t), MAX_GRID_SIZE, fptr);
-		numnodes = ReadInteger(fptr);
-		fclose(fptr);
+		if (fread(&pathnode[0], sizeof(vec3_t), MAX_GRID_SIZE, fptr))
+		{
+			numnodes = ReadInteger(fptr);
+			fclose(fptr);
 
-		gi.dprintf("Grid successfully loaded (%d nodes).\n", numnodes);
-		return true;
+			gi.dprintf("Grid successfully loaded (%d nodes).\n", numnodes);
+			return true;
+		}
 	}
 
 	gi.dprintf("Grid file not found.\n");
