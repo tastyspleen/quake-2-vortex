@@ -914,6 +914,7 @@ void LoadArmory()	//Call this during InitGame()
 {
 	char filename[256];
 	FILE *fptr;
+	size_t count = 0;
 
 	//get path
 	#if defined(_WIN32) || defined(WIN32)
@@ -924,9 +925,18 @@ void LoadArmory()	//Call this during InitGame()
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{
-        fread(WeaponRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
-		fread(AbilityRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
-		fread(ComboRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
+        count = fread(WeaponRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
+		if (count == 0)
+			gi.dprintf("Zero %s loaded in %s\n","WeaponRunes", __func__);
+		
+		count = fread(AbilityRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
+		if (count == 0)
+			gi.dprintf("Zero %s loaded in %s\n", "AbilityRunes", __func__);
+		
+		count = fread(ComboRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
+		if (count == 0)
+			gi.dprintf("Zero %s loaded in %s\n", "ComboRunes", __func__);
+
 		fclose(fptr);
 		gi.dprintf("INFO: Vortex Rune Shop loaded successfully\n");
 	}
