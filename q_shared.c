@@ -899,7 +899,7 @@ void COM_DefaultExtension (char *path, char *extension)
 
 ============================================================================
 */
-
+#if 0 /* disables code */
 qboolean	bigendien;
 
 // can't just use function pointers, or dll linkage can
@@ -1004,7 +1004,7 @@ void Swap_Init (void)
 	}
 
 }
-
+#endif
 
 
 /*
