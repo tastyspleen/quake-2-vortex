@@ -52,7 +52,8 @@ void TossClientWeapon (edict_t *self);
 qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take, int dflags) 
 {
 	edict_t *cl_ent=attacker;
-	float z_rel, height;
+	float z_rel;
+	float height;
 
 	if (PM_MonsterHasPilot(attacker))
 		cl_ent = attacker->activator;
@@ -88,8 +89,8 @@ qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take,
 	// check for impact location
 	// if it's at about the right height, and in front, then
 	// we're probably on-target
-	height = fabsf(targ->mins[2])+targ->maxs[2];
-	z_rel = point[2]-targ->s.origin[2];
+	height = fabsf(targ->mins[2]) + targ->maxs[2];
+	z_rel = point[2]-targ->s.origin[2] + height;
 
 	//gi.dprintf("z_rel: %.1f point: %.1f origin: %.1f, chest: %.1f stomach: %.1f", 
 	//	z_rel, point[2], targ->s.origin[2], CHEST_DAMAGE, STOMACH_DAMAGE);
@@ -343,10 +344,10 @@ static int CheckPowerArmor (edict_t *ent, vec3_t point, vec3_t normal, int damag
 	gclient_t	*client;
 	int			save=0; // max absorbtion
 	int			power_armor_type;
-	int			index;
+	int			index = 0;
 	float		damagePerCell; //GHz
 	int			pa_te_type;
-	int			power; // cells
+	int			power = 0; // cells
 	int			power_used; // cells used
 	edict_t		*cl_ent=NULL;
 
@@ -649,10 +650,10 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	int			steal;//GHz
 	float		before_sub;//GHz
 	int			dtype = G_DamageType(mod, dflags);
-	qboolean	plagued=false;
+	//qboolean	plagued = false;
 	float		temp=0;//K03
 	edict_t		*player = G_GetClient(attacker);
-	vec3_t zvec={0,0,0};//GHz
+	//vec3_t		zvec = {0,0,0};//GHz
 	float		startDamage = damage; //doomie
 	upgrade_t	*ability;//4.2 for fury
 	qboolean	target_has_pilot = PM_MonsterHasPilot(targ);
@@ -708,7 +709,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		totem = NextNearestTotem(G_GetClient(targ), TOTEM_EARTH, NULL, true);
 		if(totem && totem->activator)
 		{
-			int resistLevel = getTalentLevel(totem->activator, TALENT_STONE);
+			resistLevel = getTalentLevel(totem->activator, TALENT_STONE);
 			if(x < resistLevel * EARTHTOTEM_RESIST_MULT)
 				damage = startDamage * (1.0 - EARTHTOTEM_RESIST_MULT * resistLevel);
 		}

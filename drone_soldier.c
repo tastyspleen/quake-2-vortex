@@ -13,12 +13,12 @@ SOLDIER
 static int	sound_idle;
 static int	sound_sight1;
 static int	sound_sight2;
-static int	sound_pain_light;
-static int	sound_pain;
-static int	sound_pain_ss;
-static int	sound_death_light;
+//static int	sound_pain_light;
+//static int	sound_pain;
+//static int	sound_pain_ss;
+//static int	sound_death_light;
 static int	sound_death;
-static int	sound_death_ss;
+//static int	sound_death_ss;
 static int	sound_cock;
 
 #define M_SOLDIER_INITIAL_HEALTH	50
