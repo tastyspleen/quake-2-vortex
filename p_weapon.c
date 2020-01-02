@@ -1513,13 +1513,13 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 //GHz START
 	int			i;
 	int			speed, shots = 0;
-	qboolean	fire_this_frame = false;
+	//qboolean	fire_this_frame = false;
 
 	// only fire every other frame
 	if (ent->client->ps.gunframe == 6 || ent->client->ps.gunframe == 8
 		|| ent->client->ps.gunframe == 10)
 	{
-		fire_this_frame = true;
+		//fire_this_frame = true;
 		shots++;
 	}
 	// get weapon properties
