@@ -3072,7 +3072,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	static	qboolean	wasground;
 	int		fire_last = 18;
 	que_t	*curse=NULL;
-	int		viewheight;
+	int		viewheight = ent->viewheight;
 
 	impulse = ucmd->impulse;
 // GHz START

@@ -64,9 +64,10 @@ edict_t *hook_laser_start (edict_t *ent)
 	return(self);
 }
 
-void hook_reset (edict_t *rhook)
+void hook_reset(edict_t* rhook)
 {
-	if (!rhook) return;
+	if (!rhook)
+		return;
 	if (rhook->owner)
 	{
 		if (rhook->owner->client)
@@ -75,9 +76,11 @@ void hook_reset (edict_t *rhook)
 			rhook->owner->client->hook = NULL;
 		}
 	}
-	if (rhook->laser) 
+	if (rhook->laser)
+	{
 		G_FreeEdict(rhook->laser);
 		G_FreeEdict(rhook);
+	}
 }
 
 qboolean hook_cond_reset(edict_t *self)
