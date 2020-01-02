@@ -575,17 +575,21 @@ ReadClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadClient (FILE *f, gclient_t *client)
+static void ReadClient(FILE* f, gclient_t* client)
 {
-	field_t		*field;
+	field_t* field;
+	size_t	count;
 
-	fread (client, sizeof(*client), 1, f);
+	count = fread(client, sizeof(*client), 1, f);
+	if (count)
+		; // don't worry, be happy
 
-	for (field=clientfields ; field->name ; field++)
+	for (field = clientfields; field->name; field++)
 	{
-		ReadField (f, field, (byte *)client);
+		ReadField(f, field, (byte*)client);
 	}
 }
+
 
 /*
 ============
@@ -629,36 +633,45 @@ void WriteGame (char *filename, qboolean autosave)
 	fclose (f);
 }
 
-void ReadGame (char *filename)
+void ReadGame(char* filename)
 {
-	FILE	*f;
+	FILE* f;
 	int		i;
-	char	str[16];
+	char	str[16] = { 0 };
+	size_t	count;
 
-	gi.FreeTags (TAG_GAME);
+	gi.FreeTags(TAG_GAME);
 
-	f = fopen (filename, "rb");
-	if (!f) {
-		gi.error ("Couldn't open %s", filename);
-		exit(1); // never gets here
-	}
-	fread (str, sizeof(str), 1, f);
-	if (Q_stricmp (str, __DATE__))
+	if (dedicated->value)
+		return;
+
+	f = fopen(filename, "rb");
+	if (!f)
 	{
-		fclose (f);
-		gi.error ("Savegame from an older version.\n");
+		gi.error("Couldn't open %s", filename);
+		return;
 	}
 
-	g_edicts =  gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
+	count = fread(str, sizeof(str), 1, f);
+	if (count)
+		; // don't worry, be happy
+	if (strcmp(str, __DATE__))
+	{
+		fclose(f);
+		gi.error("Savegame from an older version.\n");
+	}
+
+	g_edicts = gi.TagMalloc(game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
-	fread (&game, sizeof(game), 1, f);
-	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
-	for (i=0 ; i<game.maxclients ; i++)
-		ReadClient (f, &game.clients[i]);
+	count = fread(&game, sizeof(game), 1, f);
+	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]), TAG_GAME);
+	for (i = 0; i < game.maxclients; i++)
+		ReadClient(f, &game.clients[i]);
 
-	fclose (f);
+	fclose(f);
 }
+
 
 //==========================================================
 
@@ -734,15 +747,18 @@ ReadEdict
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadEdict (FILE *f, edict_t *ent)
+static void ReadEdict(FILE* f, edict_t* ent)
 {
-	field_t		*field;
+	field_t* field;
+	size_t	count;
 
-	fread (ent, sizeof(*ent), 1, f);
+	count = fread(ent, sizeof(*ent), 1, f);
+	if (count)
+		; // don't worry, be happy
 
-	for (field=savefields ; field->name ; field++)
+	for (field = savefields; field->name; field++)
 	{
-		ReadField (f, field, (byte *)ent);
+		ReadField(f, field, (byte*)ent);
 	}
 }
 
@@ -753,15 +769,18 @@ ReadLevelLocals
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadLevelLocals (FILE *f)
+static void ReadLevelLocals(FILE* f)
 {
-	field_t		*field;
+	field_t* field;
+	size_t	count;
 
-	fread (&level, sizeof(level), 1, f);
+	count = fread(&level, sizeof(level), 1, f);
+	if (count)
+		; // don't worry, be happy
 
-	for (field=levelfields ; field->name ; field++)
+	for (field = levelfields; field->name; field++)
 	{
-		ReadField (f, field, (byte *)&level);
+		ReadField(f, field, (byte*)&level);
 	}
 }
 
@@ -826,53 +845,57 @@ calling ReadLevel.
 No clients are connected yet.
 =================
 */
-void ReadLevel (char *filename)
+void ReadLevel(char* filename)
 {
 	int		entnum;
-	FILE	*f;
+	FILE* f;
 	int		i;
 	void	(*base)(void);
-	edict_t	*ent;
+	edict_t* ent;
+	size_t	count;
 
-	f = fopen (filename, "rb");
-	if (!f) {
-		gi.error ("Couldn't open %s", filename);
-		exit(1); // never gets here. gi.error doesn't return
+	f = fopen(filename, "rb");
+	if (!f)
+	{
+		gi.error("Couldn't open %s", filename);
+		return;
 	}
+
 	// free any dynamic memory allocated by loading the level
 	// base state
-	gi.FreeTags (TAG_LEVEL);
+	gi.FreeTags(TAG_LEVEL);
 
 	// wipe all the entities
-	memset (g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
+	memset(g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
 	globals.num_edicts = maxclients->value + 1;
 
 	// check edict size
-	fread (&i, sizeof(i), 1, f);
+	count = fread(&i, sizeof(i), 1, f);
 	if (i != sizeof(edict_t))
 	{
-		fclose (f);
-		gi.error ("ReadLevel: mismatched edict size");
+		fclose(f);
+		gi.error("ReadLevel: mismatched edict size");
 	}
 
 	// check function pointer base address
-	fread (&base, sizeof(base), 1, f);
+	count = fread(&base, sizeof(base), 1, f);
 	if (base != InitGame)
 	{
-		fclose (f);
-		gi.error ("ReadLevel: function pointers have moved");
+		fclose(f);
+		gi.error("ReadLevel: function pointers have moved");
 	}
 
 	// load the level locals
-	ReadLevelLocals (f);
+	ReadLevelLocals(f);
 
 	// load all the entities
 	while (1)
 	{
-		if (fread (&entnum, sizeof(entnum), 1, f) != 1)
+		count = fread(&entnum, sizeof(entnum), 1, f);
+		if (count != 1)
 		{
-			fclose (f);
-			gi.error ("ReadLevel: failed to read entnum");
+			fclose(f);
+			gi.error("ReadLevel: failed to read entnum");
 		}
 		if (entnum == -1)
 			break;
@@ -880,25 +903,25 @@ void ReadLevel (char *filename)
 			globals.num_edicts = entnum + 1;
 
 		ent = &g_edicts[entnum];
-		ReadEdict (f, ent);
+		ReadEdict(f, ent);
 
 		// let the server rebuild world links for this ent
-		memset (&ent->area, 0, sizeof(ent->area));
-		gi.linkentity (ent);
+		memset(&ent->area, 0, sizeof(ent->area));
+		gi.linkentity(ent);
 	}
 
-	fclose (f);
+	fclose(f);
 
 	// mark all clients as unconnected
-	for (i=0 ; i < maxclients->value ; i++)
+	for (i = 0; i < maxclients->value; i++)
 	{
-		ent = &g_edicts[i+1];
+		ent = &g_edicts[i + 1];
 		ent->client = game.clients + i;
 		ent->client->pers.connected = false;
 	}
 
 	// do any load time things at this point
-	for (i=0 ; i < globals.num_edicts ; i++)
+	for (i = 0; i < globals.num_edicts; i++)
 	{
 		ent = &g_edicts[i];
 
