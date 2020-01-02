@@ -714,7 +714,7 @@ edict_t *SpawnDrone (edict_t *ent, int drone_type, qboolean worldspawn)
 		if (tr.fraction < 1)
 		{
 			if (tr.endpos[2] <= ent->s.origin[2])
-				tr.endpos[2] += abs(drone->mins[2]); // spawned below us
+				tr.endpos[2] += fabsf(drone->mins[2]); // spawned below us
 			else
 				tr.endpos[2] -= drone->maxs[2];	// spawned above
 		}

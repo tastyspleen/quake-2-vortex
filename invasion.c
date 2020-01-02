@@ -213,7 +213,7 @@ void INV_SpawnMonsters (edict_t *self)
 
 		// calculate starting position
 		VectorCopy(e->s.origin, start);
-		start[2] = e->absmax[2] + 1 + abs(monster->mins[2]);
+		start[2] = e->absmax[2] + 1 + fabsf(monster->mins[2]);
 
 		tr = gi.trace(start, monster->mins, monster->maxs, start, NULL, MASK_SHOT);
 
@@ -288,7 +288,7 @@ void INV_SpawnPlayers (void)
 		{
 			// get player starting position
 			VectorCopy(e->s.origin, start);
-			start[2] = e->absmax[2] + 1 + abs(cl_ent->mins[2]);
+			start[2] = e->absmax[2] + 1 + fabsf(cl_ent->mins[2]);
 
 			tr = gi.trace(start, cl_ent->mins, cl_ent->maxs, start, NULL, MASK_SHOT);
 
@@ -474,7 +474,7 @@ void inv_defenderspawn_think (edict_t *self)
 			//gi.dprintf("%d: attempting to spawn a monster\n", num);
 			// get starting position
 			VectorCopy(self->s.origin, start);
-			start[2] = self->absmax[2] + 1 + abs(monster->mins[2]);
+			start[2] = self->absmax[2] + 1 + fabsf(monster->mins[2]);
 
 			tr = gi.trace(start, monster->mins, monster->maxs, start, NULL, MASK_SHOT);
 			
@@ -597,9 +597,9 @@ void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 		//	bonus = 2;
 
 		base_exp = target->monsterinfo.control_cost*EXP_WORLD_MONSTER;
-		exp_points = (int)ceil(base_exp*levelmod*dmgmod*bonus);
+		exp_points = (int)ceilf(base_exp * levelmod * dmgmod * bonus);
 		base_credits = target->monsterinfo.control_cost*CREDITS_OTHER_BASE;
-		credits = (int)ceil(base_credits*levelmod*dmgmod*bonus);
+		credits = (int)ceilf(base_credits * levelmod * dmgmod * bonus);
 
 		//gi.dprintf("exp=%d base=%d levelmod=%.1f dmgmod=%.1f bonus=%.1f\n", exp_points, base_exp, levelmod, dmgmod, bonus);
 
@@ -618,6 +618,6 @@ void INV_AwardMonsterKill (edict_t *attacker, edict_t *target)
 
 		//gi.cprintf(player, PRINT_HIGH, "You gained %d experience and %d credits!\n", exp_points, credits);
 		gi.cprintf(player, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
-			damage, (dmgmod * 100), '%', V_GetMonsterName(target), target->monsterinfo.level, exp_points, credits);
+			damage, ((double)dmgmod * 100), '%', V_GetMonsterName(target), target->monsterinfo.level, exp_points, credits);
 	}
 }

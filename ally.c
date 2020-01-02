@@ -8,7 +8,7 @@
 #define	CENTERPRINT				1
 
 int	team_numbers[100];
-int	team_colors[] = 
+int	team_colors[] =
 {
 		0xf2f2f0f0,		//0 red
 		0xf3f3f1f1,		//1 blue
@@ -22,7 +22,7 @@ int	team_colors[] =
 		0xf2f3f0f1,		//9 red blue
 };
 
-int GetTeamColor (int teamnum)
+int GetTeamColor(int teamnum)
 {
 	int index = teamnum - 100;
 
@@ -32,14 +32,14 @@ int GetTeamColor (int teamnum)
 		return 0; // no colors left
 }
 
-qboolean ValidAllyMode (void)
+qboolean ValidAllyMode(void)
 {
 	if (pvm->value || domination->value || ctf->value || invasion->value)
 		return false;
 	return true;
 }
 
-void InitializeTeamNumbers (void)
+void InitializeTeamNumbers(void)
 {
 	int i;
 
@@ -48,17 +48,17 @@ void InitializeTeamNumbers (void)
 	if (!ValidAllyMode())
 		return;
 
-	for (i=0; i<100; i++) 
+	for (i = 0; i < 100; i++)
 	{
 		team_numbers[i] = i + 100; // value == index + 100
 	}
 }
 
-int AssignTeamNumber (void)
+int AssignTeamNumber(void)
 {
 	int i, j;
 
-	for (i=0; i<100; i++)
+	for (i = 0; i < 100; i++)
 	{
 		if (!team_numbers[i])
 			continue;
@@ -69,7 +69,7 @@ int AssignTeamNumber (void)
 	return 0;
 }
 
-qboolean ValidAlly (edict_t *ent)
+qboolean ValidAlly(edict_t* ent)
 {
 	// FIXME: possibly add a level check here as well (used for validation of current allies)
 	// can't ally in domination or pvm mode
@@ -87,7 +87,7 @@ qboolean ValidAlly (edict_t *ent)
 	return true;
 }
 
-qboolean CanAlly (edict_t *ent, edict_t *other, int range)
+qboolean CanAlly(edict_t* ent, edict_t* other, int range)
 {
 	// you can't ally with yourself
 	if (ent == other)
@@ -118,7 +118,7 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 		return false;
 	}
 	// only allow allies when their level isn't too high, and server has enough players
-	if ((ent->myskills.level > AveragePlayerLevel()*1.5) || (other->myskills.level > AveragePlayerLevel()*1.5) /*|| (ActivePlayers() < 6)*/)
+	if ((ent->myskills.level > AveragePlayerLevel() * 1.5) || (other->myskills.level > AveragePlayerLevel() * 1.5) /*|| (ActivePlayers() < 6)*/)
 	{
 		//gi.dprintf("no1\n");
 		return false;
@@ -134,7 +134,7 @@ qboolean CanAlly (edict_t *ent, edict_t *other, int range)
 	return true;
 }
 
-qboolean IsAlly (edict_t *ent, edict_t *other)
+qboolean IsAlly(edict_t* ent, edict_t* other)
 {
 	if (!ent || !other)
 		return false;
@@ -148,10 +148,10 @@ qboolean IsAlly (edict_t *ent, edict_t *other)
 		return false;
 }
 
-int numAllies (edict_t *ent)
+int numAllies(edict_t* ent)
 {
-	int		i, players=0;
-	edict_t *cl_ent;
+	int		i, players = 0;
+	edict_t* cl_ent;
 
 	// allies not enabled
 	if (allies->value < 1)
@@ -160,9 +160,9 @@ int numAllies (edict_t *ent)
 	if (!ent->teamnum)
 		return 0;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		cl_ent = g_edicts+1+i;
+		cl_ent = g_edicts + 1 + i;
 
 		if (!cl_ent->inuse)
 			continue;
@@ -176,10 +176,10 @@ int numAllies (edict_t *ent)
 	return players;
 }
 
-void ResetAlliances (edict_t *ent)
+void ResetAlliances(edict_t* ent)
 {
 	int		i;
-	edict_t *cl_ent;
+	edict_t* cl_ent;
 
 	// allies not enabled
 	if (allies->value < 1)
@@ -188,9 +188,9 @@ void ResetAlliances (edict_t *ent)
 	if (!ent->teamnum)
 		return;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		cl_ent = g_edicts+1+i;
+		cl_ent = g_edicts + 1 + i;
 
 		if (!cl_ent->inuse)
 			continue;
@@ -203,10 +203,10 @@ void ResetAlliances (edict_t *ent)
 	}
 }
 
-edict_t *getPlayerByName (const char *name)
+edict_t* getPlayerByName(const char* name)
 {
 	int		i;
-	edict_t *player, *found = NULL;
+	edict_t* player, * found = NULL;
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
@@ -223,18 +223,18 @@ edict_t *getPlayerByName (const char *name)
 	return found;
 }
 
-void UpdateAlliedTeamnum (int old_teamnum, int new_teamnum)
+void UpdateAlliedTeamnum(int old_teamnum, int new_teamnum)
 {
 	int		i;
-	edict_t *cl_ent;
+	edict_t* cl_ent;
 
 	// if we didn't have a team, then there is nobody to update
 	if (!old_teamnum)
 		return;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		cl_ent = g_edicts+1+i;
+		cl_ent = g_edicts + 1 + i;
 
 		if (!cl_ent->inuse)
 			continue;
@@ -243,7 +243,7 @@ void UpdateAlliedTeamnum (int old_teamnum, int new_teamnum)
 	}
 }
 
-void allymarker_think (edict_t *self)
+void allymarker_think(edict_t* self)
 {
 	vec3_t start, right;
 
@@ -255,29 +255,29 @@ void allymarker_think (edict_t *self)
 	}
 
 	// beam diameter goes to 0 if we're dead or cloaked (to hide it)
-	if ((self->owner->health < 1) || (self->owner->client->cloaking 
+	if ((self->owner->health < 1) || (self->owner->client->cloaking
 		&& self->owner->svflags & SVF_NOCLIENT) || (self->owner->flags & FL_WORMHOLE))
 		self->s.frame = 0;
-	else 
+	else
 		self->s.frame = 4;
 
 	self->s.skinnum = GetTeamColor(self->owner->teamnum);
 
-	self->s.angles[YAW]+=18;
+	self->s.angles[YAW] += 18;
 	AngleCheck(&self->s.angles[YAW]);
 	AngleVectors(self->s.angles, NULL, right, NULL);
 
 	if (PM_PlayerHasMonster(self->owner))
 	{
 		VectorCopy(self->owner->owner->s.origin, start);
-		start[2] = self->owner->owner->absmax[2]+16;
+		start[2] = self->owner->owner->absmax[2] + 16;
 	}
 	else
 	{
 		VectorCopy(self->owner->s.origin, start);
-		start[2] = self->owner->absmax[2]+16;
+		start[2] = self->owner->absmax[2] + 16;
 	}
-	
+
 	VectorMA(start, 12, right, self->s.origin);
 	VectorMA(start, -12, right, self->s.old_origin);
 	gi.linkentity(self);
@@ -285,42 +285,42 @@ void allymarker_think (edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void RemoveAllyMarker (edict_t *ent)
+void RemoveAllyMarker(edict_t* ent)
 {
-	edict_t *scan = NULL;
+	edict_t* scan = NULL;
 
-	while((scan = G_Find(scan, FOFS(classname), "allylaser")) != NULL)
+	while ((scan = G_Find(scan, FOFS(classname), "allylaser")) != NULL)
 	{
 		// remove all markers owned by this entity
-		if (scan && scan->inuse && scan->owner 
+		if (scan && scan->inuse && scan->owner
 			&& scan->owner->client && (scan->owner == ent))
 			G_FreeEdict(scan);
 	}
 }
 
-void CreateAllyMarker (edict_t *ent)
+void CreateAllyMarker(edict_t* ent)
 {
-	edict_t *laser;
+	edict_t* laser;
 
 	// no team colors to assign
 	if (!GetTeamColor(ent->teamnum))
 		return;
 
 	laser = G_Spawn();
-	laser->movetype	= MOVETYPE_NONE;
+	laser->movetype = MOVETYPE_NONE;
 	laser->solid = SOLID_NOT;
-	laser->s.renderfx = RF_BEAM|RF_TRANSLUCENT;
+	laser->s.renderfx = RF_BEAM | RF_TRANSLUCENT;
 	laser->s.modelindex = 1; // must be non-zero
 	laser->classname = "allylaser";
 	laser->s.frame = 4; // beam diameter
-    laser->owner = ent;
-	
-    laser->think = allymarker_think;
+	laser->owner = ent;
+
+	laser->think = allymarker_think;
 	gi.linkentity(laser);
 	laser->nextthink = level.time + FRAMETIME;
 }
-	
-void AddAlly (edict_t *ent, edict_t *other)
+
+void AddAlly(edict_t* ent, edict_t* other)
 {
 	// if the player doesn't have a team number, assign one
 	if (!ent->teamnum)
@@ -341,7 +341,7 @@ void AddAlly (edict_t *ent, edict_t *other)
 	}
 }
 
-void RemoveAlly (edict_t *ent, edict_t *other)
+void RemoveAlly(edict_t* ent, edict_t* other)
 {
 	// will removing a player invalidate the team? (no more allies)
 	if (numAllies(ent) - 1 < 1)
@@ -361,18 +361,18 @@ void RemoveAlly (edict_t *ent, edict_t *other)
 		other->teamnum = 0;
 }
 
-void NotifyAllies (edict_t *ent, int msgtype, char *s)
+void NotifyAllies(edict_t* ent, int msgtype, char* s)
 {
 	int		i;
-	edict_t *cl_ent;
+	edict_t* cl_ent;
 
 	// no team assigned!
 	if (!ent->teamnum)
 		return;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		cl_ent = g_edicts+1+i;
+		cl_ent = g_edicts + 1 + i;
 
 		if (!cl_ent->inuse)
 			continue;
@@ -387,10 +387,10 @@ void NotifyAllies (edict_t *ent, int msgtype, char *s)
 	}
 }
 
-int AddAllyExp (edict_t *ent, int exp)
+int AddAllyExp(edict_t* ent, int exp)
 {
-	int		i, allies=0;
-	edict_t	*cl_ent;
+	int		i, allies = 0;
+	edict_t* cl_ent;
 
 	// get number of players allied with us
 	allies = numAllies(ent);
@@ -398,12 +398,12 @@ int AddAllyExp (edict_t *ent, int exp)
 		return 0;
 
 	// divide experience evenly among allies
-	exp /= allies+1;
+	exp /= allies + 1;
 
 	// award points to allies
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		cl_ent = g_edicts+1+i;
+		cl_ent = g_edicts + 1 + i;
 
 		if (!cl_ent->inuse)
 			continue;
@@ -423,11 +423,11 @@ int AddAllyExp (edict_t *ent, int exp)
 	return exp;
 }
 
-void AllyID (edict_t *ent)
+void AllyID(edict_t* ent)
 {
 	vec3_t	forward, right, offset, start, end;
 	trace_t tr;
-	edict_t *e=NULL;
+	edict_t* e = NULL;
 
 	if (!allies->value)
 		return;
@@ -435,9 +435,9 @@ void AllyID (edict_t *ent)
 		return;
 
 	// find entity near crosshair
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	VectorSet(offset, 0, 7,  ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+	VectorSet(offset, 0, 7, ent->viewheight - 8);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
 	VectorMA(start, 8192, forward, end);
 	tr = gi.trace(start, NULL, NULL, end, ent, MASK_SHOT);
 
@@ -459,7 +459,7 @@ void AllyID (edict_t *ent)
 	}
 }
 
-void AbortAllyWait (edict_t *ent)
+void AbortAllyWait(edict_t* ent)
 {
 	if (!ent)
 		return;
@@ -470,9 +470,9 @@ void AbortAllyWait (edict_t *ent)
 	ent->client->ally_time = 0;
 }
 
-void ShowAllyInviteMenu_handler (edict_t *ent, int option)
+void ShowAllyInviteMenu_handler(edict_t* ent, int option)
 {
-	edict_t *e = ent->client->allytarget;
+	edict_t* e = ent->client->allytarget;
 
 	if (!e || !e->inuse)
 		return;
@@ -522,15 +522,15 @@ void ShowAllyInviteMenu_handler (edict_t *ent, int option)
 	}
 }
 
-void ShowAllyInviteMenu (edict_t *ent)
+void ShowAllyInviteMenu(edict_t* ent)
 {
-	edict_t *e = ent->client->allytarget;
+	edict_t* e = ent->client->allytarget;
 
-	 if (!ShowMenu(ent))
-        return;
+	if (!ShowMenu(ent))
+		return;
 
 	clearmenu(ent);
-		//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
+	//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 	addlinetomenu(ent, va("%s", e->client->pers.netname), MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "would like to ally.", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
@@ -549,9 +549,9 @@ void ShowAllyInviteMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-void ShowAllyWaitMenu_handler (edict_t *ent, int option)
+void ShowAllyWaitMenu_handler(edict_t* ent, int option)
 {
-	edict_t *e = ent->client->allytarget;
+	edict_t* e = ent->client->allytarget;
 
 	if (option == 666)	//ent closed the menu
 	{
@@ -570,12 +570,12 @@ void ShowAllyWaitMenu_handler (edict_t *ent, int option)
 	closemenu(ent);
 }
 
-void ShowAllyWaitMenu (edict_t *ent)
+void ShowAllyWaitMenu(edict_t* ent)
 {
-	 if (!ShowMenu(ent))
-        return;
+	if (!ShowMenu(ent))
+		return;
 	clearmenu(ent);
-		//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
+	//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 	addlinetomenu(ent, "Please wait for player to ", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "accept your invitation. ", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
@@ -594,9 +594,9 @@ void ShowAllyWaitMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-void ShowAddAllyMenu_handler (edict_t *ent, int option)
+void ShowAddAllyMenu_handler(edict_t* ent, int option)
 {
-	edict_t *e;
+	edict_t* e;
 
 	if (option == 666)	//ent closed the menu
 	{
@@ -605,7 +605,7 @@ void ShowAddAllyMenu_handler (edict_t *ent, int option)
 	}
 
 	// get ally target
-	e = V_getClientByNumber(option-1);
+	e = V_getClientByNumber(option - 1);
 
 	// make sure we're still allowed to ally
 	if (!CanAlly(ent, e, ALLY_RANGE))
@@ -633,13 +633,13 @@ void ShowAddAllyMenu_handler (edict_t *ent, int option)
 	ShowAllyInviteMenu(e);
 }
 
-void ShowAddAllyMenu (edict_t *ent)
+void ShowAddAllyMenu(edict_t* ent)
 {
 	int i;
 	int j = 0;
-	edict_t *temp;
+	edict_t* temp;
 
-	 if (!ShowMenu(ent))
+	if (!ShowMenu(ent))
 		return;
 	clearmenu(ent);
 
@@ -651,7 +651,7 @@ void ShowAddAllyMenu (edict_t *ent)
 		if (CanAlly(ent, temp, ALLY_RANGE))
 		{
 			//Add player to the list
-			addlinetomenu(ent, va(" %s (%s)", temp->myskills.player_name, 
+			addlinetomenu(ent, va(" %s (%s)", temp->myskills.player_name,
 				GetClassString(temp->myskills.class_num)), GetClientNumber(temp));
 			++j;
 
@@ -661,7 +661,7 @@ void ShowAddAllyMenu (edict_t *ent)
 			if (j >= 10)
 				break;
 		}
-		
+
 	}
 
 	//Menu footer
@@ -678,9 +678,9 @@ void ShowAddAllyMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-void ShowRemoveAllyMenu_handler (edict_t *ent, int option)
+void ShowRemoveAllyMenu_handler(edict_t* ent, int option)
 {
-	edict_t *e;
+	edict_t* e;
 
 	if (option == 666)	//ent closed the menu
 	{
@@ -688,7 +688,7 @@ void ShowRemoveAllyMenu_handler (edict_t *ent, int option)
 		return;
 	}
 
-	e = V_getClientByNumber(option-1);
+	e = V_getClientByNumber(option - 1);
 	RemoveAlly(ent, e);
 	closemenu(ent);
 
@@ -703,14 +703,14 @@ void ShowRemoveAllyMenu_handler (edict_t *ent, int option)
 	gi.cprintf(ent, PRINT_HIGH, "Ally removed.\n");
 }
 
-void ShowRemoveAllyMenu (edict_t *ent)
+void ShowRemoveAllyMenu(edict_t* ent)
 {
 	int i;
 	int j = 0;
-	edict_t *temp;
+	edict_t* temp;
 
-	 if (!ShowMenu(ent))
-        return;
+	if (!ShowMenu(ent))
+		return;
 	clearmenu(ent);
 
 	addlinetomenu(ent, "Select a player:", MENU_GREEN_CENTERED);
@@ -724,7 +724,7 @@ void ShowRemoveAllyMenu (edict_t *ent)
 			addlinetomenu(ent, va(" %s", temp->myskills.player_name), GetClientNumber(temp));
 			++j;
 		}
-		
+
 	}
 
 	//Menu footer
@@ -741,7 +741,7 @@ void ShowRemoveAllyMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-void ShowAllyMenu_handler (edict_t *ent, int option)
+void ShowAllyMenu_handler(edict_t* ent, int option)
 {
 	if (option == 1)
 		ShowAddAllyMenu(ent);
@@ -751,11 +751,11 @@ void ShowAllyMenu_handler (edict_t *ent, int option)
 		closemenu(ent);
 }
 
-void ShowAllyMenu (edict_t *ent)
+void ShowAllyMenu(edict_t* ent)
 {
 	int i;
 	int j = 0;
-	edict_t *temp;
+	edict_t* temp;
 
 	//Don't bother displaying the menu if alliances are disabled
 	if (!allies->value)
@@ -771,8 +771,8 @@ void ShowAllyMenu (edict_t *ent)
 		return;
 	}
 
-	 if (!ShowMenu(ent))
-        return;
+	if (!ShowMenu(ent))
+		return;
 	clearmenu(ent);
 
 	addlinetomenu(ent, "Currently allied with:", MENU_GREEN_CENTERED);
@@ -804,21 +804,21 @@ void ShowAllyMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-int AlliedTeamComp (const void *v1, const void *v2)
+int AlliedTeamComp(const void* v1, const void* v2)
 {
-	edict_t *p1 = (edict_t *)v1, *p2 = (edict_t *)v2;
-	return p1->teamnum-p2->teamnum;
+	edict_t* p1 = (edict_t*)v1, * p2 = (edict_t*)v2;
+	return p1->teamnum - p2->teamnum;
 }
 
-void PrintAlliedTeams (edict_t *ent)
+void PrintAlliedTeams(edict_t* ent)
 {
 	int i, j;
-	edict_t *player[MAX_CLIENTS], *e;
+	edict_t* player[MAX_CLIENTS], * e;
 
 	// create an array of allied players
-	for (i=0, j=0; i<game.maxclients ; i++)
+	for (i = 0, j = 0; i < game.maxclients; i++)
 	{
-		e = g_edicts+1+i;
+		e = g_edicts + 1 + i;
 
 		if (!e->inuse || !e->teamnum)
 			continue;
@@ -828,7 +828,7 @@ void PrintAlliedTeams (edict_t *ent)
 
 	qsort(player, j, sizeof(edict_t), AlliedTeamComp);
 
-	for (i=0 ; i<j ; i++)
+	for (i = 0; i < j; i++)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "%d: %s\n", player[i]->teamnum, player[i]->client->pers.netname);
 	}

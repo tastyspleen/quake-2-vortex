@@ -87,7 +87,7 @@ qboolean minisentry_checkposition (edict_t *self)
 	if (self->style == SENTRY_UPRIGHT)
 	{
 		VectorCopy(self->s.origin, end);
-		end[2]--;// -= abs(self->mins[2])+1;
+		end[2]--;// -= fabsf(self->mins[2])+1;
 		tr = gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_SHOT);//MASK_SOLID);
 		if (tr.fraction == 1.0 || (tr.ent != world && tr.ent->mtype != M_LASERPLATFORM))
 		{
@@ -189,7 +189,7 @@ void minisentry_attack (edict_t *self)
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 	VectorCopy(self->s.origin, start);
 	if (self->owner && self->owner->style == SENTRY_FLIPPED)
-		start[2] -= abs(self->mins[2]);
+		start[2] -= fabsf(self->mins[2]);
 	else
 		start[2] += self->maxs[2];
 	VectorMA(start, (self->maxs[0] + 16), forward, start);
@@ -205,7 +205,7 @@ void minisentry_attack (edict_t *self)
 		if (slowed)
 			self->wait = level.time + 2.0;
 		else if (self->chill_time > level.time)
-			self->wait = level.time + (1.0 * (1 + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * self->chill_level));
+			self->wait = level.time + (1.0 * (1.0f + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * self->chill_level));
 		else
 			self->wait = level.time + 1.0;
 	
@@ -337,7 +337,7 @@ void minisentry_think (edict_t *self)
 		else if (converted && self->creator && self->creator->inuse && self->creator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
 				gi.cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
-					V_GetMonsterName(self), self->removetime-level.time);	
+					V_GetMonsterName(self), (double)self->removetime - (double)level.time);
 	}
 
 	// sentry is stunned
@@ -516,14 +516,14 @@ void base_createturret (edict_t *self)
 		VectorSet(sentry->maxs, 28, 28, 24);
 		VectorCopy(self->s.origin, end);
 		//end[2] += self->maxs[2] + sentry->mins[2] + 1;
-		end[2] += abs(sentry->mins[2])+1;
+		end[2] += fabsf(sentry->mins[2])+1;
 	}
 	else
 	{
 		VectorSet(sentry->mins, -28, -28, -24);
 		VectorSet(sentry->maxs, 28, 28, 12);
 		VectorCopy(self->s.origin, end);
-		//end[2] -= abs(self->mins[2]) + sentry->maxs[2] + 1;
+		//end[2] -= fabsf(self->mins[2]) + sentry->maxs[2] + 1;
 		end[2] -= sentry->maxs[2]+1;
 	}
 
@@ -600,7 +600,7 @@ void SpawnMiniSentry (edict_t *ent, int cost, float skill_mult, float delay_mult
 	{
 		// add the height of the base
 		VectorCopy(tr.endpos, end);
-		end[2] += abs(base->mins[2]);
+		end[2] += fabsf(base->mins[2]);
 		//base->movetype = MOVETYPE_NONE;
 		base->style = SENTRY_UPRIGHT;
 	}

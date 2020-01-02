@@ -72,7 +72,7 @@ edict_t *findradius (edict_t *from, vec3_t org, float rad)
 		if (from->solid == SOLID_NOT)
 			continue;
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
 		if (VectorLength(eorg) > rad)
 			continue;
 		return from;
@@ -101,7 +101,7 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 
 	if (prev_ed) {
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
+			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j]) * 0.5f);
 		prev_rad = VectorLength(eorg);
 	} else
 		prev_rad = rad + 1;
@@ -114,7 +114,7 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 		if (from->solid == SOLID_NOT)
 			continue;
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
 		vlen = VectorLength(eorg);
 		if (vlen > rad) // found edict is outside scanning radius
 			continue;
@@ -145,7 +145,7 @@ edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 
 	if (prev_ed) {
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
+			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j]) * 0.5f);
 		prev_rad = VectorLength(eorg);
 	} else
 		prev_rad = rad + 1;
@@ -156,7 +156,7 @@ edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 		if (!from->inuse)
 			continue;
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
 		vlen = VectorLength(eorg);
 		if (vlen > rad) // found edict is outside scanning radius
 			continue;
@@ -596,7 +596,7 @@ void vectoangles (vec3_t value1, vec3_t angles)
 		if (yaw < 0)
 			yaw += 360;
 
-		forward = sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
+		forward = sqrtf(value1[0]*value1[0] + value1[1]*value1[1]);
 		pitch = (float) (atan2(value1[2], forward) * 180 / M_PI);//K03
 		if (pitch < 0)
 			pitch += 360;
@@ -652,7 +652,7 @@ edict_t *G_Spawn (void)
 	{
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
+		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5f ) )
 		{
 			G_InitEdict (e);
 			return e;
@@ -962,13 +962,13 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	if (ent->client->respawn_time > level.time)
 	{
 		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
-			ent->client->respawn_time-level.time);
+			(double)ent->client->respawn_time - (double)level.time);
 		return false;
 	}
 	if (ent->client->ability_delay > level.time) 
 	{
 		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
-			ent->client->ability_delay-level.time);
+			(double)ent->client->ability_delay - (double)level.time);
 		return false;
 	}
 	if (pc_cost && (ent->client->pers.inventory[power_cube_index] < pc_cost))
@@ -1356,7 +1356,7 @@ qboolean visible1 (edict_t *ent1, edict_t *ent2)
 {
 	vec3_t	from;
 	edict_t *ignore;
-	trace_t	tr;
+	trace_t	tr = { 0 };
 
 	// dont go thru BSP or forcewall
 	ignore = ent1;
@@ -1437,9 +1437,9 @@ qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizo
 
 	if (horizontal_degrees)
 	{
-		delta = abs(old_angles[YAW]-new_angles[YAW]);
+		delta = fabsf(old_angles[YAW] - new_angles[YAW]);
 		if (delta > 180)
-			delta = 360-delta;
+			delta = 360 - delta;
 		//gi.dprintf("delta %d horizontal\n", delta);
 		if (delta > horizontal_degrees)
 			return false;
@@ -1448,11 +1448,11 @@ qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizo
 	if (vertical_degrees)
 	{
 		if (ent->client)
-			delta = abs(old_angles[PITCH]-new_angles[PITCH]);
+			delta = fabsf(old_angles[PITCH] - new_angles[PITCH]);
 		else
-			delta = abs(ent->s.angles[PITCH]-forward[PITCH]);
+			delta = fabsf(ent->s.angles[PITCH] - forward[PITCH]);
 		if (delta > 180)
-			delta = 360-delta;
+			delta = 360 - delta;
 		//gi.dprintf("delta %d vertical\n", delta);
 		if (delta > vertical_degrees)
 			return false;
@@ -1660,7 +1660,7 @@ int G_GetNumSummonable (edict_t *ent, char *classname)
 // to get the hypotenuse across the entire horizontal bounding box
 int G_GetHypotenuse (vec3_t v)
 {
-	return floattoint(sqrt(((v[0]*v[0]) + (v[1]*v[1]))));
+	return floattoint(sqrtf(((v[0]*v[0]) + (v[1]*v[1]))));
 }
 
 qboolean G_GetSpawnLocation (edict_t *ent, float range, vec3_t mins, vec3_t maxs, vec3_t start)
@@ -1867,6 +1867,12 @@ void G_DrawBoundingBox (edict_t *ent)
 
 edict_t *G_FindEntityByMtype (int mtype, edict_t *from)
 {
+	if (!from)
+	{
+		gi.dprintf("NULL entity pointer passed to %s", __func__);
+		return NULL; /* received null, give null */
+	}
+
 	if (from)
 		from++;
 	else

@@ -735,7 +735,7 @@ void sentRotate(edict_t *self)
 
 	if (self->wait == 0)
 	{
-		if (abs(self->s.angles[YAW] - self->ideal_yaw) < SENTRY_ROTATE_SPEED)
+		if (fabsf(self->s.angles[YAW] - self->ideal_yaw) < SENTRY_ROTATE_SPEED)
 			self->s.angles[YAW] = self->ideal_yaw;
 		if (self->s.angles[YAW] == self->ideal_yaw)
 		{
@@ -1099,7 +1099,7 @@ void SpawnSentry1 (edict_t *ent, int sentryType, int cost, float skill_mult, flo
 	if ((tr.fraction != 1.0) && (tr.endpos[2] < ent->s.origin[2]) && (angles[PITCH] == 270))
 	{
 		//gi.dprintf("aiming at ground\n");
-		end[2] += abs(sentry->mins[2])+1;
+		end[2] += fabsf(sentry->mins[2])+1;
 	}
 	// make sure sentry doesn't spawn in a solid
 	tr = gi.trace(end, sentry->mins, sentry->maxs, end, NULL, MASK_SHOT);

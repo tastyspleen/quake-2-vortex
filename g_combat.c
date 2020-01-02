@@ -7,9 +7,9 @@
 //==============================================================
 // Scale damage amount by location of hit on player's body..
 //==============================================================
-#define LEG_DAMAGE     (height/2.0)-abs(targ->mins[2])-3
-#define STOMACH_DAMAGE (height/1.6)-abs(targ->mins[2])
-#define CHEST_DAMAGE   (height/1.4)-abs(targ->mins[2])
+#define LEG_DAMAGE     (height/2.0f)-fabsf(targ->mins[2])-3
+#define STOMACH_DAMAGE (height/1.6f)-fabsf(targ->mins[2])
+#define CHEST_DAMAGE   (height/1.4f)-fabsf(targ->mins[2])
 
 //==============================================================
 /*
@@ -25,7 +25,7 @@ float location_scaling(edict_t *targ, vec3_t point, int damage) {
 	if (targ->flags & FL_GODMODE)
 		return 1.0;
 
-	height = abs(targ->mins[2])+targ->maxs[2];
+	height = fabsf(targ->mins[2])+targ->maxs[2];
 	z_rel = point[2]-targ->s.origin[2];
 	if (z_rel < LEG_DAMAGE)
 	  return 0.60;  // Scale down by 2/5
@@ -81,14 +81,14 @@ qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take,
 	if (targ->mtype || (targ->myskills.class_num == CLASS_POLTERGEIST))
 		return false;
 
-	if ((targ->health-take) > (0.5*targ->max_health))
+	if ((targ->health-take) > (0.5f * targ->max_health))
 		return false;
 	
 	targ->knockweapon_debounce_time = level.time + 1.0;
 	// check for impact location
 	// if it's at about the right height, and in front, then
 	// we're probably on-target
-	height = abs(targ->mins[2])+targ->maxs[2];
+	height = fabsf(targ->mins[2])+targ->maxs[2];
 	z_rel = point[2]-targ->s.origin[2];
 
 	//gi.dprintf("z_rel: %.1f point: %.1f origin: %.1f, chest: %.1f stomach: %.1f", 

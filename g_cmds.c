@@ -181,7 +181,7 @@ void FL_think (edict_t *self)
 
 		// special circumstance for flipped sentry
 		if (self->owner->owner && self->owner->owner->style == SENTRY_FLIPPED)
-			start[2] -= abs(self->owner->mins[2]);
+			start[2] -= fabsf(self->owner->mins[2]);
 		else
 			start[2] += self->owner->maxs[2];
 		VectorMA(start, (self->owner->maxs[0] + 16), forward, start);

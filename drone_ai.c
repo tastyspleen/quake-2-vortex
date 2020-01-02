@@ -732,7 +732,7 @@ qboolean FindPlat (edict_t *self, vec3_t plat_pos)
 			continue;
 
 		VectorCopy(start, end);
-		end[2] += abs(e->s.origin[2]);
+		end[2] += fabsf(e->s.origin[2]);
 		if (distance(end, self->enemy->s.origin)
 			> distance(self->s.origin, self->enemy->s.origin))
 			continue; // plat must bring us closer to our goal
@@ -1799,7 +1799,7 @@ void drone_ai_run (edict_t *self, float dist)
 		{
 		//	gi.dprintf("standing on plat!\n");
 			// divide by speed to get time to reach destination
-			time = 0.1 * (abs(self->groundentity->s.origin[2]) / self->groundentity->moveinfo.speed);
+			time = 0.1f * (fabsf(self->groundentity->s.origin[2]) / self->groundentity->moveinfo.speed);
 			self->monsterinfo.pausetime = level.time + time;
 			self->monsterinfo.stand(self);
 			self->monsterinfo.aiflags &= ~AI_PURSUE_PLAT_GOAL;

@@ -43,7 +43,7 @@ static void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed, int
 	VectorMA (start, 8192, dir, end);
 	tr = gi.trace (start, NULL, NULL, end, self, MASK_SHOT);
 	if (G_EntIsAlive(tr.ent) && (tr.ent->svflags & SVF_MONSTER) && (tr.ent->monsterinfo.dodge) 
-		&& infront(tr.ent, self) && (tr.endpos[2] > (tr.ent->absmin[2]+abs(tr.ent->mins[2]))))
+		&& infront(tr.ent, self) && (tr.endpos[2] > (tr.ent->absmin[2] + fabsf(tr.ent->mins[2]))))
 	{
 		VectorSubtract (tr.endpos, start, v);
 		eta = (VectorLength(v) - tr.ent->maxs[0]) / speed;
@@ -434,8 +434,8 @@ Fires a single blaster bolt.  Used by the blaster and hyper blaster.
 //K03 Begin
 void homing_think (edict_t *ent)
 {
-	edict_t *target = NULL;
-	edict_t *blip = NULL;
+	//edict_t *target = NULL;
+	//edict_t *blip = NULL;
 	//vec3_t  targetdir, blipdir;
 	//vec_t   speed;
 
@@ -2219,8 +2219,6 @@ static void Trap_Think (edict_t *ent)
 	// pull the enemy in
 	if (best)
 	{
-		vec3_t	forward;
-
 		if (best->groundentity)
 		{
 			best->s.origin[2] += 1;

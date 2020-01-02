@@ -15,7 +15,7 @@ const char* s2;
 
 // chill effects for movement and attack refire speed
 // note that player weapon refire is handled independently (50% effectiveness on players vs monsters)
-#define CHILL_DEFAULT_BASE			0
+#define CHILL_DEFAULT_BASE			0.0f
 #define CHILL_DEFAULT_ADDON			0.1f
 
 // berserker sprint
