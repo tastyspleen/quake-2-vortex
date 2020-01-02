@@ -729,6 +729,7 @@ void Grenade_Explode (edict_t *ent)
 	G_FreeEdict (ent);
 }
 
+#if 0 /* disables code */
 static void Cluster_Explode (edict_t *ent)
 
 {
@@ -785,6 +786,7 @@ static void Cluster_Explode (edict_t *ent)
 
 	G_FreeEdict (ent);
 }
+#endif
 
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
@@ -1416,7 +1418,8 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	trace_t		tr;
 	edict_t		*ignore;
 	int			mask;
-	qboolean	water, ducked;
+	//qboolean	water;
+	qboolean	ducked;
 
 	int range = WEAPON_20MM_INITIAL_RANGE + (WEAPON_20MM_ADDON_RANGE * self->myskills.weapons[WEAPON_20MM].mods[1].current_level);
 
@@ -1428,7 +1431,7 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	VectorMA (start, range, aimdir, end);
 	VectorCopy (start, from);
 	ignore = self;
-	water = false;
+	//water = false;
 	mask = MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA;
 	while (ignore)
 	{
@@ -1437,7 +1440,7 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 		if (tr.contents & (CONTENTS_SLIME|CONTENTS_LAVA))
 		{
 			mask &= ~(CONTENTS_SLIME|CONTENTS_LAVA);
-			water = true;
+			//water = true;
 		}
 		else
 		{
@@ -1861,14 +1864,13 @@ void fire_ionripper (edict_t *self, vec3_t start, vec3_t dir, int damage, int sp
 
 }
 
-
+#if 0 /* disables code */
 // RAFAEL
 /*
 =================
 fire_heat
 =================
 */
-/*
 void heat_think (edict_t *self)
 {
 	edict_t		*target = NULL;
@@ -1896,7 +1898,6 @@ void heat_think (edict_t *self)
 			continue;
 		
 		// if we need to reduce the tracking cone
-		/*
 		{
 			vec3_t	vec;
 			float	dot;
@@ -1910,9 +1911,8 @@ void heat_think (edict_t *self)
 			if (dot > 0.6)
 				continue;
 		}
-		*/
 
-/*		if (!infront (self, target))
+		if (!infront (self, target))
 			continue;
 
 		VectorSubtract (self->s.origin, target->s.origin, vec);
@@ -1940,9 +1940,8 @@ void heat_think (edict_t *self)
 
 	self->nextthink = level.time + 0.1;
 }
-*/
+
 // RAFAEL
-/*
 void fire_heat (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	edict_t *heat;
@@ -1975,7 +1974,7 @@ void fire_heat (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, 
 
 	gi.linkentity (heat);
 }
-*/
+#endif
 
 
 // RAFAEL
@@ -2060,7 +2059,7 @@ void fire_plasma (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	
 }
 
-
+#if 0 /* Unused Trap_Think function */
 /*
 =================
 trap
@@ -2267,9 +2266,8 @@ static void Trap_Think (edict_t *ent)
 				
 		}
 	}
-
-		
 }
+#endif
 
 void spawn_grenades(edict_t *ent, vec3_t origin, float time, int damage, int num) 
 {
@@ -2282,7 +2280,7 @@ void spawn_grenades(edict_t *ent, vec3_t origin, float time, int damage, int num
     grenade->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
     VectorCopy(origin,grenade->s.origin);
     VectorSet(grenade->velocity,0,0,-300);
-    VectorSet(grenade->avelocity,200+crandom()*10.0,200+crandom()*10.0,200+crandom()*10.0);
+    VectorSet(grenade->avelocity, 200.0f + crandom() * 10.0f,200.0f + crandom() * 10.0f , 200.0f + crandom()*10.0f);
     grenade->movetype = MOVETYPE_BOUNCE;
     grenade->classname = "grenade";
     grenade->spawnflags = 4;
