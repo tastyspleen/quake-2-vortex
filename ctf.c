@@ -1261,7 +1261,7 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 {
 	char	path[512];
 	FILE	*fptr;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 
 	if (!pos)
 		return false;
@@ -1275,7 +1275,10 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 	// read flag position from file
 	if ((fptr = fopen(path, "r")) != NULL)
      {
-		 fscanf(fptr, "%f,%f,%f", &v[0], &v[1], &v[2]);
+		 int count = fscanf(fptr, "%f,%f,%f", &v[0], &v[1], &v[2]);
+		 if (count != 3)
+			 gi.dprintf("%s: Error reading location coordinates in file %s\n", __func__, path);
+
 		 VectorCopy(v, pos);
 		 //gi.dprintf("%f %f %f\n", v[0], v[1], v[2]);
 		 fclose(fptr);
@@ -1315,7 +1318,7 @@ void CTF_WriteFlagPosition (edict_t *ent)
 			 CTF_GetTeamString(teamnum), level.mapname);
          return;  
      }  
-     gi.dprintf("ERROR: Failed to write to server log.\n"); 
+     gi.dprintf("ERROR: Failed to write to server log: %s\n", path); 
 }
 
 void CTF_RemovePlayerFlags (void)
