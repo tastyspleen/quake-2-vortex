@@ -103,7 +103,6 @@ int GetTotemLevel(edict_t *ent, int totemType, qboolean allied)
 //************************************************************************************************
 //			Totem Think Functions
 //************************************************************************************************
-void fire_fireball (edict_t *self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
 void FireTotem_think(edict_t *self, edict_t *caster)
 {
 	int talentLevel;
@@ -124,7 +123,7 @@ void FireTotem_think(edict_t *self, edict_t *caster)
 			{
 				vec3_t forward, end;
 				int damage = FIRETOTEM_DAMAGE_BASE + self->monsterinfo.level * FIRETOTEM_DAMAGE_MULT;
-				int count = 10 + self->monsterinfo.level;
+				//int count = 10 + self->monsterinfo.level;
 				int speed = 600;
 				float	val, dist;
 				qboolean fireball=false;
@@ -192,7 +191,7 @@ void WaterTotem_think(edict_t *self, edict_t *caster)
 			float duration = WATERTOTEM_DURATION_BASE + self->monsterinfo.level * WATERTOTEM_DURATION_MULT;
 
 			//Get a directional vector from the totem to the target.
-			VectorSubtract(self->s.origin, target->s.origin, normal);
+			_VectorSubtract(self->s.origin, target->s.origin, normal);
 
 			//Talent: Ice. Damages players.
 			talentLevel = getTalentLevel(caster, TALENT_ICE);

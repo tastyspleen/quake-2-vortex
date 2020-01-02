@@ -51,6 +51,7 @@ void proxy_remove (edict_t *self, qboolean print);
 qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean print);
 qboolean RestorePreviousOwner (edict_t *ent);
 void ProjectileLockon (edict_t *proj);
+void fire_fireball(edict_t* self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
 //************ magic.c ************
 
 //************ auras.c ************
