@@ -482,9 +482,9 @@ void VortexAddExp(edict_t *attacker, edict_t *targ);
 int PVM_TotalMonsters (edict_t *monster_owner);
 void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
 {
-	int exp_points		= 0;
-	int monsters		= 0;
-	float level_diff	= 0;
+	//int exp_points		= 0;
+	//int monsters		= 0;
+	//float level_diff	= 0;
 	//char *message;
 	//int i;
 	//edict_t *player;
@@ -666,7 +666,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 			message = HiPrint(va("%s got a 2fer.", attacker->client->pers.netname));
 			gi.bprintf(PRINT_HIGH, "%s\n", message);
 			message = LoPrint(message);
-			bonus += 1 - ((attacker->lastkill - level.time) + 0.1);
+			bonus += 1 - ((attacker->lastkill - level.time) + 0.1f);
 			attacker->myskills.num_2fers++;
 		}
 
@@ -736,7 +736,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 		exp_points = V_AddFinalExp(attacker, max_points);
 
 	gi.cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
-		damage, (dmgmod * 100), '%', name, clevel, exp_points, credits);
+		damage, ((double)dmgmod * 100), '%', name, clevel, exp_points, credits);
 
 	return exp_points;
 }

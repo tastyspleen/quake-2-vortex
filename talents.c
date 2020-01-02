@@ -718,7 +718,7 @@ void writeTalentUpgrade(edict_t *ent, int talentID, int level)
 void openTalentMenu(edict_t *ent, int talentID)
 {
 	talent_t *talent	= &ent->myskills.talents.talent[getTalentSlot(ent, talentID)];
-	int level			= talent->upgradeLevel;
+	//int level			= talent->upgradeLevel;
 	int lineCount = 7;//12;
 
 	if (!ShowMenu(ent))
