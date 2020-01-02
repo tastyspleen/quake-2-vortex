@@ -1559,7 +1559,7 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 			{
 				//gi.dprintf("Fired HB for %d damage at %.1f\n", damage, level.time);
 
-				rotation = (ent->client->ps.gunframe + i - 5) * 2*M_PI/6;
+				rotation = (ent->client->ps.gunframe + (double)i - 5.0) * 2.0 * M_PI / 6.0;
 				offset[0] = -4 * sin(rotation);
 				offset[1] = 0;
 				offset[2] = 4 * cos(rotation);
@@ -2488,7 +2488,7 @@ void Weapon_20mm (edict_t *ent)
 	static int	fire_frames[]	= {4, 0};
 		
 	//K03 Begin
-	int fire_last = 18;
+	//QW// unused: int fire_last = 18;
 
 	Weapon_Generic (ent, 3, 4, 56, 61, pause_frames, fire_frames, weapon_20mm_fire);
 	//K03 End

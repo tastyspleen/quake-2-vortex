@@ -223,9 +223,9 @@ void GetScorePosition ()
 { 
      int i, j, k; 
      int sorted[MAX_CLIENTS]; 
-     int sortedscores[MAX_CLIENTS]; 
+	 int sortedscores[MAX_CLIENTS] = { 0 };
      int score, total, last_score, last_pos=1; 
-     gclient_t *cl; 
+     //gclient_t *cl; 
      edict_t *cl_ent; 
 
      // sort the clients by score 
@@ -254,7 +254,7 @@ void GetScorePosition ()
 
      for (i=0 ; i<total ; i++)
 	 {
-          cl = &game.clients[sorted[i]]; 
+          //cl = &game.clients[sorted[i]]; 
           cl_ent = g_edicts + 1 + sorted[i];
 
 		  if (last_score != sortedscores[i])
@@ -858,7 +858,7 @@ void WriteToLogFile (char *char_name, char *s)
           if (buf[strlen(buf)-1] != '\n')  
                strcat(buf, "\n");  
   
-          fprintf(fptr, buf);  
+          fprintf(fptr, "%s", buf);  
           fclose(fptr);  
           return;  
      }  
@@ -891,7 +891,7 @@ void WriteToLogfile (edict_t *ent, char *s)
           if (buf[strlen(buf)-1] != '\n')  
                strcat(buf, "\n");  
   
-          fprintf(fptr, buf);  
+          fprintf(fptr, "%s", buf);  
           fclose(fptr);  
           return;  
      }  
@@ -928,7 +928,7 @@ void WriteServerMsg (char *s, char *error_string, qboolean print_msg, qboolean s
           if (buf[strlen(buf)-1] != '\n')  
                strcat(buf, "\n");  
   
-          fprintf(fptr, buf);  
+          fprintf(fptr, "%s", buf);  
           fclose(fptr);  
           return;  
      }  
