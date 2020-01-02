@@ -472,13 +472,14 @@ void WriteField2 (FILE *f, field_t *field, byte *base)
 	}
 }
 
-void ReadField (FILE *f, field_t *field, byte *base)
+static void ReadField(FILE* f, field_t* field, byte* base)
 {
-	void		*p;
-	int			len;
-	int			index;
+	void* p;
+	int		len;
+	int		index;
+	size_t	count;
 
-	p = (void *)(base + field->ofs);
+	p = (void*)(base + field->ofs);
 	switch (field->type)
 	{
 	case F_INT:
@@ -489,49 +490,53 @@ void ReadField (FILE *f, field_t *field, byte *base)
 		break;
 
 	case F_LSTRING:
-		len = *(int *)p;
+		len = *(int*)p;
 		if (!len)
-			*(char **)p = NULL;
+			*(char**)p = NULL;
 		else
 		{
-			*(char **)p = gi.TagMalloc (len, TAG_LEVEL);
-			fread (*(char **)p, len, 1, f);
+			*(char**)p = gi.TagMalloc(len, TAG_LEVEL);
+			count = fread(*(char**)p, len, 1, f);
+			if (count)
+				; // don't worry, be happy
 		}
 		break;
 	case F_GSTRING:
-		len = *(int *)p;
+		len = *(int*)p;
 		if (!len)
-			*(char **)p = NULL;
+			*(char**)p = NULL;
 		else
 		{
-			*(char **)p = gi.TagMalloc (len, TAG_GAME);
-			fread (*(char **)p, len, 1, f);
+			*(char**)p = gi.TagMalloc(len, TAG_GAME);
+			count = fread(*(char**)p, len, 1, f);
+			if (count)
+				; // don't worry, be happy
 		}
 		break;
 	case F_EDICT:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(edict_t **)p = NULL;
+		index = *(int*)p;
+		if (index == -1)
+			*(edict_t**)p = NULL;
 		else
-			*(edict_t **)p = &g_edicts[index];
+			*(edict_t**)p = &g_edicts[index];
 		break;
 	case F_CLIENT:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(gclient_t **)p = NULL;
+		index = *(int*)p;
+		if (index == -1)
+			*(gclient_t**)p = NULL;
 		else
-			*(gclient_t **)p = &game.clients[index];
+			*(gclient_t**)p = &game.clients[index];
 		break;
 	case F_ITEM:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(gitem_t **)p = NULL;
+		index = *(int*)p;
+		if (index == -1)
+			*(gitem_t**)p = NULL;
 		else
-			*(gitem_t **)p = &itemlist[index];
+			*(gitem_t**)p = &itemlist[index];
 		break;
 
 	default:
-		gi.error ("ReadEdict: unknown field type");
+		gi.error("ReadEdict: unknown field type");
 	}
 }
 
