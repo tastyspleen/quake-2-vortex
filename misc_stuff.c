@@ -269,7 +269,7 @@ void GetScorePosition ()
 int GetRandom(int min, int max)
 {
 	int i;
-	if (i = (max + 1 - min) + min != 0)
+	if ((i = (max + 1 - min) + min) != 0)
 		return (rand() % i);
 	else
 	{
