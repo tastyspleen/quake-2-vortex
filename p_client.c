@@ -3051,7 +3051,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	pmove_t	pm;
 	float modifier;
 
-	int		fire_last = 18;
+	//int		fire_last = 18;		//QW// Removed this until I figure it out.
 	que_t	*curse=NULL;
 	int		viewheight = ent->viewheight;
 
@@ -3068,20 +3068,20 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if (ent->client->resp.spectator != true)
 	{
 		// need this for sniper mode calculations
-		if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 0)
-		{
-			if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 9)
-				fire_last = 12;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
-				fire_last = 13;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
-				fire_last = 14;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
-				fire_last = 15;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
-				fire_last = 16;
-			else fire_last = 17;
-		}
+		//if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 0)
+		//{
+		//	if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 9)
+		//		fire_last = 12;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
+		//		fire_last = 13;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
+		//		fire_last = 14;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
+		//		fire_last = 15;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
+		//		fire_last = 16;
+		//	else fire_last = 17;
+		//}
 
 		// assault cannon slows you down
 		if(ent->client->pers.weapon && (ent->client->pers.weapon->weaponthink == Weapon_Chaingun) 
