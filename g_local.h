@@ -984,6 +984,13 @@ edict_t *Spawn_Item (gitem_t *item);
 //
 const char* Date(void);
 const char* Time(void);
+//QW//
+void convert_string(char* src, char start, char end, char add, char* dest);
+void highlight_text(char* src, char* dest);
+void white_text(char* src, char* dest);
+void toupper_text(char* src, char* dest);
+void tolower_text(char* src, char* dest);
+
 qboolean	KillBox(edict_t* ent);
 void	G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
 edict_t *G_Find (edict_t *from, int fieldofs, char *match);
