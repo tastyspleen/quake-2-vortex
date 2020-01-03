@@ -821,8 +821,6 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 }
 
 
-void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
-
 void TossClientWeapon (edict_t *self)
 {
 	gitem_t		*item;
@@ -830,22 +828,7 @@ void TossClientWeapon (edict_t *self)
 	qboolean	quad;
 	// RAFAEL
 	qboolean	quadfire;
-	float		dist;
-	vec3_t		v;
-	edict_t		*enemy = NULL;
 	float		spread;
-
-	if(self->enemy && self->enemy != self)
-	{
-		if(self->enemy->classname[0] == 'p')
-		{
-			
-			VectorSubtract(self->s.origin,self->enemy->s.origin,v);
-			dist = VectorLength(v);
-			if(dist < 200) 
-				enemy = self->enemy;
-		}
-	}
 
 	if (!deathmatch->value)
 		return;

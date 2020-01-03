@@ -279,7 +279,8 @@ void	PlaceLaser (edict_t *ent)
 	}
 
 	if (ent->client->ability_delay > level.time) {
-		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", ent->client->ability_delay - level.time);
+		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", 
+			(double)ent->client->ability_delay - (double)level.time);
 		return;
 	}
 	
