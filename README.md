@@ -28,7 +28,9 @@ preserved and completed.
 
 My intent is to finish cleaning up the warnings, lint and general
 cruft in the code until it compiles cleanly, fixing bugs in the
-game as I find them. 
+game as I find them.
+
+First cleanup complete 1/2/2020.
 
 //QW//
 
