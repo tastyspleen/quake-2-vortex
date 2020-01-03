@@ -266,9 +266,16 @@ void GetScorePosition ()
      } 
 } 
 
-int GetRandom(int min,int max)
-{	
-	return (rand() % (max+1-min)+min);
+int GetRandom(int min, int max)
+{
+	int i;
+	if (i = (max + 1 - min) + min != 0)
+		return (rand() % i);
+	else
+	{
+		gi.dprintf("GAME ERROR: arguments %i, %i would cause divide by zero error in %s.\n", min, max, __func__);
+		return 0;
+	}
 }
 
 qboolean findspawnpoint (edict_t *ent)
