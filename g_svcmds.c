@@ -91,9 +91,9 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 		s++;
 	}
 	
-	f->mask = *(unsigned *)m;
-	f->compare = *(unsigned *)b;
-	
+	memcpy(&f->mask, m, sizeof f->mask);
+	memcpy(&f->compare, b, sizeof f->compare);
+
 	return true;
 }
 
@@ -106,29 +106,32 @@ qboolean SV_FilterPacket (char *from)
 {
 	int		i;
 	unsigned	in;
-	byte m[4];
+	byte m[4] = { 0 };
 	char *p;
 
 	i = 0;
 	p = from;
-	while (*p && i < 4) {
+	while (*p && i < 4)
+	{
 		m[i] = 0;
-		while (*p >= '0' && *p <= '9') {
+		while (*p >= '0' && *p <= '9')
+		{
 			m[i] = m[i]*10 + (*p - '0');
 			p++;
 		}
 		if (!*p || *p == ':')
 			break;
-		i++, p++;
+		i++;
+		p++;
 	}
 	
-	in = *(unsigned *)m;
+	memcpy(&in, m, sizeof in);
 
-	for (i=0 ; i<numipfilters ; i++)
-		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
-			return (int)filterban->value;
+	for (i = 0; i < numipfilters; i++)
+		if ((in & ipfilters[i].mask) == ipfilters[i].compare)
+			return (qboolean)filterban->value;
 
-	return (int)!filterban->value;
+	return (qboolean)!filterban->value;
 }
 
 
@@ -171,26 +174,29 @@ SV_RemoveIP_f
 void SVCmd_RemoveIP_f (void)
 {
 	ipfilter_t	f;
-	int			i, j;
-
-	if (gi.argc() < 3) {
+	int			i;
+	
+	if (gi.argc() < 3)
+	{
 		gi.cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
 		return;
 	}
-
+	
 	if (!StringToFilter (gi.argv(2), &f))
 		return;
-
+	
 	for (i=0 ; i<numipfilters ; i++)
+	{
 		if (ipfilters[i].mask == f.mask
-		&& ipfilters[i].compare == f.compare)
+			&& ipfilters[i].compare == f.compare)
 		{
-			for (j=i+1 ; j<numipfilters ; j++)
-				ipfilters[j-1] = ipfilters[j];
+			if (numipfilters > 0)
+				ipfilters[i] = ipfilters[numipfilters - 1];
 			numipfilters--;
 			gi.cprintf (NULL, PRINT_HIGH, "Removed.\n");
 			return;
 		}
+	}
 	gi.cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
 }
 
@@ -201,13 +207,16 @@ SV_ListIP_f
 */
 void SVCmd_ListIP_f (void)
 {
-	int		i;
+	int		i, j;
 	byte	b[4];
 
 	gi.cprintf (NULL, PRINT_HIGH, "Filter list:\n");
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
-		*(unsigned *)b = ipfilters[i].compare;
+		for (j = 0; j < sizeof b; j++)
+		{	
+			b[j] = (ipfilters[i].compare >> (j * 8)) & 0xff;
+		}
 		gi.cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
 	}
 }
