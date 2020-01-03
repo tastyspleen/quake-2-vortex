@@ -165,7 +165,7 @@ void sword_attack (edict_t *ent, vec3_t g_offset, int damage)
 	vec3_t  start;
 	vec3_t  offset;
 
-	int swordrange = SABRE_INITIAL_RANGE + SABRE_ADDON_RANGE * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level;
+	//int swordrange = SABRE_INITIAL_RANGE + SABRE_ADDON_RANGE * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level;
 
 	if (is_quad)
 		damage *= 4;
