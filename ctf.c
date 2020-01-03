@@ -1284,11 +1284,11 @@ qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
 	return false;
 }
 
-void CTF_WriteFlagPosition (edict_t *ent)  
+void CTF_WriteFlagPosition(edict_t* ent)
 {
 	int		teamnum;
 	char	path[512];
-	FILE	*fptr;
+	FILE* fptr;
 
 	if (!ent->myskills.administrator)
 		return;
@@ -1298,19 +1298,19 @@ void CTF_WriteFlagPosition (edict_t *ent)
 	if (!teamnum)
 		return;
 
-		Com_sprintf(path, sizeof path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
+	Com_sprintf(path, sizeof path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
 
-     if ((fptr = fopen(path, "w")) != NULL) // write text to file
-     {  
-		 // write origin along with flag team
-		 fprintf(fptr, "%f,%f,%f\n", ent->s.origin[0],ent->s.origin[1], ent->s.origin[2]); 
-         fclose(fptr); 
+	if ((fptr = fopen(path, "w")) != NULL) // write text to file
+	{
+		// write origin along with flag team
+		fprintf(fptr, "%f,%f,%f\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		fclose(fptr);
 
-		 gi.cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n", 
-			 CTF_GetTeamString(teamnum), level.mapname);
-         return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to server log: %s\n", path); 
+		gi.cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n",
+			CTF_GetTeamString(teamnum), level.mapname);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to server log: %s\n", path);
 }
 
 void CTF_RemovePlayerFlags (void)
