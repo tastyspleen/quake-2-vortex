@@ -13,17 +13,20 @@ int mypower(int x, int y)
 	return (1);
 }
 
+static char HiLo_text[MAX_INFO_STRING];
+
 char* LoPrint(char* text)
 {
 	int i;
 
 	if (!text)
 		return NULL;
-	for (i = 0; i < strlen(text); i++)
-		if ((byte)text[i] > 127)
-			text[i] = (byte)text[i] - 128;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] > 127)
+			HiLo_text[i] = (byte)HiLo_text[i] - 128;
 
-	return text;
+	return HiLo_text;
 }
 
 char* HiPrint(char* text)
@@ -32,10 +35,11 @@ char* HiPrint(char* text)
 
 	if (!text)
 		return NULL;
-	for (i = 0; i < strlen(text); i++)
-		if ((byte)text[i] <= 127)
-			text[i] = (byte)text[i] + 128;
-	return text;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] <= 127)
+			HiLo_text[i] = (byte)HiLo_text[i] + 128;
+	return HiLo_text;
 }
 
 // this needs to match UpdateFreeAbilities() in v_utils.c
