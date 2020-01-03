@@ -475,9 +475,13 @@ void OpenPurchaseMenu (edict_t *ent, int page_num, int lastline)
 		ent->client->menustorage.currentline = (lastline % 10) + 3;
 	else if (lastline)	//selected #10 in this page
 		ent->client->menustorage.currentline = 13;
-	else if (ARMORY_ITEMS > 10)	//menu is under 10 items
-		ent->client->menustorage.currentline = 15;
-	else ent->client->menustorage.currentline = 5 + i;
+	//QW// hmmm.... what's intent of this?
+	// FIXME: Looks like a bug: constant instead of a runtime var is used.
+	// No count of menu items kept???
+	//else if (ARMORY_ITEMS > 10)	//menu is under 10 items
+	//	ent->client->menustorage.currentline = 15;
+	else 
+		ent->client->menustorage.currentline = 5 + i;
 
 	//Show the menu
 	showmenu(ent);
@@ -916,26 +920,21 @@ void LoadArmory(void)	//Call this during InitGame()
 	FILE *fptr;
 	size_t count = 0;
 
-	//get path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\%s", game_path->string, "Settings\\ArmoryItems.dat");
-	#else
-		sprintf(filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
-	#endif
+	Com_sprintf(filename, sizeof filename, "%s/%s", game_path->string, "Settings/ArmoryItems.dat");
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{
         count = fread(WeaponRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
-		if (count == 0)
-			gi.dprintf("Zero %s loaded in %s\n","WeaponRunes", __func__);
-		
+		if (count != 0)
+			gi.dprintf("%s loaded %i %s\n", __func__, count, "WeaponRunes");
+
 		count = fread(AbilityRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
-		if (count == 0)
-			gi.dprintf("Zero %s loaded in %s\n", "AbilityRunes", __func__);
+		if (count != 0)
+			gi.dprintf("%s loaded %i %s\n", __func__, count, "AbilityRunes");
 		
 		count = fread(ComboRunes, sizeof(armoryRune_t), ARMORY_MAX_RUNES, fptr);
-		if (count == 0)
-			gi.dprintf("Zero %s loaded in %s\n", "ComboRunes", __func__);
+		if (count != 0)
+			gi.dprintf("%s loaded %i %s\n", __func__, count, "ComboRunes");
 
 		fclose(fptr);
 		gi.dprintf("INFO: Vortex Rune Shop loaded successfully\n");
