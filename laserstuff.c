@@ -230,7 +230,7 @@ void	PlaceLaser (edict_t *ent)
 {
 	edict_t		*laser,
 				*grenade;
-	edict_t		*blip = NULL;//GHz
+	//edict_t		*blip = NULL;//GHz
 	vec3_t		forward,
 				wallp,
 				start,
