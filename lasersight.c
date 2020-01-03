@@ -73,7 +73,7 @@ void LaserSightThink (edict_t *self)
 	{
 		self->s.skinnum = 1;
 		
-		VectorSubtract(tr.ent->s.origin, self->owner->s.origin, v);
+		_VectorSubtract(tr.ent->s.origin, self->owner->s.origin, v);
 		//distance = VectorLength(v);
 		// zoom-in on live target with railgun
 		/*
