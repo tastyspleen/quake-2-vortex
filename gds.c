@@ -1,10 +1,6 @@
 #include "g_local.h"
 
 /*
-#if defined(_WIN32) || defined(WIN32)
-#include <windows.h>
-#endif
-
 #define GDS_TESTFILE_NAME	"Player"
 
 qboolean GDS_InFileQue (edict_t *ent)
@@ -45,7 +41,7 @@ void GDS_CheckFiles (void)
 		if (slot->time && (level.time > slot->time))
 		{
 			// delete the file
-			sprintf(buf, "%s\\\"%s.vrx\"", save_path->string, slot->filename);
+			sprintf(buf, "%s/\"%s.vrx\"", save_path->string, slot->filename);
 			system(va("del %s\n", buf));
 			// remove it from the que
 			slot->time = 0;
@@ -74,7 +70,7 @@ void GDS_FileIO (const char *filename, int cmd)
 	char				buf1[100], buf2[100];
 	HINSTANCE			hRet;
 
-	sprintf(buf1, "%s\\gds.exe", gds_exe->string);
+	sprintf(buf1, "%s/gds.exe", gds_exe->string);
 
 	if (cmd)
 		sprintf(buf2, "\"%s\" %s %s", filename, save_path->string, "1");
@@ -157,7 +153,7 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 	struct stat	file;
 
 	// did the file we want download successfully?
-	sprintf(buf, "%s\\%s.vrx", save_path->string, filename);
+	sprintf(buf, "%s/%s.vrx", save_path->string, filename);
 	if(!stat(buf, &file) && (file.st_size > 1))
 	{
 		gi.dprintf("INFO: GDS successfully downloaded %s\n", buf);
@@ -166,7 +162,7 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 		{
 			gi.dprintf("INFO: Deleting temporary file %s\n", buf);
 
-			sprintf(buf, "del %s\\\"%s.vrx\"", save_path->string, filename);
+			sprintf(buf, "del %s/\"%s.vrx\"", save_path->string, filename);
 			system(buf);
 		}
 
@@ -174,13 +170,13 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 	}
 
 	// did the GDS create a NULL file?
-	sprintf(buf, "%s\\%s.NULL", save_path->string, filename);
+	sprintf(buf, "%s/%s.NULL", save_path->string, filename);
 	if (!stat(buf, &file))
 	{
 		gi.dprintf("INFO: GDS created NULL file %s\n", buf);
 
 		// always delete the NULL file
-		sprintf(buf, "del %s\\\"%s.NULL\"", save_path->string, filename);
+		sprintf(buf, "del %s/\"%s.NULL\"", save_path->string, filename);
 		system(buf);
 
 		return GDS_NULLFILE_EXISTS;
@@ -265,7 +261,7 @@ void GDS_CheckPlayer(edict_t *ent)
         ent->isSaving = false;
 
 		//Reset the player if they disconnected.
-		if(!ent->client->pers.connected)
+		if(ent->client && !ent->client->pers.connected)
 			memset(&ent->myskills, 0, sizeof(skills_t));
 	}
 

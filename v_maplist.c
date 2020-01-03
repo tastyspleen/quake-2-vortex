@@ -8,11 +8,7 @@ int v_LoadMapList(int mode)
 	int iterator = 0;
 	
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\Settings\\", game_path->string);
-	#else
-		sprintf(filename, "%s/Settings/", game_path->string);
-	#endif
+		Com_sprintf(filename, sizeof filename, "%s/Settings/", game_path->string);
 
 	switch(mode)
 	{

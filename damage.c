@@ -832,7 +832,7 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 float G_ModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker, 
 				   vec3_t point, float damage, int dflags, int mod)
 {
-	int		pierceLevel=0, pierceFactor;
+	int		pierceLevel = 0, pierceFactor = 0;
 	float	temp;
 
 	if (damage > 0)

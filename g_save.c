@@ -181,6 +181,11 @@ is loaded.
 */
 void InitGame (void)
 {
+
+#ifdef	_WIN32
+	_CrtMemCheckpoint(&startup1);
+#endif
+
 	gi.dprintf ("==== InitGame ====\n");
 #ifndef LOCK_DEFAULTS
 	gi.dprintf("INFO: Vortex v.%s loaded.\n", VRX_VERSION);
@@ -256,7 +261,7 @@ void InitGame (void)
 
 	//K03 Begin
 	
-	save_path = gi.cvar("save_path", va("%s\\characters", gamedir->string), CVAR_LATCH);
+	save_path = gi.cvar("save_path", va("%s/characters", gamedir->string), CVAR_LATCH);
 	particles = gi.cvar ("particles", "0", 0);
 
 	sentry_lev1_model = gi.cvar ("sentry_lev1_model", "models/sentry/turret1/tris.md2", CVAR_LATCH);

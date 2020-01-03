@@ -2,6 +2,18 @@
 #ifndef G_LOCAL_H
 #define G_LOCAL_H
 
+#ifdef _WIN32
+#define WIN32 1 /* VS2019 always defines _WIN32 WIN32 is non-standard */
+#define WIN32_LEAN_AND_MEAN	//non-MFC
+#include <windows.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+_CrtMemState startup1;	// memory diagnostics
+#else
+#define OutputDebugString	//not doing Windows
+#endif
+
 //Uncomment this and recompile to get debug printouts.
 //The higher number, the more detailed printouts.
 //Using this , especially on higher levels, is very lag prone and may cause server overflow.
@@ -2012,7 +2024,7 @@ char *TeamName (edict_t *ent);
 
 void KickPlayerBack(edict_t *ent);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void GetScorePosition ();
+void GetScorePosition (void);
 void Give_respawnweapon(edict_t *ent, int weaponID);
 void Give_respawnitems(edict_t *ent);
 qboolean findspawnpoint (edict_t *ent);
@@ -2022,7 +2034,7 @@ void Pick_respawnweapon(edict_t *ent);
 for(INDEX=1;INDEX<=maxclients->value;INDEX++)			\
 	if ((JOE_BLOGGS=&g_edicts[i]) && JOE_BLOGGS->inuse && JOE_BLOGGS->client)
 
-int total_players();
+int total_players(void);
 void Cmd_CreateBreather_f(edict_t *ent);
 void Cmd_CreateEnviro_f(edict_t *ent);
 void Cmd_CreateInvin_f(edict_t *ent);

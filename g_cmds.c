@@ -2653,7 +2653,7 @@ void Cmd_WritePos_f (edict_t *ent)
 	VectorCopy(ent->s.origin, pos);
 	pos[2] = ent->absmin[2];
 
-	Com_sprintf(filename, sizeof(filename), "%s\\maps\\%s.txt", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/maps/%s.txt", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "a")) != NULL)
 	{

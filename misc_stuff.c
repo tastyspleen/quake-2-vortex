@@ -200,7 +200,7 @@ void KickPlayerBack(edict_t *ent)
 	}
 }
 
-int total_players()
+int total_players(void)
 {
 	int		i, total=0;
 	edict_t *cl_ent;
@@ -219,7 +219,7 @@ int total_players()
 	return total;
 }
 
-void GetScorePosition () 
+void GetScorePosition (void) 
 { 
      int i, j, k; 
      int sorted[MAX_CLIENTS]; 
@@ -266,10 +266,12 @@ void GetScorePosition ()
      } 
 } 
 
+// Return random number between min and max.
+// If range is zero or less, return 0.
 int GetRandom(int min, int max)
 {
 	int i;
-	if ((i = (max + 1 - min) + min) != 0)
+	if ((i = (max + 1 - min) + min) != 0 || (max - min < 0))
 		return (rand() % i);
 	else
 	{
@@ -738,7 +740,6 @@ float entdist(edict_t *ent1, edict_t *ent2)
 	return VectorLength(vec);
 }
 
-int TotalPlayersInGame(void);
 // returns true if the player should be affected by newbie protection
 qboolean IsNewbieBasher (edict_t *player) {
 	return (newbie_protection->value && player->client && (total_players()>0.33*maxclients->value)
@@ -840,118 +841,115 @@ qboolean TeleportNearPoint (edict_t *self, vec3_t point)
 	return false;
 }
 
-void WriteToLogFile (char *char_name, char *s)  
-{  
-     char     buf[512];  
-     char     path[256];  
-     FILE     *fptr;  
-
-     if (strlen(char_name) < 1)  
-          return;  
-  
-     //Create the log message  
-     sprintf(buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, "Offline", s);  
-  
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%s.log", save_path->string, V_FormatFileName(char_name));  
-     #else  
-          sprintf(path, "%s/%s.log", save_path->string, V_FormatFileName(char_name));  
-     #endif  
-  
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, "%s", buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to player log.\n");  
-}
-
-void WriteToLogfile (edict_t *ent, char *s)  
-{  
-     char     *ip, buf[512];  
-     char     path[256];  
-     FILE     *fptr;  
-
-     if (strlen(ent->client->pers.netname) < 1)  
-          return;  
-  
-     //Create the log message  
-     ip = Info_ValueForKey (ent->client->pers.userinfo, "ip");  
-     sprintf(buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, ip, s);  
-  
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));  
-     #else  
-          sprintf(path, "%s/%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));  
-     #endif  
-  
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, "%s", buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to player log.\n");  
-}
-
-void WriteServerMsg (char *s, char *error_string, qboolean print_msg, qboolean save_to_logfile)  
+void WriteToLogFile(char* char_name, char* s)
 {
-	cvar_t	*port;
+	char     buf[512];
+	char     path[256];
+	FILE* fptr;
+
+	if (!char_name || !s)
+		return;
+
+	if (strlen(char_name) < 1)
+		return;
+
+	//Create the log message
+	Com_sprintf(buf, sizeof buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, "Offline", s);
+
+	//determine path
+	Com_sprintf(path, sizeof path, "%s/%s.log", save_path->string, V_FormatFileName(char_name));
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log
+	{
+		//3.0 make sure there is a line feed
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to player log.\n");
+}
+
+void WriteToLogfile(edict_t* ent, char* s)
+{
+	char* ip, buf[512];
+	char     path[256];
+	FILE* fptr;
+
+	if (!s || !ent || !ent->client)
+		return;
+	
+	if (strlen(ent->client->pers.netname) < 1)
+		return;
+
+	//Create the log message  
+	ip = Info_ValueForKey(ent->client->pers.userinfo, "ip");
+	Com_sprintf(buf, sizeof buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, ip, s);
+
+	//determine path  
+	Com_sprintf(path, sizeof path, "%s/%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log
+	{
+		//3.0 make sure there is a line feed
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to player log.\n");
+}
+
+void WriteServerMsg(char* s, char* error_string, qboolean print_msg, qboolean save_to_logfile)
+{
+	cvar_t* port;
 	char	buf[512];
 	char	path[256];
-	FILE	*fptr;  
- 
-     // create the log message 
-     sprintf(buf, "%s %s %s: %s", CURRENT_DATE, CURRENT_TIME, error_string, s);
-	 if (print_msg)
-		 gi.dprintf("* %s *\n", buf);
+	FILE* fptr;
 
-	 if (!save_to_logfile)
-		 return;
-  
-	 port = gi.cvar("port" , "0", CVAR_SERVERINFO);
+	if (!s || !error_string || !save_to_logfile)
+		return;
 
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%d.log", game_path->string, (int)port->value);  
-     #else  
-          sprintf(path, "%s/%d.log", game_path->string, (int)port->value);  
-     #endif  
+	// create the log message 
+	Com_sprintf(buf, sizeof buf, "%s %s %s: %s", CURRENT_DATE, CURRENT_TIME, error_string, s);
+	if (print_msg)
+		gi.dprintf("* %s *\n", buf);
 
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, "%s", buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to server log.\n");  
+	port = gi.cvar("port", "0", CVAR_SERVERINFO);
+
+	//determine path  
+	Com_sprintf(path, sizeof path, "%s/%d.log", game_path->string, (int)port->value);
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log  
+	{
+		//3.0 make sure there is a line feed  
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to server log.\n");
 }
 
-qboolean G_StuffPlayerCmds (edict_t *ent, char *s)
+qboolean G_StuffPlayerCmds(edict_t* ent, char* s)
 {
-	char *dst = ent->client->resp.stuffbuf;
+	if (!ent || !s)
+		return false;
 
-	if (strlen(s)+strlen(dst) > 500)
+	char* dst = ent->client->resp.stuffbuf;
+
+	if (strlen(s) + strlen(dst) > 500)
 	{
 		//gi.dprintf("buffer full\n");
 		return false; // don't overfill the buffer
 	}
-	
+
 	strcat(dst, s);
 
 	//gi.dprintf("%s", dst);
@@ -963,6 +961,9 @@ void StuffPlayerCmds (edict_t *ent)
 	int		i, num;
 	int		end=0, start=0;
 
+	if (!ent)
+		return;
+	
 	// if the buffer is empty, then no cmds need to be stuffed
 	if (strlen(ent->client->resp.stuffbuf) < 1)
 		return;

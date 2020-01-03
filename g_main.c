@@ -193,6 +193,16 @@ void ShutdownGame (void)
 	gi.dprintf ("==== ShutdownGame ====\n");
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);
+
+#ifdef _WIN32
+	OutputDebugString("ShutdownGame() was called.\n");
+	OutputDebugString("Dump objects since startup.\n");
+	_CrtMemDumpAllObjectsSince(&startup1);
+	OutputDebugString("Memory stats since startup.\n");
+	_CrtMemDumpStatistics(&startup1);
+	_CrtDumpMemoryLeaks();
+#endif
+
 }
 
 game_export_t *GetGameAPI (game_import_t *import)

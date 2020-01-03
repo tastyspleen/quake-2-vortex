@@ -1181,7 +1181,8 @@ void ReadString(char* buf, FILE* fptr)
 	}
 
 	if (fread(buf, Length, 1, fptr) == 0)
-		gi.dprintf("Error in %s\n", __func__);
+		//gi.dprintf("Error in %s\n", __func__);
+		; /* don't worry, be happy */
 
 	//Null terminate the string just read
 	buf[Length] = 0;

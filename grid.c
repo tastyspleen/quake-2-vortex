@@ -1202,7 +1202,7 @@ void SaveGrid (void)
 	char	filename[255];
 	FILE	*fptr;
 
-	Com_sprintf(filename, sizeof(filename), "%s\\Settings\\grd\\%s.grd", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "wb")) != NULL)
 	{
@@ -1221,7 +1221,7 @@ qboolean LoadGrid (void)
 	FILE	*fptr;
 
 	//memset(&pathnode[0], 0, sizeof(vec3_t));
-	Com_sprintf(filename, sizeof(filename), "%s\\Settings\\grd\\%s.grd", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{

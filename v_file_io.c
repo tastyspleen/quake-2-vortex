@@ -717,11 +717,7 @@ qboolean SavePlayer(edict_t *ent)
 		gi.dprintf("savePlayer called to save: %s\n", ent->client->pers.netname);
 
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#else
-		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#endif
+		Com_sprintf(path, sizeof path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
 	//Open file for saving
 	if ((fwrite = fopen(path, "wb")) == NULL)
@@ -781,11 +777,7 @@ qboolean openPlayer(edict_t *ent)
 	memset(&ent->myskills,0,sizeof(skills_t));
 
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#else
-		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#endif
+		Com_sprintf(path, sizeof path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
 	//Open file for loading
 	if ((fread = fopen(path, "rb")) == NULL)

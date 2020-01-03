@@ -70,6 +70,7 @@ void tech_dropall (edict_t *ent);
 void setClassAbilities (edict_t *ent);
 void setGeneralAbilities(edict_t *ent);
 void disableAbilities (edict_t *ent);
+int TotalPlayersInGame(void);
 //************ p_menu.c ***********
 
 //********** v_file_IO.c **********

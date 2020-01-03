@@ -1,9 +1,5 @@
 #include "g_local.h"
 
-//#if defined(_WIN32) || defined(WIN32)
-//#include <windows.h>
-//#endif
-
 //Function prototypes required for this .c file:
 void dom_spawnflag (void);
 void boss_spawn_tank (edict_t *ent);
@@ -237,9 +233,9 @@ void SVCmd_WriteIP_f (void)
 	game = gi.cvar("game", "", 0);
 
 	if (!*game->string)
-		sprintf (name, "%s/listip.cfg", GAMEVERSION);
+		Com_sprintf (name, sizeof name, "%s/listip.cfg", GAMEVERSION);
 	else
-		sprintf (name, "%s/listip.cfg", game->string);
+		Com_sprintf (name, sizeof name, "%s/listip.cfg", game->string);
 
 	gi.cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
 
@@ -683,14 +679,14 @@ void SVCmd_DeleteCharacter_f()
 	}
 
 	// did the file we want download successfully?
-	sprintf(buf, "%s\\%s.vrx", save_path->string, pname);
+	Com_sprintf(buf, sizeof buf, "%s/%s.vrx", save_path->string, pname);
 	if(!stat(buf, &file) && (file.st_size > 1))
 	{
 
 		
 		WriteToLogFile(pname, va("Character deleted by an administrator (Reason: %s).\n", reason));
 		gi.bprintf(PRINT_HIGH, "%s's character was deleted by an administrator (reason: %s)\n", pname, reason);
-		sprintf(buf, "del %s\\\"%s.vrx\"", save_path->string, V_FormatFileName(pname));
+		Com_sprintf(buf, sizeof buf, "del %s/\"%s.vrx\"", save_path->string, V_FormatFileName(pname));
 		if (system(buf) == 0);	// wrapped to silence gcc.
 	}
 }
