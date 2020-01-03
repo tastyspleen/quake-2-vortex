@@ -554,7 +554,6 @@ void base_createturret (edict_t *self)
 void SpawnMiniSentry (edict_t *ent, int cost, float skill_mult, float delay_mult)
 {
 	int			sentries=0;//3.9
-	qboolean	failed=false;
 	vec3_t		offset, forward, right, start, end;
 	edict_t		*base;
 	trace_t		tr;
@@ -670,9 +669,10 @@ void RemoveMiniSentries (edict_t *ent)
 
 void Cmd_MiniSentry_f (edict_t *ent)
 {
-	int talentLevel, sentries=0, cost=SENTRY_COST;
+	int talentLevel;
+	int sentries = 0;
+	int cost = SENTRY_COST;
 	float skill_mult=1.0, cost_mult=1.0, delay_mult=1.0;//Talent: Rapid Assembly & Precision Tuning
-	edict_t *scan=NULL;
 
 	if (debuginfo->value)
 		gi.dprintf("%s just called Cmd_MiniSentry_f\n", ent->client->pers.netname);
