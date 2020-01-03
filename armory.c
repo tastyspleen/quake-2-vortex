@@ -882,7 +882,7 @@ void OpenArmoryMenu (edict_t *ent)
 //************************************************************************************************
 //************************************************************************************************
 
-void SaveArmory()
+void SaveArmory(void)
 {
 	char filename[256];
 	FILE *fptr;
@@ -910,7 +910,7 @@ void SaveArmory()
 
 //************************************************************************************************
 
-void LoadArmory()	//Call this during InitGame()
+void LoadArmory(void)	//Call this during InitGame()
 {
 	char filename[256];
 	FILE *fptr;
