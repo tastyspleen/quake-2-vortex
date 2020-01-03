@@ -2,15 +2,15 @@
 
 int v_LoadMapList(int mode)
 {
-	FILE *fptr;
-	v_maplist_t *maplist;
+	FILE* fptr;
+	v_maplist_t* maplist;
 	char filename[256];
 	int iterator = 0;
-	
-	//determine path
-		Com_sprintf(filename, sizeof filename, "%s/Settings/", game_path->string);
 
-	switch(mode)
+	//determine path
+	Com_sprintf(filename, sizeof filename, "%s/Settings/", game_path->string);
+
+	switch (mode)
 	{
 	case MAPMODE_PVP:
 		strcat(filename, "maplist_PVP.txt");
@@ -45,7 +45,7 @@ int v_LoadMapList(int mode)
 
 	if ((fptr = fopen(filename, "r")) != NULL)
 	{
-		char buf[128], *s;
+		char buf[128], * s;
 
 		while (fgets(buf, 128, fptr) != NULL)
 		{
@@ -75,7 +75,7 @@ int v_LoadMapList(int mode)
 			}
 			else
 				// make sure line is terminated
-				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name)-1] = '\0';
+				maplist->maps[iterator].name[strlen(maplist->maps[iterator].name) - 1] = '\0';
 
 			++iterator;
 		}
@@ -87,6 +87,6 @@ int v_LoadMapList(int mode)
 		gi.dprintf("Error loading map file: %s\n", filename);
 		maplist->nummaps = 0;
 	}
-	
+
 	return maplist->nummaps;
 }
