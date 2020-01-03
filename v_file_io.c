@@ -315,7 +315,8 @@ qboolean ReadPlayer_v1(FILE * fRead, edict_t *player)
 	//End CTF
 
 	//standard iD inventory
-	fread(player->myskills.inventory, sizeof(int), MAX_ITEMS, fRead);
+	if (fread(player->myskills.inventory, sizeof(int), MAX_ITEMS, fRead))
+		gi.dprintf("%s loaded inventory.\n", __func__);
 
 	//Apply runes
 	V_ResetAllStats(player);

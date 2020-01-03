@@ -1149,10 +1149,11 @@ edict_t *V_getClientByNumber(int index)
 //************************************************************************************************
 //************************************************************************************************
 
-char ReadChar(FILE *fptr)
+char ReadChar(FILE* fptr)
 {
 	char Value;
-	fread(&Value, sizeof(char), 1, fptr);
+	if (fread(&Value, sizeof(char), 1, fptr) == 0)
+		gi.dprintf("Error in %s\n", __func__);
 	return Value;
 }
 
@@ -1165,7 +1166,7 @@ void WriteChar(FILE *fptr, char Value)
 
 //************************************************************************************************
 
-void ReadString(char *buf, FILE *fptr)
+void ReadString(char* buf, FILE* fptr)
 {
 	int Length;
 
@@ -1179,7 +1180,8 @@ void ReadString(char *buf, FILE *fptr)
 		//return buf;
 	}
 
-	fread(buf, Length, 1, fptr);
+	if (fread(buf, Length, 1, fptr) == 0)
+		gi.dprintf("Error in %s\n", __func__);
 
 	//Null terminate the string just read
 	buf[Length] = 0;
@@ -1196,10 +1198,11 @@ void WriteString(FILE *fptr, char *String)
 
 //************************************************************************************************
 
-int ReadInteger(FILE *fptr)
+int ReadInteger(FILE* fptr)
 {
 	int Value;
-	fread(&Value, sizeof(int), 1, fptr);
+	if (fread(&Value, sizeof(int), 1, fptr) == 0)
+		gi.dprintf("Error in %s\n", __func__);
 	return Value;
 }
 
@@ -1212,10 +1215,11 @@ void WriteInteger(FILE *fptr, int Value)
 
 //************************************************************************************************
 
-long ReadLong(FILE *fptr)
+long ReadLong(FILE* fptr)
 {
 	long Value;
-	fread(&Value, sizeof(long), 1, fptr);
+	if (fread(&Value, sizeof(long), 1, fptr) == 0)
+		gi.dprintf("Error in %s\n", __func__);
 	return Value;
 }
 

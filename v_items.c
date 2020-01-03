@@ -594,7 +594,8 @@ qboolean spawnUnique(edict_t *rune, int index)
 		else linenumber = index;
 
 		V_tFileGotoLine(fptr, linenumber, size);
-		fgets(buf, 256, fptr);
+		if (fgets(buf, 256, fptr) == NULL)
+			gi.dprintf("Unexpected error reading %s in %s\n", filename, __func__);
 
 		//Load the rune stats
 		iterator = buf;
