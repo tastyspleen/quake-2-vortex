@@ -18,7 +18,7 @@ ARCH := $(shell uname -m | sed -e s/i.86/i386/ \
 # On 64-bit OS use the command: setarch i386 make all
 # to obtain the 32-bit binary DLL on 64-bit Linux.
 
-CC = gcc -std=c11 -Wall -Wparentheses
+CC = gcc -std=c11 -Wall -Wparentheses -pedantic
 
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
@@ -85,7 +85,7 @@ GAME_OBJS = \
 		p_client.o p_hook.o p_hud.o p_menu.o p_parasite.o p_trail.o p_view.o \
 		p_weapon.o player.o player_points.o playertoberserk.o playertoflyer.o \
 		playertomedic.o playertomutant.o playertoparasite.o playertotank.o \
-		pvb.o q_shared.o repairstation.o runes.o scanner.o \
+		pvb.o q_shared.o runes.o scanner.o \
 		sentrygun2.o shaman.o special_items.o spirit.o sqlstuff.o \
 		supplystation.o talents.o teamplay.o totems.o trade.o upgrades.o \
 		v_file_io.o v_items.o v_maplist.o v_utils.o vote.o weapon_upgrades.o \

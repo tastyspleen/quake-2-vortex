@@ -453,7 +453,7 @@ void MakronHyperblaster (edict_t *self)
 void makron_sight(edict_t *self, edict_t *other)
 {
 	self->monsterinfo.currentmove = &makron_move_sight;
-};
+}
 
 void makron_attack(edict_t *self)
 {

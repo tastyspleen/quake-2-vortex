@@ -403,7 +403,7 @@ void jorg_firebullet (edict_t *self)
 {
 	jorg_firebullet_left(self);
 	jorg_firebullet_right(self);
-};
+}
 
 void jorg_attack(edict_t *self)
 {
