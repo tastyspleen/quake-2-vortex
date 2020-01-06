@@ -198,10 +198,10 @@ void WaterTotem_think(edict_t *self, edict_t *caster)
 			if(talentLevel > 0)
 			{
 				int damage = GetRandom(10, 20) * talentLevel;
-				vec3_t normal;
+				//vec3_t normal;
 				
 				//Damage the target
-				VectorSubtract(target->s.origin, self->s.origin, normal);				
+				_VectorSubtract(target->s.origin, self->s.origin, normal);				
 				T_Damage(target, self, self, vec3_origin, self->s.origin, 
 					normal, damage, 0, DAMAGE_NO_KNOCKBACK, MOD_WATERTOTEM);
 			}

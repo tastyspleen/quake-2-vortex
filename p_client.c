@@ -2631,7 +2631,7 @@ void ClientThinkstuff(edict_t *ent)
 	if (ent->cocoon_factor > 0 && level.time > ent->cocoon_time - 5)
 	{
 		if (!(level.framenum % 10))
-			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", ent->cocoon_time - level.time);
+			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", (double)ent->cocoon_time - (double)level.time);
 
 		if (level.time >= ent->cocoon_time)
 		{
@@ -2780,7 +2780,7 @@ void ClientThinkstuff(edict_t *ent)
 		{
 			int maxHP = MAX_HEALTH(ent);
 			int maxAP = MAX_ARMOR(ent);
-			int *armor = &ent->client->pers.inventory[body_armor_index];
+			armor = &ent->client->pers.inventory[body_armor_index];
 			float factor = FURY_INITIAL_REGEN + (FURY_ADDON_REGEN * ent->myskills.abilities[FURY].current_level);
 			
 			if (factor > FURY_MAX_REGEN)

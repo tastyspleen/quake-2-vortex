@@ -858,9 +858,10 @@ void OpenClassMenu (edict_t *ent, int page_num)
 	addlinetomenu(ent, "Exit", 99);
 
 	setmenuhandler(ent, classmenu_handler);
-	if (CLASS_MAX > 11)
-		ent->client->menustorage.currentline = 15;
-	else ent->client->menustorage.currentline = 5 + i;
+	//if (CLASS_MAX > 11)
+	//	ent->client->menustorage.currentline = 15;
+	//else
+	ent->client->menustorage.currentline = 5 + i;
 	showmenu(ent);
 }
 
