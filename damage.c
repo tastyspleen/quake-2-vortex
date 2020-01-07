@@ -689,7 +689,6 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		if (getTalentSlot(targ, TALENT_BLOOD_OF_ARES) != -1)
 		{
 			int level = getTalentLevel(targ, TALENT_BLOOD_OF_ARES);
-			temp;
 			
 			// BoA is less effective in PvM
 			if (pvm->value)
