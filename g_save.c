@@ -685,7 +685,8 @@ void ReadGame(char* filename)
 
 //==========================================================
 
-
+/* Local storage for WriteEdict because size of edict_t exceeds stack space available */
+static 	edict_t		WE_temp;
 /*
 ==============
 WriteEdict
@@ -696,19 +697,18 @@ All pointer variables (except function pointers) must be handled specially.
 void WriteEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
-	edict_t		temp;
 
 	// all of the ints, floats, and vectors stay as they are
-	temp = *ent;
+	WE_temp = *ent;
 
 	// change the pointers to lengths or indexes
 	for (field=savefields ; field->name ; field++)
 	{
-		WriteField1 (f, field, (byte *)&temp);
+		WriteField1 (f, field, (byte *)&WE_temp);
 	}
 
 	// write the block
-	fwrite (&temp, sizeof(temp), 1, f);
+	fwrite (&WE_temp, sizeof(WE_temp), 1, f);
 
 	// now write any allocated data following the edict
 	for (field=savefields ; field->name ; field++)
@@ -717,6 +717,9 @@ void WriteEdict (FILE *f, edict_t *ent)
 	}
 
 }
+
+/* Local for WriteLevelLocals because size of level_locals_t exceeds stack space available. */
+static level_locals_t		WLL_temp;
 
 /*
 ==============
@@ -728,19 +731,18 @@ All pointer variables (except function pointers) must be handled specially.
 void WriteLevelLocals (FILE *f)
 {
 	field_t		*field;
-	level_locals_t		temp;
 
 	// all of the ints, floats, and vectors stay as they are
-	temp = level;
+	WLL_temp = level;
 
 	// change the pointers to lengths or indexes
 	for (field=levelfields ; field->name ; field++)
 	{
-		WriteField1 (f, field, (byte *)&temp);
+		WriteField1 (f, field, (byte *)&WLL_temp);
 	}
 
 	// write the block
-	fwrite (&temp, sizeof(temp), 1, f);
+	fwrite (&WLL_temp, sizeof(WLL_temp), 1, f);
 
 	// now write any allocated data following the edict
 	for (field=levelfields ; field->name ; field++)
