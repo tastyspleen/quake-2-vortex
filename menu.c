@@ -56,6 +56,7 @@ void clearmenu(edict_t *ent)
 
 void tradeconfirmation_handler (edict_t *ent, int option);
 void itemmenu_handler (edict_t *ent, int option);
+
 void setmenuhandler(edict_t *ent, void (*optionselected)(edict_t *ent,int option))
 {
 	ent->client->menustorage.optionselected=optionselected;

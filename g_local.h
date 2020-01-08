@@ -1914,7 +1914,7 @@ struct edict_s
 //ZOID
 #include "g_ctf.h"
 //ZOID
-//#include "menu.h"
+#include "menu.h"
 
 //K03 Begin
 //#define MAX_MAPS           32

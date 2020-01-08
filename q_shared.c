@@ -1185,6 +1185,22 @@ int	Q_stricmp(const char *s1, const char *s2)
 	return (tolower(*uc1) - tolower(*--uc2));
 }
 
+/** Case sensitive string compare (strcmp)
+ if s1 is contained within s2 then return 0, they are "equal".
+ else return the lexicographic difference between them.
+*/
+int	Q_strcmp(const char* s1, const char* s2)
+{
+	const unsigned char
+		* uc1 = (const unsigned char*)s1,
+		* uc2 = (const unsigned char*)s2;
+
+	while (*uc1 == *uc2++)
+		if (*uc1++ == '\0')
+			return (0);
+	return (*uc1 - *--uc2);
+}
+
 /**
  * A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
  */

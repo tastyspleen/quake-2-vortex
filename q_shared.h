@@ -239,6 +239,9 @@ void Com_PageInMemory (byte *buffer, int size);
 
 // Case insensitive string compare function
 int Q_stricmp (const char *s1, const char *s2);
+// Case sensitive string compare function
+int Q_strcmp(const char* s1, const char* s2);
+//A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
 void Q_strncpy(char* pszDest, const char* pszSrc, int nDestSize);
 
 //=============================================
