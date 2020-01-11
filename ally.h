@@ -1,3 +1,4 @@
+#pragma once
 #define	ALLY_WAIT_TIMEOUT	30 // number of seconds before a request times out
 
 qboolean IsAlly (edict_t *ent, edict_t *other);

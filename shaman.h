@@ -123,7 +123,7 @@
 
 void Cmd_AmpDamage(edict_t *ent);
 void Cmd_Weaken(edict_t *ent);
-void Cmd_Slave(edict_t *ent);
+//void Cmd_Slave(edict_t *ent);
 void Cmd_Amnesia(edict_t *ent);
 void Cmd_Curse(edict_t *ent);
 void Cmd_Bless(edict_t *ent);

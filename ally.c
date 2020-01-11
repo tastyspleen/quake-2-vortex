@@ -206,7 +206,14 @@ void ResetAlliances(edict_t* ent)
 edict_t* getPlayerByName(const char* name)
 {
 	int		i;
-	edict_t* player, * found = NULL;
+	edict_t* player;
+	edict_t* found = NULL;
+
+	if (!name)
+	{
+		gi.dprintf("Vortex error: null player name pointer passed to %s\n", __func__);
+		return NULL;
+	}
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
@@ -804,33 +811,36 @@ void ShowAllyMenu(edict_t* ent)
 	showmenu(ent);
 }
 
-int AlliedTeamComp(const void* v1, const void* v2)
-{
-	edict_t* p1 = (edict_t*)v1, * p2 = (edict_t*)v2;
-	return p1->teamnum - p2->teamnum;
-}
+//int AlliedTeamComp(const void* v1, const void* v2)
+//{
+//	edict_t* p1 = (edict_t*)v1, * p2 = (edict_t*)v2;
+//	return p1->teamnum - p2->teamnum;
+//}
 
-void PrintAlliedTeams(edict_t* ent)
-{
-	int i, j;
-	edict_t* player[MAX_CLIENTS], * e;
-
-	// create an array of allied players
-	for (i = 0, j = 0; i < game.maxclients; i++)
-	{
-		e = g_edicts + 1 + i;
-
-		if (!e->inuse || !e->teamnum)
-			continue;
-		player[j++] = e;
-		//gi.dprintf("populated %d with %s\n", j-1, e->client->pers.netname);
-	}
-
-	qsort(player, j, sizeof(edict_t), AlliedTeamComp);
-
-	for (i = 0; i < j; i++)
-	{
-		gi.cprintf(ent, PRINT_HIGH, "%d: %s\n", player[i]->teamnum, player[i]->client->pers.netname);
-	}
-
-}
+//QwazyWabbit: This is unused. Looks broken.
+//void PrintAlliedTeams(edict_t* ent)
+//{
+//	int i, j;
+//	edict_t*	player[MAX_CLIENTS];
+//	edict_t*	e;
+//
+//	gi.dprintf("%s size of edict_t is %u\n", __func__, sizeof(edict_t));
+//
+//	// create an array of allied players
+//	for (i = 0, j = 0; i < game.maxclients; i++)
+//	{
+//		e = g_edicts + 1 + i;
+//
+//		if (!e->inuse || !e->teamnum)
+//			continue;
+//		player[j++] = e;
+//		//gi.dprintf("populated %d with %s\n", j-1, e->client->pers.netname);
+//	}
+//
+//	qsort(player, j, sizeof(edict_t), AlliedTeamComp);
+//
+//	for (i = 0; i < j; i++)
+//	{
+//		gi.cprintf(ent, PRINT_HIGH, "%d: %s\n", player[i]->teamnum, player[i]->client->pers.netname);
+//	}
+//}

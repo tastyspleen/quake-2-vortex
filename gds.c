@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-/*
+#if (0) /* disables code */
 #define GDS_TESTFILE_NAME	"Player"
 
 qboolean GDS_InFileQue (edict_t *ent)
@@ -235,7 +235,7 @@ void GDS_CheckPlayer (edict_t *ent)
 		return;
 	}
 }
-*/
+#endif
 
 int GDS_OpenConfigFile(edict_t *ent)
 {

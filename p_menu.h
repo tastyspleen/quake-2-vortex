@@ -22,10 +22,10 @@ typedef struct pmenu_s {
 	void (*SelectFunc)(edict_t *ent, struct pmenu_s *entry);
 } pmenu_t;
 
-void PMenu_Open(edict_t *ent, pmenu_t *entries, int cur, int num, qboolean usekeys, qboolean showbackground);
-void PMenu_Close(edict_t *ent);
-void PMenu_Update(edict_t *ent);
-void PMenu_Next(edict_t *ent);
-void PMenu_Prev(edict_t *ent);
-void PMenu_Select(edict_t *ent);
-int MenuFromNumberKey(edict_t *ent, int slot);
+//void PMenu_Open(edict_t *ent, pmenu_t *entries, int cur, int num, qboolean usekeys, qboolean showbackground);
+//void PMenu_Close(edict_t *ent);
+//void PMenu_Update(edict_t *ent);
+//void PMenu_Next(edict_t *ent);
+//void PMenu_Prev(edict_t *ent);
+//void PMenu_Select(edict_t *ent);
+//int MenuFromNumberKey(edict_t *ent, int slot);

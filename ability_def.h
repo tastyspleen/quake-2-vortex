@@ -1,3 +1,4 @@
+#pragma once
 #define VITALITY		0
 #define REGENERATION	1
 #define RESISTANCE		2

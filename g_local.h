@@ -2226,19 +2226,12 @@ qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 #define VectorEmpty(a)        ((a[0]==0)&&(a[1]==0)&&(a[2]==0))
 #define SENTRY_UPRIGHT		1
 #define SENTRY_FLIPPED		2
-void	ReadBotChat(void);
-void BotGreeting(edict_t *chat);
-void BotComeback(edict_t *self);
-void BotInsultStart(edict_t *self);
-void BotInsult(edict_t *self, edict_t *enemy, int chat_type);
-void Cmd_BFGFireball(edict_t *ent);
+
 qboolean IsNewbieBasher (edict_t *player);
 qboolean TeleportNearTarget (edict_t *self, edict_t *target, float dist);
 qboolean FindValidSpawnPoint (edict_t *ent, qboolean air);
 void ValidateAngles (vec3_t angles);
-qboolean G_CanTarget (edict_t *self, edict_t *target);
 int InJoinedQueue (edict_t *ent);
-void RefundAbilityPoints(edict_t *ent);
 qboolean IsABoss(edict_t *ent);
 qboolean IsBossTeam (edict_t *ent);
 void AddBossExp (edict_t *attacker, edict_t *target);

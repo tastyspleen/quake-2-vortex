@@ -26,4 +26,4 @@
 void		Toggle_Scanner (edict_t *ent);
 void		ShowScanner(edict_t *ent,char *layout);
 void		ClearScanner(gclient_t *client);
-qboolean	Pickup_Scanner (edict_t *ent, edict_t *other);
+//QW//qboolean	Pickup_Scanner (edict_t *ent, edict_t *other);

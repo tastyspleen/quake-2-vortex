@@ -1,3 +1,4 @@
+#pragma once
 // general stuff
 #define FRAMES_RUN_FORWARD			1
 #define FRAMES_RUN_BACKWARD			2

@@ -1,3 +1,4 @@
+#pragma once
 #include <sys/stat.h>
 
 #define GDS_FILE_EXISTS			1		// the file we want exists
