@@ -562,12 +562,6 @@ void TeleportForward (edict_t *ent)
 	}
 }
 
-void Weapon_Blaster (edict_t *ent);
-void Weapon_GrenadeLauncher (edict_t *ent);
-void Weapon_RocketLauncher (edict_t *ent);
-void Weapon_HyperBlaster (edict_t *ent);
-void Weapon_BFG (edict_t *ent);
-
 #define AUTOAIM_TARGET_RADIUS		1024
 
 qboolean autoaim_findtarget (edict_t *ent)
@@ -7838,9 +7832,7 @@ void cocoon_cloak (edict_t *self)
 		return;
 
 	// don't cloak if we're holding the flag carrier!
-	if (self->enemy->client && (self->enemy->client->pers.inventory[flag_index] || 
-		self->enemy->client->pers.inventory[flag_index] || 
-		self->enemy->client->pers.inventory[flag_index]))
+	if (self->enemy->client && (self->enemy->client->pers.inventory[flag_index]))
 		return;
 
 	// already cloaked
