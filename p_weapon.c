@@ -12,7 +12,7 @@ void lasersight_on (edict_t *ent);
 void lasersight_off (edict_t *ent);
 void weapon_grenade_fire (edict_t *ent, qboolean held);
 // RAFAEL
-void weapon_trap_fire (edict_t *ent, qboolean held);
+//void weapon_trap_fire (edict_t *ent, qboolean held);
 
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
 {
@@ -887,7 +887,7 @@ GRENADE
 ======================================================================
 */
 
-#define GRENADE_TIMER			3.0
+#define GRENADE_TIMER			3.0f
 #define GRENADE_MINSPEED		400
 #define GRENADE_MAXSPEED		800
 #define GRENADE_INITIAL_SPEED	800

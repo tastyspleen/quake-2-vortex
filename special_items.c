@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-#if 0
+#if 0 /* all code in this file is disabled. */
 
 #define	ITEM_TRADE_MAXCLIENTS		10	// max number of clients for player select menu
 #define	ITEM_TRADE_MAX_DISTANCE		128	// max trading distance

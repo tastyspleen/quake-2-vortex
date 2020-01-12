@@ -95,7 +95,8 @@ edict_t *INV_GetSpawnPlayer (void)
 edict_t *INV_GetRandomSpawn (void)
 {
 	int i=0;
-	edict_t *e, *spawns[MAX_CLIENTS];
+	edict_t* e;
+	edict_t* spawns[MAX_CLIENTS];
 
 	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
 	{
@@ -433,7 +434,7 @@ void SP_navi_monster_invasion (edict_t *self)
 int G_GetEntityIndex (edict_t *ent)
 {
 	int		i = 0;
-	edict_t *e;
+	edict_t *e = g_edicts;
 
 	if (!ent || !ent->inuse)
 		return 0;

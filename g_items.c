@@ -120,10 +120,12 @@ void DoRespawn (edict_t *ent)
 		int choice;
 
 		master = ent->teammaster;
+		assert(master != NULL);
 
 		for (count = 0, ent = master; ent; ent = ent->chain, count++)
 			;
-
+		
+		assert(count != 0);
 		choice = rand() % count;
 
 		for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
@@ -588,6 +590,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 	int count;
 	float temp=1.0;
 
+	assert(other);
 	//3.0 cursed players can't pick up health
 	if (que_findtype(other->curses, NULL, CURSE) != NULL)
 		return false;

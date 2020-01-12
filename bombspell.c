@@ -225,9 +225,9 @@ void bombarea_think (edict_t *self)
 	}
 	VectorCopy(self->s.origin, start);
 
-	thinktime = 0.2 * ((self->delay-6)-level.time);
-	if (thinktime < 0.2)
-		thinktime = 0.2;
+	thinktime = 0.2f * ((self->delay-6)-level.time);
+	if (thinktime < 0.2f)
+		thinktime = 0.2f;
 	// if the caster can't see his target, then pause the spell
 	/*
 	if (!visible(self, self->owner))
@@ -244,7 +244,7 @@ void bombarea_think (edict_t *self)
 	if (self->s.angles[PITCH] == 90)
 		bombtime = 1 + 2*random();
 	else
-		bombtime = 0.5 + 2*random();
+		bombtime = 0.5f + 2*random();
 	spawn_grenades(self->owner, tr.endpos, bombtime, self->dmg, 1);
 	self->nextthink = level.time + thinktime;
 }
@@ -319,7 +319,7 @@ void bombperson_think (edict_t *self)
 	bombtime = self->delay - 8; // max rate achieved 2 seconds after casting
 	if (bombtime < level.time)
 		bombtime = level.time;
-	thinktime = level.time + 0.25 * ((bombtime + 1) - level.time); // max 1 bomb per 0.25 seconds
+	thinktime = level.time + 0.25f * ((bombtime + 1) - level.time); // max 1 bomb per 0.25 seconds
 
 	// bomb self-terminates if the enemy dies or owner teleports away
 	if (!G_EntIsAlive(self->owner) || !G_EntIsAlive(self->enemy)
@@ -355,7 +355,7 @@ void bombperson_think (edict_t *self)
 	// spread randomly around target
 	start[0] += (BOMBPERSON_WIDTH/2)*crandom();
 	start[1] += (BOMBPERSON_WIDTH/2)*crandom();
-	spawn_grenades(self->owner, start, (0.5+2*random()), self->dmg, 1);
+	spawn_grenades(self->owner, start, (0.5f + 2 * random()), self->dmg, 1);
 	self->nextthink = thinktime;
 }
 

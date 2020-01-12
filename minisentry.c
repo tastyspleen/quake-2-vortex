@@ -205,7 +205,7 @@ void minisentry_attack (edict_t *self)
 		if (slowed)
 			self->wait = level.time + 2.0;
 		else if (self->chill_time > level.time)
-			self->wait = level.time + (1.0 * (1.0f + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * self->chill_level));
+			self->wait = level.time + (1.0f * (1.0f + CHILL_DEFAULT_BASE + CHILL_DEFAULT_ADDON * self->chill_level));
 		else
 			self->wait = level.time + 1.0;
 	

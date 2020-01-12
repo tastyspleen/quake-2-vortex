@@ -108,16 +108,18 @@ qboolean que_entexists (que_t *que, edict_t *other)
 	return false;
 }
 
-void que_list (que_t *que)
+void que_list(que_t* que)
 {
 	int i;
 
-	for (i=0; i<QUE_MAXSIZE; i++)
+	for (i = 0; i < QUE_MAXSIZE; i++)
 	{
 		if (que[i].ent && que[i].ent->inuse)
-			gi.dprintf("slot %d: classname: %s owner: %s validtime: %s\n", i, que[i].ent->classname, que[i].ent->owner?"true":"false", que[i].time>level.time?"true":"false");
+			gi.dprintf("slot %d: classname: %s owner: %s validtime: %s\n",
+				i, que[i].ent->classname, que[i].ent->owner ? "true" : "false",
+				que[i].time > level.time ? "true" : "false");
 		else
-			gi.dprintf("slot %d: %s\n", i, que[i].ent?"invalid":"empty");
+			gi.dprintf("slot %d: %s\n", i, que[i].ent ? "invalid" : "empty");
 	}
 }
 

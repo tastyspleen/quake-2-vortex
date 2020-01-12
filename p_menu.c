@@ -633,9 +633,9 @@ void OpenJoinMenu (edict_t *ent)
 	addlinetomenu(ent, va("Welcome to Vortex v%s!", VRX_VERSION), MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "www.project-vortex.com", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Original design by Kombat03.", 0);
+	addlinetomenu(ent, "Original design: Kombat03.", 0);
 	addlinetomenu(ent, "Ideas borrowed from KOTS,", 0);
-	addlinetomenu(ent, "with input from our players!", 0);
+	addlinetomenu(ent, "and help from our players!", 0);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Programmers:", 0);
 	addlinetomenu(ent, "GHz, Kombat03, Chamooze", 0);

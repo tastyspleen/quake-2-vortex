@@ -18,19 +18,27 @@
 
 //***************************************************************************************
 //***************************************************************************************
-
+//QW// FIXME: This originally had name[MAX_MAPNAME_LEN].
+// Should this not be MAX_QPATH * MAX_MAPS?  See v_maplist_s below.
+// Needs testing. 
+// Note to self: the game was historically
+// restricted to MAX_QPATH = 64. Windows and Linux both
+// support much larger paths now and if the game doesn't rely
+// on the engine to open files then non-standard _MAX_PATH might
+// be more appropriate. Test GCC/clang for support of this.
 typedef struct
 {
-	char name[MAX_MAPNAME_LEN];
-	int monsters;
+	char	name[MAX_QPATH];
+	int		monsters;
 } mapdata_t;
+
 mapdata_t	mapdata;
 
 typedef struct v_maplist_s
-{ 
-   int  nummaps;          // number of maps in list
-   mapdata_t maps[MAX_MAPS];//4.5
-   //char mapnames[MAX_MAPS][MAX_MAPNAME_LEN];
+{
+	int  nummaps;          // number of maps in list
+	mapdata_t maps[MAX_MAPS * MAX_MAPNAME_LEN];//4.5
+	//char mapnames[MAX_MAPS][MAX_MAPNAME_LEN];
 } v_maplist_t;
 
 //***************************************************************************************

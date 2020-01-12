@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-#if (0) /* disable all code */
+#if (0) /* disables all code in this file */
 #define RUNE_SPAWN_BASE			0.02	// base chance of a rune spawning, before level modifiers
 #define RUNE_WEAPON_MAXVALUE	5		// maximum modifier for weapon runes	
 #define RUNE_ABILITY_MAXVALUE	3		// maximum modifier for ability runes

@@ -1475,7 +1475,10 @@ qboolean SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 				spot = G_Find (spot, FOFS(classname), "info_player_start");
 			}
 			if (!spot)
-				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+			{
+				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
+				return false; //QW// Never executed, passify compiler.
+			}
 		}
 	}
 
@@ -2006,6 +2009,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 		gi.dprintf("ClientBeginDeathmatch()\n");
 
 	G_InitEdict (ent);
+	assert(ent != NULL);
 
 	InitClientResp (ent->client);
 
@@ -2265,7 +2269,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		gi.dprintf("ClientConnect()\n");
 
 	value = Info_ValueForKey (userinfo, "name");
-	strncpy (ent->client->pers.netname, value, sizeof(ent->client->pers.netname)-1);
+	Q_strncpy (ent->client->pers.netname, value, sizeof(ent->client->pers.netname)-1);
 
 	// update current ip
 	value = Info_ValueForKey (userinfo, "ip");
@@ -2278,7 +2282,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		if (value)
 			value[0] = '\0';
 
-		strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
+		Q_strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
 	}
 
 	//Info_SetValueForKey(userinfo, "ip", value);
@@ -2299,8 +2303,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		int i, numspec;
 
 		if (*spectator_password->string && 
-			strcmp(spectator_password->string, "none") && 
-			strcmp(spectator_password->string, value)) {
+			Q_strcmp(spectator_password->string, "none") && 
+			Q_strcmp(spectator_password->string, value)) {
 			Info_SetValueForKey(userinfo, "rejmsg", "Spectator password required or incorrect.");
 			return false;
 		}
@@ -2317,8 +2321,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	} else {
 		// check for a password
 		value = Info_ValueForKey (userinfo, "password");
-		if (*password->string && strcmp(password->string, "none") && 
-			strcmp(password->string, value)) {
+		if (*password->string && Q_strcmp(password->string, "none") && 
+			Q_strcmp(password->string, value)) {
 			Info_SetValueForKey(userinfo, "rejmsg", "Password required or incorrect.");
 			return false;
 		}
@@ -2352,7 +2356,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ClientUserinfoChanged (ent, userinfo);
 //GHz START
 	value = Info_ValueForKey (userinfo, "ip");
-	if (game.maxclients > 1)
+	if (ent && game.maxclients > 1)
 	{
 		gi.dprintf ("%s@%s connected at %s on %s\n", ent->client->pers.netname, value, CURRENT_TIME, CURRENT_DATE);
 		WriteToLogfile(ent, "Connected to server.\n");
@@ -2360,6 +2364,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 //GHz END
 
 //	ent->client->disconnect_time = -1;
+	assert(ent != NULL);
 	ent->svflags = 0;// make sure we start with known default
 	//ent->num_lasers = 0;
 	ent->client->pers.connected = true;
@@ -2368,8 +2373,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 }
 
 void KillMyVote(edict_t* ent);
-void soldier_die(edict_t* ent);
-void turret_remove(edict_t* ent);
+//void soldier_die(edict_t* ent);
+//void turret_remove(edict_t* ent);
 
 /*
 ===========
@@ -2608,6 +2613,8 @@ void DeflectProjectiles (edict_t *self, float chance, qboolean in_front);
 void DrawNearbyGrid(edict_t *ent);
 void DrawChildLinks (edict_t *ent);
 //void DrawPath(void);
+
+
 void ClientThinkstuff(edict_t *ent)
 {
 	int			health_factor;//K03
@@ -2796,6 +2803,11 @@ void ClientThinkstuff(edict_t *ent)
 		}
 	//	else	ent->fury_time = 0.0;
 	}
+
+	//QW// Added these to passify VS2019. 
+	// Testing will reveal if there is a real error.
+	assert(ent != NULL);
+	assert(ent->client != NULL);
 
 	// regeneration tech
 	if (ent->client->pers.inventory[regeneration_index])

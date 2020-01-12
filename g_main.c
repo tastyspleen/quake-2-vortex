@@ -326,7 +326,7 @@ void EndDMLevel (void)
 	int		i;
 	edict_t	*tempent;
 
-	clearallmenus();
+	ClearAllMenus();
 	InitJoinedQueue();
 
 	if (SPREE_WAR) // terminate any spree wars
@@ -407,7 +407,7 @@ void VortexEndLevel (void)
 	gi.dprintf("Vortex is shutting down...");
 	
 	CTF_ShutDown(); // 3.7 shut down CTF, remove flags and bases
-	clearallmenus();
+	ClearAllMenus();
 	InitJoinedQueue();
 	InitializeTeamNumbers(); // for allies
 

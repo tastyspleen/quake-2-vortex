@@ -582,7 +582,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 			ExitLevel();
 			return;
 		}
-		else if (!strcmp(maplist->maps[mapnum-1].name, level.mapname))
+		else if (!Q_stricmp(maplist->maps[mapnum-1].name, level.mapname))
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Can't vote for current map!\n");
 			return;

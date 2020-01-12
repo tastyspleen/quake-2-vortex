@@ -7,13 +7,13 @@
   *
  * Dude! Put your constants in the header file named
  * after the source file! Don't scatter them throughout
- * the code. It doesn't belong in settings.h!
+ * the code. It doesn't belong in settings.h.
  * Now we have CTF constants in ctf.h, g_ctf.h and settings.h.
  * as if it wasn't already hard enough to control mod code.
  * Is this code even needed in this mod?
 */
 
-#if 0
+#if 0 /* disables all code in this file */
 
 #include "bot.h"
 
