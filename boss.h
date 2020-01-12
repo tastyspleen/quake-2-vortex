@@ -15,6 +15,7 @@
 #define BOSS_REGEN_IDLE_FRAMES		900
 #define BOSS_REGEN_ACTIVE_FRAMES	1800
 
+void AddDmgList(edict_t* self, edict_t* other, int damage);
 dmglist_t *findDmgSlot (edict_t *self, edict_t *other);
 dmglist_t *findEmptyDmgSlot (edict_t *self);
 dmglist_t *findHighestDmgPlayer (edict_t *self);

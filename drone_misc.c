@@ -2095,7 +2095,6 @@ void MonsterFollowMe (edict_t *ent)
 	}
 }
 
-edict_t *CTF_GetFlagBaseEnt (int teamnum);
 void MonsterAttack (edict_t *ent)
 {
 	int		i;
@@ -2118,7 +2117,11 @@ void MonsterAttack (edict_t *ent)
 
 	if (goal)
 		goal = DroneTempEnt(ent, goal->s.origin, 0);
-
+	else
+	{
+		gi.error("DroneTempEnt returned NULL goal in %s\n", __func__);
+		return;	/* passify compiler */
+	}
 	// search queue for drones
 	for (i=0; i<3; i++) 
 	{

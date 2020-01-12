@@ -358,12 +358,12 @@ const char* s2;
 #define NATURETOTEM_HEALTH_BASE		0
 #define NATURETOTEM_HEALTH_MULT		5
 #define NATURETOTEM_ARMOR_BASE		0
-#define NATURETOTEM_ARMOR_MULT		2.5
-#define NATURETOTEM_REFIRE_BASE		5.0
-#define NATURETOTEM_REFIRE_MULT		0.0		//make this negative to reduce the "cooldown".
+#define NATURETOTEM_ARMOR_MULT		2.5f
+#define NATURETOTEM_REFIRE_BASE		5.0f
+#define NATURETOTEM_REFIRE_MULT		0.0f		//make this negative to reduce the "cooldown".
 //Darkness totem
-#define DARKNESSTOTEM_VAMP_MULT		0.033
-#define DARKNESSTOTEM_MAX_MULT		0.1
+#define DARKNESSTOTEM_VAMP_MULT		0.033f
+#define DARKNESSTOTEM_MAX_MULT		0.1f
 
 //Talent: Precision Tuning
 #define PRECISION_TUNING_COST_FACTOR	0.1

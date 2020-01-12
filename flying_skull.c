@@ -691,7 +691,7 @@ void Cmd_HellSpawn_f (edict_t *ent)
 		// try to restore previous owner
 		if (!RestorePreviousOwner(ent->skull))
 		{
-			if (ent->skull->health >= ent->skull->max_health)
+			if (ent->skull && ent->skull->health >= ent->skull->max_health)
 				ent->client->pers.inventory[power_cube_index] += ent->skull->monsterinfo.cost;
 			RemoveHellspawn(ent);
 			gi.cprintf(ent, PRINT_HIGH, "Hell spawn removed.\n");

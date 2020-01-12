@@ -990,6 +990,7 @@ gitem_t	*GetItemByIndex (int index);
 qboolean Add_Ammo (edict_t *ent, gitem_t *item, float count);
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 edict_t *Spawn_Item (gitem_t *item);
+void tech_checkrespawn(edict_t* ent);
 
 //
 // g_utils.c

@@ -135,4 +135,7 @@ void Cmd_LifeDrain(edict_t *ent);
 void LifeDrain (edict_t *ent);
 void Bleed (edict_t *curse);
 void Cmd_LowerResist (edict_t *ent);
+qboolean curse_add(edict_t* target, edict_t* caster, int type, int curse_level, float duration);//4.4
+void CurseMessage(edict_t* caster, edict_t* target, int type, float duration, qboolean isCurse);//4.4
+
 #endif

@@ -1521,11 +1521,11 @@ void fire_sniperail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_RAILGUN);
 		}
 
-		VectorCopy (tr.endpos, from);
+		_VectorCopy (tr.endpos, from);
 	}
 
 	VectorScale (aimdir,100, from);
-	VectorSubtract(tr.endpos,from,start);
+	_VectorSubtract(tr.endpos,from,start);
 
 //	gi.bprintf(PRINT_HIGH,"jj\n");
 
@@ -2934,7 +2934,7 @@ void spikeball_move (edict_t *self)
 
 
 	// vector to target
-	VectorSubtract(goalpos, self->s.origin, forward);
+	_VectorSubtract(goalpos, self->s.origin, forward);
 	VectorNormalize(forward);
 
 	// accelerate towards target

@@ -79,6 +79,7 @@ int v_LoadMapList(int mode)
 
 			++iterator;
 		}
+		gi.dprintf("INFO: Success loading %s\n", filename);
 		fclose(fptr);
 		maplist->nummaps = iterator;
 	}
