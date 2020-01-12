@@ -660,7 +660,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	if (!targ || !attacker)
 	{
 		gi.error("NULL pointer argument when calling %s\n", __func__);
-		return; /* passify compiler */
+		return 0; /* passify compiler */
 	}
 
 	player = G_GetClient(attacker);
