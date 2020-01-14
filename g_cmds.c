@@ -257,14 +257,14 @@ char *ClientTeam (edict_t *ent)
 
 int NotHostile (edict_t *ent1, edict_t *ent2)
 {
+	// sanity check
+	if (!ent1 || !ent2)
+		return 0;
+
 	edict_t *e1 = G_GetClient(ent1);
 	edict_t *e2 = G_GetClient(ent2);
 
 	if (ctf->value || ptr->value || domination->value || invasion->value)
-		return 0;
-
-	// sanity check
-	if (!ent1 || !ent2)
 		return 0;
 
 	// both entities are players or owned by players
