@@ -858,8 +858,8 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;
@@ -909,8 +909,8 @@ edict_t *fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, 
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;
@@ -1296,7 +1296,7 @@ void fire_smartrocket (edict_t *self, edict_t *target, vec3_t start, vec3_t dir,
 
 		// adjust turn rate based on quality of lock
 		// 0.1 = 5-6 degrees/frame, 0.2 = 11-12, 0.3 = 17-18, 0.4 = 23-24
-		rocket->random = 0.1 * (turn_speed - (SMARTROCKET_LOCKFRAMES - 1));
+		rocket->random = 0.1f * (turn_speed - (SMARTROCKET_LOCKFRAMES - 1));
 		
 		// maximum turning rate
 		if (rocket->random > 1.0)
@@ -1324,6 +1324,12 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 	int			mod;
+
+	if (!self)
+	{
+		gi.error("NULL pointer argument when calling %s\n", __func__);
+		return; /* passify compiler */
+	}
 
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
@@ -1492,6 +1498,12 @@ void fire_sniperail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 	edict_t		*ignore;
 	int			mask;
 	qboolean	water;
+
+	if (!self)
+	{
+		gi.error("NULL pointer argument when calling %s\n", __func__);
+		return; /* passify compiler */
+	}
 
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
@@ -2610,8 +2622,8 @@ void fire_emp_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int slevel, f
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 
@@ -2784,8 +2796,8 @@ void fire_mirv_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, 
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 
@@ -3129,8 +3141,8 @@ void fire_spikeball (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 
 	// adjust velocity
 	VectorScale (aimdir, throw_speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 
 	self->num_spikeball++;
@@ -3353,8 +3365,8 @@ void fire_acid (edict_t *self, vec3_t start, vec3_t aimdir, int projectile_damag
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 

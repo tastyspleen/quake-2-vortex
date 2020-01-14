@@ -4746,8 +4746,8 @@ void ThrowLaserTrap (edict_t *self, vec3_t start, vec3_t aimdir, int skill_level
 
 	// throw
 	VectorScale (aimdir, 400, trap->velocity);
-	VectorMA (trap->velocity, 200 + crandom() * 10.0, up, trap->velocity);
-	VectorMA (trap->velocity, crandom() * 10.0, right, trap->velocity);
+	VectorMA (trap->velocity, 200 + crandom() * 10.0f, up, trap->velocity);
+	VectorMA (trap->velocity, crandom() * 10.0f, right, trap->velocity);
 
 	//  entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
