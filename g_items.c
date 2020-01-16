@@ -113,6 +113,12 @@ gitem_t	*FindItem (char *pickup_name)
 
 void DoRespawn (edict_t *ent)
 {
+	if (!ent)
+	{
+		gi.dprintf("NULL ent passed to %s\n", __func__);
+		return;
+	}
+
 	if (ent->team)
 	{
 		edict_t	*master;
@@ -132,7 +138,6 @@ void DoRespawn (edict_t *ent)
 			;
 	}
 
-	assert(ent != NULL);
 	ent->svflags &= ~SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	gi.linkentity (ent);
@@ -1083,7 +1088,7 @@ void fire_tball (edict_t *self, vec3_t start, vec3_t aimdir, int speed, float ti
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
 	VectorMA (grenade->velocity, 200.0f + crandom() * 10.0f, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;

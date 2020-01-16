@@ -656,7 +656,6 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	qboolean	attacker_has_pilot;
 	que_t* slot = NULL;
 
-	assert(attacker);
 	if (!targ || !attacker)
 	{
 		gi.error("NULL pointer argument when calling %s\n", __func__);

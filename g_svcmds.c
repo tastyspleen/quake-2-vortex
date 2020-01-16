@@ -549,6 +549,7 @@ void SVCmd_GenerateNodes_f (void)
 	gi.dprintf("%d nodes generated\n", l);
 }
 */
+
 void SVCmd_SpawnBoss_f (void)
 {
 	edict_t *e;

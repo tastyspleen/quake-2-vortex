@@ -1,7 +1,7 @@
 #include "g_local.h"
 
 //K03 Begin
-void InitializeGDS(void);
+//void InitializeGDS(void);
 //#define LOCK_DEFAULTS 1
 //K03 End
 

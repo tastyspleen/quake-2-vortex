@@ -748,7 +748,13 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 void VortexAddExp(edict_t *attacker, edict_t *targ)
 {
 	int			i, exp_points;
-	edict_t		*target, *player = NULL;
+	edict_t*	target;
+	edict_t*	player = NULL;
+
+	//if (!targ || !attacker)
+	//{
+	//	gi.dprintf("NULL pointer argument when calling %s\n", __func__);
+	//}
 
 	// this is a player-monster boss
 	if (IsABoss(attacker))
@@ -812,7 +818,8 @@ void VortexAddExp(edict_t *attacker, edict_t *targ)
 	if ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))
 	{
 		exp_points = PVP_AwardKill(attacker, targ, target);
-		Add_ctfteam_exp(attacker, (int)(0.5*exp_points));
+		if (attacker)
+			Add_ctfteam_exp(attacker, (int)(0.5*exp_points));
 		return;
 	}
 }

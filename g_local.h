@@ -991,6 +991,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, float count);
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 edict_t *Spawn_Item (gitem_t *item);
 void tech_checkrespawn(edict_t* ent);
+void SpawnWorldAmmo(void);
 
 //
 // g_utils.c
@@ -1193,6 +1194,8 @@ float VortexGetAbilityModifier(int level, float base_modifier);//GHz
 int vrx_GetMonsterCost(int mtype);//GHz
 int vrx_GetMonsterControlCost(int mtype);//GHz
 void VortexRemovePlayerSummonables(edict_t *self);//GHz
+void InitScanEntity(void);
+void InitSunEntity(void);
 
 //
 // g_ai.c

@@ -1056,7 +1056,7 @@ int Get_KindWeapon (gitem_t	*it)
 
 edict_t *G_GetClient(edict_t *ent)
 {
-	if (!ent->inuse)
+	if (!ent || !ent->inuse)
 		return NULL;
 
 	// do client check first to avoid returning non-client
@@ -1074,7 +1074,7 @@ edict_t *G_GetClient(edict_t *ent)
 
 edict_t *G_GetSummoner (edict_t *ent)
 {
-	if (!ent->inuse)
+	if (!ent || !ent->inuse)
 		return NULL;
 
 	// do client check first to avoid returning non-client

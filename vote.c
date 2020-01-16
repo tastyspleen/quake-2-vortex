@@ -258,7 +258,7 @@ qboolean AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_PVP:	gi.bprintf(PRINT_HIGH, "%s voted for Player Vs. Player (PvP).\n", ent->myskills.player_name);	break;
 			case MAPMODE_PVM:	gi.bprintf(PRINT_HIGH, "%s voted for Player Vs. Monster (PvM).\n", ent->myskills.player_name);	break;
 			case MAPMODE_DOM:	gi.bprintf(PRINT_HIGH, "%s voted for Domination.\n", ent->myskills.player_name);			break;
-			case MAPMODE_CTF:	gi.bprintf(PRINT_HIGH, "%s voted for Capture The Flag (CTF).\n", ent->myskills.player_name);					break;
+			case MAPMODE_CTF:	gi.bprintf(PRINT_HIGH, "%s voted for Capture The Flag (CTF).\n", ent->myskills.player_name);	break;
 			case MAPMODE_FFA:	gi.bprintf(PRINT_HIGH, "%s voted for Free For All (FFA).\n", ent->myskills.player_name);	break;
 			case MAPMODE_INV:	gi.bprintf(PRINT_HIGH, "%s voted for Invasion (INV).\n", ent->myskills.player_name);
 		}

@@ -660,7 +660,9 @@ void G_FindTrainTeam()
 	}
 }
 
-/*
+void CreateGrid(qboolean force);
+
+/**
 ==============
 SpawnEntities
 
@@ -668,11 +670,6 @@ Creates a server's entity / program execution context by
 parsing textual entity definitions out of an ent file.
 ==============
 */
-void InitScanEntity (void);
-void SpawnWorldAmmo (void);
-void InitSunEntity(void);
-qboolean vrx_CheckForFlag (void);
-void CreateGrid(qboolean force);
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 {
 	edict_t		*ent;
