@@ -308,7 +308,7 @@ void PrintItemProperties (edict_t *ent, items_t *item)
 		for (i=0; i<8; i+=2) {
 			strcpy(tmp, ""); // clear temp string
 			if (item->modifiers[(i+1)] > 0)
-				sprintf(tmp, "%s +%d ", GetAbilityString(item->modifiers[i]), item->modifiers[(i+1)]);
+				Com_sprintf(tmp, "%s +%d ", GetAbilityString(item->modifiers[i]), item->modifiers[(i+1)]);
 			strcat(final, tmp);
 		}
 		gi.cprintf(ent, PRINT_HIGH, "%s\n", final);

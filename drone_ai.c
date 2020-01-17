@@ -1212,8 +1212,6 @@ void drone_ai_run_slide (edict_t *self, float dist)
 	self->monsterinfo.lefty = 1 - self->monsterinfo.lefty;
 	M_walkmove (self, self->ideal_yaw - ofs, dist);
 }
-		
-void TeleportForward (edict_t *ent, vec3_t vec, float dist);
 
 void drone_cleargoal (edict_t *self)
 {

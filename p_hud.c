@@ -511,7 +511,7 @@ void PlayerID_SetStats (edict_t *player, edict_t *target, qboolean chasecam)
 
 	if (target->client)
 	{
-		sprintf(name, "%s", target->client->pers.netname);
+		Com_sprintf(name, sizeof name, "%s", target->client->pers.netname);
 		armor = target->client->pers.inventory[body_armor_index];
 		ammo = target->client->pers.inventory[target->client->ammo_index];
 		lvl = target->myskills.level;

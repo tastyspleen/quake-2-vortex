@@ -3,7 +3,7 @@
 #define G_LOCAL_H
 
 #ifdef _WIN32
-#define WIN32 1 /* VS2019 always defines _WIN32 WIN32 is non-standard */
+#define WIN32 1 /* VS2019 always defines _WIN32 */
 #define WIN32_LEAN_AND_MEAN	//non-MFC
 #include <windows.h>
 #define _CRTDBG_MAP_ALLOC

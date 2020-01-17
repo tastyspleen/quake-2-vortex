@@ -141,7 +141,7 @@ int config_map_list()
 		while (t != NULL) {
 				if (t != NULL)
 				{
-					sprintf(sMapName, "%s", t);
+					Com_sprintf(sMapName, sizeof sMapName, "%s", t);
 					Q_strncpy(maplist.mapnames[numberOfMapsInFile], sMapName, MAX_MAPNAME_LEN);
 					maplist.voteonly[numberOfMapsInFile] = false;
 					numberOfMapsInFile++;

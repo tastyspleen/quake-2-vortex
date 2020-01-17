@@ -205,7 +205,7 @@ void showmenu(edict_t* ent)
 	}
 
 	// copy menu bg control strings to our final menu
-	sprintf(finalmenu, "xv 32 yv 8 picn inventory ");
+	Com_sprintf(finalmenu, sizeof finalmenu, "xv 32 yv 8 picn inventory ");
 	// get y coord of text based on the number of lines we want to create
 	// this keeps the text vertically centered on our screen
 	j = 24 + LINE_SPACING * (ceil((float)(20 - ent->client->menustorage.num_of_lines) / 2));

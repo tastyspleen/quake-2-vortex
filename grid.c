@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-int numnodes=0;
+int numnodes = 0;
 
 // NOTE: This size of the pathnode array may have to change if a larger array is needed for your individual maps..
 
@@ -33,80 +33,81 @@ typedef struct node_s node_t;
 typedef struct stack_s stack_t;
 
 struct node_s {
-  int   g; // how far we've already gone from start to here
-  float h; // heuristic estimate of how far is left
-  float f; // is total cost (estimated) from start to finish
-  int nodenum; // index number of this node
- // vec3_t origin; // location of this node
-  node_t *Child[NUMCHILDS];
-  node_t *PrevNode;
-  node_t *NextNode;
-} ;
-
-node_t *node;
-
-struct stack_s {
-  node_t  *NodePtr;
-  stack_t *StackPtr;
+	int   g; // how far we've already gone from start to here
+	float h; // heuristic estimate of how far is left
+	float f; // is total cost (estimated) from start to finish
+	int nodenum; // index number of this node
+   // vec3_t origin; // location of this node
+	node_t* Child[NUMCHILDS];
+	node_t* PrevNode;
+	node_t* NextNode;
 };
 
-stack_t *Stack=NULL;
+node_t* node;
+
+struct stack_s {
+	node_t* NodePtr;
+	stack_t* StackPtr;
+};
+
+stack_t* Stack = NULL;
 
 //=========================================
 // Push Node to front of the linked list
 //=========================================
-void Push(node_t *Node) {
-stack_t *STK;
+void Push(node_t* Node) {
+	stack_t* STK;
 
-  STK=(stack_t *)gi.TagMalloc(sizeof(stack_t), TAG_LEVEL);
-  STK->StackPtr=Stack; // NULL at start
-  STK->NodePtr=Node;   // Tie the Node
-  Stack=STK;           // Set to start of Stack
+	STK = (stack_t*)gi.TagMalloc(sizeof(stack_t), TAG_LEVEL);
+	STK->StackPtr = Stack; // NULL at start
+	STK->NodePtr = Node;   // Tie the Node
+	Stack = STK;           // Set to start of Stack
 }
 
 //=========================================
 // Pop Node from front of the linked list
 //=========================================
-node_t *Pop(void) {
-node_t *tNode;
-stack_t *STK;
+node_t* Pop(void) {
+	node_t* tNode;
+	stack_t* STK;
 
-  STK=Stack;             // Start of Stack
-  tNode=Stack->NodePtr;  // Grab this Node.
-  Stack=Stack->StackPtr; // Move Stack Pointer
-  gi.TagFree(STK);       // Free this node
+	STK = Stack;             // Start of Stack
+	tNode = Stack->NodePtr;  // Grab this Node.
+	Stack = Stack->StackPtr; // Move Stack Pointer
+	gi.TagFree(STK);       // Free this node
 
-  return (tNode);
+	return (tNode);
 }
 
-node_t *OPEN=NULL;   // Start of OPEN List
+node_t* OPEN = NULL;   // Start of OPEN List
 
-node_t *CLOSED=NULL; // Start of CLOSED List
+node_t* CLOSED = NULL; // Start of CLOSED List
 
-int NodeCount=0;//GHz: for debugging
-node_t *NodeList[10000];//GHz: cleanup
+int NodeCount = 0;//GHz: for debugging
+node_t* NodeList[10000];//GHz: cleanup
 
 //=====================================================
 // Check the desired OPEN/CLOSED LIST for NodeNum..
 //=====================================================
-node_t *CheckLIST(node_t *LIST, int NodeNum) {
-node_t *tNode;
+node_t* CheckLIST(node_t* LIST, int NodeNum) {
+	node_t* tNode;
 
-  tNode=LIST->NextNode; // Start of OPEN or CLOSED
+	tNode = LIST->NextNode; // Start of OPEN or CLOSED
 
-  while (tNode)
-    if (tNode->nodenum == NodeNum) { // My test!!
-      return (tNode); } // Found it!
-    else
-      tNode=tNode->NextNode;
+	while (tNode)
+		if (tNode->nodenum == NodeNum) { // My test!!
+			return (tNode);
+		} // Found it!
+		else
+			tNode = tNode->NextNode;
 
-  return NULL; // NodeNum NOT on LIST.
+	return NULL; // NodeNum NOT on LIST.
 }
 
-void PrintNodes (node_t *Node, qboolean reverse)
+void PrintNodes(node_t* Node, qboolean reverse)
 {
 	int nodeNumber;
-	node_t *tNode = Node;
+	node_t* tNode = Node;
 
 	while (tNode)
 	{
@@ -125,77 +126,80 @@ void PrintNodes (node_t *Node, qboolean reverse)
 //=========================================
 // Free allocated resources for next search
 //=========================================
-void FreeStack(node_t *PathNode) {
-	unsigned long NumFreed=0;//GHz - for debugging
-node_t *tNode;
-stack_t *STK;
+void FreeStack(node_t* PathNode) {
+	unsigned long NumFreed = 0;//GHz - for debugging
+	node_t* tNode;
+	stack_t* STK;
 
-//GHz NOTE: numfreed is not consistent with numcount
-// it looks like the OPEN list has a broken forward link
-// or perhaps the child nodes are not being accounted for?
-// are we counting nodes for NodeCount properly?
-// maybe make a ListNodes() func for debugging to see what all the lists contain and where they are pointing?
+	//GHz NOTE: numfreed is not consistent with numcount
+	// it looks like the OPEN list has a broken forward link
+	// or perhaps the child nodes are not being accounted for?
+	// are we counting nodes for NodeCount properly?
+	// maybe make a ListNodes() func for debugging to see what all the lists contain and where they are pointing?
 
-   while (PathNode) {
-    tNode=PathNode;
-    PathNode=PathNode->PrevNode;
-	gi.TagFree(tNode); 
-	//free(tNode);
-   NumFreed++;
-   }
+	while (PathNode) {
+		tNode = PathNode;
+		PathNode = PathNode->PrevNode;
+		gi.TagFree(tNode);
+		//free(tNode);
+		NumFreed++;
+	}
 
-  while (CLOSED) 
-  {
-    tNode=CLOSED;
-    CLOSED=CLOSED->NextNode;
-    gi.TagFree(tNode);
-	//free(tNode);
-	NumFreed++;
-  }
+	while (CLOSED) {
+		tNode = CLOSED;
+		CLOSED = CLOSED->NextNode;
+		gi.TagFree(tNode);
+		//free(tNode);
+		NumFreed++;
+	}
 
-  while (OPEN) {
-    tNode=OPEN;
-	OPEN=OPEN->NextNode;
-    gi.TagFree(tNode); 
-	//free(tNode);
-  NumFreed++;
-  }
+	while (OPEN) {
+		tNode = OPEN;
+		OPEN = OPEN->NextNode;
+		gi.TagFree(tNode);
+		//free(tNode);
+		NumFreed++;
+	}
 
-  while (Stack) {
-    STK=Stack;
-    Stack=Stack->StackPtr;
-    gi.TagFree(STK); 
-	//free(STK);
-  NumFreed++;
-  }
+	while (Stack) {
+		STK = Stack;
+		Stack = Stack->StackPtr;
+		gi.TagFree(STK);
+		//free(STK);
+		NumFreed++;
+	}
 
-  //gi.dprintf("freed %d/%d nodes\n", NumFreed, NodeCount);
+	//gi.dprintf("freed %d/%d nodes\n", NumFreed, NodeCount);
 }
 
 //===============================================
 // Propagate Old node's values to Nodes on Stack
 //===============================================
-void PropagateDown(node_t *Old) {
-node_t *POPNode;
-int g,c;
+void PropagateDown(node_t* Old) {
+	node_t* POPNode;
+	int g, c;
 
-  for (c=0;c < NUMCHILDS;c++) // parse through Old node children
-    if (Old->Child[c])
-      if (Old->g+1 < Old->Child[c]->g) {
-        Old->Child[c]->g=g=Old->g+1;//FIXME:why is 'g' not initialized? GHZ: added 'g='
-        Old->Child[c]->f=g+Old->h;
-        Old->Child[c]->PrevNode=Old;
-        Push(Old->Child[c]); } // Push onto Stack
+	for (c = 0; c < NUMCHILDS; c++) // parse through Old node children
+		if (Old->Child[c])
+			if (Old->g + 1 < Old->Child[c]->g) {
+				Old->Child[c]->g = g = Old->g + 1;//FIXME:why is 'g' not initialized? GHZ: added 'g='
+				Old->Child[c]->f = g + Old->h;
+				Old->Child[c]->PrevNode = Old;
+				Push(Old->Child[c]);
+			} // Push onto Stack
 
-  while (Stack) { // is the stack in use?
-    POPNode=Pop(); // grab node from stack
-    for (c=0;c < NUMCHILDS;c++) { // parse through all existing POPNOde children
-      if (!POPNode->Child[c]) break; // No more valid Child nodes!
-      if (POPNode->g+1 < POPNode->Child[c]->g) { // update g and f values
-        POPNode->Child[c]->g=g=POPNode->g+1;
-        POPNode->Child[c]->f=g+POPNode->h;
-        POPNode->Child[c]->PrevNode=POPNode;
-        Push(POPNode->Child[c]); } } } // Push onto Stack
+	while (Stack) { // is the stack in use?
+		POPNode = Pop(); // grab node from stack
+		for (c = 0; c < NUMCHILDS; c++) { // parse through all existing POPNOde children
+			if (!POPNode->Child[c]) break; // No more valid Child nodes!
+			if (POPNode->g + 1 < POPNode->Child[c]->g) { // update g and f values
+				POPNode->Child[c]->g = g = POPNode->g + 1;
+				POPNode->Child[c]->f = g + POPNode->h;
+				POPNode->Child[c]->PrevNode = POPNode;
+				Push(POPNode->Child[c]);
+			}
+		}
+	} // Push onto Stack
 }
 
 #define vDiff(b,a) sqrt((a[0]*a[0]-b[0]*b[0])+(a[1]*a[1]-b[1]*b[1])+(a[2]*a[2]-b[2]*b[2]))
@@ -203,130 +207,133 @@ int g,c;
 //===========================================
 // Successor Nodes all pushed onto OPEN list
 //===========================================
-void GetSuccessorNodes(node_t *StartNode, int NodeNumS, int NodeNumD) {
-node_t *Old,*Successor;
-node_t *tNode1,*tNode2;
-int g,c;
-float h;
+void GetSuccessorNodes(node_t* StartNode, int NodeNumS, int NodeNumD) {
+	node_t* Old, * Successor;
+	node_t* tNode1, * tNode2;
+	int g, c;
+	float h;
 
-// NOTE: NodeNumS is the index of a node that was found by the node searching routine
-  //================================
-  // Has NodeNumS been Searched yet?
-  //================================
-	// see if this node is already on the OPEN list
+	// NOTE: NodeNumS is the index of a node that was found by the node searching routine
+	  //================================
+	  // Has NodeNumS been Searched yet?
+	  //================================
+		// see if this node is already on the OPEN list
 	Old = CheckLIST(OPEN, NodeNumS);
-	if (Old) 
-	{ 
+	if (Old)
+	{
 		// node was found on the OPEN list
 		// this means the node was found before (as a child of another node)
 		// but not yet searched (as a parent node)
 		for (c = 0; c < NUMCHILDS; c++)
 		{
 			// break on the first available child slot of StartNode
-			if (!StartNode->Child[c]) 
+			if (!StartNode->Child[c])
 				break;
 		}
 
 		// if we found an empty child slot, use it, otherwise use the last one
-		StartNode->Child[((c < NUMCHILDS)?c:(NUMCHILDS-1))] = Old;
+		StartNode->Child[((c < NUMCHILDS) ? c : (NUMCHILDS - 1))] = Old;
 
 		// have we gone farther with this node than StartNode?
-		if (StartNode->g + 1 < Old->g) 
-		{ 
+		if (StartNode->g + 1 < Old->g)
+		{
 			Old->g = g = StartNode->g + 1; // make node one step beyond StartNode	
 			Old->f = g + Old->h; // update total cost
 			Old->PrevNode = StartNode; // reverse link to StartNode
 		}
-		return; 
+		return;
 	}
 
-  //==================================
-  // Has NodeNumS been searched yet?
-  //==================================
-  Old=CheckLIST(CLOSED,NodeNumS);
-  if (Old!=NULL) {
-	  // node has been searched before
-    for (c=0;c < NUMCHILDS;c++)
-      if (StartNode->Child[c]==NULL) break;
-    StartNode->Child[((c < NUMCHILDS)?c:(NUMCHILDS-1))]=Old;
-    if (StartNode->g+1 < Old->g) {
-      Old->g=g=StartNode->g+1;
-      Old->f=g+Old->h;
-      Old->PrevNode=StartNode;
-      PropagateDown(Old); }
-    return; }
+	//==================================
+	// Has NodeNumS been searched yet?
+	//==================================
+	Old = CheckLIST(CLOSED, NodeNumS);
+	if (Old != NULL) {
+		// node has been searched before
+		for (c = 0; c < NUMCHILDS; c++)
+			if (StartNode->Child[c] == NULL) break;
+		StartNode->Child[((c < NUMCHILDS) ? c : (NUMCHILDS - 1))] = Old;
+		if (StartNode->g + 1 < Old->g) {
+			Old->g = g = StartNode->g + 1;
+			Old->f = g + Old->h;
+			Old->PrevNode = StartNode;
+			PropagateDown(Old);
+		}
+		return;
+	}
 
-  //=======================================
-  // It is NOT on the OPEN or CLOSED List!!
-  //=======================================
-  // Make Successor a Child of StartNode
-  //=======================================
-  //Successor=(node_t *)malloc(sizeof(node_t));
-  Successor=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
-  Successor->nodenum=NodeNumS;
-  Successor->g=g=StartNode->g+1;
+	//=======================================
+	// It is NOT on the OPEN or CLOSED List!!
+	//=======================================
+	// Make Successor a Child of StartNode
+	//=======================================
+	//Successor=(node_t *)malloc(sizeof(node_t));
+	Successor = (node_t*)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+	Successor->nodenum = NodeNumS;
+	Successor->g = g = StartNode->g + 1;
 
-  //GHz - track node memory use so we can free this later
-//	NodeList[NodeCount++] = Successor;
-  NodeCount++;
+	//GHz - track node memory use so we can free this later
+	//	NodeList[NodeCount++] = Successor;
+	NodeCount++;
 
-// NOTE: the heuristic estimate of the remaining path from this node
-// to the destination node is given by the difference between the 2
-// vectors.  You can come up with your own estimate..
+	// NOTE: the heuristic estimate of the remaining path from this node
+	// to the destination node is given by the difference between the 2
+	// vectors.  You can come up with your own estimate..
 
-  Successor->h=h=distance(pathnode[NodeNumS], pathnode[NodeNumD]);//fabs(vDiff(node[NodeNumS].origin,node[NodeNumD].origin));//GHz - changed to fabs()
-  Successor->f=g+h;
-  Successor->PrevNode=StartNode; // reverse link to StartNode
-  Successor->NextNode=NULL;
-  // make all child links of new Successor node NULL
-  for (c=0;c < NUMCHILDS;c++)
-    Successor->Child[c]=NULL;
+	Successor->h = h = distance(pathnode[NodeNumS], pathnode[NodeNumD]);//fabs(vDiff(node[NodeNumS].origin,node[NodeNumD].origin));//GHz - changed to fabs()
+	Successor->f = g + h;
+	Successor->PrevNode = StartNode; // reverse link to StartNode
+	Successor->NextNode = NULL;
+	// make all child links of new Successor node NULL
+	for (c = 0; c < NUMCHILDS; c++)
+		Successor->Child[c] = NULL;
 
-  for (c=0;c < NUMCHILDS;c++)
-    if (StartNode->Child[c]==NULL) break; // Find first empty Child[] of StartNode
-  StartNode->Child[((c < NUMCHILDS)?c:(NUMCHILDS-1))]=Successor; // make Successor a child of StartNode
+	for (c = 0; c < NUMCHILDS; c++)
+		if (StartNode->Child[c] == NULL) break; // Find first empty Child[] of StartNode
+	StartNode->Child[((c < NUMCHILDS) ? c : (NUMCHILDS - 1))] = Successor; // make Successor a child of StartNode
 
-  //=================================
-  // Insert Successor into OPEN List
-  //=================================
-  tNode1=OPEN;
-  tNode2=OPEN->NextNode;
-  // find node in OPEN list with f-cost greater than Successor node
-  while (tNode2 && (tNode2->f < Successor->f)) {
-    tNode1=tNode2;
-    tNode2=tNode2->NextNode; }
-  Successor->NextNode=tNode2;
-  tNode1->NextNode=Successor;
-  //gi.dprintf("added node %d to the OPEN list\n", Successor->nodenum);
+	//=================================
+	// Insert Successor into OPEN List
+	//=================================
+	tNode1 = OPEN;
+	tNode2 = OPEN->NextNode;
+	// find node in OPEN list with f-cost greater than Successor node
+	while (tNode2 && (tNode2->f < Successor->f)) {
+		tNode1 = tNode2;
+		tNode2 = tNode2->NextNode;
+	}
+	Successor->NextNode = tNode2;
+	tNode1->NextNode = Successor;
+	//gi.dprintf("added node %d to the OPEN list\n", Successor->nodenum);
 }
 
 vec_t VectorLengthSqr(vec3_t v)
 
 {
-       int       i;
-        float   length;
+	int       i;
+	float   length;
 
-        length = 0.0f;
+	length = 0.0f;
 
-        for (i=0; i<3; i++)
-               length += v[i]*v[i];
+	for (i = 0; i < 3; i++)
+		length += v[i] * v[i];
 
-        return length;
+	return length;
 
 }
 
 // returns node index of node closest to start
-int NearestNodeNumber (vec3_t start, float range, qboolean vis)
+int NearestNodeNumber(vec3_t start, float range, qboolean vis)
 {
-	int		i=0, bestNodeNum=-1;
-	float	dist, best=9999;
+	int bestNodeNum = -1;
+	float	dist, best = 9999;
 	vec3_t	v;
 
 	if (!numnodes)
 		return -1;
 
 	// get the nodenum for the closest node
-	for ( ; i < numnodes; i++)
+	for (int i = 0; i < numnodes; i++)
 	{
 		VectorCopy(pathnode[i], v);
 		// ignore nodes we can't see
@@ -345,17 +352,17 @@ int NearestNodeNumber (vec3_t start, float range, qboolean vis)
 	return bestNodeNum;
 }
 
-qboolean NearestNodeLocation (vec3_t start, vec3_t node_loc, float range, qboolean vis)
+qboolean NearestNodeLocation(vec3_t start, vec3_t node_loc, float range, qboolean vis)
 {
-	int		i=0, bestNodeNum=-1;
-	float	dist, best=9999;
+	int bestNodeNum = -1;
+	float	dist, best = 9999;
 	vec3_t	v;
 
 	if (!numnodes)
 		return false;
 
 	// get the nodenum for the closest node
-	for ( ; i < numnodes; i++)
+	for (int i = 0; i < numnodes; i++)
 	{
 		VectorCopy(pathnode[i], v);
 		// ignore nodes we can't see
@@ -370,7 +377,7 @@ qboolean NearestNodeLocation (vec3_t start, vec3_t node_loc, float range, qboole
 			bestNodeNum = i;
 		}
 	}
-	
+
 	if (bestNodeNum == -1)
 		return false;
 
@@ -383,60 +390,59 @@ qboolean NearestNodeLocation (vec3_t start, vec3_t node_loc, float range, qboole
 // What is nodenum of this origin, if any?
 //=========================================
 int GetNodeNum(vec3_t origin) {
-vec3_t vtmp;
-float dist;
-//float best=99999, bestd=99999, d;//GHz
-int i;
+	vec3_t vtmp;
+	float dist;
+	//float best=99999, bestd=99999, d;//GHz
 
-//gi.dprintf("GetNodeNum() is checking %d nodes\n", numnodes);
+	//gi.dprintf("GetNodeNum() is checking %d nodes\n", numnodes);
 
-  // Search all of my node[i]'s
-  for (i=0;i < numnodes;i++) {
-    VectorSubtract(pathnode[i],origin,vtmp);
-	  dist=VectorLengthSqr(vtmp);
+	  // Search all of my node[i]'s
+	for (int i = 0; i < numnodes; i++) {
+		VectorSubtract(pathnode[i], origin, vtmp);
+		dist = VectorLengthSqr(vtmp);
 
-	//if (dist < best)//GHz: added for debugging only
-	//	best = dist;
-	//d=distance(node[i].origin, origin);
-	//if (d < bestd)
-	//	bestd=d;
+		//if (dist < best)//GHz: added for debugging only
+		//	best = dist;
+		//d=distance(node[i].origin, origin);
+		//if (d < bestd)
+		//	bestd=d;
 
-    if (dist < 1.0F)//FIXME: wtf does this mean?
-     return i; }
+		if (dist < 1.0F)//FIXME: wtf does this mean?
+			return i;
+	}
 
-  //gi.dprintf("best result=%f, need=%f, actual=%f\n", best, 1.0F, bestd);
-  return -1;
+	//gi.dprintf("best result=%f, need=%f, actual=%f\n", best, 1.0F, bestd);
+	return -1;
 }
 
 //=========================================
 // Pull FIRST node from OPEN, put on CLOSED
 //=========================================
-node_t *NextBestNode(int NodeNumS, int NodeNumD) {
-node_t *Node;
+node_t* NextBestNode(int NodeNumS, int NodeNumD) {
+	node_t* Node;
 
-  Node=OPEN->NextNode;    // Pull from FRONT of OPEN list
+	Node = OPEN->NextNode;    // Pull from FRONT of OPEN list
 
-  if (!Node) return NULL;
+	if (!Node) return NULL;
 
-  //GHz: wont this break if the OPEN list is empty?
-  OPEN->NextNode=OPEN->NextNode->NextNode;
+	//GHz: wont this break if the OPEN list is empty?
+	OPEN->NextNode = OPEN->NextNode->NextNode;
 
-  // GHz: OK, the final node list (Best) that is used by FindPath()
-  // cannot reference any nodes in other lists, thus you can't have
-  // a node appear on the OPEN or CLOSED list and the Best (final) list
- // if (Node->nodenum == NodeNumD || Node->nodenum == NodeNumS)
-//	  return Node; // return the final node but don't put it on the CLOSED list!!
+	// GHz: OK, the final node list (Best) that is used by FindPath()
+	// cannot reference any nodes in other lists, thus you can't have
+	// a node appear on the OPEN or CLOSED list and the Best (final) list
+	//if (Node->nodenum == NodeNumD || Node->nodenum == NodeNumS)
+	//	return Node; // return the final node but don't put it on the CLOSED list!!
 
-  Node->NextNode=CLOSED->NextNode;
-  CLOSED->NextNode=Node; // Put at FRONT of CLOSED list
+	Node->NextNode = CLOSED->NextNode;
+	CLOSED->NextNode = Node; // Put at FRONT of CLOSED list
 
-  //gi.dprintf("moved %d to the CLOSED list\n", Node->nodenum);
-  return Node; // Return Next Best Node
+	//gi.dprintf("moved %d to the CLOSED list\n", Node->nodenum);
+	return Node; // Return Next Best Node
 }
 
-int GetVerticalNodeNum (vec3_t start, float x, float y, float max_z_range, int nodes)
+int GetVerticalNodeNum(vec3_t start, float x, float y, float max_z_range, int nodes)
 {
-	int		i;
 	vec3_t	v;
 
 	// copy to temp vector
@@ -447,7 +453,7 @@ int GetVerticalNodeNum (vec3_t start, float x, float y, float max_z_range, int n
 	v[1] += y;
 
 	// search for nodes
-	for (i=0; i<nodes; i++)
+	for (int i = 0; i < nodes; i++)
 	{
 		// put temp node and pathnode on the same vertical plane
 		//v[2] = pathnode[i][2];
@@ -457,7 +463,7 @@ int GetVerticalNodeNum (vec3_t start, float x, float y, float max_z_range, int n
 		if (Get2dDistance(v, pathnode[i]) > 1)
 			continue;
 		// is it within our specified z range?
-		if (abs((int)pathnode[i][2]-(int)start[2]) > max_z_range)
+		if (abs((int)pathnode[i][2] - (int)start[2]) > max_z_range)
 			continue;
 		return i;
 	}
@@ -465,7 +471,7 @@ int GetVerticalNodeNum (vec3_t start, float x, float y, float max_z_range, int n
 	return -1;
 }
 
-int CheckVertical (vec3_t start, float x, float y, float z, int max_steps_up, int max_steps_down)
+int CheckVertical(vec3_t start, float x, float y, float z, int max_steps_up, int max_steps_down)
 {
 	int i, n, max_steps;
 	vec3_t v;
@@ -476,9 +482,9 @@ int CheckVertical (vec3_t start, float x, float y, float z, int max_steps_up, in
 
 	v[0] += x; // left-right
 	v[1] += y; // forward-backward
-	
+
 	// step up from this location until we find a node
-	for (i=0; i<=max_steps; i++)
+	for (i = 0; i <= max_steps; i++)
 	{
 		if ((n = GetNodeNum(v)) != -1)
 			return n;
@@ -494,27 +500,27 @@ int CheckVertical (vec3_t start, float x, float y, float z, int max_steps_up, in
 int gridlist[MAX_GRID_SIZE];
 
 // sets all gridlist values to -1
-void ClearGridList (void)
+void ClearGridList(void)
 {
 	int i;
 
 	// initialize gridlist, remove old values
-	for (i=0; i<numnodes; i++)//FIXME: should we initialize up to MAX_GRID_SIZE?
+	for (i = 0; i < numnodes; i++)//FIXME: should we initialize up to MAX_GRID_SIZE?
 		gridlist[i] = -1;
 }
 
-qboolean CheckPath1 (vec3_t start, vec3_t end)
+qboolean CheckPath1(vec3_t start, vec3_t end)
 {
 	int		i;
 	vec3_t	from;
-	edict_t *ignore=NULL;
+	edict_t* ignore = NULL;
 	trace_t	tr;
 
 	VectorCopy(start, from);
 
 	for (i = 0; i < 10000; i++)
 	{
-		tr = gi.trace(from, tv(-16,-16,0), tv(16,16,0), end, ignore, MASK_SOLID);
+		tr = gi.trace(from, tv(-16, -16, 0), tv(16, 16, 0), end, ignore, MASK_SOLID);
 		// ignore doors
 		if (tr.ent && tr.ent->inuse && tr.ent->mtype == FUNC_DOOR)
 		{
@@ -531,19 +537,19 @@ qboolean CheckPath1 (vec3_t start, vec3_t end)
 	return true;
 }
 
-qboolean CheckPath (vec3_t start, vec3_t end)
+qboolean CheckPath(vec3_t start, vec3_t end)
 {
 	//trace_t tr;
 
 	return CheckPath1(start, end);
-/*
-	tr = gi.trace(start, tv(-16,-16,0), tv(16,16,0), end, NULL, MASK_SOLID);
-	if (tr.fraction != 1.0 || tr.startsolid || tr.allsolid || tr.contents & MASK_SOLID)
-		return false;
-	return true;*/
+	/*
+		tr = gi.trace(start, tv(-16,-16,0), tv(16,16,0), end, NULL, MASK_SOLID);
+		if (tr.fraction != 1.0 || tr.startsolid || tr.allsolid || tr.contents & MASK_SOLID)
+			return false;
+		return true;*/
 }
 
-qboolean isValidChildNode (vec3_t start, vec3_t v, int max_distance, int max_z_delta)
+qboolean isValidChildNode(vec3_t start, vec3_t v, int max_distance, int max_z_delta)
 {
 	// node should be within +/- 32 units of start on the Z axis
 	if (fabsf(v[2] - start[2]) > max_z_delta)
@@ -562,7 +568,7 @@ qboolean isValidChildNode (vec3_t start, vec3_t v, int max_distance, int max_z_d
 
 // fills gridlist with visible nodes within +/- 32 of start on the Z axis
 // returns the number of found nodes
-int FillGridList (int NodeNumStart)
+int FillGridList(int NodeNumStart)
 {
 	int		i, j;
 	vec3_t	start;
@@ -573,7 +579,7 @@ int FillGridList (int NodeNumStart)
 	VectorCopy(pathnode[NodeNumStart], start);
 
 	// fill gridlist with node indices
-	for (i=0,j=0; i<numnodes; i++)
+	for (i = 0, j = 0; i < numnodes; i++)
 	{
 		// we don't want the start node pointing to itself!
 		if (i == NodeNumStart)
@@ -589,10 +595,10 @@ int FillGridList (int NodeNumStart)
 }
 
 //TODO: limit search pattern on X and Y axis?
-int SortGridList (int NodeNumStart)
+int SortGridList(int NodeNumStart)
 {
 	int		GLindex;
-	int		i, j, index, temp, list_size, childs=NUMCHILDS;
+	int		i, j, index, temp, list_size, childs = NUMCHILDS;
 	float	best, dist;
 	vec3_t	start;
 
@@ -619,13 +625,13 @@ int SortGridList (int NodeNumStart)
 
 	// fill gridlist with node indices closest to start
 	//for (i=0; i<list_size; i++)
-	for (i=0; i<childs; i++)
+	for (i = 0; i < childs; i++)
 	{
 		GLindex = i;
 		index = gridlist[i];//i;
 		best = distance(pathnode[gridlist[i]], start);
 
-		for (j = i+1; j<list_size; j++)
+		for (j = i + 1; j < list_size; j++)
 		{
 			dist = distance(pathnode[gridlist[j]], start);
 			if (dist < best)
@@ -648,8 +654,8 @@ int SortGridList (int NodeNumStart)
 	return childs; // return maximum number of valid child nodes found
 
 }
-	
-int NextNode (int i, vec3_t start)
+
+int NextNode(int i, vec3_t start)
 {
 	/*
 	switch (i)
@@ -694,24 +700,24 @@ int z=16; // 24 units each z direction
    case 3: v[1]-=y; break;//backward
    case 4: v[2]+=z; break;//up
    case 5: v[2]-=z; break;//down
-   } 
+   }
 }
 */
 //==========================================================
 
-void ComputeSuccessors(node_t *PresentNode, int NodeNumD)
+void ComputeSuccessors(node_t* PresentNode, int NodeNumD)
 {
 	int i, maxChilds, NextNodeNum;
 
 	// create a sorted list of the closest node indices
 	maxChilds = SortGridList(PresentNode->nodenum);
 
-	for (i=0; i<maxChilds; i++)
+	for (i = 0; i < maxChilds; i++)
 	{
 		NextNodeNum = gridlist[i];
 		//if (NextNodeNum == PresentNode->nodenum)
 		//	gi.dprintf("%d = %d\n", PresentNode->nodenum, NextNodeNum);
-		if (NextNodeNum == -1) 
+		if (NextNodeNum == -1)
 			continue;
 		GetSuccessorNodes(PresentNode, NextNodeNum, NodeNumD);
 	}
@@ -722,19 +728,19 @@ int c,NextNodeNum;
 vec3_t vtmp;
 
   for (c=0;c < NUMCHILDS;c++) {
-    VectorCopy(pathnode[PresentNode->nodenum],vtmp);
+	VectorCopy(pathnode[PresentNode->nodenum],vtmp);
    NextNodeNum= NextNode(c,vtmp); // Note: vtmp is changed inside NextNode()
-    //NextNodeNum=GetNodeNum(vtmp); // location in node[] array?
-    if (NextNodeNum == -1) continue;   // vtmp Node is invalid
-    GetSuccessorNodes(PresentNode,NextNodeNum,NodeNumD); }
+	//NextNodeNum=GetNodeNum(vtmp); // location in node[] array?
+	if (NextNodeNum == -1) continue;   // vtmp Node is invalid
+	GetSuccessorNodes(PresentNode,NextNodeNum,NodeNumD); }
 }
 */
-int *Waypoint=NULL; // Integer array of nodenum's along the path
-int numpts=0;       // Number of nodes in the path..
+int* Waypoint = NULL; // Integer array of nodenum's along the path
+int numpts = 0;       // Number of nodes in the path..
 
-int CopyWaypoints (int *wp, int max)
+int CopyWaypoints(int* wp, int max)
 {
-	int i, j=max;
+	int i, j = max;
 
 	if (j > numpts)
 		j = numpts;
@@ -745,13 +751,13 @@ int CopyWaypoints (int *wp, int max)
 	return j;
 }
 
-void GetNodePosition (int nodenum, vec3_t pos)
+void GetNodePosition(int nodenum, vec3_t pos)
 {
 	VectorCopy(pathnode[nodenum], pos);
 }
 
 // returns the waypoint index closest to start along the path leading to our final destination
-int NearestWaypointNum (vec3_t start, int *wp)
+int NearestWaypointNum(vec3_t start, int* wp)
 {
 	int		i, bestNodeNum = 0;
 	float	dist, best = 0;
@@ -769,13 +775,13 @@ int NearestWaypointNum (vec3_t start, int *wp)
 			bestNodeNum = i;
 		}
 	}
-	
+
 	return bestNodeNum;
 }
 
 // copies the location of the next waypoint nearest to start
 // returns -1 if we are at the end of the waypoint path
-int NextWaypointLocation (vec3_t start, vec3_t loc, int *wp)
+int NextWaypointLocation(vec3_t start, vec3_t loc, int* wp)
 {
 	int nearestWaypoint;
 
@@ -789,7 +795,7 @@ int NextWaypointLocation (vec3_t start, vec3_t loc, int *wp)
 		//gi.dprintf("current node = %d, next node = %d\n", 
 		//	wp[nearestWaypoint], wp[nearestWaypoint+1]);
 
-		VectorCopy(pathnode[wp[nearestWaypoint+1]], loc);
+		VectorCopy(pathnode[wp[nearestWaypoint + 1]], loc);
 		return 1;// success!
 	}
 
@@ -797,9 +803,9 @@ int NextWaypointLocation (vec3_t start, vec3_t loc, int *wp)
 	return -1;
 }
 
-void RemoveDuplicates (node_t *BestList, node_t *OtherList)
+void RemoveDuplicates(node_t* BestList, node_t* OtherList)
 {
-	node_t *bestNode, *tNode, *tNodePrev=NULL;
+	node_t* bestNode, * tNode, * tNodePrev = NULL;
 
 	bestNode = BestList;
 
@@ -819,7 +825,7 @@ void RemoveDuplicates (node_t *BestList, node_t *OtherList)
 			// move to the next node in OtherList
 			tNode = tNode->NextNode;
 		}
-			
+
 		// we found a duplicate, so pop it out of OtherList
 		if (tNode)
 			tNodePrev->NextNode = tNode->NextNode;
@@ -831,183 +837,188 @@ void RemoveDuplicates (node_t *BestList, node_t *OtherList)
 
 //=========================================
 int FindPath(vec3_t start, vec3_t destination) {
-node_t *StartNode;
-node_t *BestNode;
-node_t *tNode;
-int NodeNumD;
-int NodeNumS;
-int g,c,i;
-float h;
-vec3_t tstart,tdest;
+	node_t* StartNode;
+	node_t* BestNode;
+	node_t* tNode;
+	int NodeNumD;
+	int NodeNumS;
+	int g, c, i;
+	float h;
+	vec3_t tstart, tdest;
 
-  VectorCopy(start,tstart);
-  VectorCopy(destination,tdest);
+	VectorCopy(start, tstart);
+	VectorCopy(destination, tdest);
 
-  // Get NodeNum of start vector
-  NodeNumS=GetNodeNum(tstart);
-  if (NodeNumS==-1) {
-	  //gi.dprintf("bad nodenum at start\n");
-  return 0; // ERROR
-  }
-
-  // Get NodeNum of destination vector
-  NodeNumD=GetNodeNum(tdest);
-  if (NodeNumD==-1) 
-  {
-	 // gi.dprintf("bad nondenum at end\n");
-	  return 0; // ERROR
-  }
-
-  // Allocate OPEN/CLOSED list pointers..
-  OPEN=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
- // OPEN=(node_t *)malloc(sizeof(node_t));
-  OPEN->NextNode=NULL;
-
-  CLOSED=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
-  //CLOSED=(node_t *)malloc(sizeof(node_t));
-  CLOSED->NextNode=NULL;
-
-  //================================================
-  // This is our very first NODE!  Our start vector
-  //================================================
-  StartNode=(node_t *)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
-  //StartNode=(node_t *)malloc(sizeof(node_t));
-  StartNode->nodenum=NodeNumS; // starting position nodenum
-  StartNode->g=g=0; // we haven't gone anywhere yet
-  StartNode->h=h=distance(start, destination);//fabs(vDiff(start,destination)); // calculate remaining distance (heuristic estimate) GHz - changed to fabs()
-  StartNode->f=g+h; // total cost from start to finish
-  for (c=0;c < NUMCHILDS;c++)
-    StartNode->Child[c]=NULL; // no children for search pattern yet
-  StartNode->NextNode=NULL;
-  StartNode->PrevNode=NULL;
-  //================================================
-
-  // next node in open list points to our starting node
-  OPEN->NextNode=BestNode=StartNode; // First node on OPEN list..
-
-  //GHz - need to free these nodes too!
-  //NodeList[NodeCount++] = OPEN;
-//  NodeList[NodeCount++] = CLOSED;
-  NodeCount+=2;
-
-  for (;;) {
-    tNode=BestNode; // Save last valid node
-    BestNode=(node_t *)NextBestNode(NodeNumS, NodeNumD); // Get next node from OPEN list
-    if (!BestNode) {
-		//gi.dprintf("ran out of nodes to search\n");
-		return 0;//GHz
-     // BestNode=tNode; // Last valid node..
-     // break;
+	// Get NodeNum of start vector
+	NodeNumS = GetNodeNum(tstart);
+	if (NodeNumS == -1) {
+		//gi.dprintf("bad nodenum at start\n");
+		return 0; // ERROR
 	}
 
-    if (BestNode->nodenum==NodeNumD) break;// we there yet?
-    ComputeSuccessors(BestNode,NodeNumD);} // Search from here..
+	// Get NodeNum of destination vector
+	NodeNumD = GetNodeNum(tdest);
+	if (NodeNumD == -1)
+	{
+		// gi.dprintf("bad nondenum at end\n");
+		return 0; // ERROR
+	}
 
-  //================================================
+	// Allocate OPEN/CLOSED list pointers..
+	OPEN = (node_t*)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+	// OPEN=(node_t *)malloc(sizeof(node_t));
+	OPEN->NextNode = NULL;
 
-     RemoveDuplicates(BestNode, CLOSED);//FIXME: move this up before the start==end crash check
+	CLOSED = (node_t*)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+	//CLOSED=(node_t *)malloc(sizeof(node_t));
+	CLOSED->NextNode = NULL;
 
- // gi.dprintf("%d: processed %d nodes\n", level.framenum,NodeCount);
-  if (BestNode==StartNode) {  // Start==End??
-    FreeStack(StartNode);//FIXME: may cause crash
-	//gi.dprintf("start==end\n");
-    return 0; }
+	//================================================
+	// This is our very first NODE!  Our start vector
+	//================================================
+	StartNode = (node_t*)gi.TagMalloc(sizeof(node_t), TAG_LEVEL);
+	//StartNode=(node_t *)malloc(sizeof(node_t));
+	StartNode->nodenum = NodeNumS; // starting position nodenum
+	StartNode->g = g = 0; // we haven't gone anywhere yet
+	StartNode->h = h = distance(start, destination);//fabs(vDiff(start,destination)); // calculate remaining distance (heuristic estimate) GHz - changed to fabs()
+	StartNode->f = g + h; // total cost from start to finish
+	for (c = 0; c < NUMCHILDS; c++)
+		StartNode->Child[c] = NULL; // no children for search pattern yet
+	StartNode->NextNode = NULL;
+	StartNode->PrevNode = NULL;
+	//================================================
 
-    
+	// next node in open list points to our starting node
+	OPEN->NextNode = BestNode = StartNode; // First node on OPEN list..
 
+	//GHz - need to free these nodes too!
+	//NodeList[NodeCount++] = OPEN;
+  //  NodeList[NodeCount++] = CLOSED;
+	NodeCount += 2;
 
-  //gi.dprintf("Start = %d End = %d\n", NodeNumS, NodeNumD);
- // gi.dprintf("Printing tNode (in reverse):\n");
- // PrintNodes(BestNode, true);
- // gi.dprintf("Printing OPEN list:\n");
-  //PrintNodes(OPEN, false);
-  //gi.dprintf("Printing CLOSED list:\n");
- // PrintNodes(CLOSED, false);
+	for (;;) {
+		tNode = BestNode; // Save last valid node
+		BestNode = (node_t*)NextBestNode(NodeNumS, NodeNumD); // Get next node from OPEN list
+		if (!BestNode) {
+			//gi.dprintf("ran out of nodes to search\n");
+			return 0;//GHz
+		 // BestNode=tNode; // Last valid node..
+		 // break;
+		}
 
-BestNode->NextNode=NULL; // Must tie this off!
+		if (BestNode->nodenum == NodeNumD) break;// we there yet?
+		ComputeSuccessors(BestNode, NodeNumD);
+	} // Search from here..
 
+//================================================
 
-  // How many nodes we got?
-   tNode=BestNode;
-  i=0;
-  while (tNode) {
-    i++; // How many nodes?
-    tNode=tNode->PrevNode; }
+	RemoveDuplicates(BestNode, CLOSED);//FIXME: move this up before the start==end crash check
 
-  if (i <= 2) { // Only nodes are Start and End??
-    FreeStack(BestNode);//FIXME: may cause crash
-	//gi.dprintf("only start and end nodes\n");
-    return 0; }
-
-  // Let's allocate our own stuff...
-
- 
-  //CLOSED->NextNode = NULL;//GHz - only needs to be null if we are using freestack()
-  numpts=i;
-
-  //GHz - free old memory
-  //gi.TagFree(Waypoint);
-
-  Waypoint=(int *)gi.TagMalloc(numpts*sizeof(int), TAG_LEVEL);
-  //Waypoint=(int *)malloc(numpts*sizeof(int));
-
-  // Now, we have to assign the nodenum's along
-  // this path in reverse order because that is
-  // the way the A* algorithm finishes its search.
-  // The last best node it visited was the END!
-  // So, we copy them over in reverse.. No biggy..
-
-  tNode=BestNode;
-  while (BestNode) {
-    Waypoint[--i]=BestNode->nodenum;//GHz: how/when is this freed?
-    BestNode=BestNode->PrevNode; }
-
-// NOTE: At this point, if our numpts returned is not
-// zero, then a path has been found!  To follow this
-// path we simply follow node[Waypoint[i]].origin
-// because Waypoint array is filled with indexes into
-// our node[i] array of valid vectors in the map..
-// We did it!!  Now free the stack and exit..
-
-  //================================================
-
-  //++++++++++ GHz NOTES +++++++++++++
-  // FreeStack() is flawed because the lists have nodes that point to nodes on other lists
-  // so if you free one list, then the next list will crash when it encounters a node with
-  // an invalid pointer (node was freed in last list)
-  //++++++++++++++++++++++++++++++++++
-
-  FreeStack(tNode); // Release ALL resources!!
-
-  //GHz: cleanup test/debugging
-  //for (i=0;i<NodeCount;i++)
-  //{
-//	  gi.TagFree(NodeList[i]);
- // }
- // OPEN = NULL;
-  //CLOSED = NULL;
-  NodeCount = 0;
-
-  //TODO: performance... cpu usage is still very high
-  //TODO: grid editor, save grid to disk
-  //TODO: need some way of handling manually edited grid
-  // because NextNode() only searches within a specific 32x32 pattern
+// gi.dprintf("%d: processed %d nodes\n", level.framenum,NodeCount);
+	if (BestNode == StartNode) {  // Start==End??
+		FreeStack(StartNode);//FIXME: may cause crash
+		//gi.dprintf("start==end\n");
+		return 0;
+	}
 
 
- // gi.dprintf("%d: found %d\n",level.framenum,numpts);
 
-  return (numpts);
+
+	//gi.dprintf("Start = %d End = %d\n", NodeNumS, NodeNumD);
+	//gi.dprintf("Printing tNode (in reverse):\n");
+	//PrintNodes(BestNode, true);
+	//gi.dprintf("Printing OPEN list:\n");
+	//PrintNodes(OPEN, false);
+	//gi.dprintf("Printing CLOSED list:\n");
+	//PrintNodes(CLOSED, false);
+
+	BestNode->NextNode = NULL; // Must tie this off!
+
+
+	// How many nodes we got?
+	tNode = BestNode;
+	i = 0;
+	while (tNode) {
+		i++; // How many nodes?
+		tNode = tNode->PrevNode;
+	}
+
+	if (i <= 2) { // Only nodes are Start and End??
+		FreeStack(BestNode);//FIXME: may cause crash
+		//gi.dprintf("only start and end nodes\n");
+		return 0;
+	}
+
+	// Let's allocate our own stuff...
+
+
+	//CLOSED->NextNode = NULL;//GHz - only needs to be null if we are using freestack()
+	numpts = i;
+
+	//GHz - free old memory
+	//gi.TagFree(Waypoint);
+
+	Waypoint = (int*)gi.TagMalloc(numpts * sizeof(int), TAG_LEVEL);
+	//Waypoint=(int *)malloc(numpts*sizeof(int));
+
+	// Now, we have to assign the nodenum's along
+	// this path in reverse order because that is
+	// the way the A* algorithm finishes its search.
+	// The last best node it visited was the END!
+	// So, we copy them over in reverse.. No biggy..
+
+	tNode = BestNode;
+	while (BestNode) {
+		Waypoint[--i] = BestNode->nodenum;//GHz: how/when is this freed?
+		BestNode = BestNode->PrevNode;
+	}
+
+	// NOTE: At this point, if our numpts returned is not
+	// zero, then a path has been found!  To follow this
+	// path we simply follow node[Waypoint[i]].origin
+	// because Waypoint array is filled with indexes into
+	// our node[i] array of valid vectors in the map..
+	// We did it!!  Now free the stack and exit..
+
+	  //================================================
+
+	  //++++++++++ GHz NOTES +++++++++++++
+	  // FreeStack() is flawed because the lists have nodes that point to nodes on other lists
+	  // so if you free one list, then the next list will crash when it encounters a node with
+	  // an invalid pointer (node was freed in last list)
+	  //++++++++++++++++++++++++++++++++++
+
+	FreeStack(tNode); // Release ALL resources!!
+
+	//GHz: cleanup test/debugging
+	//for (i=0;i<NodeCount;i++)
+	//{
+  //	  gi.TagFree(NodeList[i]);
+   // }
+   // OPEN = NULL;
+	//CLOSED = NULL;
+	NodeCount = 0;
+
+	//TODO: performance... cpu usage is still very high
+	//TODO: grid editor, save grid to disk
+	//TODO: need some way of handling manually edited grid
+	// because NextNode() only searches within a specific 32x32 pattern
+
+
+   // gi.dprintf("%d: found %d\n",level.framenum,numpts);
+
+	return (numpts);
 }
 
 //======================================================
 void G_Spawn_Splash(int type, int count, int color, vec3_t start, vec3_t movdir, vec3_t origin) {
-  gi.WriteByte(svc_temp_entity);
-  gi.WriteByte(type);
-  gi.WriteByte(count);
-  gi.WritePosition(start);
-  gi.WriteDir(movdir);
-  gi.WriteByte(color);
-  gi.multicast(origin, MULTICAST_PVS);
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(type);
+	gi.WriteByte(count);
+	gi.WritePosition(start);
+	gi.WriteDir(movdir);
+	gi.WriteByte(color);
+	gi.multicast(origin, MULTICAST_PVS);
 }
 
 //==================================================
@@ -1015,15 +1026,15 @@ void G_Spawn_Splash(int type, int count, int color, vec3_t start, vec3_t movdir,
 //=====================================================
 // NOTE: you may already have this function someplace
 //=====================================================
-void G_Spawn_Trails(int type,vec3_t start,vec3_t endpos) {
-  gi.WriteByte(svc_temp_entity);
-  gi.WriteByte(type);
-  gi.WritePosition(start);
-  gi.WritePosition(endpos);
-  gi.multicast(start,MULTICAST_PVS);
+void G_Spawn_Trails(int type, vec3_t start, vec3_t endpos) {
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(type);
+	gi.WritePosition(start);
+	gi.WritePosition(endpos);
+	gi.multicast(start, MULTICAST_PVS);
 }
 
-void DrawPath (edict_t *ent)
+void DrawPath(edict_t* ent)
 {
 	int i, j;
 
@@ -1040,7 +1051,7 @@ void DrawPath (edict_t *ent)
 	}
 }
 /*
-void DrawPath (void) 
+void DrawPath (void)
 {
 	int i, j=0;
 
@@ -1071,7 +1082,7 @@ void DrawPath (void)
 
 // NOTE: max search distance for child links should be set to
 // gap specified in nearbyGridNode + x/yevery + min1/max1 (e.g. 128+32+3=163)
-void DrawChildLinks (edict_t *ent)
+void DrawChildLinks(edict_t* ent)
 {
 	int		i, count, parentNode;
 	float	dist, maxDist;
@@ -1120,41 +1131,43 @@ void DrawChildLinks (edict_t *ent)
 		count++;
 	}
 
-	if (!(level.framenum%20))
-		gi.centerprintf(ent, "Node %d has %d child links @ %.0f.\n", 
+	if (!(level.framenum % 20))
+		gi.centerprintf(ent, "Node %d has %d child links @ %.0f.\n",
 			parentNode, count, maxDist);
 }
 
-void DrawNearbyGrid(edict_t *ent) {
+void DrawNearbyGrid(edict_t* ent) {
 	int i;
-vec3_t v,forward;
+	vec3_t v, forward;
 
-  AngleVectors(ent->s.angles,forward,NULL,NULL);
+	AngleVectors(ent->s.angles, forward, NULL, NULL);
 
-  for (i=0;i<numnodes;i++) {
-    VectorSubtract(pathnode[i],ent->s.origin,v);
-    if (VectorLength(v)>=256) continue; // limit view distance to eliminate overflows
-    if (DotProduct(v, forward) > 0.3f) { // infront?
-      VectorCopy(pathnode[i],v);
-      v[2]-=4; // node height
-	 // NearestNodeLocation(ent->s.origin, start);
-	 // gi.dprintf("%f\n", fabs(pathnode[i][2]-start[2]));
-      G_Spawn_Trails(TE_BFG_LASER,pathnode[i],v); } } 
+	for (i = 0; i < numnodes; i++) {
+		VectorSubtract(pathnode[i], ent->s.origin, v);
+		if (VectorLength(v) >= 256) continue; // limit view distance to eliminate overflows
+		if (DotProduct(v, forward) > 0.3f) { // infront?
+			VectorCopy(pathnode[i], v);
+			v[2] -= 4; // node height
+		   // NearestNodeLocation(ent->s.origin, start);
+		   // gi.dprintf("%f\n", fabs(pathnode[i][2]-start[2]));
+			G_Spawn_Trails(TE_BFG_LASER, pathnode[i], v);
+		}
+	}
 }
 
-void DeleteNode (int nodenum)
+void DeleteNode(int nodenum)
 {
 	// if this isn't the last node on the list, then copy the
 	// vector stored at the end of the array to current position
 	if (nodenum != numnodes - 1)
-		VectorCopy(pathnode[numnodes-1], pathnode[nodenum]);
+		VectorCopy(pathnode[numnodes - 1], pathnode[nodenum]);
 	// clear the value stored at the end of the list
-	VectorClear(pathnode[numnodes-1]);
+	VectorClear(pathnode[numnodes - 1]);
 	// reduce the size of the list
 	numnodes--;
 }
 
-void Cmd_DeleteNode_f (edict_t *ent)
+void Cmd_DeleteNode_f(edict_t* ent)
 {
 	int nearestNode;
 
@@ -1167,7 +1180,7 @@ void Cmd_DeleteNode_f (edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "**Closest node deleted (%d nodes total).**\n", numnodes);
 }
 
-void Cmd_AddNode_f (edict_t *ent)
+void Cmd_AddNode_f(edict_t* ent)
 {
 	vec3_t	start;
 	trace_t	tr;
@@ -1186,21 +1199,21 @@ void Cmd_AddNode_f (edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "**Node added at current position (%d nodes total).\n**", numnodes);
 }
 
-void Cmd_DeleteAllNodes_f (edict_t *ent)
+void Cmd_DeleteAllNodes_f(edict_t* ent)
 {
 	if (!ent->myskills.administrator)
 		return;
 
-	memset(&pathnode, 0, numnodes*sizeof(vec3_t));
+	memset(&pathnode, 0, numnodes * sizeof(vec3_t));
 	numnodes = 0;
 
 	gi.cprintf(ent, PRINT_HIGH, "All nodes deleted.\n");
 }
 
-void SaveGrid (void)
+void SaveGrid(void)
 {
 	char	filename[255];
-	FILE	*fptr;
+	FILE* fptr;
 
 	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
 
@@ -1215,10 +1228,10 @@ void SaveGrid (void)
 		gi.dprintf("Unable to save grid file: %s\n", filename);
 }
 
-qboolean LoadGrid (void)
+qboolean LoadGrid(void)
 {
 	char	filename[255];
-	FILE	*fptr;
+	FILE* fptr;
 
 	//memset(&pathnode[0], 0, sizeof(vec3_t));
 	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
@@ -1239,7 +1252,7 @@ qboolean LoadGrid (void)
 	return false;
 }
 
-void Cmd_SaveNodes_f (edict_t *ent)
+void Cmd_SaveNodes_f(edict_t* ent)
 {
 	if (!ent->myskills.administrator)
 		return;
@@ -1249,7 +1262,7 @@ void Cmd_SaveNodes_f (edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "Saving nodes...\n", numnodes);
 }
 
-void Cmd_LoadNodes_f (edict_t *ent)
+void Cmd_LoadNodes_f(edict_t* ent)
 {
 	if (!ent->myskills.administrator)
 		return;
@@ -1260,19 +1273,19 @@ void Cmd_LoadNodes_f (edict_t *ent)
 }
 
 //========================================================
-int AdjustDownward(edict_t *ignore,vec3_t start) {
-vec3_t endpt;
-trace_t tr;
-  VectorSet(endpt,start[0],start[1],-8192);
-  tr=gi.trace(start,tv(-1,-1,0),tv(1,1,0),endpt,ignore,CONTENTS_SOLID);
-  tr.endpos[2]+=32;
-  return (int)(tr.endpos[2]-start[2]); // return delta, if needed later..
+int AdjustDownward(edict_t* ignore, vec3_t start) {
+	vec3_t endpt;
+	trace_t tr;
+	VectorSet(endpt, start[0], start[1], -8192);
+	tr = gi.trace(start, tv(-1, -1, 0), tv(1, 1, 0), endpt, ignore, CONTENTS_SOLID);
+	tr.endpos[2] += 32;
+	return (int)(tr.endpos[2] - start[2]); // return delta, if needed later..
 }
 
 
 //========================================================
 
-int GetNumChildren (int parent_nodenum, int nodes)
+int GetNumChildren(int parent_nodenum, int nodes)
 {
 	int		i, j;
 
@@ -1286,14 +1299,14 @@ int GetNumChildren (int parent_nodenum, int nodes)
 	}
 
 	return j;
-}		
+}
 
 // NOTE: max search distance for child links should be set to
 // gap specified in nearbyGridNode + x/yevery + min1/max1 (e.g. 128+32+3=163)
-qboolean NearbyGridNode (vec3_t start, int nodes)
+qboolean NearbyGridNode(vec3_t start, int nodes)
 {
 	int i;
-	
+
 	for (i = 0; i < nodes; i++)
 	{
 		if (!isValidChildNode(start, pathnode[i], 129, 18))
@@ -1304,26 +1317,26 @@ qboolean NearbyGridNode (vec3_t start, int nodes)
 }
 
 int c_yes, c_no;
-qboolean CheckBottom (vec3_t pos, vec3_t boxmin, vec3_t boxmax)
+qboolean CheckBottom(vec3_t pos, vec3_t boxmin, vec3_t boxmax)
 {
 	vec3_t	mins, maxs, start, stop;
 	trace_t	trace;
 	int		x, y;
 	float	mid, bottom;
-	
-	VectorAdd (pos, boxmin, mins);
-	VectorAdd (pos, boxmax, maxs);
 
-// if all of the points under the corners are solid world, don't bother
-// with the tougher checks
-// the corners must be within 16 of the midpoint
+	VectorAdd(pos, boxmin, mins);
+	VectorAdd(pos, boxmax, maxs);
+
+	// if all of the points under the corners are solid world, don't bother
+	// with the tougher checks
+	// the corners must be within 16 of the midpoint
 	start[2] = mins[2] - 8;
-	for	(x=0 ; x<=1 ; x++)
-		for	(y=0 ; y<=1 ; y++)
+	for (x = 0; x <= 1; x++)
+		for (y = 0; y <= 1; y++)
 		{
 			start[0] = x ? maxs[0] : mins[0];
 			start[1] = y ? maxs[1] : mins[1];
-			if (gi.pointcontents (start) != CONTENTS_SOLID)
+			if (gi.pointcontents(start) != CONTENTS_SOLID)
 				goto realcheck;
 		}
 
@@ -1332,30 +1345,30 @@ qboolean CheckBottom (vec3_t pos, vec3_t boxmin, vec3_t boxmax)
 
 realcheck:
 	c_no++;
-//
-// check it for real...
-//
+	//
+	// check it for real...
+	//
 	start[2] = mins[2];
-	
-// the midpoint must be within 16 of the bottom
-	start[0] = stop[0] = (mins[0] + maxs[0])*0.5;
-	start[1] = stop[1] = (mins[1] + maxs[1])*0.5;
-	stop[2] = start[2] - 2*18;
-	trace = gi.trace (start, vec3_origin, vec3_origin, stop, NULL,MASK_PLAYERSOLID /*MASK_MONSTERSOLID*/);
+
+	// the midpoint must be within 16 of the bottom
+	start[0] = stop[0] = (mins[0] + maxs[0]) * 0.5;
+	start[1] = stop[1] = (mins[1] + maxs[1]) * 0.5;
+	stop[2] = start[2] - 2 * 18;
+	trace = gi.trace(start, vec3_origin, vec3_origin, stop, NULL, MASK_PLAYERSOLID /*MASK_MONSTERSOLID*/);
 
 	if (trace.fraction == 1.0)
 		return false;
 	mid = bottom = trace.endpos[2];
-	
-// the corners must be within 16 of the midpoint	
-	for	(x=0 ; x<=1 ; x++)
-		for	(y=0 ; y<=1 ; y++)
+
+	// the corners must be within 16 of the midpoint	
+	for (x = 0; x <= 1; x++)
+		for (y = 0; y <= 1; y++)
 		{
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
-			
-			trace = gi.trace (start, vec3_origin, vec3_origin, stop, NULL, MASK_PLAYERSOLID /*MASK_MONSTERSOLID*/);
-			
+
+			trace = gi.trace(start, vec3_origin, vec3_origin, stop, NULL, MASK_PLAYERSOLID /*MASK_MONSTERSOLID*/);
+
 			if (trace.fraction != 1.0 && trace.endpos[2] > bottom)
 				bottom = trace.endpos[2];
 			if (trace.fraction == 1.0 || mid - trace.endpos[2] > 18)
@@ -1366,7 +1379,7 @@ realcheck:
 	return true;
 }
 
-void CullGrid (void)
+void CullGrid(void)
 {
 	int i;
 
@@ -1378,108 +1391,115 @@ void CullGrid (void)
 	}
 }
 
-void CreateGrid (qboolean force) {
-// ====path stuff
-//int i;
-// ====path stuff
-int x,y,z,cnt=0;
-vec3_t v,endpt;
-trace_t tr1,tr2;
-float v0,v1,v2;
+void CreateGrid(qboolean force)
+{
+	// ====path stuff
+	//int i;
+	// ====path stuff
+	int x, y, z, cnt = 0;
+	vec3_t v, endpt;
+	trace_t tr1, tr2;
+	float v0, v1, v2;
 
-  vec3_t min1={0,0,0};  // width 6x6
-  vec3_t max1={0,0,0};
+	vec3_t min1 = { 0,0,0 };  // width 6x6
+	vec3_t max1 = { 0,0,0 };
 
-  vec3_t min2={-16,-16,0};// width 32x32 (was 24x24)
-  vec3_t max2={+16,+16,0};
+	vec3_t min2 = { -16,-16,0 };// width 32x32 (was 24x24)
+	vec3_t max2 = { +16,+16,0 };
 
-    numnodes=0;
+	numnodes = 0;
 
 	if (!force && LoadGrid())
 		return;
 
-  for (x=0;x<maxx;x++) {
-    v0 = (float)g2v0(x); // convert grid(x) to v[0]
-    for (y=0;y<maxy;y++) {
-      v1=g2v1(y); // convert grid(y) to v[1]
-      for (z=maxz-1;z>=0;z--) {
-        v2=g2v2(z); // convert grid(z) to v[2]
-        //--------------------------------------
-        VectorSet(v,v0,v1,v2);
-        // Skip world locations in solid/lava/slime/window/ladder
-        if (gi.pointcontents(v) & MASK_OPAQUE) { z--; continue; }
-        //-----------------------------------------------
-        // At this point,v(x,y,z) is a point in mid-air
-        //-----------------------------------------------
-        // Trace small bbox down to see what is below
-        VectorSet(endpt,v[0],v[1],-8192);
-        // Stop at world locations in solid/lava/slime/window/ladder
-        tr1=gi.trace(v,min1,max1,endpt,NULL,MASK_OPAQUE);
-        // Set for-loop index to our endpt's grid(z)
-        z = gridz(tr1.endpos[2]);
-        // Skip if trace endpt hit func entity.
-        if (tr1.ent && (tr1.ent->use || tr1.ent->think || tr1.ent->blocked)) continue;
-        // Skip if trace endpt hit lava/slime/window/ladder.
-        if (tr1.contents & (CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WINDOW)) continue;
-        // Skip if trace endpt hit non-walkable slope
-        if (tr1.plane.normal[2]<0.7) continue;
-        //----------------------------------------
-        // Test vertical clearance above v(x,y,z)
-        //----------------------------------------
-        VectorCopy(tr1.endpos,endpt);
-        //tr1.endpos[2]+=2; // set start just above surface
-        endpt[2]+=32;     // endpt at approx crouch height
-        tr2=gi.trace(endpt,min2,max2,tr1.endpos,NULL,MASK_OPAQUE);//GHz - push down instead of up
-        // Skip if not reachable by crouched bbox - trace incomplete?
-       // if (tr2.fraction != 1.0) continue;
-        // Skip if linewidth inside solid - too close to adjoining surface?
-		if (tr2.startsolid || tr2.allsolid) continue;
+	for (x = 0; x < maxx; x++)
+	{
+		v0 = (float)g2v0(x); // convert grid(x) to v[0]
+		for (y = 0; y < maxy; y++)
+		{
+			v1 = g2v1(y); // convert grid(y) to v[1]
+			for (z = maxz - 1; z >= 0; z--)
+			{
+				v2 = g2v2(z); // convert grid(z) to v[2]
+				//--------------------------------------
+				VectorSet(v, v0, v1, v2);
+				// Skip world locations in solid/lava/slime/window/ladder
+				if (gi.pointcontents(v) & MASK_OPAQUE) { z--; continue; }
+				//-----------------------------------------------
+				// At this point,v(x,y,z) is a point in mid-air
+				//-----------------------------------------------
+				// Trace small bbox down to see what is below
+				VectorSet(endpt, v[0], v[1], -8192);
+				// Stop at world locations in solid/lava/slime/window/ladder
+				tr1 = gi.trace(v, min1, max1, endpt, NULL, MASK_OPAQUE);
+				// Set for-loop index to our endpt's grid(z)
+				z = gridz(tr1.endpos[2]);
+				// Skip if trace endpt hit func entity.
+				if (tr1.ent && (tr1.ent->use || tr1.ent->think || tr1.ent->blocked)) continue;
+				// Skip if trace endpt hit lava/slime/window/ladder.
+				if (tr1.contents & (CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WINDOW)) continue;
+				// Skip if trace endpt hit non-walkable slope
+				if (tr1.plane.normal[2] < 0.7) continue;
+				//----------------------------------------
+				// Test vertical clearance above v(x,y,z)
+				//----------------------------------------
+				VectorCopy(tr1.endpos, endpt);
+				//tr1.endpos[2]+=2; // set start just above surface
+				endpt[2] += 32;     // endpt at approx crouch height
+				tr2 = gi.trace(endpt, min2, max2, tr1.endpos, NULL, MASK_OPAQUE);//GHz - push down instead of up
+				// Skip if not reachable by crouched bbox - trace incomplete?
+			   // if (tr2.fraction != 1.0) continue;
+				// Skip if linewidth inside solid - too close to adjoining surface?
+				if (tr2.startsolid || tr2.allsolid) continue;
 
-		// GHz: check final position to see if it intersects with a solid
-		tr1=gi.trace(tr2.endpos,min2,max2,tr2.endpos,NULL,MASK_OPAQUE);
-		if (tr1.fraction != 1.0 || tr1.startsolid || tr1.allsolid)
-			continue;
-		if (!CheckBottom(tr2.endpos, min2, max2))
-			continue;
+				// GHz: check final position to see if it intersects with a solid
+				tr1 = gi.trace(tr2.endpos, min2, max2, tr2.endpos, NULL, MASK_OPAQUE);
+				if (tr1.fraction != 1.0 || tr1.startsolid || tr1.allsolid)
+					continue;
+				if (!CheckBottom(tr2.endpos, min2, max2))
+					continue;
 
-		VectorCopy(tr2.endpos, endpt);//GHz
-		endpt[2]+=32;//GHz
-		//if (tr2.allsolid) continue;
-        //-------------------------------------
-        // Now, adjust downward for uniformity
-        //-------------------------------------
-       // AdjustDownward(NULL,endpt);
-        // Houston,we have a valid node!
-		if (NearbyGridNode(endpt, cnt))
-			continue;//GHz
-        VectorCopy(endpt,pathnode[cnt]); // copy to pathnode[] array
-        cnt++; } } }
+				VectorCopy(tr2.endpos, endpt);//GHz
+				endpt[2] += 32;//GHz
+				//if (tr2.allsolid) continue;
+				//-------------------------------------
+				// Now, adjust downward for uniformity
+				//-------------------------------------
+			   // AdjustDownward(NULL,endpt);
+				// Houston,we have a valid node!
+				if (NearbyGridNode(endpt, cnt))
+					continue;//GHz
+				VectorCopy(endpt, pathnode[cnt]); // copy to pathnode[] array
+				cnt++;
+			}
+		}
+	}
 
-  numnodes=cnt;
-  CullGrid();
+	numnodes = cnt;
+	CullGrid();
 
-  gi.dprintf("%d Nodes Created\n",numnodes);
+	gi.dprintf("%d Nodes Created\n", numnodes);
 
-//=====================================================
-//================== pathfinding stuff ================
-//=====================================================
-/*
-  // allocate memory for node array
-  node = (node_t *) gi.TagMalloc(numnodes*sizeof(node_t), TAG_LEVEL);
+	//=====================================================
+	//================== pathfinding stuff ================
+	//=====================================================
+	/*
+	  // allocate memory for node array
+	  node = (node_t *) gi.TagMalloc(numnodes*sizeof(node_t), TAG_LEVEL);
 
-  // copy all the pathnode stuff to new node array
-  for (i=0;i<numnodes;i++)
-  {
-	  VectorCopy(pathnode[i], node[i].origin);
-	  node[i].nodenum = i;
-  }
-*/
+	  // copy all the pathnode stuff to new node array
+	  for (i=0;i<numnodes;i++)
+	  {
+		  VectorCopy(pathnode[i], node[i].origin);
+		  node[i].nodenum = i;
+	  }
+	*/
 
-  if (!force)
-	SaveGrid();
+	if (!force)
+		SaveGrid();
 }
 
-void Cmd_ComputeNodes_f (edict_t *ent)
+void Cmd_ComputeNodes_f(edict_t* ent)
 {
 	if (!ent->myskills.administrator)
 		return;
@@ -1488,7 +1508,7 @@ void Cmd_ComputeNodes_f (edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "Computing nodes...\n");
 }
 
-void Cmd_ToggleShowGrid (edict_t *ent)
+void Cmd_ToggleShowGrid(edict_t* ent)
 {
 	if (!ent->myskills.administrator)
 		return;

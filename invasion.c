@@ -431,23 +431,23 @@ void SP_navi_monster_invasion (edict_t *self)
 	gi.linkentity (self);
 }
 
-int G_GetEntityIndex (edict_t *ent)
-{
-	int		i = 0;
-	edict_t *e = g_edicts;
-
-	if (!ent || !ent->inuse)
-		return 0;
-
-	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
-	{
-		if (e && e->inuse && (e == ent))
-			return i;
-		i++;
-	}
-
-	return 0;
-}
+//int G_GetEntityIndex (edict_t *ent)
+//{
+//	int		i = 0;
+//	edict_t *e = g_edicts;
+//
+//	if (!ent || !ent->inuse)
+//		return 0;
+//
+//	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
+//	{
+//		if (e && e->inuse && (e == ent))
+//			return i;
+//		i++;
+//	}
+//
+//	return 0;
+//}
 
 void inv_defenderspawn_think (edict_t *self)
 {

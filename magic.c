@@ -460,6 +460,8 @@ void TeleportForward (edict_t *ent)
 	vec3_t	angles, offset, forward, right, start, end;
 	trace_t	tr;
 
+	if (!ent || !ent->client)
+		return;
 	if (!G_EntIsAlive(ent))
 		return;
 	//4.07 can't teleport while being hurt
@@ -2206,7 +2208,7 @@ void fire_meteor (edict_t *self, vec3_t end, int damage, int radius, int speed)
 	tr = gi.trace (end, NULL, NULL, start, NULL, MASK_SOLID);
 
 	// abort if we get stuck or we don't have enough room
-	if (tr.startsolid || fabs(start[2]-end[2]) < 64)
+	if (tr.startsolid || fabsf(start[2]-end[2]) < 64)
 		return;
 
 	// create meteor entity
@@ -5082,7 +5084,7 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 
 	if (print)
 	{
-		if (old_owner->client)
+		if (old_owner->client && ent->client)
 			gi.cprintf(old_owner, PRINT_HIGH, "Your %s was converted by %s (%d/%d)\n", 
 				V_GetMonsterName(other), ent->client->pers.netname, current_num, max_num);
 
@@ -5555,8 +5557,8 @@ void fireball_explode (edict_t *self, cplane_t *plane)
 		}
 
 		// randomize aiming vector
-		forward[YAW] += 0.5 * crandom();
-		forward[PITCH] += 0.5 * crandom();
+		forward[YAW] += 0.5f * crandom();
+		forward[PITCH] += 0.5f * crandom();
 
 		// create the flame entities
 		ThrowFlame(self->owner, self->s.origin, forward, 0, GetRandom(50, 150), self->radius_dmg, GetRandom(3, 5));

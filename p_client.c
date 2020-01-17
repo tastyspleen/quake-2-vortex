@@ -437,8 +437,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				else
 					message = "hates himself";
 				break;
+			case MOD_ROCKET:
+				message = "ate a rocket";
+				break;
 			case MOD_BFG_BLAST:
 				message = "should have used a smaller gun";
+				break;
 			case MOD_CORPSEEXPLODE:
 				message = "hugs his corpse";
 				break;
@@ -493,6 +497,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				break;
 			default:
 				message = "becomes bored with life";
+				gi.bprintf(PRINT_MEDIUM, "mod: %i \n", mod);
 				break;
 			}
 		}
