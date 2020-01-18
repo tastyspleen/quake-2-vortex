@@ -3,7 +3,7 @@
 
 qboolean SavePlayer(edict_t *ent);	//Called by savePlayer(). Don't call this directly.
 
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 #include <process.h>
 
 /*
@@ -59,7 +59,7 @@ void __cdecl SavePlayerThread(void *arg)
 //Creates an OpenPlayerThread() for loading a player (GDS)
 void createOpenPlayerThread(edict_t *ent)
 {
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 	ent->isLoading = true;
 	ent->hThread = _beginthread(OpenPlayerThread, 0, ent);
 
@@ -75,7 +75,7 @@ void createOpenPlayerThread(edict_t *ent)
 //Creates an SavePlayerThread() for saving a player (GDS)
 void createSavePlayerThread(edict_t *ent)
 {
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 	ent->isSaving = true;
 	ent->hThread = _beginthread(SavePlayerThread, 0, ent);
 

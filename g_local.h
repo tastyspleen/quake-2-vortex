@@ -3,7 +3,6 @@
 #define G_LOCAL_H
 
 #ifdef _WIN32
-#define WIN32 1 /* VS2019 always defines _WIN32 */
 #define WIN32_LEAN_AND_MEAN	//non-MFC
 #include <windows.h>
 #define _CRTDBG_MAP_ALLOC
@@ -1244,6 +1243,7 @@ void fire_blueblaster (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 void fire_plasma (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 void fire_trap (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
 void fire_smartrocket (edict_t *self, edict_t *target, vec3_t start, vec3_t dir, int damage, int speed, int turn_speed, float damage_radius, int radius_damage);
+void Grenade_Explode(edict_t* ent);
 
 //
 // g_ptrail.c
@@ -1903,7 +1903,7 @@ struct edict_s
 	int			showPathDebug;			// show path debug information (0=off,1=on)
 
 	//4.0 (multithreading support)
-	unsigned long	hThread;			//Used for WIN32 multi-threading
+	unsigned long	hThread;			//Used for Windows multi-threading
 	qboolean		hThreadFinishTime;	//Records when the thread finished execution
 	qboolean		isSaving;
 	qboolean		isLoading;
@@ -2256,12 +2256,3 @@ int V_AddFinalExp (edict_t *player, int exp);
 #include "special_items.h"
 #include "ctf.h" // 3.7
 #endif
-
-/*
-//r1: terminating strncpy
-#define Q_strncpy(dst, src, len) \
-do { \
-	strncpy ((dst), (src), (len)); \
-	(dst)[(len)] = 0; \
-} while (0)
-*/

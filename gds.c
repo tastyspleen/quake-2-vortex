@@ -250,7 +250,7 @@ void GDS_CheckPlayer(edict_t *ent)
 	if(!ent->hThreadFinishTime)
 		return;
 
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 	if(ent->isLoading && ent->client && ent->client->pers.connected)
 	{
 		ent->isLoading = false;

@@ -494,9 +494,6 @@
     <ClInclude Include="talents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="special_items.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="game.def">

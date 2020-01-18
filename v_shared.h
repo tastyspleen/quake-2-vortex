@@ -35,6 +35,11 @@ qboolean G_ClearPath (edict_t *ignore1, edict_t *ignore2, int mask, vec3_t spot1
 int G_GetHypotenuse (vec3_t v);
 //************ g_utils.c ************
 
+//********* flying_skull.c *********
+void Cmd_HellSpawn_f(edict_t* ent);
+//********* flying_skull.c *********
+
+
 //************ misc_stuff.c ************
 qboolean V_AssignClassSkin (edict_t *ent, char *s);
 void giveAdditionalRespawnWeapon(edict_t *ent, int nextWeapon);
@@ -52,6 +57,8 @@ qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean pr
 qboolean RestorePreviousOwner (edict_t *ent);
 void ProjectileLockon (edict_t *proj);
 void fire_fireball(edict_t* self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
+void Cmd_CorpseExplode(edict_t* ent);
+void Cmd_Caltrops_f(edict_t* ent);
 //************ magic.c ************
 
 //************ auras.c ************

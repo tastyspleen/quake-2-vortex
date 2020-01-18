@@ -1,12 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
 
-//Function prototypes required for this .c file:
-void Grenade_Explode (edict_t *ent);
-void Cmd_CorpseExplode(edict_t *ent);
-void Cmd_HellSpawn_f (edict_t *ent);
-void Cmd_Caltrops_f (edict_t *ent);
-//End prototypes
 
 void Cmd_DetPipes_f (edict_t *ent)
 {
@@ -137,7 +131,6 @@ void Cmd_Lockon_f (edict_t *ent, int toggle)
 	}
 }
 
-void cmd_Sentry (edict_t *ent);
 void Cmd_Thrust_f (edict_t *ent)
 {
     char    *string;
@@ -1514,11 +1507,6 @@ void Cmd_Wave_f (edict_t *ent)
 		break;
 	}
 }
-
-void masterpw_handler (edict_t *ent, int option);
-void OpenMasterPasswordMenu (edict_t *ent);
-void myinfo_handler (edict_t *ent, int option);
-void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text);
 
 void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 {
