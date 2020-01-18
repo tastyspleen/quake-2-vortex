@@ -185,10 +185,6 @@ void newPlayer(edict_t *ent);
 int canJoinGame(edict_t *ent);
 //************ player.c ************
 
-//************ gds.c ************
-int GDS_OpenConfigFile(edict_t *ent);
-//************ gds.c ************
-
 //************ invasion.c ************
 edict_t *INV_SelectPlayerSpawnPoint (edict_t *ent);
 void INV_InitSpawnQue (void);

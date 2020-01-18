@@ -16,6 +16,7 @@ void GDS_DeleteCharFile (edict_t *ent);
 void GDS_CheckFiles (void);
 void GDS_GetTestFile (void);
 int GDS_FileExists (char *filename, qboolean remove_file);
+int GDS_OpenConfigFile(edict_t* ent);
 
 typedef struct gdsfiles_s
 {

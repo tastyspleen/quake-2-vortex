@@ -12,7 +12,6 @@ void PlagueCloudSpawn (edict_t *ent);
 void boss_update (edict_t *ent, usercmd_t *ucmd, int type);
 void RunCacodemonFrames (edict_t *ent, usercmd_t *ucmd);
 //void RunTankFrames (edict_t *ent, usercmd_t *ucmd);
-void GDS_CheckPlayer (edict_t *ent);
 void brain_fire_beam (edict_t *self);
 
 //
