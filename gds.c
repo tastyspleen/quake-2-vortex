@@ -41,7 +41,7 @@ void GDS_CheckFiles (void)
 		if (slot->time && (level.time > slot->time))
 		{
 			// delete the file
-			sprintf(buf, "%s/\"%s.vrx\"", save_path->string, slot->filename);
+			Com_sprintf(buf, sizeof buf, "%s/\"%s.vrx\"", save_path->string, slot->filename);
 			system(va("del %s\n", buf));
 			// remove it from the que
 			slot->time = 0;
@@ -70,12 +70,12 @@ void GDS_FileIO (const char *filename, int cmd)
 	char				buf1[100], buf2[100];
 	HINSTANCE			hRet;
 
-	sprintf(buf1, "%s/gds.exe", gds_exe->string);
+	Com_sprintf(buf1, sizeof buf1, "%s/gds.exe", gds_exe->string);
 
 	if (cmd)
-		sprintf(buf2, "\"%s\" %s %s", filename, save_path->string, "1");
+		Com_sprintf(buf2, sizeof buf2, "\"%s\" %s %s", filename, save_path->string, "1");
 	else
-		sprintf(buf2, "\"%s\" %s %s", filename, save_path->string, "0");
+		Com_sprintf(buf2, sizeof buf2, "\"%s\" %s %s", filename, save_path->string, "0");
 
 	// launch process
 	hRet = ShellExecute(HWND_DESKTOP, "open", buf1, buf2, NULL, SW_HIDE);
@@ -153,7 +153,7 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 	struct stat	file;
 
 	// did the file we want download successfully?
-	sprintf(buf, "%s/%s.vrx", save_path->string, filename);
+	Com_sprintf(buf, sizeof buf, "%s/%s.vrx", save_path->string, filename);
 	if(!stat(buf, &file) && (file.st_size > 1))
 	{
 		gi.dprintf("INFO: GDS successfully downloaded %s\n", buf);
@@ -162,7 +162,7 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 		{
 			gi.dprintf("INFO: Deleting temporary file %s\n", buf);
 
-			sprintf(buf, "del %s/\"%s.vrx\"", save_path->string, filename);
+			Com_sprintf(buf, sizeof buf, "del %s/\"%s.vrx\"", save_path->string, filename);
 			system(buf);
 		}
 
@@ -170,13 +170,13 @@ int GDS_FileExists (char *filename, qboolean remove_file)
 	}
 
 	// did the GDS create a NULL file?
-	sprintf(buf, "%s/%s.NULL", save_path->string, filename);
+	Com_sprintf(buf, sizeof buf, "%s/%s.NULL", save_path->string, filename);
 	if (!stat(buf, &file))
 	{
 		gi.dprintf("INFO: GDS created NULL file %s\n", buf);
 
 		// always delete the NULL file
-		sprintf(buf, "del %s/\"%s.NULL\"", save_path->string, filename);
+		Com_sprintf(buf, sizeof buf, "del %s/\"%s.NULL\"", save_path->string, filename);
 		system(buf);
 
 		return GDS_NULLFILE_EXISTS;

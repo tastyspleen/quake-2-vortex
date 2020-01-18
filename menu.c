@@ -218,31 +218,31 @@ void showmenu(edict_t* ent)
 		center = 216 / 2 - strlen(ent->client->menustorage.messages[i].msg) * 4 + 52;
 		if (ent->client->menustorage.messages[i].option == 0)// print white text
 		{
-			sprintf(tmp, "xv 52 yv %i string \"%s\" ", j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string \"%s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_LEFT)// print green text
 		{
-			sprintf(tmp, "xv 52 yv %i string2 \"%s\" ", j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string2 \"%s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_CENTERED)// print centered green text
 		{
-			sprintf(tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_WHITE_CENTERED)// print centered white text
 		{
-			sprintf(tmp, "xv %d yv %i string \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_RIGHT)// print right-aligned green text
 		{
 			center = 216 - strlen(ent->client->menustorage.messages[i].msg) * 8 + 52;
-			sprintf(tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (i == ent->client->menustorage.currentline)
 		{
-			sprintf(tmp, "xv 52 yv %i string2 \">> %s\" ", j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string2 \">> %s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
 		else
-			sprintf(tmp, "xv 52 yv %i string \"   %s\" ", j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string \"   %s\" ", j, ent->client->menustorage.messages[i].msg);
 		// add the control string to our final menu space
 		strcat(finalmenu, tmp);
 		j += LINE_SPACING;
