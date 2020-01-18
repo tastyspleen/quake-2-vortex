@@ -19,3 +19,4 @@ qboolean ValidAlly (edict_t *ent);
 void NotifyAllies (edict_t *ent, int msgtype, char *s);
 void InitializeTeamNumbers (void);
 void ResetAlliances (edict_t *ent);//4.5 - reset alliances when changing combat preferences
+void ShowAllyMenu_handler(edict_t* ent, int option);

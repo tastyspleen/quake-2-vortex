@@ -1517,8 +1517,6 @@ void Cmd_Wave_f (edict_t *ent)
 
 void masterpw_handler (edict_t *ent, int option);
 void OpenMasterPasswordMenu (edict_t *ent);
-void ShowAllyMenu_handler (edict_t *ent, int option);
-void classmenu_handler (edict_t *ent, int option);
 void myinfo_handler (edict_t *ent, int option);
 void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text);
 

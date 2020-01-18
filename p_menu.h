@@ -22,6 +22,8 @@ typedef struct pmenu_s {
 	void (*SelectFunc)(edict_t *ent, struct pmenu_s *entry);
 } pmenu_t;
 
+void classmenu_handler(edict_t* ent, int option);
+
 //void PMenu_Open(edict_t *ent, pmenu_t *entries, int cur, int num, qboolean usekeys, qboolean showbackground);
 //void PMenu_Close(edict_t *ent);
 //void PMenu_Update(edict_t *ent);
