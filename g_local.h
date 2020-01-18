@@ -1,6 +1,9 @@
-// g_local.h -- local definitions for game module
 #ifndef G_LOCAL_H
 #define G_LOCAL_H
+
+//
+// g_local.h -- local definitions for game module
+//
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN	//non-MFC
@@ -13,12 +16,8 @@ _CrtMemState startup1;	// memory diagnostics
 #define OutputDebugString	//not doing Windows
 #endif
 
-//Uncomment this and recompile to get debug printouts.
-//The higher number, the more detailed printouts.
-//Using this , especially on higher levels, is very lag prone and may cause server overflow.
-//#define PRINT_DEBUGINFO 1
-
 #include "q_shared.h"
+
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
 // because we define the full size ones in this file

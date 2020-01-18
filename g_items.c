@@ -496,9 +496,8 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 
 qboolean Pickup_Key (edict_t *ent, edict_t *other)
 {
-#ifdef PRINT_DEBUGINFO
-gi.dprintf("%s is picking up a %s in Pickup_Key()\n", ent->client->pers.netname, other->classname);
-#endif
+	if (debuginfo->value == 2)
+		gi.dprintf("%s is picking up a %s in Pickup_Key()\n", ent->client->pers.netname, other->classname);
 
 	if (ent->count > 0)
 		other->client->pers.inventory[ITEM_INDEX(ent->item)] += ent->count;

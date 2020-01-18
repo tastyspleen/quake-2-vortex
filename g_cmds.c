@@ -946,9 +946,10 @@ void Cmd_Drop_f (edict_t *ent)
 	int			index, count;
 	gitem_t		*it;
 	char		*s;
-#ifdef PRINT_DEBUGINFO
-gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
-#endif
+
+	if(debuginfo->value == 2)
+		gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
+
 	//K03 Begin
 	if (ent->client->resp.spectator)
 		return;
