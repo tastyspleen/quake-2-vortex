@@ -327,19 +327,7 @@
     <ClCompile Include="spirit.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="runes.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="g_ctf.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="g_freeze.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="special_items.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sqlstuff.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="v_file_io.c">

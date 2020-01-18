@@ -60,7 +60,6 @@
     <ClCompile Include="g_chase.c" />
     <ClCompile Include="g_cmds.c" />
     <ClCompile Include="g_combat.c" />
-    <ClCompile Include="g_ctf.c" />
     <ClCompile Include="g_flame.c" />
     <ClCompile Include="g_freeze.c" />
     <ClCompile Include="g_func.c" />
@@ -109,13 +108,10 @@
     <ClCompile Include="p_view.c" />
     <ClCompile Include="p_weapon.c" />
     <ClCompile Include="q_shared.c" />
-    <ClCompile Include="runes.c" />
     <ClCompile Include="scanner.c" />
     <ClCompile Include="sentrygun2.c" />
     <ClCompile Include="shaman.c" />
-    <ClCompile Include="special_items.c" />
     <ClCompile Include="spirit.c" />
-    <ClCompile Include="sqlstuff.c" />
     <ClCompile Include="supplystation.c" />
     <ClCompile Include="talents.c" />
     <ClCompile Include="teamplay.c" />
