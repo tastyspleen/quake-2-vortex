@@ -57,7 +57,7 @@
 #define SENTRY_ROCKET_DAMAGE_LEVEL	20		//Imitates a player with RL upgrades (damage)
 #define SENTRY_ROCKET_SPEED_LEVEL	10		//Imitates a player with RL upgrades (speed)
 #define SENTRY_ROCKET_RADIUS_LEVEL	10		//Imitates a player with RL upgrades (radius)
-#define SENTRY_ROCKET_REFIRE		1.0		//Sentry refire rate for rockets only (seconds)
+#define SENTRY_ROCKET_REFIRE		1.0f		//Sentry refire rate for rockets only (seconds)
 #define SENTRY_ROCKETCOST			1
 
 //Ammo
