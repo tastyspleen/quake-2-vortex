@@ -196,8 +196,6 @@ void ShutdownGame (void)
 
 #ifdef _WIN32
 	OutputDebugString("ShutdownGame() was called.\n");
-	OutputDebugString("Dump objects since startup.\n");
-	_CrtMemDumpAllObjectsSince(&startup1);
 	OutputDebugString("Memory stats since startup.\n");
 	_CrtMemDumpStatistics(&startup1);
 	_CrtDumpMemoryLeaks();
@@ -823,7 +821,8 @@ void G_RunFrame(void)
 				continue;
 			SaveCharacter(ent);
 		}
-		gi.dprintf("INFO: All players saved.\n");
+		if(debuginfo->value)
+			gi.dprintf("INFO: All players saved.\n");
 	}
 	//GHz END
 
