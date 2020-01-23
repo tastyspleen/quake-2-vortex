@@ -21,8 +21,6 @@
 #define CEILING_PITCH				90
 #define FLOOR_PITCH					270
 
-void spawn_grenades(edict_t *ent, vec3_t origin, float time, int damage, int num);
-
 void carpetbomb_think (edict_t *self)
 {
 	float		ceil;

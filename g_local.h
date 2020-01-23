@@ -1243,6 +1243,7 @@ void fire_plasma (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 void fire_trap (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
 void fire_smartrocket (edict_t *self, edict_t *target, vec3_t start, vec3_t dir, int damage, int speed, int turn_speed, float damage_radius, int radius_damage);
 void Grenade_Explode(edict_t* ent);
+void spawn_grenades(edict_t* ent, vec3_t origin, float time, int damage, int num);
 
 //
 // g_ptrail.c
