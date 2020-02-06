@@ -3,11 +3,7 @@
 #define VOTE_MAP	1
 #define	VOTE_MODE	2
 
-qboolean loc_CanSee (edict_t *targ, edict_t *inflictor);
-void check_for_levelup(edict_t *ent);
-
 //Function prototypes required for this .c file:
-void GDS_LoadPlayer(edict_t *ent);
 void OpenDOMJoinMenu (edict_t *ent);
 
 void disableAbilities (edict_t *ent)
@@ -323,7 +319,6 @@ void ChaseCam(edict_t *ent)
 	GetChaseTarget(ent);
 }
 
-int ClassNum(edict_t *ent, int team); //GHz
 int HighestLevelPlayer(void); //GHz
 int TotalPlayersInGame(void)
 {

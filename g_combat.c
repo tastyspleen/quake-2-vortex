@@ -178,9 +178,6 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 Killed
 ============
 */
-void VortexAddMonsterExp(edict_t *attacker, edict_t *monster);
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-void drone_death (edict_t *self, edict_t *attacker);
 void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	if (targ->health < -999)

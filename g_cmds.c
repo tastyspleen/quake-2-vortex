@@ -932,7 +932,6 @@ int NumPowercubes (edict_t *ent)
 	return i;
 }
 
-void tech_dropall (edict_t *ent);
 /*
 ==================
 Cmd_Drop_f
@@ -1316,12 +1315,13 @@ void Cmd_InvDrop_f (edict_t *ent)
 	}
 	it->drop (ent, it);
 }
+
+void dom_spawnflag(void);
 /*
 =================
 Cmd_Kill_f
 =================
 */
-void dom_spawnflag (void);
 void Cmd_Kill_f (edict_t *ent)
 {
 //ZOID
@@ -1759,7 +1759,6 @@ void ResetPlayer (edict_t *ent)
 char *LoPrint(char *text);
 char *HiPrint(char *text);
 //edict_t *FindPlayerByName(const char *name);	//4.0 Already declared in g_local.h
-void check_for_levelup(edict_t *ent);
 
 void Cmd_MakeAdmin(edict_t *ent)
 {
@@ -2407,10 +2406,6 @@ void Cmd_GetFloorPos_f (edict_t *ent, int add)
 
 	
 void Cmd_BombPlayer(edict_t *ent, float skill_mult, float cost_mult);
-//Cmd_Thorns(edict_t *ent);
-//void Cmd_HolyShock(edict_t *ent);
-int ClassNum(edict_t *ent, int team);
-void Cmd_VampireMode (edict_t *ent);
 qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg);
 /*
 =================

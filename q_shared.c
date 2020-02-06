@@ -1211,6 +1211,35 @@ void Q_strncpy(char* pszDest, const char* pszSrc, int nDestSize)
 }
 
 
+static char HiLo_text[MAX_INFO_STRING];
+
+char* LoPrint(char* text)
+{
+	int i;
+
+	if (!text)
+		return NULL;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] > 127)
+			HiLo_text[i] = (byte)HiLo_text[i] - 128;
+
+	return HiLo_text;
+}
+
+char* HiPrint(char* text)
+{
+	int i;
+
+	if (!text)
+		return NULL;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] <= 127)
+			HiLo_text[i] = (byte)HiLo_text[i] + 128;
+	return HiLo_text;
+}
+
 /*
 =====================================================================
 

@@ -164,6 +164,7 @@
     <ClInclude Include="m_soldier.h" />
     <ClInclude Include="m_supertank.h" />
     <ClInclude Include="m_tank.h" />
+    <ClInclude Include="player_points.h" />
     <ClInclude Include="p_hook.h" />
     <ClInclude Include="p_menu.h" />
     <ClInclude Include="q_shared.h" />

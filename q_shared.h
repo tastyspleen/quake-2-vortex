@@ -244,6 +244,11 @@ int Q_strcmp(const char* s1, const char* s2);
 //A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
 void Q_strncpy(char* pszDest, const char* pszSrc, int nDestSize);
 
+/* White text and highlight text utilities */
+
+char* LoPrint(char* text);
+char* HiPrint(char* text);
+
 //=============================================
 
 short	BigShort(short l);

@@ -107,6 +107,8 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 		prev_rad = rad + 1;
 	found_rad = 0;
 
+	from = g_edicts;
+	assert(from != NULL);
 	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
 	{
 		if (!from->inuse)
@@ -151,6 +153,8 @@ edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 		prev_rad = rad + 1;
 	found_rad = 0;
 
+	from = g_edicts;
+	assert(from != NULL);
 	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
 	{
 		if (!from->inuse)

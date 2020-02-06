@@ -726,11 +726,6 @@ void ExitLevel (void)
 	}
 }
 
-void tech_spawnall(void);
-void thinkDisconnect(edict_t* ent);
-void G_InitEdict(edict_t* e);
-void check_for_levelup(edict_t* ent);//K03
-
 /*
 ================
 G_RunFrame

@@ -537,7 +537,7 @@ void ShowAllyInviteMenu(edict_t* ent)
 		return;
 
 	clearmenu(ent);
-	//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
+	//                  xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 	addlinetomenu(ent, va("%s", e->client->pers.netname), MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "would like to ally.", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
@@ -582,7 +582,7 @@ void ShowAllyWaitMenu(edict_t* ent)
 	if (!ShowMenu(ent))
 		return;
 	clearmenu(ent);
-	//				xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
+	//                  xxxxxxxxxxxxxxxxxxxxxxxxxxx (max length 27 chars)
 	addlinetomenu(ent, "Please wait for player to ", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "accept your invitation. ", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);

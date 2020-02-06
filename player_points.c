@@ -1,7 +1,6 @@
 #include "g_local.h"
+#include "boss.h"
 
-//Function Prototypes required for this .c file:
-void PlayerBossPoints (edict_t *attacker, edict_t *target);
 
 int mypower(int x, int y)
 {
@@ -11,35 +10,6 @@ int mypower(int x, int y)
 		return (x * mypower(x,y) );
 	}
 	return (1);
-}
-
-static char HiLo_text[MAX_INFO_STRING];
-
-char* LoPrint(char* text)
-{
-	int i;
-
-	if (!text)
-		return NULL;
-	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
-	for (i = 0; i < strlen(HiLo_text); i++)
-		if ((byte)HiLo_text[i] > 127)
-			HiLo_text[i] = (byte)HiLo_text[i] - 128;
-
-	return HiLo_text;
-}
-
-char* HiPrint(char* text)
-{
-	int i;
-
-	if (!text)
-		return NULL;
-	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
-	for (i = 0; i < strlen(HiLo_text); i++)
-		if ((byte)HiLo_text[i] <= 127)
-			HiLo_text[i] = (byte)HiLo_text[i] + 128;
-	return HiLo_text;
 }
 
 // this needs to match UpdateFreeAbilities() in v_utils.c
@@ -95,7 +65,7 @@ void Add_credits(edict_t *ent, int targ_level)
 {
 	int level_diff		= 0;
 	int credit_points	= 0;
-	float temp			= 0.0;
+	float temp			= 0.0f;
 
 	if (!ent->client)
 		return;
@@ -337,10 +307,6 @@ void VortexSpreeAbilities (edict_t *attacker)
 	}	
 }
 
-#define PLAYTIME_MIN_MINUTES		999.0	// minutes played before penalty begins
-#define PLAYTIME_MAX_MINUTES		999.0	// minutes played before max penalty is reached
-#define PLAYTIME_MAX_PENALTY		2.0		// reduce experience in half
-
 int V_AddFinalExp (edict_t *player, int exp)
 {
 	float	mod, playtime_minutes;
@@ -373,9 +339,6 @@ int V_AddFinalExp (edict_t *player, int exp)
 
 	return exp;
 }
-
-#define EXP_SHARED_FACTOR				0.5
-#define PLAYER_MONSTER_MIN_PLAYERS		4
 
 void AddMonsterExp (edict_t *player, edict_t *monster)
 {
@@ -482,8 +445,6 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 	//gi.dprintf("AddMonsterExp(), %d exp, %d control_cost %d level\n", exp_points, control_cost, monster->monsterinfo.level);
 }
 
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-int PVM_TotalMonsters (edict_t *monster_owner);
 void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
 {
 	//int exp_points		= 0;

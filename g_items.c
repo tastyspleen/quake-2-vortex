@@ -1222,7 +1222,8 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	//respawn set
 	if (ent->flags & FL_RESPAWN)
 		ent->flags &= ~FL_RESPAWN;
-	else if(ent->classname[6] != 'F') G_FreeEdict (ent);
+	else if(ent->classname[6] != 'F')
+		G_FreeEdict (ent);
 // GHz START
 	// the player may have picked up something useful for the monster
 	// make sure the player still has a monster to pilot, since picking up

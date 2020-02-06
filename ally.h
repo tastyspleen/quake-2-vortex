@@ -4,13 +4,13 @@
 qboolean IsAlly (edict_t *ent, edict_t *other);
 void AddAlly (edict_t *ent, edict_t *other);
 void RemoveAlly (edict_t *ent, edict_t *other);
-void listAllies (edict_t *ent);
-void AllyCleanup (edict_t *ent);
-void RemoveAllies (edict_t *ent);
-void AllyValidate (edict_t *ent);
+//void listAllies (edict_t *ent);
+//void AllyCleanup (edict_t *ent);
+//void RemoveAllies (edict_t *ent);
+//void AllyValidate (edict_t *ent);
 int AddAllyExp (edict_t *ent, int exp);
 int numAllies (edict_t *ent);
-void ShowAllyMenu (edict_t *ent);
+void ShowAllyMenu(edict_t* ent);
 void AbortAllyWait (edict_t *ent);
 void ShowAllyWaitMenu_handler (edict_t *ent, int option);
 void AllyID (edict_t *ent);

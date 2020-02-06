@@ -931,8 +931,6 @@ player_die
 void turret_remove(edict_t *ent);
 void cmd_RemoveLaserDefense(edict_t *ent);
 void VortexDeathCleanup(edict_t *attacker, edict_t *targ);
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-void tech_dropall (edict_t *ent);
 
 void VortexGibSound (edict_t *self, int index)
 {

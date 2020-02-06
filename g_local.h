@@ -34,6 +34,7 @@ _CrtMemState startup1;	// memory diagnostics
 #include "ally.h" // 3.12
 #include "gds.h" // 3.15
 #include "scanner.h"
+#include "player_points.h"
 
 #ifndef MAX
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -989,6 +990,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, float count);
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 edict_t *Spawn_Item (gitem_t *item);
 void tech_checkrespawn(edict_t* ent);
+void tech_spawnall(void);
 void SpawnWorldAmmo(void);
 
 //
@@ -1075,7 +1077,6 @@ qboolean AddCurse (edict_t *owner, edict_t *targ, edict_t *curse_ent, int type, 
 void ShowGun(edict_t *ent);
 void EndDMLevel (void);
 void StartGame (edict_t *ent);
-int VortexAddCredits(edict_t *ent, float level_diff, int bonus, qboolean client);
 void RemoveAllAuras (edict_t *ent);
 void RemoveAllCurses (edict_t *ent);
 void PTRInit (void);
@@ -1195,6 +1196,8 @@ void VortexRemovePlayerSummonables(edict_t *self);//GHz
 void InitScanEntity(void);
 void InitSunEntity(void);
 
+int PVM_TotalMonsters(edict_t* monster_owner);
+
 //
 // g_ai.c
 //
@@ -1221,6 +1224,8 @@ void drone_ai_stand (edict_t *self, float dist);
 void drone_ai_run (edict_t *self, float dist);
 void drone_ai_run1 (edict_t *self, float dist);
 void drone_ai_walk (edict_t *self, float dist);
+
+void drone_death(edict_t* self, edict_t* attacker);
 
 //
 // g_weapon.c
@@ -1977,7 +1982,6 @@ joined_t *GetJoinedSlot (edict_t *ent);
 void ClearJoinedSlot (joined_t *slot);
 
 int GetRandom(int min,int max);
-void stuffcmd(edict_t *e, char *s);
 void ApplyThrust (edict_t *ent);
 void Add_exp(edict_t *ent, edict_t *targ);
 int OpenConfigFile(edict_t *ent);
