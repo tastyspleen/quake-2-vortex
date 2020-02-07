@@ -928,8 +928,6 @@ player_die
 ==================
 */
 
-void turret_remove(edict_t *ent);
-void cmd_RemoveLaserDefense(edict_t *ent);
 void VortexDeathCleanup(edict_t *attacker, edict_t *targ);
 
 void VortexGibSound (edict_t *self, int index)
