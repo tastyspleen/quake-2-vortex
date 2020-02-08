@@ -5,6 +5,8 @@ typedef struct spawn_s
 	char	*name;  //the name of the entity
 	void	(*spawn)(edict_t *ent); // pointer to its spawn function
 } spawn_t;
+
+
 char *LoadEntities(char *mapname, char *entities);//K03
 
 void SP_item_health (edict_t *self);
@@ -90,7 +92,6 @@ void SP_misc_viper_bomb (edict_t *self);
 void SP_misc_bigviper (edict_t *self);
 void SP_misc_strogg_ship (edict_t *self);
 void SP_misc_teleporter (edict_t *self);
-void SP_misc_teleporter_dest (edict_t *self);
 void SP_misc_blackhole (edict_t *self);
 void SP_misc_eastertank (edict_t *self);
 void SP_misc_easterchick (edict_t *self);

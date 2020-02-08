@@ -957,8 +957,6 @@ void OpenGeneralMenu (edict_t *ent)
 	showmenu(ent);
 }
 
-char *G_GetTruncatedIP (edict_t *player);
-
 char *GetTeamString (edict_t *ent)
 {
 	if (ent->teamnum == 1)

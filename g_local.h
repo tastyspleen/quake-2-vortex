@@ -1195,6 +1195,7 @@ int vrx_GetMonsterControlCost(int mtype);//GHz
 void VortexRemovePlayerSummonables(edict_t *self);//GHz
 void InitScanEntity(void);
 void InitSunEntity(void);
+void SP_misc_teleporter_dest(edict_t* ent);
 
 int PVM_TotalMonsters(edict_t* monster_owner);
 

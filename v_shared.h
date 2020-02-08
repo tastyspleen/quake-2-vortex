@@ -30,6 +30,7 @@ int PVM_TotalMonsters (edict_t *monster_owner);
 //************ g_misc.c ************
 
 //************ g_utils.c ************
+char* G_GetTruncatedIP(edict_t* player);
 char *CryptString (char *text, qboolean decrypt);
 qboolean G_ClearPath (edict_t *ignore1, edict_t *ignore2, int mask, vec3_t spot1, vec3_t spot2);
 int G_GetHypotenuse (vec3_t v);
@@ -165,6 +166,7 @@ int FindBestMap(int mode);
 v_maplist_t *GetMapList(int mode);
 int V_AttemptModeChange(qboolean endlevel);
 void RunVotes(void);
+void KillMyVote(edict_t* ent);
 //************ vote.c *************
 
 //*********** weapons.c ***********

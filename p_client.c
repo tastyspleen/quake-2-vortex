@@ -1,15 +1,13 @@
 #include "g_local.h"
 #include "m_player.h"
+#include "boss.h"
 
 int		cumsindex;
 
 //Function prototypes required for this .c file:
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void SP_misc_teleporter_dest (edict_t *ent);
 void ParasiteAttack (edict_t *ent);
 void EatCorpses (edict_t *ent);
 void PlagueCloudSpawn (edict_t *ent);
-void boss_update (edict_t *ent, usercmd_t *ucmd, int type);
 void RunCacodemonFrames (edict_t *ent, usercmd_t *ucmd);
 //void RunTankFrames (edict_t *ent, usercmd_t *ucmd);
 void brain_fire_beam (edict_t *self);
@@ -2372,10 +2370,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	return true;
 }
 
-void KillMyVote(edict_t* ent);
-//void soldier_die(edict_t* ent);
-//void turret_remove(edict_t* ent);
-
 /*
 ===========
 ClientDisconnect
@@ -2606,13 +2600,9 @@ void RechargeAbilities (edict_t *ent)
 
 //K03 Begin
 void Vampire_Think(edict_t *self);
-void Parasite(edict_t *ent);
-void LockOnTarget (edict_t *player);
-void RotateVectorAroundEntity (edict_t *ent, int magnitude, int degrees, vec3_t output);
 void DeflectProjectiles (edict_t *self, float chance, qboolean in_front);
 void DrawNearbyGrid(edict_t *ent);
 void DrawChildLinks (edict_t *ent);
-//void DrawPath(void);
 
 
 void ClientThinkstuff(edict_t *ent)
@@ -3570,7 +3560,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	}
 	//3.0 end
 
-	boss_update(ent, ucmd, BOSS_TANK);
+	boss_update(ent, ucmd);
 	RunParasiteFrames(ent, ucmd);
 	RunCacodemonFrames(ent, ucmd);
 	//RunTankFrames(ent, ucmd);

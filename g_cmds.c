@@ -1756,10 +1756,6 @@ void ResetPlayer (edict_t *ent)
 	return;
 }
 
-char *LoPrint(char *text);
-char *HiPrint(char *text);
-//edict_t *FindPlayerByName(const char *name);	//4.0 Already declared in g_local.h
-
 void Cmd_MakeAdmin(edict_t *ent)
 {
 	char *cmd1;
