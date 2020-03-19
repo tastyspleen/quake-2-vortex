@@ -92,8 +92,8 @@ extern long FLAG_FRAMES;
 //==================================================================
 
 // view pitching times
-#define DAMAGE_TIME		0.5
-#define	FALL_TIME		0.3
+#define DAMAGE_TIME		0.5f
+#define	FALL_TIME		0.3f
 
 
 // edict->spawnflags
