@@ -108,30 +108,31 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 	found_rad = 0;
 
 	from = g_edicts;
-	assert(from != NULL);
-	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
+	if (from != NULL)
 	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
-		vlen = VectorLength(eorg);
-		if (vlen > rad) // found edict is outside scanning radius
-			continue;
-		if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
-			continue; // thus this edict must have been returned in an earlier call
-		if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
-			continue; // from the center of scan, so if the current edict is "in front of" 
-		if (from == prev_ed) // the previously returned one, it must have been returned
-			prev_found = true; // in an earlier call
-		if ((!found) || (vlen <= found_rad)) {
-			found = from;
-			found_rad = vlen;
+		for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
+		{
+			if (!from->inuse)
+				continue;
+			if (from->solid == SOLID_NOT)
+				continue;
+			for (j = 0; j < 3; j++)
+				eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
+			vlen = VectorLength(eorg);
+			if (vlen > rad) // found edict is outside scanning radius
+				continue;
+			if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
+				continue; // thus this edict must have been returned in an earlier call
+			if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
+				continue; // from the center of scan, so if the current edict is "in front of" 
+			if (from == prev_ed) // the previously returned one, it must have been returned
+				prev_found = true; // in an earlier call
+			if ((!found) || (vlen <= found_rad)) {
+				found = from;
+				found_rad = vlen;
+			}
 		}
 	}
-
 	return found;
 }
 
@@ -154,28 +155,29 @@ edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 	found_rad = 0;
 
 	from = g_edicts;
-	assert(from != NULL);
-	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
+	if (from != NULL)
 	{
-		if (!from->inuse)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
-		vlen = VectorLength(eorg);
-		if (vlen > rad) // found edict is outside scanning radius
-			continue;
-		if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
-			continue; // thus this edict must have been returned in an earlier call
-		if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
-			continue; // from the center of scan, so if the current edict is "in front of" 
-		if (from == prev_ed) // the previously returned one, it must have been returned
-			prev_found = true; // in an earlier call
-		if ((!found) || (vlen <= found_rad)) {
-			found = from;
-			found_rad = vlen;
+		for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
+		{
+			if (!from->inuse)
+				continue;
+			for (j = 0; j < 3; j++)
+				eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
+			vlen = VectorLength(eorg);
+			if (vlen > rad) // found edict is outside scanning radius
+				continue;
+			if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
+				continue; // thus this edict must have been returned in an earlier call
+			if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
+				continue; // from the center of scan, so if the current edict is "in front of" 
+			if (from == prev_ed) // the previously returned one, it must have been returned
+				prev_found = true; // in an earlier call
+			if ((!found) || (vlen <= found_rad)) {
+				found = from;
+				found_rad = vlen;
+			}
 		}
 	}
-
 	return found;
 }
 

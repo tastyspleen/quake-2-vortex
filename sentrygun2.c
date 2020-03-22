@@ -798,7 +798,7 @@ void sentrygun_think (edict_t *self)
 		else if (converted && self->creator && self->creator->inuse && self->creator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
 				gi.cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
-					V_GetMonsterName(self), self->removetime-level.time);	
+					V_GetMonsterName(self), (double)self->removetime - (double)level.time);
 	}
 
 	// sentry is stunned

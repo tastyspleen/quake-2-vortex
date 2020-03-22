@@ -991,7 +991,7 @@ qboolean CanTball (edict_t *ent, qboolean print)
 	{
 		if (print)
 			gi.cprintf(ent, PRINT_HIGH, "You can't use tballs for another %2.1f seconds\n", 
-				(ent->client->tball_delay - level.time));
+				((double)ent->client->tball_delay - (double)level.time));
 		return false;
 	}
 
