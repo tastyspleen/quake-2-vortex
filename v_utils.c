@@ -2456,7 +2456,7 @@ qboolean V_MatchPlayerPrefs (edict_t *player, int monsters, int players)
 	if (player->myskills.respawns & HOSTILE_PLAYERS)
 		player_result = true;
 
-	return ((monsters == -1 || monster_result == monsters) && (player_result == -1 || player_result == players));
+	return ((monsters == -1 || monster_result) && (player_result || players == -1));
 }
 
 //4.5 returns number of players with the specified combat preferences value
