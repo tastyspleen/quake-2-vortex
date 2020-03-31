@@ -550,13 +550,13 @@ void SVCmd_GenerateNodes_f (void)
 }
 */
 
-void SVCmd_SpawnBoss_f (void)
+void SVCmd_SpawnBoss_f(void)
 {
-	edict_t *e;
-	edict_t *m_worldspawn = NULL;
+	edict_t* e;
+	edict_t* m_worldspawn = NULL;
 
 	// try to locate the world monster spawning entity
-	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
+	for (e = g_edicts; e < &g_edicts[globals.num_edicts]; e++)
 	{
 		if (e && e->inuse && e->mtype == M_WORLDSPAWN)
 		{
@@ -638,13 +638,13 @@ void SVCmd_ExpHole_f()
 	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
 }
 
-void SVCmd_SetTeam_f()
+void SVCmd_SetTeam_f(void)
 {
 	char *pname = gi.argv(2);
 	edict_t *p;
 	int value = atoi(gi.argv(3));
 
-	if ((value < 0) || (strlen(pname) < 0))
+	if ((value == 0) || (strlen(pname) == 0)) // prompt for missing arguments 
 	{
 		gi.cprintf(NULL, PRINT_HIGH, "cmd: setteam <playername> <value>.\n", pname);
 		return;
