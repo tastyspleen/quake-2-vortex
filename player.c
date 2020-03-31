@@ -87,19 +87,20 @@ int canJoinGame(edict_t *ent)
 	return 0;	//success
 }
 
-void fixInvalidPlayerData(edict_t *ent)
-{
-	int i;
-	gitem_t *item=itemlist;
-
-	for (i=0; i<game.num_items; i++, item++)
-		ent->client->pers.inventory[ITEM_INDEX(item)] = ent->myskills.inventory[ITEM_INDEX(item)];
-	ent->client->pers.inventory[flag_index] = 0;
-
-	modify_max(ent);
-
-	if (ent->myskills.credits < 0)
-		ent->myskills.credits = 0;
-}
+//QW// Unused function.
+//void fixInvalidPlayerData(edict_t *ent)
+//{
+//	int i;
+//	gitem_t *item=itemlist;
+//
+//	for (i=0; i<game.num_items; i++, item++)
+//		ent->client->pers.inventory[ITEM_INDEX(item)] = ent->myskills.inventory[ITEM_INDEX(item)];
+//	ent->client->pers.inventory[flag_index] = 0;
+//
+//	modify_max(ent);
+//
+//	if (ent->myskills.credits < 0)
+//		ent->myskills.credits = 0;
+//}
 
 #endif
