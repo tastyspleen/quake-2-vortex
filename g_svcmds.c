@@ -688,7 +688,8 @@ void SVCmd_DeleteCharacter_f()
 		WriteToLogFile(pname, va("Character deleted by an administrator (Reason: %s).\n", reason));
 		gi.bprintf(PRINT_HIGH, "%s's character was deleted by an administrator (reason: %s)\n", pname, reason);
 		Com_sprintf(buf, sizeof buf, "del %s/\"%s.vrx\"", save_path->string, V_FormatFileName(pname));
-		if (system(buf) == 0);	// wrapped to silence gcc.
+		if (system(buf) == 0)	// wrapped to silence gcc.
+			;
 	}
 }
 
