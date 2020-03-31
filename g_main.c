@@ -557,7 +557,7 @@ void EndDMLevel (void)
 	//3.0 end voting (doomie)
 
 	//This should always be true now
-	if (level.nextmap)
+	if (level.nextmap[0])
 	{	// go to a specific map
 		//BeginIntermission (CreateTargetChangeLevel (level.nextmap) );
 		VortexBeginIntermission(level.nextmap);
@@ -699,7 +699,7 @@ void ExitLevel (void)
 //GHz END
 	if(level.changemap)
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
-	else if (level.nextmap)
+	else if (level.nextmap[0])
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
 	else 
 	{

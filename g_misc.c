@@ -411,7 +411,7 @@ void FindIdleObserver (edict_t *scanent)
 			continue;
 		if (player->svflags & SVF_MONSTER)
 			continue;
-		if (!player->solid == SOLID_NOT)
+		if (!(player->solid == SOLID_NOT))
 		{
 
 			G_StuffPlayerCmds(player, "checkclientsettings 1 $gl_modulate\n");
