@@ -1180,4 +1180,3 @@ qboolean M_walkmove (edict_t *ent, float yaw, float dist)
 	else
 		return false;
 }
-
