@@ -214,7 +214,7 @@ void Weapon_Sword_Fire (edict_t *ent)
 
 void Weapon_Lance_Fire (edict_t *ent)
 {
-	int sword_bonus = 1.0;
+	float sword_bonus = 1.0f;
 	int damage, burn_damage;
 	float speed;
 	vec3_t  forward, start;
@@ -225,7 +225,7 @@ void Weapon_Lance_Fire (edict_t *ent)
 
 	// calculate knight bonus
 	if (ent->myskills.class_num == CLASS_KNIGHT)
-		sword_bonus = 1.5;
+		sword_bonus = 1.5f;
 
 	damage = SABRE_INITIAL_DAMAGE + (SABRE_ADDON_DAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[0].current_level * sword_bonus);
 	burn_damage = SABRE_ADDON_HEATDAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[3].current_level * sword_bonus;
