@@ -111,6 +111,7 @@
     <ClCompile Include="scanner.c" />
     <ClCompile Include="sentrygun2.c" />
     <ClCompile Include="shaman.c" />
+    <ClCompile Include="special_items.c" />
     <ClCompile Include="spirit.c" />
     <ClCompile Include="supplystation.c" />
     <ClCompile Include="talents.c" />
@@ -172,6 +173,7 @@
     <ClInclude Include="scanner.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="shaman.h" />
+    <ClInclude Include="special_items.h" />
     <ClInclude Include="spirit.h" />
     <ClInclude Include="sqlstuff.h" />
     <ClInclude Include="talents.h" />

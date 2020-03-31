@@ -333,6 +333,9 @@
     <ClCompile Include="v_file_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="special_items.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ability_def.h">
@@ -495,6 +498,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="player_points.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="special_items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

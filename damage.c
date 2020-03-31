@@ -830,7 +830,8 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 float G_ModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker, 
 				   vec3_t point, float damage, int dflags, int mod)
 {
-	int		pierceLevel = 0, pierceFactor = 0;
+	int		pierceLevel = 0;
+	float	pierceFactor = 0;
 	float	temp;
 
 	if (damage > 0)
@@ -842,13 +843,13 @@ float G_ModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			{
 				// 25% chance at level 10 for AP round
 				pierceLevel = attacker->myskills.weapons[WEAPON_MACHINEGUN].mods[1].current_level;
-				pierceFactor = 0.0333;
+				pierceFactor = 0.0333f;
 			}
 			else if (mod == MOD_RAILGUN)
 			{
 				// 10% chance at level 10 for AP round
 				pierceLevel = attacker->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level;
-				pierceFactor = 0.0111;
+				pierceFactor = 0.0111f;
 			}
 
 			if (pierceLevel > 0)
