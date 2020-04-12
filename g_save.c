@@ -197,7 +197,7 @@ void InitGame (void)
 	//K03 Begin
 	srand((unsigned)time(0));
 
-	gamedir = gi.cvar ("gamedir", "", CVAR_SERVERINFO);
+	gamedir = gi.cvar ("game", "vortex", CVAR_SERVERINFO);
 	//K03 End
 
 	gun_x = gi.cvar ("gun_x", "0", 0);
@@ -329,7 +329,7 @@ void InitGame (void)
 	gds = gi.cvar ("gds", "0", CVAR_LATCH);
 	gds_path = gi.cvar ("gds_path", "0", CVAR_LATCH);
 	gds_exe = gi.cvar ("gds_exe", "0", CVAR_LATCH);
-	game_path = gi.cvar ("game_path", "0", CVAR_LATCH);
+	game_path = gi.cvar ("game_path", "vortex", CVAR_LATCH);
 	pregame_time = gi.cvar ("pregame_time", "60.0", CVAR_SERVERINFO);
 #ifndef LOCK_DEFAULTS
 	nextlevel_mult = gi.cvar("nextlevel_mult","1.5",CVAR_LATCH);
