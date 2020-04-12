@@ -9,4 +9,5 @@ compiler:
 
 script:
   - make all -C ./
-
+  - make clean
+  - setarch i386 make all -C ./
