@@ -271,11 +271,18 @@ void GetScorePosition (void)
 int GetRandom(int min, int max)
 {
 	int i;
-	if ((i = (max + 1 - min) + min) != 0 || (max - min < 0))
-		return (rand() % i);
+	int rn;
+
+	if ((i = (max + 1 - min) + min) != 0 && (max - min > 0))
+	{
+		do {
+			rn = rand() % i;
+		} while (rn < min);
+		return rn;
+	}
 	else
 	{
-		gi.dprintf("GAME ERROR: arguments %i, %i would cause divide by zero error in %s.\n", min, max, __func__);
+		gi.dprintf("GAME ERROR: bad arguments given to %s(%i,%i) potential divide by zero error!\n", __func__, min, max);
 		return 0;
 	}
 }
