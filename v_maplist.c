@@ -80,6 +80,5 @@ int v_LoadMapList(int mode)
 			gi.dprintf("Error loading map file: %s maps: %i\n", filename, maplist->nummaps);
 		fclose(fptr);
 	}
-
 	return maplist->nummaps;
 }
