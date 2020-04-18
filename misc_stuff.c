@@ -266,21 +266,9 @@ void GetScorePosition (void)
      } 
 } 
 
-// Return random number between min and max.
-// If range is zero or less, return 0.
 int GetRandom(int min, int max)
 {
-	int i;
-
-	if ((i = (max + 1 - min) + min) != 0 && (max - min > 0))
-	{
-		return rand() % (max + 1 - min) + min;
-	}
-	else
-	{
-		gi.dprintf("GAME ERROR: bad arguments passed to %s(%i,%i)\n", __func__, min, max);
-		return 0;
-	}
+	return (rand() % (max + 1 - min) + min);
 }
 
 qboolean findspawnpoint (edict_t *ent)

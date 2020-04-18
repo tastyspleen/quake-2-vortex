@@ -37,7 +37,7 @@ struct node_s {
 	float h; // heuristic estimate of how far is left
 	float f; // is total cost (estimated) from start to finish
 	int nodenum; // index number of this node
-   // vec3_t origin; // location of this node
+	// vec3_t origin; // location of this node
 	node_t* Child[NUMCHILDS];
 	node_t* PrevNode;
 	node_t* NextNode;
@@ -83,7 +83,7 @@ node_t* OPEN = NULL;   // Start of OPEN List
 
 node_t* CLOSED = NULL; // Start of CLOSED List
 
-int NodeCount = 0;//GHz: for debugging
+int NodeCount = 0;		//GHz: for debugging
 node_t* NodeList[10000];//GHz: cleanup
 
 //=====================================================
@@ -759,7 +759,7 @@ void GetNodePosition(int nodenum, vec3_t pos)
 // returns the waypoint index closest to start along the path leading to our final destination
 int NearestWaypointNum(vec3_t start, int* wp)
 {
-	int		i, bestNodeNum = 0;
+	int		i, bestNodeNum = -1;
 	float	dist, best = 0;
 
 	if (!numpts)
@@ -1215,7 +1215,7 @@ void SaveGrid(void)
 	char	filename[255];
 	FILE* fptr;
 
-	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/settings/grd/%s.grd", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "wb")) != NULL)
 	{
@@ -1234,7 +1234,7 @@ qboolean LoadGrid(void)
 	FILE* fptr;
 
 	//memset(&pathnode[0], 0, sizeof(vec3_t));
-	Com_sprintf(filename, sizeof(filename), "%s/Settings/grd/%s.grd", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/settings/grd/%s.grd", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "rb")) != NULL)
 	{
@@ -1518,3 +1518,4 @@ void Cmd_ToggleShowGrid(edict_t* ent)
 	else
 		ent->client->showGridDebug++;
 }
+

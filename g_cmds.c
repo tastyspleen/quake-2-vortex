@@ -287,6 +287,9 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	qboolean	ent2_boss=false;
 	edict_t		*e1, *e2;
 
+	if (G_IsSpectator(ent1) || G_IsSpectator(ent2))
+		return 0;
+
 	ent1_boss = IsBossTeam(ent1);//IsABoss(ent1);
 	ent2_boss = IsBossTeam(ent2);//IsABoss(ent2);
 

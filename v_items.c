@@ -500,7 +500,7 @@ void spawnClassRune(edict_t *rune, int targ_level)
 	max_mods = 1 + (0.2 * targ_level);	//This means lvl 15+ can get 4 mods
 	if (max_mods > 4)
 		max_mods = 4;
-	num_mods = GetRandom(0, max_mods);
+	num_mods = GetRandom(1, max_mods);
 	rune->vrxitem.itemtype = ITEM_CLASSRUNE;
 	rune->vrxitem.classNum = GetRandom(1, CLASS_MAX);	//class number
 	for (i = 0; i < num_mods; ++i)

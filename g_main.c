@@ -401,7 +401,7 @@ void VortexEndLevel (void)
 
 	INV_AwardPlayers();
 
-	gi.dprintf("Vortex is shutting down...");
+	gi.dprintf("Vortex is shutting down...\n");
 	
 	CTF_ShutDown(); // 3.7 shut down CTF, remove flags and bases
 	ClearAllMenus();
