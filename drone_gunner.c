@@ -278,16 +278,16 @@ void gunner_attack_grenade (edict_t *self)
 /*
 mframe_t mygunner_frames_attack_grenade [] =
 {
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, myGunnerGrenade,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, myGunnerGrenade,
-	{drone_ai_run, 0, NULL,
-	{drone_ai_run, 0, NULL
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, myGunnerGrenade},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, myGunnerGrenade},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL}
 };
 mmove_t mygunner_move_attack_grenade = {FRAME_attak101, FRAME_attak110, mygunner_frames_attack_grenade, mygunnerrun};
 */

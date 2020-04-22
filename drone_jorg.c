@@ -10,9 +10,6 @@ jorg
 #include "m_boss31.h"
 
 qboolean visible (edict_t *self, edict_t *other);
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
 
 static int	sound_pain1;
 static int	sound_pain2;

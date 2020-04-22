@@ -17,9 +17,6 @@ void mychick_reslash(edict_t *self);
 void mychick_rerocket(edict_t *self);
 void mychick_attack1(edict_t *self);
 void mychick_continue (edict_t *self);
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
 
 static int	sound_missile_prelaunch;
 static int	sound_missile_launch;
@@ -453,8 +450,6 @@ void myChickSlash (edict_t *self)
 	gi.sound (self, CHAN_WEAPON, sound_melee_swing, 1, ATTN_NORM, 0);
 	fire_hit (self, aim, (10 + (rand() %6)), 100);
 }
-
-void fire_fireball (edict_t *self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
 
 void myChickFireball (edict_t *self)
 {

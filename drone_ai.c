@@ -1188,7 +1188,7 @@ void drone_ai_run_slide (edict_t *self, float dist)
 
 	//4.4 try to maintain ideal range/distance to target
 	range = VectorLength(v) - 196;
-	if (fabs(range) >= dist)
+	if (fabsf(range) >= dist)
 	{
 		if (range > dist)
 			range = dist;
@@ -1464,14 +1464,18 @@ void drone_ai_run1 (edict_t *self, float dist)
 
 	// determine which goal to chase
 	if (self->enemy)
+	{
 		goal = self->enemy; // an enemy
+	}
 	else if (self->goalentity)
 	{
 		// try to find an enemy
 		drone_findtarget(self);
 		if (self->enemy)
+		{
 			goal = self->enemy;
-		// couldn't find one, so follow goalentity (non-enemy goal)
+			// couldn't find one, so follow goalentity (non-enemy goal)
+		}
 		else
 			goal = self->goalentity;
 	}

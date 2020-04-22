@@ -133,7 +133,7 @@ qboolean CanJumpDown (edict_t *self, vec3_t neworg)
 	tr = gi.trace(neworg, self->mins, self->maxs, start, self, MASK_MONSTERSOLID);
 
 	// the landing position is less than 1 unit down, so it's not worth it
-	//if (fabs(tr.endpos[2] - self->s.origin[2]) < STEPSIZE)
+	//if (fabsf(tr.endpos[2] - self->s.origin[2]) < STEPSIZE)
 	//{
 	//	gi.dprintf("can't jump down, not worth it\n");
 	//	return false;
@@ -606,11 +606,11 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist, qboolean try_sma
 	ent->ideal_yaw = yaw;
 	M_ChangeYaw (ent);
 
-	if (!dist || fabs(dist) < 1)
+	if (!dist || fabsf(dist) < 1)
 		return true;
 
 	yaw = yaw*M_PI*2 / 360;
-	_VectorCopy (ent->s.origin, oldorigin);
+	VectorCopy (ent->s.origin, oldorigin);
 
 	// loop until we can move successfully
 	while ((int)dist != 0)
@@ -1180,3 +1180,4 @@ qboolean M_walkmove (edict_t *ent, float yaw, float dist)
 	else
 		return false;
 }
+
