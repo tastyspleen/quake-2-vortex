@@ -427,12 +427,10 @@ void infantry_swing (edict_t *self)
 void infantry_smack (edict_t *self)
 {
 	int		damage = 100 + 20 * self->monsterinfo.level;
-	vec3_t	aim;
 
 	if (!G_EntExists(self->enemy))
 		return;
 
-	VectorSet (aim, MELEE_DISTANCE, self->mins[0], -4);
 	if (M_MeleeAttack(self, 96, damage, 200))
 		gi.sound (self, CHAN_AUTO, sound_punch_hit, 1, ATTN_NORM, 0);
 }
