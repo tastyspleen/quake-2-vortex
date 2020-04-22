@@ -11,9 +11,6 @@ SUPERTANK
 
 qboolean visible (edict_t *self, edict_t *other);
 
-static int	sound_pain1;
-static int	sound_pain2;
-static int	sound_pain3;
 static int	sound_death;
 static int	sound_search1;
 static int	sound_search2;
