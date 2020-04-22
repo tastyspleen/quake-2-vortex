@@ -610,7 +610,7 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist, qboolean try_sma
 		return true;
 
 	yaw = yaw*M_PI*2 / 360;
-	VectorCopy (ent->s.origin, oldorigin);
+	_VectorCopy (ent->s.origin, oldorigin);
 
 	// loop until we can move successfully
 	while ((int)dist != 0)
