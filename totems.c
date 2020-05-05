@@ -95,7 +95,8 @@ edict_t *NextNearestTotem(edict_t *ent, int totemType, edict_t *lastTotem, qbool
 int GetTotemLevel(edict_t *ent, int totemType, qboolean allied)
 {
 	edict_t *totem = NextNearestTotem(ent, totemType, NULL, allied);
-	if(totem != NULL)		return totem->monsterinfo.level;
+	if(totem != NULL)
+		return totem->monsterinfo.level;
 	
 	return 0;
 }
