@@ -1,7 +1,7 @@
 #include "g_local.h"
 
 // v3.12
-qboolean InMenu (edict_t *ent,int index, void (*optionselected)(edict_t *ent,int option))
+qboolean InMenu(edict_t* ent, int index, void (*optionselected)(edict_t* ent, int option))
 {
 	// don't need to be here if there's no menu open!
 	if (!ent->client->menustorage.menu_active)
@@ -13,29 +13,37 @@ qboolean InMenu (edict_t *ent,int index, void (*optionselected)(edict_t *ent,int
 	return (ent->client->menustorage.optionselected == optionselected);
 }
 
-void addlinetomenu (edict_t *ent,char *line,int option)
+void addlinetomenu(edict_t* ent, char* line, int option)
 {
+	size_t size;
+	
 	if (ent->client->menustorage.menu_active) // checks to see if the menu is showing
 		return;
 	if (ent->client->menustorage.num_of_lines >= MAX_LINES) // checks to see if there is space
 		return;
+	
+	size = strlen(line);
+	if (size > MENU_MAX_LINE_LEN)
+	{
+		gi.dprintf("In %s, line \"%s\" length (%i) exceeds %i characters.\n", __func__, line, size, MENU_MAX_LINE_LEN);
+	}
 	ent->client->menustorage.num_of_lines++; // adds to the number of lines that can be seen
-	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg = gi.TagMalloc (strlen(line)+1, TAG_GAME);
-	strcpy(ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg, line);
+	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg = gi.TagMalloc(MAX_LINES * MENU_MAX_LINE_LEN, TAG_GAME);
+	Q_strncpy(ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].msg, line, MENU_MAX_LINE_LEN - 1);
 	ent->client->menustorage.messages[ent->client->menustorage.num_of_lines].option = option;
 }
 
-void clearmenu(edict_t *ent)
+void clearmenu(edict_t* ent)
 {
 	int		i = 0;
 
 	if (ent->client->menustorage.menu_active) // checks to see if the menu is showing
 		return;
 
-	for (i = 0; i < MAX_LINES; i++){
+	for (i = 0; i < MAX_LINES; i++) {
 		ent->client->menustorage.messages[i].option = 0;
-		if (ent->client->menustorage.messages[i].msg != NULL){
-			gi.TagFree (ent->client->menustorage.messages[i].msg);
+		if (ent->client->menustorage.messages[i].msg != NULL) {
+			gi.TagFree(ent->client->menustorage.messages[i].msg);
 			//GHz START
 			ent->client->menustorage.messages[i].msg = NULL;
 			//GHz END
@@ -54,19 +62,20 @@ void clearmenu(edict_t *ent)
 	ent->client->menustorage.menu_index = 0; // 3.45
 }
 
-void tradeconfirmation_handler (edict_t *ent, int option);
-void itemmenu_handler (edict_t *ent, int option);
-void setmenuhandler(edict_t *ent, void (*optionselected)(edict_t *ent,int option))
+void tradeconfirmation_handler(edict_t* ent, int option);
+void itemmenu_handler(edict_t* ent, int option);
+
+void setmenuhandler(edict_t* ent, void (*optionselected)(edict_t* ent, int option))
 {
-	ent->client->menustorage.optionselected=optionselected;
+	ent->client->menustorage.optionselected = optionselected;
 }
 
 //GHz START
-int topofmenu (edict_t *ent)
+int topofmenu(edict_t* ent)
 {
 	int		i, option;
 
-	for (i = 0; i < MAX_LINES; i++){
+	for (i = 0; i < MAX_LINES; i++) {
 		option = ent->client->menustorage.messages[i].option;
 		if (option != 0 && option != MENU_GREEN_CENTERED && option != MENU_WHITE_CENTERED && option != MENU_GREEN_LEFT)
 			break;
@@ -74,11 +83,11 @@ int topofmenu (edict_t *ent)
 	return i;
 }
 
-int bottomofmenu (edict_t *ent)
+int bottomofmenu(edict_t* ent)
 {
 	int		i, option;
 
-	for (i = MAX_LINES-1; i > 0; i--){
+	for (i = MAX_LINES - 1; i > 0; i--) {
 		option = ent->client->menustorage.messages[i].option;
 		if (option != 0 && option != MENU_GREEN_CENTERED && option != MENU_WHITE_CENTERED && option != MENU_GREEN_LEFT)
 			break;
@@ -87,7 +96,7 @@ int bottomofmenu (edict_t *ent)
 }
 //GHz END
 
-void menudown(edict_t *ent)
+void menudown(edict_t* ent)
 {
 	int	option;
 
@@ -103,13 +112,12 @@ void menudown(edict_t *ent)
 		else
 			ent->client->menustorage.currentline = topofmenu(ent);
 		option = ent->client->menustorage.messages[ent->client->menustorage.currentline].option;
-	}
-	while (option == 0 || option == MENU_WHITE_CENTERED || option == MENU_GREEN_CENTERED 
+	} while (option == 0 || option == MENU_WHITE_CENTERED || option == MENU_GREEN_CENTERED
 		|| option == MENU_GREEN_RIGHT || option == MENU_GREEN_LEFT);
 	showmenu(ent);
 }
 
-void menuup(edict_t *ent)
+void menuup(edict_t* ent)
 {
 	int	option;
 
@@ -125,8 +133,7 @@ void menuup(edict_t *ent)
 		else
 			ent->client->menustorage.currentline = bottomofmenu(ent);
 		option = ent->client->menustorage.messages[ent->client->menustorage.currentline].option;
-	}
-	while (option == 0 || option == MENU_WHITE_CENTERED || option == MENU_GREEN_CENTERED 
+	} while (option == 0 || option == MENU_WHITE_CENTERED || option == MENU_GREEN_CENTERED
 		|| option == MENU_GREEN_RIGHT || option == MENU_GREEN_LEFT);
 	showmenu(ent);
 }
@@ -137,7 +144,7 @@ menuselect
 calls the menu handler with the currently selected option
 =============
 */
-void menuselect(edict_t *ent)
+void menuselect(edict_t* ent)
 {
 	int i;
 	//GHz START
@@ -149,7 +156,7 @@ void menuselect(edict_t *ent)
 	closemenu(ent); // close the menu as a selection has been made
 	// call the menu handler with the current option value
 	ent->client->menustorage.optionselected(ent, i);
-//	gi.dprintf("menuselect() at line %d\n", ent->client->menustorage.currentline);
+	//	gi.dprintf("menuselect() at line %d\n", ent->client->menustorage.currentline);
 }
 
 /*
@@ -158,15 +165,15 @@ initmenu
 clears all menus for this client
 =============
 */
-void initmenu (edict_t *ent)
+void initmenu(edict_t* ent)
 {
 	int i;
 
-	for (i = 0;i < MAX_LINES;i++){
+	for (i = 0; i < MAX_LINES; i++) {
 		ent->client->menustorage.messages[i].msg = NULL;
 		ent->client->menustorage.messages[i].option = 0;
 	}
-	
+
 
 	ent->client->menustorage.menu_active = false;
 	ent->client->menustorage.displaymsg = false;
@@ -182,7 +189,7 @@ ShowMenu
 used every frame to display a player's menu
 =============
 */
-void showmenu(edict_t *ent)
+void showmenu(edict_t* ent)
 {
 	int		i, j;  // general purpose integer for temporary use :)
 	char	finalmenu[1024]; // where the control strings for the menu are assembled.
@@ -198,44 +205,44 @@ void showmenu(edict_t *ent)
 	}
 
 	// copy menu bg control strings to our final menu
-	sprintf (finalmenu, "xv 32 yv 8 picn inventory ");
+	Com_sprintf(finalmenu, sizeof finalmenu, "xv 32 yv 8 picn inventory ");
 	// get y coord of text based on the number of lines we want to create
 	// this keeps the text vertically centered on our screen
-	j = 24 + LINE_SPACING*(ceil((float)(20-ent->client->menustorage.num_of_lines) / 2));
+	j = 24 + LINE_SPACING * (ceil((float)(20 - ent->client->menustorage.num_of_lines) / 2));
 	// cycle through all lines and add their control codes to our final menu
 	// nothing is actually displayed until the very end
-	for (i = 1;i < (ent->client->menustorage.num_of_lines + 1); i++)
+	for (i = 1; i < (ent->client->menustorage.num_of_lines + 1); i++)
 	{
 		// get x coord of screen based on the length of the string for
 		// text that should be centered
-		center = 216/2 - strlen(ent->client->menustorage.messages[i].msg)*4 + 52;
+		center = 216 / 2 - strlen(ent->client->menustorage.messages[i].msg) * 4 + 52;
 		if (ent->client->menustorage.messages[i].option == 0)// print white text
 		{
-			sprintf(tmp,"xv 52 yv %i string \"%s\" ",j,ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string \"%s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_LEFT)// print green text
 		{
-			sprintf(tmp,"xv 52 yv %i string2 \"%s\" ",j,ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string2 \"%s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_CENTERED)// print centered green text
 		{
-			sprintf(tmp,"xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_WHITE_CENTERED)// print centered white text
 		{
-			sprintf(tmp,"xv %d yv %i string \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (ent->client->menustorage.messages[i].option == MENU_GREEN_RIGHT)// print right-aligned green text
 		{
-			center = 216 - strlen(ent->client->menustorage.messages[i].msg)*8 + 52;
-			sprintf(tmp,"xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
+			center = 216 - strlen(ent->client->menustorage.messages[i].msg) * 8 + 52;
+			Com_sprintf(tmp, sizeof tmp, "xv %d yv %i string2 \"%s\" ", center, j, ent->client->menustorage.messages[i].msg);
 		}
 		else if (i == ent->client->menustorage.currentline)
 		{
-			sprintf(tmp,"xv 52 yv %i string2 \">> %s\" ",j,ent->client->menustorage.messages[i].msg);
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string2 \">> %s\" ", j, ent->client->menustorage.messages[i].msg);
 		}
-		else 
-			sprintf(tmp,"xv 52 yv %i string \"   %s\" ",j,ent->client->menustorage.messages[i].msg); 
+		else
+			Com_sprintf(tmp, sizeof tmp, "xv 52 yv %i string \"   %s\" ", j, ent->client->menustorage.messages[i].msg);
 		// add the control string to our final menu space
 		strcat(finalmenu, tmp);
 		j += LINE_SPACING;
@@ -246,14 +253,14 @@ void showmenu(edict_t *ent)
 	ent->client->menustorage.displaymsg = false;
 	ent->client->showinventory = false;
 	ent->client->showscores = true;
-	gi.WriteByte (svc_layout);
-	gi.WriteString (finalmenu);
-	gi.unicast (ent, true);
+	gi.WriteByte(svc_layout);
+	gi.WriteString(finalmenu);
+	gi.unicast(ent, true);
 
 	//gi.dprintf("showmenu() at line %d\n", ent->client->menustorage.currentline);
 }
 
-void closemenu (edict_t *ent)
+void closemenu(edict_t* ent)
 {
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: closemenu()\n");
@@ -268,16 +275,15 @@ void closemenu (edict_t *ent)
 
 /*
 =============
-clearallmenus
-cycles thru all clients and resets their menus
+Cycles thru all clients and resets their menus
 =============
 */
-void clearallmenus (void)
+void ClearAllMenus(void)
 {
 	int i;
-	edict_t *ent;
+	edict_t* ent;
 
-	for (i=0 ; i < game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
 		ent = g_edicts + 1 + i;
 		closemenu(ent);
@@ -286,11 +292,10 @@ void clearallmenus (void)
 
 /*
 =============
-ShowMenu
-returns false if the client has another menu open
+Returns false if the client has another menu open
 =============
 */
-qboolean ShowMenu (edict_t *ent) 
+qboolean ShowMenu(edict_t* ent)
 {
 	if (ent->client->showscores || ent->client->showinventory
 		|| ent->client->menustorage.menu_active || ent->client->pers.scanner_active)

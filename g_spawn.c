@@ -1,10 +1,12 @@
 #include "g_local.h"
 
-typedef struct
+typedef struct spawn_s
 {
-	char	*name;
-	void	(*spawn)(edict_t *ent);
+	char	*name;  //the name of the entity
+	void	(*spawn)(edict_t *ent); // pointer to its spawn function
 } spawn_t;
+
+
 char *LoadEntities(char *mapname, char *entities);//K03
 
 void SP_item_health (edict_t *self);
@@ -90,7 +92,6 @@ void SP_misc_viper_bomb (edict_t *self);
 void SP_misc_bigviper (edict_t *self);
 void SP_misc_strogg_ship (edict_t *self);
 void SP_misc_teleporter (edict_t *self);
-void SP_misc_teleporter_dest (edict_t *self);
 void SP_misc_blackhole (edict_t *self);
 void SP_misc_eastertank (edict_t *self);
 void SP_misc_easterchick (edict_t *self);
@@ -415,10 +416,17 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 				*(char **)(b+f->ofs) = ED_NewString (value);
 				break;
 			case F_VECTOR:
-				sscanf (value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-				((float *)(b+f->ofs))[0] = vec[0];
-				((float *)(b+f->ofs))[1] = vec[1];
-				((float *)(b+f->ofs))[2] = vec[2];
+				if (sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2])) {
+					((float*)(b + f->ofs))[0] = vec[0];
+					((float*)(b + f->ofs))[1] = vec[1];
+					((float*)(b + f->ofs))[2] = vec[2];
+				}
+				else {
+					((float*)(b + f->ofs))[0] = vec[0];	// if we get here, it's an error in the map
+					((float*)(b + f->ofs))[1] = vec[1]; // set all zeroes and log a warning.
+					((float*)(b + f->ofs))[2] = vec[2];
+					gi.dprintf("WARNING: Vector field incomplete in %s, map: %s, field: %s\n", __func__, level.mapname, f->name);
+				}
 				break;
 			case F_INT:
 				*(int *)(b+f->ofs) = atoi(value);
@@ -434,11 +442,13 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 				break;
 			case F_IGNORE:
 				break;
+			default:
+				break;
 			}
 			return;
 		}
 	}
-//	gi.dprintf ("%s is not a field %s\n", key,ent->classname);
+	gi.dprintf ("%s: %s is not a field\n", __func__, key);
 }
 
 /*
@@ -466,18 +476,18 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			gi.error ("ED_ParseEntity: EOF without closing brace");
+			gi.error ("%s: EOF without closing brace", __func__);
 
-		strncpy (keyname, com_token, sizeof(keyname)-1);
+		Q_strncpy (keyname, com_token, sizeof(keyname)-1);
 		
 	// parse value	
 		com_token = COM_Parse (&data);
 		if (!data)
-			gi.error ("ED_ParseEntity: EOF without closing brace");
-
+			gi.error ("%s: EOF without closing brace", __func__);
+		
 		if (com_token[0] == '}')
-			gi.error ("ED_ParseEntity: closing brace without data");
-
+			gi.error ("%s: closing brace without data", __func__);
+		
 		init = true;	
 
 	// keynames with a leading underscore are used for utility comments,
@@ -651,7 +661,9 @@ void G_FindTrainTeam()
 	}
 }
 
-/*
+void CreateGrid(qboolean force);
+
+/**
 ==============
 SpawnEntities
 
@@ -659,18 +671,12 @@ Creates a server's entity / program execution context by
 parsing textual entity definitions out of an ent file.
 ==============
 */
-void InitScanEntity (void);
-void SpawnWorldAmmo (void);
-void InitSunEntity(void);
-qboolean vrx_CheckForFlag (void);
-void CreateGrid(qboolean force);
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 {
 	edict_t		*ent;
 	int			inhibit;
 	char		*com_token;
 	int			i;
-	int			laser = 0;
 	int			saved;//4.5 don't lose level.r_monsters value!
 
 	SaveClientData ();
@@ -681,8 +687,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	memset (&level, 0, sizeof(level));
 	memset (g_edicts, 0, game.maxentities * sizeof (g_edicts[0]));
 
-	strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
-	strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
+	Q_strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
+	Q_strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
 
 	// set client fields on player ents
 	for (i=0 ; i<game.maxclients ; i++)
@@ -1106,10 +1112,10 @@ void SP_worldspawn (edict_t *ent)
 	if (ent->message && ent->message[0])
 	{
 		gi.configstring (CS_NAME, ent->message);
-		strncpy (level.level_name, ent->message, sizeof(level.level_name));
+		Q_strncpy (level.level_name, ent->message, sizeof(level.level_name));
 	}
 	else
-		strncpy (level.level_name, level.mapname, sizeof(level.level_name));
+		Q_strncpy (level.level_name, level.mapname, sizeof(level.level_name));
 
 	if (st.sky && st.sky[0])
 		gi.configstring (CS_SKY, st.sky);

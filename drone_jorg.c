@@ -10,9 +10,6 @@ jorg
 #include "m_boss31.h"
 
 qboolean visible (edict_t *self, edict_t *other);
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
 
 static int	sound_pain1;
 static int	sound_pain2;
@@ -66,57 +63,57 @@ void jorg_death_hit(edict_t *self);
 
 mframe_t jorg_frames_stand []=
 {
-	drone_ai_stand, 0, jorg_idle,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 10
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 20
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,		// 30
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 19, NULL,
-	drone_ai_stand, 11, jorg_step_left,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 6, NULL,
-	drone_ai_stand, 9, jorg_step_right,
-	drone_ai_stand, 0, NULL,		// 40
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, -2, NULL,
-	drone_ai_stand, -17, jorg_step_left,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, -12, NULL,		// 50
-	drone_ai_stand, -14, jorg_step_right	// 51
+	{drone_ai_stand, 0, jorg_idle},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 10
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 20
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},		// 30
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 19, NULL},
+	{drone_ai_stand, 11, jorg_step_left},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 6, NULL},
+	{drone_ai_stand, 9, jorg_step_right},
+	{drone_ai_stand, 0, NULL},		// 40
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, -2, NULL},
+	{drone_ai_stand, -17, jorg_step_left},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, -12, NULL},		// 50
+	{drone_ai_stand, -14, jorg_step_right}	// 51
 };
 mmove_t	jorg_move_stand = {FRAME_stand01, FRAME_stand51, jorg_frames_stand, NULL};
 
@@ -148,20 +145,20 @@ void jorg_stand (edict_t *self)
 
 mframe_t jorg_frames_run [] =
 {
-	drone_ai_run, 17,	jorg_step_left,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 8,	NULL,
-	drone_ai_run, 10,	NULL,
-	drone_ai_run, 33,	jorg_step_right,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 9,	NULL,
-	drone_ai_run, 9,	NULL,
-	drone_ai_run, 9,	NULL
+	{drone_ai_run, 17,	jorg_step_left},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 8,	NULL},
+	{drone_ai_run, 10,	NULL},
+	{drone_ai_run, 33,	jorg_step_right},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 0,	NULL},
+	{drone_ai_run, 9,	NULL},
+	{drone_ai_run, 9,	NULL},
+	{drone_ai_run, 9,	NULL}
 };
 mmove_t	jorg_move_run = {FRAME_walk06, FRAME_walk19, jorg_frames_run, NULL};
 
@@ -171,41 +168,41 @@ mmove_t	jorg_move_run = {FRAME_walk06, FRAME_walk19, jorg_frames_run, NULL};
 
 mframe_t jorg_frames_start_walk [] =
 {
-	drone_ai_walk,	5,	NULL,
-	drone_ai_walk,	6,	NULL,
-	drone_ai_walk,	7,	NULL,
-	drone_ai_walk,	9,	NULL,
-	drone_ai_walk,	15,	NULL
+	{drone_ai_walk,	5,	NULL},
+	{drone_ai_walk,	6,	NULL},
+	{drone_ai_walk,	7,	NULL},
+	{drone_ai_walk,	9,	NULL},
+	{drone_ai_walk,	15,	NULL}
 };
 mmove_t jorg_move_start_walk = {FRAME_walk01, FRAME_walk05, jorg_frames_start_walk, NULL};
 
 mframe_t jorg_frames_walk [] =
 {
-	drone_ai_walk, 17,	jorg_step_left,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 12,	NULL,
-	drone_ai_walk, 8,	NULL,
-	drone_ai_walk, 10,	NULL,
-	drone_ai_walk, 33,	jorg_step_right,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 9,	NULL,
-	drone_ai_walk, 9,	NULL,
-	drone_ai_walk, 9,	NULL
+	{drone_ai_walk, 17,	jorg_step_left},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 12,	NULL},
+	{drone_ai_walk, 8,	NULL},
+	{drone_ai_walk, 10,	NULL},
+	{drone_ai_walk, 33,	jorg_step_right},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 9,	NULL},
+	{drone_ai_walk, 9,	NULL},
+	{drone_ai_walk, 9,	NULL}
 };
 mmove_t	jorg_move_walk = {FRAME_walk06, FRAME_walk19, jorg_frames_walk, NULL};
 
 mframe_t jorg_frames_end_walk [] =
 {
-	drone_ai_walk,	11,	NULL,
-	drone_ai_walk,	0,	NULL,
-	drone_ai_walk,	0,	NULL,
-	drone_ai_walk,	0,	NULL,
-	drone_ai_walk,	8,	NULL,
-	drone_ai_walk,	-8,	NULL
+	{drone_ai_walk,	11,	NULL},
+	{drone_ai_walk,	0,	NULL},
+	{drone_ai_walk,	0,	NULL},
+	{drone_ai_walk,	0,	NULL},
+	{drone_ai_walk,	8,	NULL},
+	{drone_ai_walk,	-8,	NULL}
 };
 mmove_t jorg_move_end_walk = {FRAME_walk20, FRAME_walk25, jorg_frames_end_walk, NULL};
 
@@ -235,107 +232,107 @@ void jorgBFG_refire (edict_t *self)
 
 mframe_t jorg_frames_death1 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,		// 10
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,		// 20
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,		// 30
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,		// 40
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,
-	ai_move,	0,	MakronToss,
-	ai_move,	0,	BossExplode		// 50
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},		// 10
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},		// 20
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},		// 30
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},		// 40
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	MakronToss},
+	{ai_move,	0,	BossExplode}		// 50
 };
 mmove_t jorg_move_death = {FRAME_death01, FRAME_death50, jorg_frames_death1, jorg_dead};
 
 mframe_t jorg_frames_attack2 []=
 {
-	//ai_charge,	0,	NULL,	// 18
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	ai_charge,	0,	jorgBFG,// 24	
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	jorgBFG_refire	// 30
+	//ai_charge,	0,	NULL},	// 18
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	{ai_charge,	0,	jorgBFG},// 24	
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	jorgBFG_refire}	// 30
 };
 mmove_t jorg_move_attack2 = {FRAME_attak207, FRAME_attak213, jorg_frames_attack2, jorg_run};
 
 mframe_t jorg_frames_start_attack1 [] =
 {
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL}
 };
 mmove_t jorg_move_start_attack1 = {FRAME_attak101, FRAME_attak108, jorg_frames_start_attack1, jorg_attack1};
 
 mframe_t jorg_frames_attack1[]=
 {
-	ai_charge,	0,	jorg_firebullet,
-	ai_charge,	0,	jorg_firebullet,
-	ai_charge,	0,	jorg_firebullet,
-	ai_charge,	0,	jorg_firebullet,
-	ai_charge,	0,	jorg_firebullet,
-	ai_charge,	0,	jorg_firebullet
+	{ai_charge,	0,	jorg_firebullet},
+	{ai_charge,	0,	jorg_firebullet},
+	{ai_charge,	0,	jorg_firebullet},
+	{ai_charge,	0,	jorg_firebullet},
+	{ai_charge,	0,	jorg_firebullet},
+	{ai_charge,	0,	jorg_firebullet}
 };
 mmove_t jorg_move_attack1 = {FRAME_attak109, FRAME_attak114, jorg_frames_attack1, jorg_reattack1};
 
 mframe_t jorg_frames_end_attack1[]=
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t jorg_move_end_attack1 = {FRAME_attak115, FRAME_attak118, jorg_frames_end_attack1, jorg_run};
 
@@ -403,7 +400,7 @@ void jorg_firebullet (edict_t *self)
 {
 	jorg_firebullet_left(self);
 	jorg_firebullet_right(self);
-};
+}
 
 void jorg_attack(edict_t *self)
 {

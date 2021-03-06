@@ -264,7 +264,7 @@ void SpawnForcewall(edict_t *player, int type)
 	tr.endpos[2]++;
 	VectorCopy(tr.endpos, wall->s.origin); // copy origin to ending position of trace
   
-	if(fabs(forward[0]) > fabs(forward[1]))
+	if(fabsf(forward[0]) > fabsf(forward[1]))
 	{
 		// set wall thickness
 		wall->pos1[0] = wall->pos2[0] = wall->s.origin[0];
@@ -432,7 +432,7 @@ void Cmd_Forcewall(edict_t *ent)
 	if(ent->myskills.abilities[FORCE_WALL].disable)
 		return;
 
-	if (Q_strcasecmp(gi.args(), "solid") == 0)
+	if (Q_stricmp(gi.args(), "solid") == 0)
 		solid = true;
 
 	// remove any existing wall owned by this player

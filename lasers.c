@@ -231,8 +231,8 @@ void emitter_think (edict_t *self)
 
 void SpawnLaser (edict_t *ent, int cost, float skill_mult, float delay_mult)
 {
-	int		talentLevel = getTalentLevel(ent, TALENT_RAPID_ASSEMBLY);//Talent: Rapid Assembly
-	float	delay;
+	//int		talentLevel = getTalentLevel(ent, TALENT_RAPID_ASSEMBLY);//Talent: Rapid Assembly
+	//float	delay;
 	vec3_t	forward, right, start, end, offset;
 	trace_t	tr;
 	edict_t *grenade, *laser;
@@ -305,7 +305,7 @@ void SpawnLaser (edict_t *ent, int cost, float skill_mult, float delay_mult)
 	vectoangles(tr.plane.normal, laser->s.angles);
 	gi.linkentity(laser);
 
-	delay = LASER_TIMEOUT_DELAY+GetRandom(0, (int)(0.5*LASER_TIMEOUT_DELAY));
+	//delay = LASER_TIMEOUT_DELAY+GetRandom(0, (int)(0.5*LASER_TIMEOUT_DELAY));
 
 	// laser times out faster in CTF because it's too strong
 	//if (ctf->value || invasion->value)
@@ -353,7 +353,7 @@ void Cmd_BuildLaser (edict_t *ent)
 	if(ent->myskills.abilities[BUILD_LASER].disable)
 		return;
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		RemoveLasers(ent);
 		gi.cprintf(ent, PRINT_HIGH, "All lasers removed.\n");

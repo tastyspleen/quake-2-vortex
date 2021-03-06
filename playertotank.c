@@ -48,7 +48,7 @@
 
 void PM_UpdateChasePlayers (edict_t *ent)
 {
-	int		i, numPlayers=0;
+	int		i;
 	edict_t *cl_ent;
 
 	for (i=0 ; i<game.maxclients ; i++)

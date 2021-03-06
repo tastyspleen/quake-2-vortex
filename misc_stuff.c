@@ -200,7 +200,7 @@ void KickPlayerBack(edict_t *ent)
 	}
 }
 
-int total_players()
+int total_players(void)
 {
 	int		i, total=0;
 	edict_t *cl_ent;
@@ -219,13 +219,13 @@ int total_players()
 	return total;
 }
 
-void GetScorePosition () 
+void GetScorePosition (void) 
 { 
      int i, j, k; 
      int sorted[MAX_CLIENTS]; 
-     int sortedscores[MAX_CLIENTS]; 
+	 int sortedscores[MAX_CLIENTS] = { 0 };
      int score, total, last_score, last_pos=1; 
-     gclient_t *cl; 
+     //gclient_t *cl; 
      edict_t *cl_ent; 
 
      // sort the clients by score 
@@ -254,7 +254,7 @@ void GetScorePosition ()
 
      for (i=0 ; i<total ; i++)
 	 {
-          cl = &game.clients[sorted[i]]; 
+          //cl = &game.clients[sorted[i]]; 
           cl_ent = g_edicts + 1 + sorted[i];
 
 		  if (last_score != sortedscores[i])
@@ -266,9 +266,9 @@ void GetScorePosition ()
      } 
 } 
 
-int GetRandom(int min,int max)
-{	
-	return (rand() % (max+1-min)+min);
+int GetRandom(int min, int max)
+{
+	return (rand() % (max + 1 - min) + min);
 }
 
 qboolean findspawnpoint (edict_t *ent)
@@ -334,7 +334,7 @@ qboolean FindValidSpawnPoint (edict_t *ent, qboolean air)
 				continue;
 			// add the ent's height
 			VectorCopy(tr.endpos, start);
-			start[2] += abs(ent->mins[2]) + 1;
+			start[2] += fabsf(ent->mins[2]) + 1;
 			// is the point good?
 			if (gi.pointcontents(start) != 0)
 				continue;
@@ -411,7 +411,7 @@ qboolean TeleportNearArea (edict_t *ent, vec3_t point, int area_size, qboolean a
 					continue;
 				// add the ent's height
 				VectorCopy(tr.endpos, start);
-				start[2] += abs(ent->mins[2]) + 1;
+				start[2] += fabsf(ent->mins[2]) + 1;
 				// is the point good?
 				if (gi.pointcontents(start) != 0)
 					continue;
@@ -575,7 +575,7 @@ int MAX_SLUGS(edict_t *ent)
 
 int MAX_POWERCUBES(edict_t *ent)
 {
-	int value, clvl;
+	int value = 0, clvl;
 
 	if(ent->myskills.abilities[MAX_AMMO].disable)
 		return 0;
@@ -731,7 +731,6 @@ float entdist(edict_t *ent1, edict_t *ent2)
 	return VectorLength(vec);
 }
 
-int TotalPlayersInGame(void);
 // returns true if the player should be affected by newbie protection
 qboolean IsNewbieBasher (edict_t *player) {
 	return (newbie_protection->value && player->client && (total_players()>0.33*maxclients->value)
@@ -759,14 +758,14 @@ qboolean TeleportNearTarget (edict_t *self, edict_t *target, float dist)
 		// trace to floor
 		VectorCopy(tr.endpos, start);
 		VectorCopy(tr.endpos, end);
-		end[2] -= abs(self->mins[2]) + 32;
+		end[2] -= fabsf(self->mins[2]) + 32;
 		tr = gi.trace(start, NULL, NULL, end, NULL, MASK_MONSTERSOLID);
 		// we dont want to teleport off a ledge
 		if (tr.fraction == 1.0 && !(self->flags & FL_FLY))
 			continue;
 		// check for valid position
 		VectorCopy(tr.endpos, start);
-		start[2] += abs(self->mins[2]) + 1;
+		start[2] += fabsf(self->mins[2]) + 1;
 		tr = gi.trace(start, self->mins, self->maxs, start, NULL, MASK_MONSTERSOLID);
 		if (!(tr.contents & MASK_MONSTERSOLID))
 		{
@@ -805,19 +804,19 @@ qboolean TeleportNearPoint (edict_t *self, vec3_t point)
 			forward[1] = sin(DEG2RAD(yaw));
 			forward[2] = 0;
 			// trace from point
-			VectorMA(point, (self->maxs[0]+abs(self->mins[0])+dist), forward, end);
+			VectorMA(point, (self->maxs[0] + fabsf(self->mins[0])+dist), forward, end);
 			tr = gi.trace(point, NULL, NULL, end, NULL, MASK_SOLID);
 			// trace to floor
 			VectorCopy(tr.endpos, start);
 			VectorCopy(tr.endpos, end);
-			end[2] -= abs(self->mins[2]) + 128;
+			end[2] -= fabsf(self->mins[2]) + 128;
 			tr = gi.trace(start, NULL, NULL, end, NULL, MASK_SOLID);
 			// we dont want to teleport off a ledge
 			if (tr.fraction == 1.0 && !(self->flags & FL_FLY))
 				continue;
 			// check for valid position
 			VectorCopy(tr.endpos, start);
-			start[2] += abs(self->mins[2]) + 1;
+			start[2] += fabsf(self->mins[2]) + 1;
 			tr = gi.trace(start, self->mins, self->maxs, start, NULL, (MASK_PLAYERSOLID|MASK_MONSTERSOLID));
 			if (!(tr.contents & (MASK_PLAYERSOLID|MASK_MONSTERSOLID)))
 			{
@@ -827,124 +826,121 @@ qboolean TeleportNearPoint (edict_t *self, vec3_t point)
 				gi.linkentity(self);
 				return true;
 			}
-			dist += self->maxs[0]+abs(self->mins[0])+1;
+			dist += self->maxs[0] + fabsf(self->mins[0])+1;
 		}
 	}
 	return false;
 }
 
-void WriteToLogFile (char *char_name, char *s)  
-{  
-     char     buf[512];  
-     char     path[256];  
-     FILE     *fptr;  
-
-     if (strlen(char_name) < 1)  
-          return;  
-  
-     //Create the log message  
-     sprintf(buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, "Offline", s);  
-  
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%s.log", save_path->string, V_FormatFileName(char_name));  
-     #else  
-          sprintf(path, "%s/%s.log", save_path->string, V_FormatFileName(char_name));  
-     #endif  
-  
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to player log.\n");  
-}
-
-void WriteToLogfile (edict_t *ent, char *s)  
-{  
-     char     *ip, buf[512];  
-     char     path[256];  
-     FILE     *fptr;  
-
-     if (strlen(ent->client->pers.netname) < 1)  
-          return;  
-  
-     //Create the log message  
-     ip = Info_ValueForKey (ent->client->pers.userinfo, "ip");  
-     sprintf(buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, ip, s);  
-  
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));  
-     #else  
-          sprintf(path, "%s/%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));  
-     #endif  
-  
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to player log.\n");  
-}
-
-void WriteServerMsg (char *s, char *error_string, qboolean print_msg, qboolean save_to_logfile)  
+void WriteToLogFile(char* char_name, char* s)
 {
-	cvar_t	*port;
+	char     buf[512];
+	char     path[256];
+	FILE* fptr;
+
+	if (!char_name || !s)
+		return;
+
+	if (strlen(char_name) < 1)
+		return;
+
+	//Create the log message
+	Com_sprintf(buf, sizeof buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, "Offline", s);
+
+	//determine path
+	Com_sprintf(path, sizeof path, "%s/%s.log", save_path->string, V_FormatFileName(char_name));
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log
+	{
+		//3.0 make sure there is a line feed
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to player log.\n");
+}
+
+void WriteToLogfile(edict_t* ent, char* s)
+{
+	char* ip, buf[512];
+	char     path[256];
+	FILE* fptr;
+
+	if (!s || !ent || !ent->client)
+		return;
+	
+	if (strlen(ent->client->pers.netname) < 1)
+		return;
+
+	//Create the log message  
+	ip = Info_ValueForKey(ent->client->pers.userinfo, "ip");
+	Com_sprintf(buf, sizeof buf, "%s %s [%s]: %s", CURRENT_DATE, CURRENT_TIME, ip, s);
+
+	//determine path  
+	Com_sprintf(path, sizeof path, "%s/%s.log", save_path->string, V_FormatFileName(ent->client->pers.netname));
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log
+	{
+		//3.0 make sure there is a line feed
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to player log.\n");
+}
+
+void WriteServerMsg(char* s, char* error_string, qboolean print_msg, qboolean save_to_logfile)
+{
+	cvar_t* port;
 	char	buf[512];
 	char	path[256];
-	FILE	*fptr;  
- 
-     // create the log message 
-     sprintf(buf, "%s %s %s: %s", CURRENT_DATE, CURRENT_TIME, error_string, s);
-	 if (print_msg)
-		 gi.dprintf("* %s *\n", buf);
+	FILE* fptr;
 
-	 if (!save_to_logfile)
-		 return;
-  
-	 port = gi.cvar("port" , "0", CVAR_SERVERINFO);
+	if (!s || !error_string || !save_to_logfile)
+		return;
 
-     //determine path  
-     #if defined(_WIN32) || defined(WIN32)  
-          sprintf(path, "%s\\%d.log", game_path->string, (int)port->value);  
-     #else  
-          sprintf(path, "%s/%d.log", game_path->string, (int)port->value);  
-     #endif  
+	// create the log message 
+	Com_sprintf(buf, sizeof buf, "%s %s %s: %s", CURRENT_DATE, CURRENT_TIME, error_string, s);
+	if (print_msg)
+		gi.dprintf("* %s *\n", buf);
 
-     if ((fptr = fopen(path, "a")) != NULL) // append text to log  
-     {  
-          //3.0 make sure there is a line feed  
-          if (buf[strlen(buf)-1] != '\n')  
-               strcat(buf, "\n");  
-  
-          fprintf(fptr, buf);  
-          fclose(fptr);  
-          return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to server log.\n");  
+	port = gi.cvar("port", "0", CVAR_SERVERINFO);
+
+	//determine path  
+	Com_sprintf(path, sizeof path, "%s/%d.log", game_path->string, (int)port->value);
+
+	if ((fptr = fopen(path, "a")) != NULL) // append text to log  
+	{
+		//3.0 make sure there is a line feed  
+		if (buf[strlen(buf) - 1] != '\n')
+			strcat(buf, "\n");
+
+		fprintf(fptr, "%s", buf);
+		fclose(fptr);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to server log.\n");
 }
 
-qboolean G_StuffPlayerCmds (edict_t *ent, char *s)
+qboolean G_StuffPlayerCmds(edict_t* ent, char* s)
 {
-	char *dst = ent->client->resp.stuffbuf;
+	if (!ent || !s)
+		return false;
 
-	if (strlen(s)+strlen(dst) > 500)
+	char* dst = ent->client->resp.stuffbuf;
+
+	if (strlen(s) + strlen(dst) > 500)
 	{
 		//gi.dprintf("buffer full\n");
 		return false; // don't overfill the buffer
 	}
-	
+
 	strcat(dst, s);
 
 	//gi.dprintf("%s", dst);
@@ -956,6 +952,9 @@ void StuffPlayerCmds (edict_t *ent)
 	int		i, num;
 	int		end=0, start=0;
 
+	if (!ent)
+		return;
+	
 	// if the buffer is empty, then no cmds need to be stuffed
 	if (strlen(ent->client->resp.stuffbuf) < 1)
 		return;

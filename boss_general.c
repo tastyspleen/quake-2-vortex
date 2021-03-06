@@ -121,8 +121,8 @@ void boss_update (edict_t *ent, usercmd_t *ucmd)
 			{
 				//gi.sound (ent, CHAN_WEAPON, gi.soundindex ("tank/sight1.wav"), 1, ATTN_NORM, 0);
 				// jump in the direction we are trying to move
-				boss->velocity[0] = 0.1*((forwardspeed*forward[0])+(sidespeed*right[0]));
-				boss->velocity[1] = 0.1*((forwardspeed*forward[1])+(sidespeed*right[1]));
+				boss->velocity[0] = 0.1f*((forwardspeed*forward[0])+(sidespeed*right[0]));
+				boss->velocity[1] = 0.1f*((forwardspeed*forward[1])+(sidespeed*right[1]));
 				boss->velocity[2] = 350;
 				
 				ent->client->jump = true;
@@ -142,8 +142,8 @@ void boss_update (edict_t *ent, usercmd_t *ucmd)
 			}
 
 			// steer in the direction we are trying to move
-			boss->velocity[0] += 0.1*((forwardspeed*forward[0])+(sidespeed*right[0]));
-			boss->velocity[1] += 0.1*((forwardspeed*forward[1])+(sidespeed*right[1]));
+			boss->velocity[0] += 0.1f*((forwardspeed*forward[0])+(sidespeed*right[0]));
+			boss->velocity[1] += 0.1f*((forwardspeed*forward[1])+(sidespeed*right[1]));
 			
 			if (ucmd->upmove && (boss->waterlevel > 1))
 			{
@@ -334,12 +334,12 @@ void AddDmgList (edict_t *self, edict_t *other, int damage)
 	dmgListCleanup(self, false);
 
 	// already in the queue?
-	if (slot=findDmgSlot(self, cl_ent))
+	if ((slot = findDmgSlot(self, cl_ent)) != NULL)
 	{
 		slot->damage += damage;
 	}
 	// add attacker to the queue
-	else if (slot=findEmptyDmgSlot(self))
+	else if ((slot = findEmptyDmgSlot(self)) != NULL)
 	{
 		slot->player = cl_ent;
 		slot->damage += damage;
@@ -461,7 +461,8 @@ void boss_eyecam (edict_t *player, edict_t *boss)
 
 void boss_position_player (edict_t *player, edict_t *boss)
 {
-	float	hdist, vdist;
+	float	hdist = 0;
+	float	vdist = 0;
 	vec3_t	forward, start, goal;
 	vec3_t	boxmin={-4,-4,0};
 	vec3_t	boxmax={4,4,0};

@@ -97,7 +97,7 @@ typedef struct
 	// they connect, and changes are sent to all connected clients.
 	void	(*configstring) (int num, char *string);
 
-	void	(*error) (char *fmt, ...);
+	void	(*error) (char *fmt, ...); /* never returns */
 
 	// new names can only be added during spawning
 	// existing names can be looked up at any time
@@ -216,5 +216,5 @@ typedef struct
 	int			max_edicts;
 } game_export_t;
 
-game_export_t *GetGameApi (game_import_t *import);
+game_export_t *GetGameAPI (game_import_t *import);
 #endif

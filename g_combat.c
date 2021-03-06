@@ -2,14 +2,15 @@
 
 #include "g_local.h"
 #include "damage.h"
+#include "boss.h"
 
 //K03 Begin
 //==============================================================
 // Scale damage amount by location of hit on player's body..
 //==============================================================
-#define LEG_DAMAGE     (height/2.0)-abs(targ->mins[2])-3
-#define STOMACH_DAMAGE (height/1.6)-abs(targ->mins[2])
-#define CHEST_DAMAGE   (height/1.4)-abs(targ->mins[2])
+#define LEG_DAMAGE     (height/2.0f)-fabsf(targ->mins[2])-3
+#define STOMACH_DAMAGE (height/1.6f)-fabsf(targ->mins[2])
+#define CHEST_DAMAGE   (height/1.4f)-fabsf(targ->mins[2])
 
 //==============================================================
 /*
@@ -25,7 +26,7 @@ float location_scaling(edict_t *targ, vec3_t point, int damage) {
 	if (targ->flags & FL_GODMODE)
 		return 1.0;
 
-	height = abs(targ->mins[2])+targ->maxs[2];
+	height = fabsf(targ->mins[2])+targ->maxs[2];
 	z_rel = point[2]-targ->s.origin[2];
 	if (z_rel < LEG_DAMAGE)
 	  return 0.60;  // Scale down by 2/5
@@ -52,7 +53,8 @@ void TossClientWeapon (edict_t *self);
 qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take, int dflags) 
 {
 	edict_t *cl_ent=attacker;
-	float z_rel, height;
+	float z_rel;
+	float height;
 
 	if (PM_MonsterHasPilot(attacker))
 		cl_ent = attacker->activator;
@@ -81,15 +83,15 @@ qboolean HitTheWeapon (edict_t *targ, edict_t *attacker, vec3_t point, int take,
 	if (targ->mtype || (targ->myskills.class_num == CLASS_POLTERGEIST))
 		return false;
 
-	if ((targ->health-take) > (0.5*targ->max_health))
+	if ((targ->health-take) > (0.5f * targ->max_health))
 		return false;
 	
 	targ->knockweapon_debounce_time = level.time + 1.0;
 	// check for impact location
 	// if it's at about the right height, and in front, then
 	// we're probably on-target
-	height = abs(targ->mins[2])+targ->maxs[2];
-	z_rel = point[2]-targ->s.origin[2];
+	height = fabsf(targ->mins[2]) + targ->maxs[2];
+	z_rel = point[2]-targ->s.origin[2] + height;
 
 	//gi.dprintf("z_rel: %.1f point: %.1f origin: %.1f, chest: %.1f stomach: %.1f", 
 	//	z_rel, point[2], targ->s.origin[2], CHEST_DAMAGE, STOMACH_DAMAGE);
@@ -176,9 +178,6 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 Killed
 ============
 */
-void VortexAddMonsterExp(edict_t *attacker, edict_t *monster);
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-void drone_death (edict_t *self, edict_t *attacker);
 void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	if (targ->health < -999)
@@ -285,7 +284,7 @@ static int CheckShield (edict_t *ent, vec3_t point, vec3_t normal, int damage, i
 	int		save, pa_te_type;
 	edict_t *cl_ent = NULL;
 
-	if (!damage)
+	if (!ent || !damage)
 		return 0;
 
 	if (dflags & DAMAGE_NO_ARMOR)
@@ -308,7 +307,7 @@ static int CheckShield (edict_t *ent, vec3_t point, vec3_t normal, int damage, i
 		return 0;
 	
 	// shield is not activated
-	if (!cl_ent->shield || (cl_ent->shield_activate_time > level.time))
+	if (!cl_ent || !cl_ent->shield || (cl_ent->shield_activate_time > level.time))
 		return 0;
 
 	if (cl_ent->shield == 1)
@@ -319,7 +318,7 @@ static int CheckShield (edict_t *ent, vec3_t point, vec3_t normal, int damage, i
 		AngleVectors(ent->s.angles, forward, NULL, NULL);
 		VectorSubtract(point, ent->s.origin, v);
 		VectorNormalize(v);
-		if (DotProduct (v, forward) <= 0.3)
+		if (DotProduct (v, forward) <= 0.3f)
 			return 0;
 
 		pa_te_type = TE_SCREEN_SPARKS;
@@ -343,10 +342,10 @@ static int CheckPowerArmor (edict_t *ent, vec3_t point, vec3_t normal, int damag
 	gclient_t	*client;
 	int			save=0; // max absorbtion
 	int			power_armor_type;
-	int			index;
+	int			index = 0;
 	float		damagePerCell; //GHz
 	int			pa_te_type;
-	int			power; // cells
+	int			power = 0; // cells
 	int			power_used; // cells used
 	edict_t		*cl_ent=NULL;
 
@@ -354,7 +353,7 @@ static int CheckPowerArmor (edict_t *ent, vec3_t point, vec3_t normal, int damag
 	if ((save = CheckShield(ent, point, normal, damage, dflags)) == damage)
 		return save;
 
-	if (!damage)
+	if (!ent || !damage)
 		return 0;
 
 	client = ent->client;
@@ -630,11 +629,6 @@ void DeflectHitscan (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_
 		
 }
 
-int TotalPlayersInGame(void);
-void AddDmgList (edict_t *self, edict_t *other, int damage);
-void tech_checkrespawn (edict_t *ent);
-qboolean curse_add(edict_t *target, edict_t *caster, int type, int curse_level, float duration);//4.4
-void CurseMessage (edict_t *caster, edict_t *target, int type, float duration, qboolean isCurse);//4.4
 int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, 
 			   vec3_t dir, vec3_t point, vec3_t normal, float damage, int knockback, int dflags, int mod)
 {
@@ -649,15 +643,25 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 	int			steal;//GHz
 	float		before_sub;//GHz
 	int			dtype = G_DamageType(mod, dflags);
-	qboolean	plagued=false;
+	//qboolean	plagued = false;
 	float		temp=0;//K03
-	edict_t		*player = G_GetClient(attacker);
-	vec3_t zvec={0,0,0};//GHz
+	edict_t*	player;
+	//vec3_t		zvec = {0,0,0};//GHz
 	float		startDamage = damage; //doomie
 	upgrade_t	*ability;//4.2 for fury
-	qboolean	target_has_pilot = PM_MonsterHasPilot(targ);
-	qboolean	attacker_has_pilot = PM_MonsterHasPilot(attacker);
-	que_t		*slot=NULL;
+	qboolean	target_has_pilot;
+	qboolean	attacker_has_pilot;
+	que_t* slot = NULL;
+
+	if (!targ || !attacker)
+	{
+		gi.error("NULL pointer argument when calling %s\n", __func__);
+		return 0; /* passify compiler */
+	}
+
+	player = G_GetClient(attacker);
+	target_has_pilot = PM_MonsterHasPilot(targ); 
+	attacker_has_pilot = PM_MonsterHasPilot(attacker);
 
 	//gi.dprintf("T_damage\n");
 	// 3.7 respawn flag if it's being crushed
@@ -682,7 +686,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		edict_t *totem;
 
 		//Calculate the damage bonus the player has already received.
-		double x = (double)(damage - startDamage) / startDamage;
+		double x = (double)((double)damage - startDamage) / startDamage;
 
         //4.1 earth totem strength bonus.
 		totem = NextNearestTotem(player, TOTEM_EARTH, NULL, true);
@@ -702,13 +706,13 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		int resistLevel = 0;
 
 		//Calculate the amount of resist the player has already received.
-		double x = (double)(startDamage - damage) / startDamage;
+		double x = (double)(startDamage - (double)damage) / startDamage;
 		
 		//Talent: Stone.
 		totem = NextNearestTotem(G_GetClient(targ), TOTEM_EARTH, NULL, true);
 		if(totem && totem->activator)
 		{
-			int resistLevel = getTalentLevel(totem->activator, TALENT_STONE);
+			resistLevel = getTalentLevel(totem->activator, TALENT_STONE);
 			if(x < resistLevel * EARTHTOTEM_RESIST_MULT)
 				damage = startDamage * (1.0 - EARTHTOTEM_RESIST_MULT * resistLevel);
 		}
@@ -830,7 +834,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		{
 			// keep a counter for rapid-fire weapons so we have a more
 			// accurate reading of their damage over time
-			if (level.time-player->lastdmg <= 0.2 && player->dmg_counter <= 32767)				
+			if (level.time-player->lastdmg <= 0.2f && player->dmg_counter <= 32767)				
 				player->dmg_counter += damage;
 			else
 				player->dmg_counter = damage;
@@ -1009,7 +1013,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		//3.0 try to auto-tball away when hit
 		if ((targ->client)															//target must be a player
 			&& G_EntIsAlive(targ)													//target must be alive
-			&& (targ->health - take < (0.25 * MAX_HEALTH(targ)))					//target must end up with < 25% hp
+			&& (targ->health - take < (0.25f * MAX_HEALTH(targ)))					//target must end up with < 25% hp
 			&& !(targ->v_flags & SFLG_AUTO_TBALLED)									//target must not have auto-tballed this spawn
 			&& !HasFlag(targ))	//target must not have the flag
 		{
@@ -1065,7 +1069,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if(totem != NULL)
 			{
 				//Talent: Shadow. Players can go beyond their "normal" max health.
-				maxHP *= 1.0 + DARKNESSTOTEM_MAX_MULT * getTalentLevel(totem->activator, TALENT_SHADOW);
+				maxHP *= 1.0f + DARKNESSTOTEM_MAX_MULT * getTalentLevel(totem->activator, TALENT_SHADOW);
 
 				if(player->health < maxHP)
 				{
@@ -1083,7 +1087,6 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		//dtype = G_DamageType(mod, dflags);
 		
 		//4.2 give hellspawn vampire ability (50% = 150hp/sec assuming 300dmg/sec)
-
 		if (attacker->monsterinfo.bonus_flags & BF_STYGIAN)
 		{
 			attacker->health += take;
@@ -1119,7 +1122,7 @@ int T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (attacker->mtype)
 				temp = 0.25;
 
-			steal = (int) floor(0.5+take*temp); // steal health
+			steal = (int) floorf(0.5f + take * temp); // steal health
 			armorVampBase = steal; // save this value for armor vamp
 
 			delta = max_health - attacker->health;

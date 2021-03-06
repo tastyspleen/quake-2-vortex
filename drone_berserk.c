@@ -17,10 +17,6 @@ static int sound_punch;
 static int sound_sight;
 static int sound_search;
 
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
-
 void berserk_sight (edict_t *self, edict_t *other)
 {
 	gi.sound (self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
@@ -35,11 +31,11 @@ void berserk_search (edict_t *self)
 void berserk_fidget (edict_t *self);
 mframe_t berserk_frames_stand [] =
 {
-	drone_ai_stand, 0, berserk_fidget,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, berserk_fidget},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t berserk_move_stand = {FRAME_stand1, FRAME_stand5, berserk_frames_stand, NULL};
 
@@ -50,26 +46,26 @@ void berserk_stand (edict_t *self)
 
 mframe_t berserk_frames_stand_fidget [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t berserk_move_stand_fidget = {FRAME_standb1, FRAME_standb20, berserk_frames_stand_fidget, berserk_stand};
 
@@ -86,18 +82,18 @@ void berserk_fidget (edict_t *self)
 
 mframe_t berserk_frames_walk [] =
 {
-	drone_ai_walk, 9.1, NULL,
-	drone_ai_walk, 6.3, NULL,
-	drone_ai_walk, 4.9, NULL,
-	drone_ai_walk, 6.7, NULL,
-	drone_ai_walk, 6.0, NULL,
-	drone_ai_walk, 8.2, NULL,
-	drone_ai_walk, 7.2, NULL,
-	drone_ai_walk, 6.1, NULL,
-	drone_ai_walk, 4.9, NULL,
-	drone_ai_walk, 4.7, NULL,
-	drone_ai_walk, 4.7, NULL,
-	drone_ai_walk, 4.8, NULL
+	{drone_ai_walk, 9.1, NULL},
+	{drone_ai_walk, 6.3, NULL},
+	{drone_ai_walk, 4.9, NULL},
+	{drone_ai_walk, 6.7, NULL},
+	{drone_ai_walk, 6.0, NULL},
+	{drone_ai_walk, 8.2, NULL},
+	{drone_ai_walk, 7.2, NULL},
+	{drone_ai_walk, 6.1, NULL},
+	{drone_ai_walk, 4.9, NULL},
+	{drone_ai_walk, 4.7, NULL},
+	{drone_ai_walk, 4.7, NULL},
+	{drone_ai_walk, 4.8, NULL}
 };
 mmove_t berserk_move_walk = {FRAME_walkc1, FRAME_walkc11, berserk_frames_walk, NULL};
 
@@ -110,12 +106,12 @@ void berserk_walk (edict_t *self)
 
 mframe_t berserk_frames_run1 [] =
 {
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL}
 };
 mmove_t berserk_move_run1 = {FRAME_run1, FRAME_run6, berserk_frames_run1, NULL};
 
@@ -147,12 +143,12 @@ void berserk_swing (edict_t *self)
 
 mframe_t berserk_frames_attack_spike [] =
 {
-	ai_charge, 0, berserk_swing,
-	ai_charge, 0, berserk_attack_spike,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL
+	{ai_charge, 0, berserk_swing},
+	{ai_charge, 0, berserk_attack_spike},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, NULL}
 };
 mmove_t berserk_move_attack_spike = {FRAME_att_c3, FRAME_att_c8, berserk_frames_attack_spike, berserk_run};
 
@@ -169,23 +165,23 @@ void berserk_attack_club (edict_t *self)
 
 mframe_t berserk_frames_attack_club [] =
 {	
-	ai_charge, 0, berserk_swing,
-	ai_charge, 0, NULL,
-	ai_charge, 0, berserk_attack_club,
-	ai_charge, 0, berserk_attack_club,
-	ai_charge, 0, berserk_attack_club,
-	ai_charge, 0, NULL
+	{ai_charge, 0, berserk_swing},
+	{ai_charge, 0, NULL},
+	{ai_charge, 0, berserk_attack_club},
+	{ai_charge, 0, berserk_attack_club},
+	{ai_charge, 0, berserk_attack_club},
+	{ai_charge, 0, NULL}
 };
 mmove_t berserk_move_attack_club = {FRAME_att_b10, FRAME_att_b15, berserk_frames_attack_club, berserk_run};
 
 mframe_t berserk_frames_runattack1 [] =
 {	
-	drone_ai_run, 35, berserk_swing,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, berserk_attack_club,
-	drone_ai_run, 35, berserk_attack_club,
-	drone_ai_run, 35, berserk_attack_club,
-	drone_ai_run, 35, NULL
+	{drone_ai_run, 35, berserk_swing},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, berserk_attack_club},
+	{drone_ai_run, 35, berserk_attack_club},
+	{drone_ai_run, 35, berserk_attack_club},
+	{drone_ai_run, 35, NULL}
 };
 mmove_t berserk_move_runattack1 = {FRAME_r_att13, FRAME_r_att18, berserk_frames_runattack1, berserk_run};
 
@@ -220,12 +216,12 @@ void berserk_attack_strike (edict_t *self)
 
 mframe_t berserk_frames_attack_strike [] =
 {
-	ai_move, 0, berserk_swing,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, berserk_attack_strike
+	{ai_move, 0, berserk_swing},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, berserk_attack_strike}
 };
 	
 mmove_t berserk_move_attack_strike = {FRAME_slam5, FRAME_slam10, berserk_frames_attack_strike, berserk_run};
@@ -242,19 +238,19 @@ void berserk_dead (edict_t *self)
 
 mframe_t berserk_frames_death1 [] =
 {
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL}
 	
 };
 mmove_t berserk_move_death1 = {FRAME_death1, FRAME_death13, berserk_frames_death1, berserk_dead};
@@ -262,14 +258,14 @@ mmove_t berserk_move_death1 = {FRAME_death1, FRAME_death13, berserk_frames_death
 
 mframe_t berserk_frames_death2 [] =
 {
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL}
 };
 mmove_t berserk_move_death2 = {FRAME_deathc1, FRAME_deathc8, berserk_frames_death2, berserk_dead};
 
@@ -306,7 +302,7 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 
 void berserk_attack (edict_t *self)
 {
-	float	r = random();
+//	float	r = random();
 	float	dist = entdist(self, self->enemy);
 
 	if (dist > 128)

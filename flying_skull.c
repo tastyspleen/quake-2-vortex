@@ -663,13 +663,13 @@ void Cmd_HellSpawn_f (edict_t *ent)
 	if (debuginfo->value)
 		gi.dprintf("DEBUG: %s just called Cmd_HellSpawn_f()\n", ent->client->pers.netname);
 
-	if (!Q_strcasecmp(gi.args(), "attack") && ent->skull && ent->skull->inuse)
+	if (!Q_stricmp(gi.args(), "attack") && ent->skull && ent->skull->inuse)
 	{
 		skull_attackcmd(ent->skull);
 		return;
 	}
 /*
-	if (!Q_strcasecmp(gi.args(), "recall") && ent->skull && ent->skull->inuse)
+	if (!Q_stricmp(gi.args(), "recall") && ent->skull && ent->skull->inuse)
 	{
 		// toggle
 		if (!ent->skull->lockon)
@@ -691,7 +691,7 @@ void Cmd_HellSpawn_f (edict_t *ent)
 		// try to restore previous owner
 		if (!RestorePreviousOwner(ent->skull))
 		{
-			if (ent->skull->health >= ent->skull->max_health)
+			if (ent->skull && ent->skull->health >= ent->skull->max_health)
 				ent->client->pers.inventory[power_cube_index] += ent->skull->monsterinfo.cost;
 			RemoveHellspawn(ent);
 			gi.cprintf(ent, PRINT_HIGH, "Hell spawn removed.\n");

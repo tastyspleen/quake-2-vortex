@@ -1,13 +1,23 @@
-// g_local.h -- local definitions for game module
-#ifndef G_LOCAL
-#define G_LOCAL
+#ifndef G_LOCAL_H
+#define G_LOCAL_H
 
-//Uncomment this and recompile to get debug printouts.
-//The higher number, the more detailed printouts.
-//Using this , especially on higher levels, is very lag prone and may cause server overflow.
-//#define PRINT_DEBUGINFO 1
+//
+// g_local.h -- local definitions for game module
+//
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN	//non-MFC
+#include <windows.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+_CrtMemState startup1;	// memory diagnostics
+#else
+#define OutputDebugString	//not doing Windows
+#endif
 
 #include "q_shared.h"
+
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
 // because we define the full size ones in this file
@@ -24,6 +34,14 @@
 #include "ally.h" // 3.12
 #include "gds.h" // 3.15
 #include "scanner.h"
+#include "player_points.h"
+
+#ifndef MAX
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef MIN
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
 
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"Vortex"//K03 "baseq2"
@@ -74,8 +92,8 @@ extern long FLAG_FRAMES;
 //==================================================================
 
 // view pitching times
-#define DAMAGE_TIME		0.5
-#define	FALL_TIME		0.3
+#define DAMAGE_TIME		0.5f
+#define	FALL_TIME		0.3f
 
 
 // edict->spawnflags
@@ -111,7 +129,7 @@ extern long FLAG_FRAMES;
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
 
-#define	FRAMETIME		0.1
+#define	FRAMETIME		0.1f
 
 // memory tags to allow dynamic memory to be cleaned up
 #define	TAG_GAME	765		// clear when unloading the dll
@@ -768,16 +786,17 @@ int	skullindex;
 
 extern	int	meansOfDeath;
 
+#define q_offsetof(t, m)    ((size_t)&((t *)0)->m)
 
 extern	edict_t			*g_edicts;
 
-#define	FOFS(x) (int)&(((edict_t *)0)->x)
-#define	STOFS(x) (int)&(((spawn_temp_t *)0)->x)
-#define	LLOFS(x) (int)&(((level_locals_t *)0)->x)
-#define	CLOFS(x) (int)&(((gclient_t *)0)->x)
+#define FOFS(x)     q_offsetof(edict_t, x)
+#define STOFS(x)    q_offsetof(spawn_temp_t, x)
+#define	LLOFS(x) (size_t)&(((level_locals_t *)0)->x)
+#define	CLOFS(x) (size_t)&(((gclient_t *)0)->x)
 
 #define random()	((rand () & 0x7fff) / ((float)0x7fff))
-#define crandom()	(2.0 * (random() - 0.5))
+#define crandom()	(2.0f * (random() - 0.5f))
 
 extern	cvar_t	*maxentities;
 extern	cvar_t	*deathmatch;
@@ -970,11 +989,23 @@ gitem_t	*GetItemByIndex (int index);
 qboolean Add_Ammo (edict_t *ent, gitem_t *item, float count);
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 edict_t *Spawn_Item (gitem_t *item);
+void tech_checkrespawn(edict_t* ent);
+void tech_spawnall(void);
+void SpawnWorldAmmo(void);
 
 //
 // g_utils.c
 //
-qboolean	KillBox (edict_t *ent);
+const char* Date(void);
+const char* Time(void);
+//QW//
+void convert_string(char* src, char start, char end, char add, char* dest);
+void highlight_text(char* src, char* dest);
+void white_text(char* src, char* dest);
+void toupper_text(char* src, char* dest);
+void tolower_text(char* src, char* dest);
+
+qboolean	KillBox(edict_t* ent);
 void	G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
 edict_t *G_Find (edict_t *from, int fieldofs, char *match);
 edict_t *findradius (edict_t *from, vec3_t org, float rad);
@@ -1046,7 +1077,6 @@ qboolean AddCurse (edict_t *owner, edict_t *targ, edict_t *curse_ent, int type, 
 void ShowGun(edict_t *ent);
 void EndDMLevel (void);
 void StartGame (edict_t *ent);
-int VortexAddCredits(edict_t *ent, float level_diff, int bonus, qboolean client);
 void RemoveAllAuras (edict_t *ent);
 void RemoveAllCurses (edict_t *ent);
 void PTRInit (void);
@@ -1163,6 +1193,11 @@ float VortexGetAbilityModifier(int level, float base_modifier);//GHz
 int vrx_GetMonsterCost(int mtype);//GHz
 int vrx_GetMonsterControlCost(int mtype);//GHz
 void VortexRemovePlayerSummonables(edict_t *self);//GHz
+void InitScanEntity(void);
+void InitSunEntity(void);
+void SP_misc_teleporter_dest(edict_t* ent);
+
+int PVM_TotalMonsters(edict_t* monster_owner);
 
 //
 // g_ai.c
@@ -1191,6 +1226,8 @@ void drone_ai_run (edict_t *self, float dist);
 void drone_ai_run1 (edict_t *self, float dist);
 void drone_ai_walk (edict_t *self, float dist);
 
+void drone_death(edict_t* self, edict_t* attacker);
+
 //
 // g_weapon.c
 //
@@ -1211,6 +1248,8 @@ void fire_blueblaster (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 void fire_plasma (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 void fire_trap (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
 void fire_smartrocket (edict_t *self, edict_t *target, vec3_t start, vec3_t dir, int damage, int speed, int turn_speed, float damage_radius, int radius_damage);
+void Grenade_Explode(edict_t* ent);
+void spawn_grenades(edict_t* ent, vec3_t origin, float time, int damage, int num);
 
 //
 // g_ptrail.c
@@ -1870,7 +1909,7 @@ struct edict_s
 	int			showPathDebug;			// show path debug information (0=off,1=on)
 
 	//4.0 (multithreading support)
-	unsigned long	hThread;			//Used for WIN32 multi-threading
+	unsigned long	hThread;			//Used for Windows multi-threading
 	qboolean		hThreadFinishTime;	//Records when the thread finished execution
 	qboolean		isSaving;
 	qboolean		isLoading;
@@ -1885,7 +1924,7 @@ struct edict_s
 //ZOID
 #include "g_ctf.h"
 //ZOID
-//#include "menu.h"
+#include "menu.h"
 
 //K03 Begin
 //#define MAX_MAPS           32
@@ -1944,7 +1983,6 @@ joined_t *GetJoinedSlot (edict_t *ent);
 void ClearJoinedSlot (joined_t *slot);
 
 int GetRandom(int min,int max);
-void stuffcmd(edict_t *e, char *s);
 void ApplyThrust (edict_t *ent);
 void Add_exp(edict_t *ent, edict_t *targ);
 int OpenConfigFile(edict_t *ent);
@@ -1995,7 +2033,7 @@ char *TeamName (edict_t *ent);
 
 void KickPlayerBack(edict_t *ent);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void GetScorePosition ();
+void GetScorePosition (void);
 void Give_respawnweapon(edict_t *ent, int weaponID);
 void Give_respawnitems(edict_t *ent);
 qboolean findspawnpoint (edict_t *ent);
@@ -2004,7 +2042,8 @@ void Pick_respawnweapon(edict_t *ent);
 #define for_each_player(JOE_BLOGGS,INDEX)				\
 for(INDEX=1;INDEX<=maxclients->value;INDEX++)			\
 	if ((JOE_BLOGGS=&g_edicts[i]) && JOE_BLOGGS->inuse && JOE_BLOGGS->client)
-int total_players();
+
+int total_players(void);
 void Cmd_CreateBreather_f(edict_t *ent);
 void Cmd_CreateEnviro_f(edict_t *ent);
 void Cmd_CreateInvin_f(edict_t *ent);
@@ -2196,19 +2235,12 @@ qboolean G_Spawn_Monster2(edict_t *ent, vec3_t torigin, int mtype, float secs);
 #define VectorEmpty(a)        ((a[0]==0)&&(a[1]==0)&&(a[2]==0))
 #define SENTRY_UPRIGHT		1
 #define SENTRY_FLIPPED		2
-void	ReadBotChat(void);
-void BotGreeting(edict_t *chat);
-void BotComeback(edict_t *self);
-void BotInsultStart(edict_t *self);
-void BotInsult(edict_t *self, edict_t *enemy, int chat_type);
-void Cmd_BFGFireball(edict_t *ent);
+
 qboolean IsNewbieBasher (edict_t *player);
 qboolean TeleportNearTarget (edict_t *self, edict_t *target, float dist);
 qboolean FindValidSpawnPoint (edict_t *ent, qboolean air);
 void ValidateAngles (vec3_t angles);
-qboolean G_CanTarget (edict_t *self, edict_t *target);
 int InJoinedQueue (edict_t *ent);
-void RefundAbilityPoints(edict_t *ent);
 qboolean IsABoss(edict_t *ent);
 qboolean IsBossTeam (edict_t *ent);
 void AddBossExp (edict_t *attacker, edict_t *target);
@@ -2229,10 +2261,3 @@ int V_AddFinalExp (edict_t *player, int exp);
 #include "special_items.h"
 #include "ctf.h" // 3.7
 #endif
-
-//r1: terminating strncpy
-#define Q_strncpy(dst, src, len) \
-do { \
-	strncpy ((dst), (src), (len)); \
-	(dst)[(len)] = 0; \
-} while (0)

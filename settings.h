@@ -1,21 +1,22 @@
 #ifndef SETTINGS
 #define SETTINGS
 
-char s1[100];
-char s2[100];
-#define	CURRENT_DATE				_strdate(s1)
-#define CURRENT_TIME				_strtime(s2)
+const char* s1;
+const char* s2;
 
-#define VRX_VERSION "4.63"
+#define	CURRENT_DATE				s1 = Date()
+#define CURRENT_TIME				s2 = Time()
 
-#define RUNE_PICKUP_DELAY			2.0	// time before another rune can be picked up
+#define VRX_VERSION "4.66"
+
+#define RUNE_PICKUP_DELAY			2.0f	// time before another rune can be picked up
 
 #define SENTRY_MAXIMUM				1		//Maximum number of sentry guns allowed
 
 // chill effects for movement and attack refire speed
 // note that player weapon refire is handled independently (50% effectiveness on players vs monsters)
-#define CHILL_DEFAULT_BASE			0
-#define CHILL_DEFAULT_ADDON			0.1
+#define CHILL_DEFAULT_BASE			0.0f
+#define CHILL_DEFAULT_ADDON			0.1f
 
 // berserker sprint
 #define SPRINT_COST					4	// per frame ability charge cost
@@ -25,15 +26,15 @@ char s2[100];
 #define SHIELD_COST					2	// per frame ability charge cost
 #define SHIELD_MAX_CHARGE			100	// maximum charge
 #define SHIELD_CHARGE_RATE			10	// rate of charge per second while ability is unused
-#define SHIELD_FRONT_PROTECTION		1.0	// damage absorbed for front (power screen) protection
-#define SHIELD_BODY_PROTECTION		0.8 // damage absorbed for full-body protection
-#define SHIELD_ABILITY_DELAY		0.3	// seconds before shield can be re-activated
+#define SHIELD_FRONT_PROTECTION		1.0f	// damage absorbed for front (power screen) protection
+#define SHIELD_BODY_PROTECTION		0.8f	// damage absorbed for full-body protection
+#define SHIELD_ABILITY_DELAY		0.3f	// seconds before shield can be re-activated
 
 #define SMARTROCKET_LOCKFRAMES		3 // frames required for smart rocket to lock-on to a target
-#define DAMAGE_ESCAPE_DELAY			0.2 // seconds before player can use tball/jetpack/boost/teleport/superspeed after being damaged
+#define DAMAGE_ESCAPE_DELAY			0.2f // seconds before player can use tball/jetpack/boost/teleport/superspeed after being damaged
 #define EXP_PLAYER_MONSTER				20
 #define EXP_WORLD_MONSTER				20
-#define AMMO_REGEN_DELAY			5.0 // seconds until next ammo regen tick
+#define AMMO_REGEN_DELAY			5.0f // seconds until next ammo regen tick
 #define MAX_KNOCKBACK				300 // maximum knockback allowed for some attacks (e.g. rocket explosion)
 #define CHAT_PROTECT_FRAMES			200
 #define MAX_HOURS					24					//Maximum playing time per day (hours)
@@ -43,7 +44,7 @@ char s2[100];
 #define MAX_CREDITS					1000000 // max credits someone can have; update this on next reset to unsigned long!
 // General settings
 #define CLOAK_DRAIN_TIME			1 //10 frames = 1 second
-#define CLOAK_DRAIN_AMMO			1.0
+#define CLOAK_DRAIN_AMMO			1.0f
 #define CLOAK_COST					50
 #define CLOAK_ACTIVATE_TIME			2 // cloak after 3 seconds
 
@@ -357,12 +358,12 @@ char s2[100];
 #define NATURETOTEM_HEALTH_BASE		0
 #define NATURETOTEM_HEALTH_MULT		5
 #define NATURETOTEM_ARMOR_BASE		0
-#define NATURETOTEM_ARMOR_MULT		2.5
-#define NATURETOTEM_REFIRE_BASE		5.0
-#define NATURETOTEM_REFIRE_MULT		0.0		//make this negative to reduce the "cooldown".
+#define NATURETOTEM_ARMOR_MULT		2.5f
+#define NATURETOTEM_REFIRE_BASE		5.0f
+#define NATURETOTEM_REFIRE_MULT		0.0f		//make this negative to reduce the "cooldown".
 //Darkness totem
-#define DARKNESSTOTEM_VAMP_MULT		0.033
-#define DARKNESSTOTEM_MAX_MULT		0.1
+#define DARKNESSTOTEM_VAMP_MULT		0.033f
+#define DARKNESSTOTEM_MAX_MULT		0.1f
 
 //Talent: Precision Tuning
 #define PRECISION_TUNING_COST_FACTOR	0.1

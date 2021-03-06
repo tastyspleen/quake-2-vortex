@@ -1,5 +1,7 @@
 #include "g_local.h"
-/*
+
+#if 0 /* all code in this file is disabled. */
+
 #define	ITEM_TRADE_MAXCLIENTS		10	// max number of clients for player select menu
 #define	ITEM_TRADE_MAX_DISTANCE		128	// max trading distance
 #define ITEM_TRADE_QUEUE_SIZE		3	// max number of items that can be traded at a time
@@ -306,7 +308,7 @@ void PrintItemProperties (edict_t *ent, items_t *item)
 		for (i=0; i<8; i+=2) {
 			strcpy(tmp, ""); // clear temp string
 			if (item->modifiers[(i+1)] > 0)
-				sprintf(tmp, "%s +%d ", GetAbilityString(item->modifiers[i]), item->modifiers[(i+1)]);
+				Com_sprintf(tmp, "%s +%d ", GetAbilityString(item->modifiers[i]), item->modifiers[(i+1)]);
 			strcat(final, tmp);
 		}
 		gi.cprintf(ent, PRINT_HIGH, "%s\n", final);
@@ -1076,7 +1078,7 @@ void inventorymenu_handler (edict_t *ent, int option)
 	}
 	ShowInventoryMenu(ent, ent->client->menustorage.currentline);
 }
-/*
+
 void ShowInventoryMenu (edict_t *ent, int lastline)
 {
 	int i, value;
@@ -1165,4 +1167,4 @@ void ShowInventoryMenu (edict_t *ent, int lastline)
 
 //	gi.dprintf("%d\n", ent->client->menustorage.currentline);
 }
-*/
+#endif

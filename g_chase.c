@@ -339,5 +339,3 @@ void GetChaseTarget (edict_t *ent)//GHz
 	}
 	gi.centerprintf(ent, "Nothing to chase.\n");
 }
-			
-

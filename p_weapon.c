@@ -12,7 +12,7 @@ void lasersight_on (edict_t *ent);
 void lasersight_off (edict_t *ent);
 void weapon_grenade_fire (edict_t *ent, qboolean held);
 // RAFAEL
-void weapon_trap_fire (edict_t *ent, qboolean held);
+//void weapon_trap_fire (edict_t *ent, qboolean held);
 
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
 {
@@ -887,7 +887,7 @@ GRENADE
 ======================================================================
 */
 
-#define GRENADE_TIMER			3.0
+#define GRENADE_TIMER			3.0f
 #define GRENADE_MINSPEED		400
 #define GRENADE_MAXSPEED		800
 #define GRENADE_INITIAL_SPEED	800
@@ -1409,7 +1409,7 @@ void Weapon_Blaster_Fire (edict_t *ent)
 {
 	int	min, max, damage, effect, ammo;
 	int	speed = BLASTER_INITIAL_SPEED + BLASTER_ADDON_SPEED * ent->myskills.weapons[WEAPON_BLASTER].mods[2].current_level;
-	float	temp;
+	float	temp = 0;
 
 	if (ent->myskills.weapons[WEAPON_BLASTER].mods[3].current_level < 1)
 		effect = EF_BLASTER;
@@ -1513,13 +1513,13 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 //GHz START
 	int			i;
 	int			speed, shots = 0;
-	qboolean	fire_this_frame = false;
+	//qboolean	fire_this_frame = false;
 
 	// only fire every other frame
 	if (ent->client->ps.gunframe == 6 || ent->client->ps.gunframe == 8
 		|| ent->client->ps.gunframe == 10)
 	{
-		fire_this_frame = true;
+		//fire_this_frame = true;
 		shots++;
 	}
 	// get weapon properties
@@ -1559,7 +1559,7 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 			{
 				//gi.dprintf("Fired HB for %d damage at %.1f\n", damage, level.time);
 
-				rotation = (ent->client->ps.gunframe + i - 5) * 2*M_PI/6;
+				rotation = (ent->client->ps.gunframe + (double)i - 5.0) * 2.0 * M_PI / 6.0;
 				offset[0] = -4 * sin(rotation);
 				offset[1] = 0;
 				offset[2] = 4 * cos(rotation);
@@ -2488,7 +2488,7 @@ void Weapon_20mm (edict_t *ent)
 	static int	fire_frames[]	= {4, 0};
 		
 	//K03 Begin
-	int fire_last = 18;
+	//QW// unused: int fire_last = 18;
 
 	Weapon_Generic (ent, 3, 4, 56, 61, pause_frames, fire_frames, weapon_20mm_fire);
 	//K03 End

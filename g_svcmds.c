@@ -1,9 +1,5 @@
 #include "g_local.h"
 
-//#if defined(_WIN32) || defined(WIN32)
-//#include <windows.h>
-//#endif
-
 //Function prototypes required for this .c file:
 void dom_spawnflag (void);
 void boss_spawn_tank (edict_t *ent);
@@ -91,9 +87,9 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 		s++;
 	}
 	
-	f->mask = *(unsigned *)m;
-	f->compare = *(unsigned *)b;
-	
+	memcpy(&f->mask, m, sizeof f->mask);
+	memcpy(&f->compare, b, sizeof f->compare);
+
 	return true;
 }
 
@@ -106,29 +102,32 @@ qboolean SV_FilterPacket (char *from)
 {
 	int		i;
 	unsigned	in;
-	byte m[4];
+	byte m[4] = { 0 };
 	char *p;
 
 	i = 0;
 	p = from;
-	while (*p && i < 4) {
+	while (*p && i < 4)
+	{
 		m[i] = 0;
-		while (*p >= '0' && *p <= '9') {
+		while (*p >= '0' && *p <= '9')
+		{
 			m[i] = m[i]*10 + (*p - '0');
 			p++;
 		}
 		if (!*p || *p == ':')
 			break;
-		i++, p++;
+		i++;
+		p++;
 	}
 	
-	in = *(unsigned *)m;
+	memcpy(&in, m, sizeof in);
 
-	for (i=0 ; i<numipfilters ; i++)
-		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
-			return (int)filterban->value;
+	for (i = 0; i < numipfilters; i++)
+		if ((in & ipfilters[i].mask) == ipfilters[i].compare)
+			return (qboolean)filterban->value;
 
-	return (int)!filterban->value;
+	return (qboolean)!filterban->value;
 }
 
 
@@ -171,26 +170,29 @@ SV_RemoveIP_f
 void SVCmd_RemoveIP_f (void)
 {
 	ipfilter_t	f;
-	int			i, j;
-
-	if (gi.argc() < 3) {
+	int			i;
+	
+	if (gi.argc() < 3)
+	{
 		gi.cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
 		return;
 	}
-
+	
 	if (!StringToFilter (gi.argv(2), &f))
 		return;
-
+	
 	for (i=0 ; i<numipfilters ; i++)
+	{
 		if (ipfilters[i].mask == f.mask
-		&& ipfilters[i].compare == f.compare)
+			&& ipfilters[i].compare == f.compare)
 		{
-			for (j=i+1 ; j<numipfilters ; j++)
-				ipfilters[j-1] = ipfilters[j];
+			if (numipfilters > 0)
+				ipfilters[i] = ipfilters[numipfilters - 1];
 			numipfilters--;
 			gi.cprintf (NULL, PRINT_HIGH, "Removed.\n");
 			return;
 		}
+	}
 	gi.cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
 }
 
@@ -201,13 +203,16 @@ SV_ListIP_f
 */
 void SVCmd_ListIP_f (void)
 {
-	int		i;
+	int		i, j;
 	byte	b[4];
 
 	gi.cprintf (NULL, PRINT_HIGH, "Filter list:\n");
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
-		*(unsigned *)b = ipfilters[i].compare;
+		for (j = 0; j < sizeof b; j++)
+		{	
+			b[j] = (ipfilters[i].compare >> (j * 8)) & 0xff;
+		}
 		gi.cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
 	}
 }
@@ -222,15 +227,15 @@ void SVCmd_WriteIP_f (void)
 	FILE	*f;
 	char	name[MAX_OSPATH];
 	byte	b[4];
-	int		i;
+	int		i, j;
 	cvar_t	*game;
 
 	game = gi.cvar("game", "", 0);
 
 	if (!*game->string)
-		sprintf (name, "%s/listip.cfg", GAMEVERSION);
+		Com_sprintf (name, sizeof name, "%s/listip.cfg", GAMEVERSION);
 	else
-		sprintf (name, "%s/listip.cfg", game->string);
+		Com_sprintf (name, sizeof name, "%s/listip.cfg", game->string);
 
 	gi.cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
 
@@ -243,12 +248,15 @@ void SVCmd_WriteIP_f (void)
 	
 	fprintf(f, "set filterban %d\n", (int)filterban->value);
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
-		*(unsigned *)b = ipfilters[i].compare;
-		fprintf (f, "sv addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
+		for (j = 0; j < sizeof b; j++)
+		{
+			b[j] = (ipfilters[i].compare >> (j * 8)) & 0xff;
+		}
+		fprintf(f, "sv addip %u.%u.%u.%u\n", b[0], b[1], b[2], b[3]);
 	}
-	
+
 	fclose (f);
 }
 
@@ -541,13 +549,14 @@ void SVCmd_GenerateNodes_f (void)
 	gi.dprintf("%d nodes generated\n", l);
 }
 */
-void SVCmd_SpawnBoss_f (void)
+
+void SVCmd_SpawnBoss_f(void)
 {
-	edict_t *e;
-	edict_t *m_worldspawn = NULL;
+	edict_t* e;
+	edict_t* m_worldspawn = NULL;
 
 	// try to locate the world monster spawning entity
-	for (e=g_edicts ; e < &g_edicts[globals.num_edicts]; e++)
+	for (e = g_edicts; e < &g_edicts[globals.num_edicts]; e++)
 	{
 		if (e && e->inuse && e->mtype == M_WORLDSPAWN)
 		{
@@ -629,13 +638,13 @@ void SVCmd_ExpHole_f()
 	gi.cprintf(NULL, PRINT_HIGH, "Can't find %s.\n", pname);
 }
 
-void SVCmd_SetTeam_f()
+void SVCmd_SetTeam_f(void)
 {
 	char *pname = gi.argv(2);
 	edict_t *p;
 	int value = atoi(gi.argv(3));
 
-	if ((value < 0) || (strlen(pname) < 0))
+	if ((value == 0) || (strlen(pname) == 0)) // prompt for missing arguments 
 	{
 		gi.cprintf(NULL, PRINT_HIGH, "cmd: setteam <playername> <value>.\n", pname);
 		return;
@@ -671,21 +680,22 @@ void SVCmd_DeleteCharacter_f()
 	}
 
 	// did the file we want download successfully?
-	sprintf(buf, "%s\\%s.vrx", save_path->string, pname);
+	Com_sprintf(buf, sizeof buf, "%s/%s.vrx", save_path->string, pname);
 	if(!stat(buf, &file) && (file.st_size > 1))
 	{
 
 		
 		WriteToLogFile(pname, va("Character deleted by an administrator (Reason: %s).\n", reason));
 		gi.bprintf(PRINT_HIGH, "%s's character was deleted by an administrator (reason: %s)\n", pname, reason);
-		sprintf(buf, "del %s\\\"%s.vrx\"", save_path->string, V_FormatFileName(pname));
-		system(buf);
+		Com_sprintf(buf, sizeof buf, "del %s/\"%s.vrx\"", save_path->string, V_FormatFileName(pname));
+		if (system(buf) == 0)	// wrapped to silence gcc.
+			;
 	}
 }
 
 void SVCmd_ListCombatPrefs ()
 {
-	int i, num=0;
+	int i;
 	edict_t *player;
 
 	for (i = 1; i <= game.maxclients; i++)

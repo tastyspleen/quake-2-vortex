@@ -297,7 +297,7 @@ edict_t *V_SpawnRune (edict_t *self, edict_t *attacker, float base_drop_chance, 
 void SpawnRune (edict_t *self, edict_t *attacker, qboolean debug)
 {
 	int		iRandom;
-	int		targ_level;
+	int		targ_level = 0;
 	float	temp = 0;
 	gitem_t *item;
 	edict_t *rune;
@@ -500,7 +500,7 @@ void spawnClassRune(edict_t *rune, int targ_level)
 	max_mods = 1 + (0.2 * targ_level);	//This means lvl 15+ can get 4 mods
 	if (max_mods > 4)
 		max_mods = 4;
-	num_mods = GetRandom(0, max_mods);
+	num_mods = GetRandom(1, max_mods);
 	rune->vrxitem.itemtype = ITEM_CLASSRUNE;
 	rune->vrxitem.classNum = GetRandom(1, CLASS_MAX);	//class number
 	for (i = 0; i < num_mods; ++i)
@@ -558,25 +558,20 @@ int UniqueParseInteger(char **iterator)
 
 qboolean spawnUnique(edict_t *rune, int index)
 {
-	int j, i;
+	int i;
 	char filename[256];
 	char buf[256];
 	FILE *fptr;
-	j = i = 0;
+	i = 0;
 
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(filename, "%s\\%s", game_path->string, "Settings\\Uniques\\uniques.csv");
-	#else
-		sprintf(filename, "%s/%s", game_path->string, "Settings/Uniques/uniques.csv");
-	#endif
+		Com_sprintf(filename, sizeof filename, "%s/%s", game_path->string, "Settings/Uniques/uniques.csv");
 
 	if ((fptr = fopen(filename, "r")) != NULL)
 	{
 		int linenumber, maxlines;
 		char *iterator;
 		long size;
-		int count = 0;
 
 		//Determine file size
 		fseek (fptr, 0, SEEK_END);
@@ -595,7 +590,8 @@ qboolean spawnUnique(edict_t *rune, int index)
 		else linenumber = index;
 
 		V_tFileGotoLine(fptr, linenumber, size);
-		fgets(buf, 256, fptr);
+		if (fgets(buf, 256, fptr) == NULL)
+			gi.dprintf("Unexpected error reading %s in %s\n", filename, __func__);
 
 		//Load the rune stats
 		iterator = buf;
@@ -808,14 +804,16 @@ qboolean Pickup_Rune (edict_t *ent, edict_t *other)
 
 void V_ItemCopy(item_t *source, item_t *dest)
 {
-	memcpy(dest, source, sizeof(item_t));
+	if (source && dest) /* guard against NULL ptr */
+		memcpy(dest, source, sizeof(item_t));
 }
 
 //************************************************************************************************
 
 void V_ItemClear(item_t *item)
 {
-	memset(item, 0, sizeof(item_t));
+	if (item) /* guard against NULL ptr */
+		memset(item, 0, sizeof(item_t));
 }
 
 //************************************************************************************************
@@ -878,7 +876,7 @@ qboolean V_CanPickUpItem (edict_t *ent)
 
 //************************************************************************************************
 
-void V_PrintItemProperties(edict_t *player, item_t *item)
+void V_PrintItemProperties(edict_t* player, item_t* item)
 {
 	char buf[256];
 	int i;
@@ -891,8 +889,8 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 	}
 
 	strcpy(buf, GetRuneValString(item));
-	
-	switch(item->itemtype)
+
+	switch (item->itemtype)
 	{
 	case ITEM_WEAPON:	strcat(buf, " weapon rune ");	break;
 	case ITEM_ABILITY:	strcat(buf, " ability rune ");	break;
@@ -900,7 +898,7 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 	case ITEM_CLASSRUNE:strcpy(buf, va(" %s rune ", GetRuneValString(item)));	break;
 	}
 
-	if(item->numMods == 1) strcat(buf, "(1 mod)");
+	if (item->numMods == 1) strcat(buf, "(1 mod)");
 	else strcat(buf, va("(%d mods)", item->numMods));
 
 	for (i = 0; i < MAX_VRXITEMMODS; ++i)
@@ -908,20 +906,25 @@ void V_PrintItemProperties(edict_t *player, item_t *item)
 		char temp[32];
 
 		//skip bad mod types
-		if ((item->modifiers[i].type != TYPE_ABILITY) && (item->modifiers[i].type != TYPE_WEAPON) || item->modifiers[i].value < 1)
+		if (item->modifiers[i].value < 1 ||
+			((item->modifiers[i].type != TYPE_ABILITY) && (item->modifiers[i].type != TYPE_WEAPON)))
 			continue;
 
-		switch(item->modifiers[i].type)
+		switch (item->modifiers[i].type)
 		{
-		case TYPE_ABILITY:	strcpy(temp, va("%s:", GetAbilityString(item->modifiers[i].index)));				break;
-		case TYPE_WEAPON:	strcpy(temp, va("%s %s:", 
-								GetShortWeaponString((item->modifiers[i].index / 100)-10), 
-								GetModString((item->modifiers[i].index / 100)-10, item->modifiers[i].index % 100)));	break;
+		case TYPE_ABILITY:
+			strcpy(temp, va("%s:", GetAbilityString(item->modifiers[i].index)));
+			break;
+		case TYPE_WEAPON:
+			strcpy(temp, va("%s %s:",
+				GetShortWeaponString((item->modifiers[i].index / 100) - 10),
+				GetModString((item->modifiers[i].index / 100) - 10, item->modifiers[i].index % 100)));
+			break;
 		}
 		padRight(temp, 20);
 		strcat(buf, va("\n    %s(%d)", temp, item->modifiers[i].value));
 	}
-	
+
 	gi.centerprintf(player, "%s\n", buf);
 }
 
@@ -963,7 +966,7 @@ void V_ResetAllStats(edict_t *ent)
 
 void V_EquipItem(edict_t *ent, int index)
 {
-	int i, wpts, apts, total_pts, clvl = ent->myskills.level;
+	int i, wpts, apts, total_pts;
 
 	// calculate number of weapon and ability points separately
 	wpts = V_GetRuneWeaponPts(ent, &ent->myskills.items[index]);
@@ -1049,7 +1052,6 @@ void V_EquipItem(edict_t *ent, int index)
 
 void cmd_Drink(edict_t *ent, int itemtype, int index)
 {
-	int i;
 	item_t *slot = NULL;
 	qboolean found = false;
 
@@ -1068,7 +1070,7 @@ void cmd_Drink(edict_t *ent, int itemtype, int index)
 	else
 	{
 		//Find item in inventory
-		for (i = 3; i < MAX_VRXITEMS; ++i)
+		for (int i = 3; i < MAX_VRXITEMS; ++i)
 		{
 			if (ent->myskills.items[i].itemtype == itemtype)
 			{

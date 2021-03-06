@@ -58,43 +58,43 @@ char *TeamName (edict_t *ent)
 		return "unknown";
 }
 
-static edict_t *LowPlayer (void)
-{
-	int		i, j=0;
-	edict_t	*cl_ent, *found=NULL;
-
-	for (i=0 ; i<game.maxclients ; i++) {
-		cl_ent = g_edicts+1+i;
-		if (!cl_ent->inuse)
-			continue;
-		if (G_IsSpectator(cl_ent))
-			continue;
-		if (cl_ent->teamnum)
-			continue; // already assigned a team
-		if (!j || (cl_ent->myskills.level < j))
-			found = cl_ent;
-	}
-	return found;
-}
-
-static edict_t *HiPlayer (void)
-{
-	int		i, j=0;
-	edict_t	*cl_ent, *found=NULL;
-
-	for (i=0 ; i<game.maxclients ; i++) {
-		cl_ent = g_edicts+1+i;
-		if (!cl_ent->inuse)
-			continue;
-		if (G_IsSpectator(cl_ent))
-			continue;
-		if (cl_ent->teamnum)
-			continue; // already assigned a team
-		if (!j || (cl_ent->myskills.level > j))
-			found = cl_ent;
-	}
-	return found;
-}
+//static edict_t *LowPlayer (void)
+//{
+//	int		i, j=0;
+//	edict_t	*cl_ent, *found=NULL;
+//
+//	for (i=0 ; i<game.maxclients ; i++) {
+//		cl_ent = g_edicts+1+i;
+//		if (!cl_ent->inuse)
+//			continue;
+//		if (G_IsSpectator(cl_ent))
+//			continue;
+//		if (cl_ent->teamnum)
+//			continue; // already assigned a team
+//		if (!j || (cl_ent->myskills.level < j))
+//			found = cl_ent;
+//	}
+//	return found;
+//}
+//
+//static edict_t *HiPlayer (void)
+//{
+//	int		i, j=0;
+//	edict_t	*cl_ent, *found=NULL;
+//
+//	for (i=0 ; i<game.maxclients ; i++) {
+//		cl_ent = g_edicts+1+i;
+//		if (!cl_ent->inuse)
+//			continue;
+//		if (G_IsSpectator(cl_ent))
+//			continue;
+//		if (cl_ent->teamnum)
+//			continue; // already assigned a team
+//		if (!j || (cl_ent->myskills.level > j))
+//			found = cl_ent;
+//	}
+//	return found;
+//}
 
 int TeamValue (int teamnum)
 {
@@ -190,7 +190,7 @@ void sortTeamsByLevel()
      {  
           int		team1score=0;  
           int		team2score=0; 
-		  int		team1mod=0, team2mod=0;//, delta;
+		  //int		team1mod=0, team2mod=0;//, delta;
           edict_t	*max;  
           edict_t	*temp;  
 
@@ -422,7 +422,6 @@ qboolean SpawnWaitingPlayers (void)
 
 void teamselect_handler (edict_t *ent, int option)
 {
-	int	num=0;
 	joined_t *slot;
 
 	if (option == 3)
@@ -532,123 +531,123 @@ void retard_refist (edict_t *self);
 
 mframe_t retard_frames_punchground [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	retard_fist,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	retard_fist
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	retard_fist},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	retard_fist}
 };
 mmove_t retard_move_punchground = {FRAME_stand25, FRAME_stand34, retard_frames_punchground, retard_refist};
 
 mframe_t retard_frames_uptodown [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	retard_moan,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	retard_moan},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
 
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
 
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	retard_fist,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	retard_fist},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
 
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	retard_fist,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	retard_fist},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t retard_move_uptodown = {FRAME_stand1, FRAME_stand40, retard_frames_uptodown, retard_refist};
 
 mframe_t retard_frames_downtoup [] =
 {
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,				
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,				
-	ai_move,	0,	NULL,				
-	ai_move,	0,	NULL,				
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,		
-	ai_move,	0,	NULL,				
-	ai_move,	0,	NULL,			
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},	
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},				
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},				
+	{ai_move,	0,	NULL},				
+	{ai_move,	0,	NULL},				
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},		
+	{ai_move,	0,	NULL},				
+	{ai_move,	0,	NULL},			
+	{ai_move,	0,	NULL}
 };
 mmove_t retard_move_downtoup = {FRAME_stand41, FRAME_stand59, retard_frames_downtoup, retard_stand};
 
 mframe_t retard_frames_stand_insane [] =
 {
-	ai_charge,	0,	retard_shake,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL
+	{ai_charge,	0,	retard_shake},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL}
 };
 mmove_t retard_move_stand_insane = {FRAME_stand65, FRAME_stand94, retard_frames_stand_insane, retard_stand};
 
@@ -1014,5 +1013,3 @@ qboolean HasFlag (edict_t *ent)
 
 	return false;
 }
-
-

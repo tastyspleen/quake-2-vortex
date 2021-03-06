@@ -43,7 +43,7 @@ static void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed, int
 	VectorMA (start, 8192, dir, end);
 	tr = gi.trace (start, NULL, NULL, end, self, MASK_SHOT);
 	if (G_EntIsAlive(tr.ent) && (tr.ent->svflags & SVF_MONSTER) && (tr.ent->monsterinfo.dodge) 
-		&& infront(tr.ent, self) && (tr.endpos[2] > (tr.ent->absmin[2]+abs(tr.ent->mins[2]))))
+		&& infront(tr.ent, self) && (tr.endpos[2] > (tr.ent->absmin[2] + fabsf(tr.ent->mins[2]))))
 	{
 		VectorSubtract (tr.endpos, start, v);
 		eta = (VectorLength(v) - tr.ent->maxs[0]) / speed;
@@ -434,8 +434,8 @@ Fires a single blaster bolt.  Used by the blaster and hyper blaster.
 //K03 Begin
 void homing_think (edict_t *ent)
 {
-	edict_t *target = NULL;
-	edict_t *blip = NULL;
+	//edict_t *target = NULL;
+	//edict_t *blip = NULL;
 	//vec3_t  targetdir, blipdir;
 	//vec_t   speed;
 
@@ -729,6 +729,7 @@ void Grenade_Explode (edict_t *ent)
 	G_FreeEdict (ent);
 }
 
+#if 0 /* disables code */
 static void Cluster_Explode (edict_t *ent)
 
 {
@@ -785,6 +786,7 @@ static void Cluster_Explode (edict_t *ent)
 
 	G_FreeEdict (ent);
 }
+#endif
 
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
@@ -856,8 +858,8 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;
@@ -907,8 +909,8 @@ edict_t *fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, 
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;
@@ -1294,7 +1296,7 @@ void fire_smartrocket (edict_t *self, edict_t *target, vec3_t start, vec3_t dir,
 
 		// adjust turn rate based on quality of lock
 		// 0.1 = 5-6 degrees/frame, 0.2 = 11-12, 0.3 = 17-18, 0.4 = 23-24
-		rocket->random = 0.1 * (turn_speed - (SMARTROCKET_LOCKFRAMES - 1));
+		rocket->random = 0.1f * (turn_speed - (SMARTROCKET_LOCKFRAMES - 1));
 		
 		// maximum turning rate
 		if (rocket->random > 1.0)
@@ -1322,6 +1324,12 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 	int			mod;
+
+	if (!self)
+	{
+		gi.error("NULL pointer argument when calling %s\n", __func__);
+		return; /* passify compiler */
+	}
 
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
@@ -1416,7 +1424,8 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	trace_t		tr;
 	edict_t		*ignore;
 	int			mask;
-	qboolean	water, ducked;
+	//qboolean	water;
+	qboolean	ducked;
 
 	int range = WEAPON_20MM_INITIAL_RANGE + (WEAPON_20MM_ADDON_RANGE * self->myskills.weapons[WEAPON_20MM].mods[1].current_level);
 
@@ -1428,7 +1437,7 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	VectorMA (start, range, aimdir, end);
 	VectorCopy (start, from);
 	ignore = self;
-	water = false;
+	//water = false;
 	mask = MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA;
 	while (ignore)
 	{
@@ -1437,7 +1446,7 @@ void fire_20mm (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 		if (tr.contents & (CONTENTS_SLIME|CONTENTS_LAVA))
 		{
 			mask &= ~(CONTENTS_SLIME|CONTENTS_LAVA);
-			water = true;
+			//water = true;
 		}
 		else
 		{
@@ -1490,6 +1499,12 @@ void fire_sniperail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 	int			mask;
 	qboolean	water;
 
+	if (!self)
+	{
+		gi.error("NULL pointer argument when calling %s\n", __func__);
+		return; /* passify compiler */
+	}
+
 	// calling entity made a sound, used to alert monsters
 	self->lastsound = level.framenum;
 
@@ -1518,11 +1533,11 @@ void fire_sniperail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_RAILGUN);
 		}
 
-		VectorCopy (tr.endpos, from);
+		_VectorCopy (tr.endpos, from);
 	}
 
 	VectorScale (aimdir,100, from);
-	VectorSubtract(tr.endpos,from,start);
+	_VectorSubtract(tr.endpos,from,start);
 
 //	gi.bprintf(PRINT_HIGH,"jj\n");
 
@@ -1861,14 +1876,13 @@ void fire_ionripper (edict_t *self, vec3_t start, vec3_t dir, int damage, int sp
 
 }
 
-
+#if 0 /* disables code */
 // RAFAEL
 /*
 =================
 fire_heat
 =================
 */
-/*
 void heat_think (edict_t *self)
 {
 	edict_t		*target = NULL;
@@ -1896,7 +1910,6 @@ void heat_think (edict_t *self)
 			continue;
 		
 		// if we need to reduce the tracking cone
-		/*
 		{
 			vec3_t	vec;
 			float	dot;
@@ -1910,9 +1923,8 @@ void heat_think (edict_t *self)
 			if (dot > 0.6)
 				continue;
 		}
-		*/
 
-/*		if (!infront (self, target))
+		if (!infront (self, target))
 			continue;
 
 		VectorSubtract (self->s.origin, target->s.origin, vec);
@@ -1940,9 +1952,8 @@ void heat_think (edict_t *self)
 
 	self->nextthink = level.time + 0.1;
 }
-*/
+
 // RAFAEL
-/*
 void fire_heat (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	edict_t *heat;
@@ -1975,7 +1986,7 @@ void fire_heat (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, 
 
 	gi.linkentity (heat);
 }
-*/
+#endif
 
 
 // RAFAEL
@@ -2060,7 +2071,7 @@ void fire_plasma (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	
 }
 
-
+#if 0 /* Unused Trap_Think function */
 /*
 =================
 trap
@@ -2219,8 +2230,6 @@ static void Trap_Think (edict_t *ent)
 	// pull the enemy in
 	if (best)
 	{
-		vec3_t	forward;
-
 		if (best->groundentity)
 		{
 			best->s.origin[2] += 1;
@@ -2269,9 +2278,8 @@ static void Trap_Think (edict_t *ent)
 				
 		}
 	}
-
-		
 }
+#endif
 
 void spawn_grenades(edict_t *ent, vec3_t origin, float time, int damage, int num) 
 {
@@ -2284,7 +2292,7 @@ void spawn_grenades(edict_t *ent, vec3_t origin, float time, int damage, int num
     grenade->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
     VectorCopy(origin,grenade->s.origin);
     VectorSet(grenade->velocity,0,0,-300);
-    VectorSet(grenade->avelocity,200+crandom()*10.0,200+crandom()*10.0,200+crandom()*10.0);
+    VectorSet(grenade->avelocity, 200.0f + crandom() * 10.0f,200.0f + crandom() * 10.0f , 200.0f + crandom()*10.0f);
     grenade->movetype = MOVETYPE_BOUNCE;
     grenade->classname = "grenade";
     grenade->spawnflags = 4;
@@ -2614,8 +2622,8 @@ void fire_emp_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int slevel, f
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 
@@ -2788,8 +2796,8 @@ void fire_mirv_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, 
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 
@@ -2938,7 +2946,7 @@ void spikeball_move (edict_t *self)
 
 
 	// vector to target
-	VectorSubtract(goalpos, self->s.origin, forward);
+	_VectorSubtract(goalpos, self->s.origin, forward);
 	VectorNormalize(forward);
 
 	// accelerate towards target
@@ -3133,8 +3141,8 @@ void fire_spikeball (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int
 
 	// adjust velocity
 	VectorScale (aimdir, throw_speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 
 	self->num_spikeball++;
@@ -3152,7 +3160,7 @@ void Cmd_TossSpikeball (edict_t *ent)
 	float	range = SPIKEBALL_INITIAL_RANGE + SPIKEBALL_ADDON_RANGE * ent->myskills.abilities[SPORE].current_level;
 	vec3_t	forward, right, start, offset;
 	
-	if (ent->num_spikeball > 0 && Q_strcasecmp (gi.args(), "move") == 0)
+	if (ent->num_spikeball > 0 && Q_stricmp (gi.args(), "move") == 0)
 	{
 		// toggle movement setting
 		if (ent->spikeball_follow)
@@ -3168,7 +3176,7 @@ void Cmd_TossSpikeball (edict_t *ent)
 		return;
 	}
 /*
-	if (ent->num_spikeball > 0 && Q_strcasecmp (gi.args(), "recall") == 0)
+	if (ent->num_spikeball > 0 && Q_stricmp (gi.args(), "recall") == 0)
 	{
 		// toggle recall setting
 		if (ent->spikeball_recall)
@@ -3184,13 +3192,13 @@ void Cmd_TossSpikeball (edict_t *ent)
 		return;
 	}
 */
-	if (Q_strcasecmp (gi.args(), "help") == 0)
+	if (Q_stricmp (gi.args(), "help") == 0)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "syntax: spore [move|remove]\n");
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0)
+	if (Q_stricmp (gi.args(), "remove") == 0)
 	{
 		organ_removeall(ent, "spikeball", true);
 		gi.cprintf(ent, PRINT_HIGH, "Spores removed\n");
@@ -3357,8 +3365,8 @@ void fire_acid (edict_t *self, vec3_t start, vec3_t aimdir, int projectile_damag
 
 	// adjust velocity
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200 + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 }
 

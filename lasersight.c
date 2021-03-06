@@ -52,7 +52,7 @@ void Cmd_LaserSight_f(edict_t *ent)
 void Weapon_Railgun (edict_t *ent);
 void LaserSightThink (edict_t *self)
 {   
-	float	distance;
+	//float	distance;
 	vec3_t start,end,endp,offset;
 	vec3_t forward,right,up;
 	vec3_t	v;
@@ -73,8 +73,8 @@ void LaserSightThink (edict_t *self)
 	{
 		self->s.skinnum = 1;
 		
-		VectorSubtract(tr.ent->s.origin, self->owner->s.origin, v);
-		distance = VectorLength(v);
+		_VectorSubtract(tr.ent->s.origin, self->owner->s.origin, v);
+		//distance = VectorLength(v);
 		// zoom-in on live target with railgun
 		/*
 		if (tr.ent->health > 0 && distance > 256 && self->owner->client->idle_frames >= 10

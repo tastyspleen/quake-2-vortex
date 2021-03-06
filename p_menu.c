@@ -3,11 +3,7 @@
 #define VOTE_MAP	1
 #define	VOTE_MODE	2
 
-qboolean loc_CanSee (edict_t *targ, edict_t *inflictor);
-void check_for_levelup(edict_t *ent);
-
 //Function prototypes required for this .c file:
-void GDS_LoadPlayer(edict_t *ent);
 void OpenDOMJoinMenu (edict_t *ent);
 
 void disableAbilities (edict_t *ent)
@@ -323,7 +319,6 @@ void ChaseCam(edict_t *ent)
 	GetChaseTarget(ent);
 }
 
-int ClassNum(edict_t *ent, int team); //GHz
 int HighestLevelPlayer(void); //GHz
 int TotalPlayersInGame(void)
 {
@@ -633,9 +628,9 @@ void OpenJoinMenu (edict_t *ent)
 	addlinetomenu(ent, va("Welcome to Vortex v%s!", VRX_VERSION), MENU_GREEN_CENTERED);
 	addlinetomenu(ent, "www.project-vortex.com", MENU_GREEN_CENTERED);
 	addlinetomenu(ent, " ", 0);
-	addlinetomenu(ent, "Original design by Kombat03.", 0);
+	addlinetomenu(ent, "Original design: Kombat03.", 0);
 	addlinetomenu(ent, "Ideas borrowed from KOTS,", 0);
-	addlinetomenu(ent, "with input from our players!", 0);
+	addlinetomenu(ent, "and help from our players!", 0);
 	addlinetomenu(ent, " ", 0);
 	addlinetomenu(ent, "Programmers:", 0);
 	addlinetomenu(ent, "GHz, Kombat03, Chamooze", 0);
@@ -858,9 +853,10 @@ void OpenClassMenu (edict_t *ent, int page_num)
 	addlinetomenu(ent, "Exit", 99);
 
 	setmenuhandler(ent, classmenu_handler);
-	if (CLASS_MAX > 11)
-		ent->client->menustorage.currentline = 15;
-	else ent->client->menustorage.currentline = 5 + i;
+	//if (CLASS_MAX > 11)
+	//	ent->client->menustorage.currentline = 15;
+	//else
+	ent->client->menustorage.currentline = 5 + i;
 	showmenu(ent);
 }
 
@@ -960,8 +956,6 @@ void OpenGeneralMenu (edict_t *ent)
 	ent->client->menustorage.currentline = 18;
 	showmenu(ent);
 }
-
-char *G_GetTruncatedIP (edict_t *player);
 
 char *GetTeamString (edict_t *ent)
 {

@@ -65,7 +65,7 @@ void RemoveLaserDefense (edict_t *ent)
 Laser Defense
 =====================
 */
-void laser_cleanup(edict_t *self)
+void laser_cleanup(edict_t* self)
 {
 	vec3_t		origin;
 
@@ -74,33 +74,33 @@ void laser_cleanup(edict_t *self)
 
 	T_RadiusDamage(self, self->owner, self->dmg, NULL, self->dmg_radius, MOD_LASER_DEFENSE);
 
-	VectorMA (self->s.origin, -0.02, self->velocity, origin);
-	gi.WriteByte (svc_temp_entity);
+	VectorMA(self->s.origin, -0.02, self->velocity, origin);
+	gi.WriteByte(svc_temp_entity);
 	if (self->waterlevel)
 	{
 		if (self->groundentity)
-			gi.WriteByte (TE_GRENADE_EXPLOSION_WATER);
+			gi.WriteByte(TE_GRENADE_EXPLOSION_WATER);
 		else
-			gi.WriteByte (TE_ROCKET_EXPLOSION_WATER);
+			gi.WriteByte(TE_ROCKET_EXPLOSION_WATER);
 	}
 	else
 	{
 		if (self->groundentity)
-			gi.WriteByte (TE_GRENADE_EXPLOSION);
+			gi.WriteByte(TE_GRENADE_EXPLOSION);
 		else
-			gi.WriteByte (TE_ROCKET_EXPLOSION);
+			gi.WriteByte(TE_ROCKET_EXPLOSION);
 	}
-	gi.WritePosition (origin);
-	gi.multicast (self->s.origin, MULTICAST_PVS);
+	gi.WritePosition(origin);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
 	self->owner->num_lasers--; //GHz: Decrement counter
 
 	//Remove laser
-    if (self->creator)
-        G_FreeEdict (self->creator);
+	if (self->creator)
+		G_FreeEdict(self->creator);
 
 	//Remove grenade
-	G_FreeEdict (self);
+	G_FreeEdict(self);
 }
 
 void target_laser_def_think (edict_t *self)
@@ -230,7 +230,7 @@ void	PlaceLaser (edict_t *ent)
 {
 	edict_t		*laser,
 				*grenade;
-	edict_t		*blip = NULL;//GHz
+	//edict_t		*blip = NULL;//GHz
 	vec3_t		forward,
 				wallp,
 				start,
@@ -254,7 +254,7 @@ void	PlaceLaser (edict_t *ent)
 		return;
 	}
 
-	if (Q_strcasecmp (gi.args(), "remove") == 0) {
+	if (Q_stricmp (gi.args(), "remove") == 0) {
 		RemoveLaserDefense(ent);
 		return;
 	}
@@ -279,7 +279,8 @@ void	PlaceLaser (edict_t *ent)
 	}
 
 	if (ent->client->ability_delay > level.time) {
-		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", ent->client->ability_delay - level.time);
+		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds\n", 
+			(double)ent->client->ability_delay - (double)level.time);
 		return;
 	}
 	
@@ -486,7 +487,3 @@ void Use_Lasers (edict_t *ent, gitem_t *item)
 
 	PlaceLaser (ent);*/
 }
-
-
-
-

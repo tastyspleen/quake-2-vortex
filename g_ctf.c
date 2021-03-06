@@ -1,4 +1,20 @@
 #include "g_local.h"
+
+//QW//
+/*
+ * Excluded from project. No bot.h file in the collection.
+ * Need to figure out where all the constants belong later.
+  *
+ * Dude! Put your constants in the header file named
+ * after the source file! Don't scatter them throughout
+ * the code. It doesn't belong in settings.h.
+ * Now we have CTF constants in ctf.h, g_ctf.h and settings.h.
+ * as if it wasn't already hard enough to control mod code.
+ * Is this code even needed in this mod?
+*/
+
+#if 0 /* disables all code in this file */
+
 #include "bot.h"
 
 //K03 Begin
@@ -3616,3 +3632,4 @@ void SpawnExtra(vec3_t position,char *classname)
 		it_ent->s.effects |= EF_QUAD;
 	}
 }
+#endif

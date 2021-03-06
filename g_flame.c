@@ -2,9 +2,8 @@
 
 void fire_think (edict_t *self)
 {
-	edict_t *ed=NULL;
 	qboolean quench = false;
-	int i;
+	int i = 0;
 	int damage;
 
 	// fire self-terminates if

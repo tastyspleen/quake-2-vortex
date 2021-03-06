@@ -26,10 +26,10 @@
 #define SENTRY_HEALTH_BASE			100		//Base health
 #define SENTRY_ARMOR_MULT			40		//Multiply by myskills.abilities[BUILD_SENTRY].current_level
 #define SENTRY_ARMOR_BASE			100		//Base armour
-#define SENTRY_HEAL_COST			0.1		//Amount of pc's required to heal 1 hp
-#define SENTRY_REPAIR_COST			0.1		//Amount of pc's required to heal 1 armor point
+#define SENTRY_HEAL_COST			0.1f		//Amount of pc's required to heal 1 hp
+#define SENTRY_REPAIR_COST			0.1f		//Amount of pc's required to heal 1 armor point
 #define SENTRY_MAX_UPGRADE_LEVEL	3		//Maximum sentry upgrade level (like it says)
-#define	SENTRY_UPGRADE_DAMAGE_MULT	0.2		//Amount of damage each upgrade gives the gun (percent)
+#define	SENTRY_UPGRADE_DAMAGE_MULT	0.2f		//Amount of damage each upgrade gives the gun (percent)
 											//Example: 0.2 == 120% at lvl 2 and 140% at lvl 3 (168% of original damage)
 #define SENTRY_UPGRADE_COST			25		//Cost in cubes to upgrade sentry gun
 
@@ -57,7 +57,7 @@
 #define SENTRY_ROCKET_DAMAGE_LEVEL	20		//Imitates a player with RL upgrades (damage)
 #define SENTRY_ROCKET_SPEED_LEVEL	10		//Imitates a player with RL upgrades (speed)
 #define SENTRY_ROCKET_RADIUS_LEVEL	10		//Imitates a player with RL upgrades (radius)
-#define SENTRY_ROCKET_REFIRE		1.0		//Sentry refire rate for rockets only (seconds)
+#define SENTRY_ROCKET_REFIRE		1.0f		//Sentry refire rate for rockets only (seconds)
 #define SENTRY_ROCKETCOST			1
 
 //Ammo
@@ -67,14 +67,13 @@
 
 /**********
 *
-*	sentrygun_die()
-*
-*	Called when the sentry gun is destroyed
+*	Called when the sentry gun is destroyed *
 *
 ***********/
-
 void sentrygun_remove (edict_t *self)
 {
+	if (!self || !self->creator)
+		return;
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
@@ -140,7 +139,7 @@ void sentFireBullet(edict_t *self)
 	vec3_t forward, origin;
 	int damage;
 
-	damage = ((float)self->orders/3.0)*(SENTRY_INITIAL_BULLETDAMAGE+
+	damage = ((float)self->orders/3.0f)*(SENTRY_INITIAL_BULLETDAMAGE+
 		SENTRY_ADDON_BULLETDAMAGE*self->monsterinfo.level);
 
 	//Aim at target, find bullet origin (mussle of gun)
@@ -548,7 +547,7 @@ qboolean sentReload(edict_t *self, edict_t *other)
 			//If player has more bullets than needed to fill up the gun
 			if (self->light_level+4*client_bullets > self->monsterinfo.jumpup)
 			{
-				client_bullets -= 0.25*(self->monsterinfo.jumpup - self->light_level);
+				client_bullets -= 0.25f*(self->monsterinfo.jumpup - self->light_level);
 				self->light_level = self->monsterinfo.jumpup;
 			}
 			else	//Player loads all their bullets into the gun
@@ -662,7 +661,7 @@ qboolean toofar(edict_t *self, edict_t *player)
 	float dist;
 
 	VectorSubtract(self->s.origin, player->s.origin, v);
-	dist = (float)sqrt (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+	dist = sqrtf(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 
 	if (dist > SENTRY_MAX_PLAYER_DISTANCE)
 		return true;
@@ -736,7 +735,7 @@ void sentRotate(edict_t *self)
 
 	if (self->wait == 0)
 	{
-		if (abs(self->s.angles[YAW] - self->ideal_yaw) < SENTRY_ROTATE_SPEED)
+		if (fabsf(self->s.angles[YAW] - self->ideal_yaw) < SENTRY_ROTATE_SPEED)
 			self->s.angles[YAW] = self->ideal_yaw;
 		if (self->s.angles[YAW] == self->ideal_yaw)
 		{
@@ -799,7 +798,7 @@ void sentrygun_think (edict_t *self)
 		else if (converted && self->creator && self->creator->inuse && self->creator->client 
 			&& (level.time > self->removetime-5) && !(level.framenum%10))
 				gi.cprintf(self->creator, PRINT_HIGH, "%s conversion will expire in %.0f seconds\n", 
-					V_GetMonsterName(self), self->removetime-level.time);	
+					V_GetMonsterName(self), (double)self->removetime - (double)level.time);
 	}
 
 	// sentry is stunned
@@ -831,7 +830,7 @@ void sentrygun_think (edict_t *self)
 
 	if (!self->enemy) //If we do not have a target yet
 	{
-		if ( target = sentry_findtarget(self) )
+		if ( (target = sentry_findtarget(self)) )
 			attack(self);
 	}
 	else if ( CanTarget(self) )
@@ -1100,7 +1099,7 @@ void SpawnSentry1 (edict_t *ent, int sentryType, int cost, float skill_mult, flo
 	if ((tr.fraction != 1.0) && (tr.endpos[2] < ent->s.origin[2]) && (angles[PITCH] == 270))
 	{
 		//gi.dprintf("aiming at ground\n");
-		end[2] += abs(sentry->mins[2])+1;
+		end[2] += fabsf(sentry->mins[2])+1;
 	}
 	// make sure sentry doesn't spawn in a solid
 	tr = gi.trace(end, sentry->mins, sentry->maxs, end, NULL, MASK_SHOT);
@@ -1256,7 +1255,7 @@ void cmd_SentryGun(edict_t *ent)
 
 	arg = gi.args();
 
-	if (!Q_strcasecmp(arg, "remove"))
+	if (!Q_stricmp(arg, "remove"))
 	{
 		while((scan = G_Find(scan, FOFS(classname), "Sentry_Gun")) != NULL) {
 		if (scan && scan->inuse && scan->creator && scan->creator->client && (scan->creator==ent) && !RestorePreviousOwner(scan)) {
@@ -1267,7 +1266,7 @@ void cmd_SentryGun(edict_t *ent)
 		return;
 	}
 
-	if (!Q_strcasecmp(arg, "rotate"))
+	if (!Q_stricmp(arg, "rotate"))
 	{
 		rotateSentry(ent);
 		return;

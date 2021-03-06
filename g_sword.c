@@ -165,7 +165,7 @@ void sword_attack (edict_t *ent, vec3_t g_offset, int damage)
 	vec3_t  start;
 	vec3_t  offset;
 
-	int swordrange = SABRE_INITIAL_RANGE + SABRE_ADDON_RANGE * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level;
+	//int swordrange = SABRE_INITIAL_RANGE + SABRE_ADDON_RANGE * ent->myskills.weapons[WEAPON_SWORD].mods[2].current_level;
 
 	if (is_quad)
 		damage *= 4;
@@ -184,8 +184,8 @@ void sword_attack (edict_t *ent, vec3_t g_offset, int damage)
 
 void Weapon_Sword_Fire (edict_t *ent)
 {
-	int sword_bonus = 1;
-	int damage;
+	float sword_bonus = 1;
+	float damage;
 	float temp;
 	
 	// special rules; flag carrier can't use weapons
@@ -200,7 +200,7 @@ void Weapon_Sword_Fire (edict_t *ent)
 	temp = 0.8 + 0.007 * ent->myskills.weapons[WEAPON_SWORD].mods[1].current_level;
 
 	 if ((temp < 1.0) && (ent->client->ps.gunframe - 5 > 0))
-		damage *= pow(temp, ent->client->ps.gunframe - 5);
+		damage *= powf(temp, ent->client->ps.gunframe - 5);
 	
 	 //gi.dprintf("damage=%d\n", damage);
 
@@ -208,13 +208,13 @@ void Weapon_Sword_Fire (edict_t *ent)
 		gi.sound (ent, CHAN_WEAPON, gi.soundindex("misc/power1.wav") , 1, ATTN_NORM, 0);
 
      if ( ent->client->buttons & BUTTON_ATTACK )
-		sword_attack (ent, vec3_origin, damage);
+		sword_attack (ent, vec3_origin, (int)damage);
      ent->client->ps.gunframe++;
 }
 
 void Weapon_Lance_Fire (edict_t *ent)
 {
-	int sword_bonus = 1.0;
+	float sword_bonus = 1.0f;
 	int damage, burn_damage;
 	float speed;
 	vec3_t  forward, start;
@@ -225,7 +225,7 @@ void Weapon_Lance_Fire (edict_t *ent)
 
 	// calculate knight bonus
 	if (ent->myskills.class_num == CLASS_KNIGHT)
-		sword_bonus = 1.5;
+		sword_bonus = 1.5f;
 
 	damage = SABRE_INITIAL_DAMAGE + (SABRE_ADDON_DAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[0].current_level * sword_bonus);
 	burn_damage = SABRE_ADDON_HEATDAMAGE * ent->myskills.weapons[WEAPON_SWORD].mods[3].current_level * sword_bonus;

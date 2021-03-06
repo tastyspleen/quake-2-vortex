@@ -30,7 +30,7 @@ char *ReadTextFile(char *filename) {
 	char		*filestring = NULL;
 	long int	i = 0;
 
-	while (true) {
+	while (1) {
 		fp = fopen(filename, "rb");
 		if (!fp) break;
 
@@ -60,7 +60,7 @@ char *LoadEntities(char *mapname, char *entities)
 
 	game_dir = gi.cvar ("game", "", 0);
 	
-	sprintf(entfilename, "%s/maps/%s.ent", game_dir->string, mapname);
+	Com_sprintf(entfilename, sizeof entfilename, "%s/maps/%s.ent", game_dir->string, mapname);
 	// convert string to all lowercase (for Linux)
 	for (i = 0; entfilename[i]; i++)
 		entfilename[i] = tolower(entfilename[i]);

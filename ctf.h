@@ -1,3 +1,4 @@
+#pragma once
 #define RED_TEAM					1
 #define BLUE_TEAM					2
 #define BASE_FLAG_TAKEN				1

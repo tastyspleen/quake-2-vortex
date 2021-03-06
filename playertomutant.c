@@ -94,7 +94,10 @@ qboolean mutant_boost (edict_t *ent)
 	else if (ent->mtype == MORPH_BRAIN)
 		next_frame = &ent->myskills.abilities[BRAIN].ammo_regenframe;
 	else
-		gi.error ("invalid ent->mtype");
+	{
+		gi.error("invalid ent->mtype");
+		return 0; /* silence compiler about uninitialized next_frame */
+	}
 
 	if (level.framenum > *next_frame)
 	{

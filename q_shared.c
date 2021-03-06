@@ -6,6 +6,8 @@ vec3_t vec3_origin = {0,0,0};
 
 #ifdef _WIN32
 #pragma optimize( "", off )
+#pragma warning (push)
+#pragma warning (disable:4748)
 #endif
 
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees )
@@ -63,10 +65,11 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 	}
 }
 
-
 #ifdef _WIN32
+#pragma warning(pop)
 #pragma optimize( "", on )
 #endif
+
 
 
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
@@ -104,6 +107,7 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 		up[2] = cr*cp;
 	}
 }
+
 
 void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal )
 {
@@ -225,19 +229,6 @@ void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4])
 
 //============================================================================
 
-
-float Q_fabs (float f)
-{
-#if 0
-	if (f >= 0)
-		return f;
-	return -f;
-#else
-	int tmp = * ( int * ) &f;
-	tmp &= 0x7FFFFFFF;
-	return * ( float * ) &tmp;
-#endif
-}
 
 #if defined _M_IX86 && !defined C_ONLY
 #pragma warning (disable:4035)
@@ -735,7 +726,7 @@ void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
 	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
-double sqrt(double x);
+//double sqrt(double x);
 
 vec_t VectorLength(vec3_t v)
 {
@@ -908,7 +899,7 @@ void COM_DefaultExtension (char *path, char *extension)
 
 ============================================================================
 */
-
+#if 0 /* disables code */
 qboolean	bigendien;
 
 // can't just use function pointers, or dll linkage can
@@ -1013,7 +1004,7 @@ void Swap_Init (void)
 	}
 
 }
-
+#endif
 
 
 /*
@@ -1091,11 +1082,10 @@ skipwhite:
 		while (1)
 		{
 			c = *data++;
-			if (c=='\"' || !c)
+			if (c == '\"' || !c)
 			{
-				com_token[len] = 0;
-				*data_p = data;
-				return com_token;
+				//bugfix from skuller
+				goto finish;
 			}
 			if (len < MAX_TOKEN_CHARS)
 			{
@@ -1105,7 +1095,7 @@ skipwhite:
 		}
 	}
 
-// parse a regular word
+	// parse a regular word
 	do
 	{
 		if (len < MAX_TOKEN_CHARS)
@@ -1117,9 +1107,11 @@ skipwhite:
 		c = *data;
 	} while (c>32);
 
+finish:
+
 	if (len == MAX_TOKEN_CHARS)
 	{
-//		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
+		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
 		len = 0;
 	}
 	com_token[len] = 0;
@@ -1155,68 +1147,103 @@ void Com_PageInMemory (byte *buffer, int size)
 ============================================================================
 */
 
-// FIXME: replace all Q_stricmp with Q_strcasecmp
-int Q_stricmp (char *s1, char *s2)
-{
-#if defined(WIN32)
-	return _stricmp (s1, s2);
-#else
-	return strcasecmp (s1, s2);
-#endif
-}
+static	char	bigbuffer[0x10000]; // for Com_Sprintf
 
-
-int Q_strncasecmp (char *s1, char *s2, int n)
-{
-	int		c1, c2;
-	
-	do
-	{
-		c1 = *s1++;
-		c2 = *s2++;
-
-		if (!n--)
-			return 0;		// strings are equal until end point
-		
-		if (c1 != c2)
-		{
-			if (c1 >= 'a' && c1 <= 'z')
-				c1 -= ('a' - 'A');
-			if (c2 >= 'a' && c2 <= 'z')
-				c2 -= ('a' - 'A');
-			if (c1 != c2)
-				return -1;		// strings not equal
-		}
-	} while (c1);
-	
-	return 0;		// strings are equal
-}
-
-int Q_strcasecmp (char *s1, char *s2)
-{
-	return Q_strncasecmp (s1, s2, 99999);
-}
-
-
-
-void Com_sprintf (char *dest, int size, char *fmt, ...)
+/**
+ Safer, uses large buffer
+*/
+void Com_sprintf(char *dest, int size, char *fmt, ...)
 {
 	int		len;
 	va_list		argptr;
-	char	bigbuffer[0x10000];
 
-	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
-	va_end (argptr);
-	if (len >= size)
-		Com_Printf ("Com_sprintf: overflow of %i in %i\n", len, size);
-	strncpy (dest, bigbuffer, size-1);
+	va_start(argptr, fmt);
+	len = vsprintf(bigbuffer, fmt, argptr);
+	va_end(argptr);
+	if (len < size)
+		strncpy(dest, bigbuffer, size - 1);
+	else
+	{
+		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
+			"Input was: %s", __func__, len, size, bigbuffer);
+	}
+}
+
+/** Case independent string compare (strcasecmp)
+ if s1 is contained within s2 then return 0, they are "equal".
+ else return the lexicographic difference between them.
+*/
+int	Q_stricmp(const char *s1, const char *s2)
+{
+	const unsigned char
+		*uc1 = (const unsigned char *)s1,
+		*uc2 = (const unsigned char *)s2;
+
+	while (tolower(*uc1) == tolower(*uc2++))
+		if (*uc1++ == '\0')
+			return (0);
+	return (tolower(*uc1) - tolower(*--uc2));
+}
+
+/** Case sensitive string compare (strcmp)
+ if s1 is contained within s2 then return 0, they are "equal".
+ else return the lexicographic difference between them.
+*/
+int	Q_strcmp(const char* s1, const char* s2)
+{
+	const unsigned char
+		* uc1 = (const unsigned char*)s1,
+		* uc2 = (const unsigned char*)s2;
+
+	while (*uc1 == *uc2++)
+		if (*uc1++ == '\0')
+			return (0);
+	return (*uc1 - *--uc2);
+}
+
+/**
+ * A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
+ */
+void Q_strncpy(char* pszDest, const char* pszSrc, int nDestSize)
+{
+	strncpy(pszDest, pszSrc, nDestSize);
+	pszDest[nDestSize - 1] = '\0';
+}
+
+
+static char HiLo_text[MAX_INFO_STRING];
+
+char* LoPrint(char* text)
+{
+	int i;
+
+	if (!text)
+		return NULL;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] > 127)
+			HiLo_text[i] = (byte)HiLo_text[i] - 128;
+
+	return HiLo_text;
+}
+
+char* HiPrint(char* text)
+{
+	int i;
+
+	if (!text)
+		return NULL;
+	Q_strncpy(HiLo_text, text, sizeof HiLo_text);
+	for (i = 0; i < strlen(HiLo_text); i++)
+		if ((byte)HiLo_text[i] <= 127)
+			HiLo_text[i] = (byte)HiLo_text[i] + 128;
+	return HiLo_text;
 }
 
 /*
 =====================================================================
 
-  INFO STRINGS
+                          INFO STRINGS
 
 =====================================================================
 */
@@ -1231,22 +1258,21 @@ key and returns the associated value, or an empty string.
 */
 char *Info_ValueForKey (char *s, char *key)
 {
-	char	pkey[512];
+	char	pkey[512] = {0};
 	static	char value[2][512];	// use two buffers so compares
 								// work without stomping on each other
 	static	int	valueindex;
 	char	*o;
 
 	valueindex ^= 1;
-	if (*s == '\\')
-		s++;
-	while (1)
+	if (*s == '\\') s++;
+
+	for (;;)
 	{
 		o = pkey;
 		while (*s != '\\')
 		{
-			if (!*s)
-				return "";
+			if (!*s) return "";
 			*o++ = *s++;
 		}
 		*o = 0;
@@ -1254,19 +1280,13 @@ char *Info_ValueForKey (char *s, char *key)
 
 		o = value[valueindex];
 
-		while (*s != '\\' && *s)
-		{
-			if (!*s)
-				return "";
-			*o++ = *s++;
-		}
+		while (*s != '\\' && *s) *o++ = *s++;
 		*o = 0;
 
 		if (!strcmp (key, pkey) )
 			return value[valueindex];
 
-		if (!*s)
-			return "";
+		if (!*s) return "";
 		s++;
 	}
 }
@@ -1274,8 +1294,8 @@ char *Info_ValueForKey (char *s, char *key)
 void Info_RemoveKey (char *s, char *key)
 {
 	char	*start;
-	char	pkey[512];
-	char	value[512];
+	char	pkey[512] = {0};
+	char	value[512] = {0};
 	char	*o;
 
 	if (strstr (key, "\\"))
@@ -1296,7 +1316,7 @@ void Info_RemoveKey (char *s, char *key)
 				return;
 			*o++ = *s++;
 		}
-		*o = 0;
+		*o = '\0';
 		s++;
 
 		o = value;
@@ -1306,18 +1326,21 @@ void Info_RemoveKey (char *s, char *key)
 				return;
 			*o++ = *s++;
 		}
-		*o = 0;
+		*o = '\0';
 
 		if (!strcmp (key, pkey) )
 		{
-			strcpy (start, s);	// remove this part
+			size_t memlen;
+
+			memlen = strlen(s);
+			memmove (start, s, memlen);
+			*(start+memlen) = 0;
 			return;
 		}
 
 		if (!*s)
 			return;
 	}
-
 }
 
 
@@ -1332,17 +1355,17 @@ can mess up the server's parsing
 qboolean Info_Validate (char *s)
 {
 	if (strstr (s, "\""))
-		return false;
+		return 0;
 	if (strstr (s, ";"))
-		return false;
-	return true;
+		return 0;
+	return 1;
 }
 
 void Info_SetValueForKey (char *s, char *key, char *value)
 {
 	char	newi[MAX_INFO_STRING], *v;
 	int		c;
-	int		maxsize = MAX_INFO_STRING;
+	size_t		maxsize = MAX_INFO_STRING;
 
 	if (strstr (key, "\\") || strstr (value, "\\") )
 	{
@@ -1367,6 +1390,7 @@ void Info_SetValueForKey (char *s, char *key, char *value)
 		Com_Printf ("Keys and values must be < 64 characters.\n");
 		return;
 	}
+
 	Info_RemoveKey (s, key);
 	if (!value || !strlen(value))
 		return;
@@ -1375,7 +1399,7 @@ void Info_SetValueForKey (char *s, char *key, char *value)
 
 	if (strlen(newi) + strlen(s) > maxsize)
 	{
-		Com_Printf ("%s: Info string length exceeded\n", key);
+		Com_Printf ("Info string length exceeded: \"%s\" value: \"%s\"\n", key, value);
 		return;
 	}
 

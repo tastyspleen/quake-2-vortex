@@ -1,6 +1,5 @@
 #include "g_local.h"
 
-void SpawnItem3 (edict_t *ent, gitem_t *item);
 /*
 =========================================================
 
@@ -238,12 +237,12 @@ void plat_CalcAcceleratedMove(moveinfo_t *moveinfo)
 		float	f;
 
 		f = (moveinfo->accel + moveinfo->decel) / (moveinfo->accel * moveinfo->decel);
-		moveinfo->move_speed = (-2 + sqrt(4 - 4 * f * (-2 * moveinfo->remaining_distance))) / (2 * f);
+		moveinfo->move_speed = (-2 + sqrtf(4 - 4 * f * (-2 * moveinfo->remaining_distance))) / (2 * f);
 		decel_dist = AccelerationDistance (moveinfo->move_speed, moveinfo->decel);
 	}
 
 	moveinfo->decel_distance = decel_dist;
-};
+}
 
 void plat_Accelerate (moveinfo_t *moveinfo)
 {
@@ -304,7 +303,7 @@ void plat_Accelerate (moveinfo_t *moveinfo)
 		// and cross over the decel_distance; figure the average speed for the
 		// entire move
 		p1_distance = moveinfo->remaining_distance - moveinfo->decel_distance;
-		p1_speed = (old_speed + moveinfo->move_speed) / 2.0;
+		p1_speed = (old_speed + moveinfo->move_speed) / 2.0f;
 		p2_distance = moveinfo->move_speed * (1.0 - (p1_distance / p1_speed));
 		distance = p1_distance + p2_distance;
 		moveinfo->current_speed = (p1_speed * (p1_distance / distance)) + (moveinfo->move_speed * (p2_distance / distance));
@@ -314,7 +313,7 @@ void plat_Accelerate (moveinfo_t *moveinfo)
 
 	// we are at constant velocity (move_speed)
 	return;
-};
+}
 
 void Think_AccelMove (edict_t *ent)
 {
@@ -999,7 +998,7 @@ void door_use (edict_t *self, edict_t *other, edict_t *activator)
 		ent->touch = NULL;
 		door_go_up (ent, activator);
 	}
-};
+}
 
 void Touch_DoorTrigger (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
@@ -1849,7 +1848,7 @@ void SP_func_timer (edict_t *self)
 
 	if (self->spawnflags & 1)
 	{
-		self->nextthink = level.time + 1.0 + st.pausetime + self->delay + self->wait + crandom() * self->random;
+		self->nextthink = level.time + 1.0f + st.pausetime + self->delay + self->wait + crandom() * self->random;
 		self->activator = self;
 	}
 
@@ -1981,7 +1980,7 @@ void door_secret_done (edict_t *self)
 
 void door_secret_blocked  (edict_t *self, edict_t *other)
 {
-	if (!(other->svflags & SVF_MONSTER) && (!other->client) || !Q_stricmp(other->classname,"bodyque"))
+	if ((!(other->svflags & SVF_MONSTER) && (!other->client)) || !Q_stricmp(other->classname,"bodyque"))
 	{
 		// give it a chance to go away on it's own terms (like gibs)
 		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 100000, 1, 0, MOD_CRUSH);
@@ -2047,10 +2046,10 @@ void SP_func_door_secret (edict_t *ent)
 	VectorClear (ent->s.angles);
 	side = 1.0 - (ent->spawnflags & SECRET_1ST_LEFT);
 	if (ent->spawnflags & SECRET_1ST_DOWN)
-		width = fabs(DotProduct(up, ent->size));
+		width = fabsf(DotProduct(up, ent->size));
 	else
-		width = fabs(DotProduct(right, ent->size));
-	length = fabs(DotProduct(forward, ent->size));
+		width = fabsf(DotProduct(right, ent->size));
+	length = fabsf(DotProduct(forward, ent->size));
 	if (ent->spawnflags & SECRET_1ST_DOWN)
 		VectorMA (ent->s.origin, -1 * width, up, ent->pos1);
 	else

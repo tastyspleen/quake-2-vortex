@@ -405,19 +405,19 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			// strength effect
 			if (!attacker->myskills.abilities[STRENGTH].disable)
 			{
-				int		talentLevel;
+				int		talent_level;
 
 				temp = 1 + 0.1 * attacker->myskills.abilities[STRENGTH].current_level;
 			
 				//Talent: Improved Strength
-				talentLevel = getTalentLevel(attacker, TALENT_IMP_STRENGTH);
-				if(talentLevel > 0)		
-					temp += 0.1 * talentLevel;
+				talent_level = getTalentLevel(attacker, TALENT_IMP_STRENGTH);
+				if(talent_level > 0)		
+					temp += 0.1 * talent_level;
 				
 				//Talent: Improved Resist
-				talentLevel = getTalentLevel(attacker, TALENT_IMP_RESIST);
-				if(talentLevel > 0)		
-					temp -= 0.1 * talentLevel;
+				talent_level = getTalentLevel(attacker, TALENT_IMP_RESIST);
+				if(talent_level > 0)		
+					temp -= 0.1 * talent_level;
 
 				//don't allow damage under 100%
 				if (temp < 1.0) 
@@ -434,7 +434,6 @@ float G_AddDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			if (getTalentSlot(attacker, TALENT_BLOOD_OF_ARES) != -1)
 			{
 				int level = getTalentLevel(attacker, TALENT_BLOOD_OF_ARES);
-				float temp;
 				
 				// BoA is less effective in PvM
 				if (pvm->value)
@@ -690,7 +689,6 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		if (getTalentSlot(targ, TALENT_BLOOD_OF_ARES) != -1)
 		{
 			int level = getTalentLevel(targ, TALENT_BLOOD_OF_ARES);
-			float temp;
 			
 			// BoA is less effective in PvM
 			if (pvm->value)
@@ -832,7 +830,8 @@ float G_SubDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 float G_ModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker, 
 				   vec3_t point, float damage, int dflags, int mod)
 {
-	int		pierceLevel=0, pierceFactor;
+	int		pierceLevel = 0;
+	float	pierceFactor = 0;
 	float	temp;
 
 	if (damage > 0)
@@ -844,13 +843,13 @@ float G_ModifyDamage (edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			{
 				// 25% chance at level 10 for AP round
 				pierceLevel = attacker->myskills.weapons[WEAPON_MACHINEGUN].mods[1].current_level;
-				pierceFactor = 0.0333;
+				pierceFactor = 0.0333f;
 			}
 			else if (mod == MOD_RAILGUN)
 			{
 				// 10% chance at level 10 for AP round
 				pierceLevel = attacker->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level;
-				pierceFactor = 0.0111;
+				pierceFactor = 0.0111f;
 			}
 
 			if (pierceLevel > 0)

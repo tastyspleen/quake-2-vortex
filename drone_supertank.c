@@ -11,13 +11,6 @@ SUPERTANK
 
 qboolean visible (edict_t *self, edict_t *other);
 
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
-
-static int	sound_pain1;
-static int	sound_pain2;
-static int	sound_pain3;
 static int	sound_death;
 static int	sound_search1;
 static int	sound_search2;
@@ -41,66 +34,66 @@ void supertank_reattack1(edict_t *self);
 
 mframe_t supertank_frames_stand []=
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t	supertank_move_stand = {FRAME_stand_1, FRAME_stand_60, supertank_frames_stand, NULL};
 	
@@ -112,24 +105,24 @@ void supertank_stand (edict_t *self)
 
 mframe_t supertank_frames_run [] =
 {
-	drone_ai_run, 12,	TreadSound,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL,
-	drone_ai_run, 12,	NULL
+	{drone_ai_run, 12,	TreadSound},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL},
+	{drone_ai_run, 12,	NULL}
 };
 mmove_t	supertank_move_run = {FRAME_forwrd_1, FRAME_forwrd_18, supertank_frames_run, NULL};
 
@@ -140,24 +133,24 @@ mmove_t	supertank_move_run = {FRAME_forwrd_1, FRAME_forwrd_18, supertank_frames_
 
 mframe_t supertank_frames_forward [] =
 {
-	drone_ai_walk, 4,	TreadSound,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL,
-	drone_ai_walk, 4,	NULL
+	{drone_ai_walk, 4,	TreadSound},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL},
+	{drone_ai_walk, 4,	NULL}
 };
 mmove_t	supertank_move_forward = {FRAME_forwrd_1, FRAME_forwrd_18, supertank_frames_forward, NULL};
 
@@ -184,131 +177,131 @@ void supertank_run (edict_t *self)
 
 mframe_t supertank_frames_turn_right [] =
 {
-	ai_move,	0,	TreadSound,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	TreadSound},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t supertank_move_turn_right = {FRAME_right_1, FRAME_right_18, supertank_frames_turn_right, supertank_run};
 
 mframe_t supertank_frames_turn_left [] =
 {
-	ai_move,	0,	TreadSound,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	TreadSound},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t supertank_move_turn_left = {FRAME_left_1, FRAME_left_18, supertank_frames_turn_left, supertank_run};
 
 mframe_t supertank_frames_death1 [] =
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	BossExplode
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	BossExplode}
 };
 mmove_t supertank_move_death = {FRAME_death_1, FRAME_death_24, supertank_frames_death1, NULL};
 
 mframe_t supertank_frames_backward[] =
 {
-	drone_ai_walk, 0,	TreadSound,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 0,	NULL
+	{drone_ai_walk, 0,	TreadSound},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 0,	NULL}
 };
 mmove_t	supertank_move_backward = {FRAME_backwd_1, FRAME_backwd_18, supertank_frames_backward, NULL};
 
 mframe_t supertank_frames_attack3[]=
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t supertank_move_attack3 = {FRAME_attak3_1, FRAME_attak3_27, supertank_frames_attack3, supertank_run};
 
@@ -322,64 +315,64 @@ void supertank_rerocket(edict_t *self)
 
 mframe_t supertank_frames_attack2[]=
 {
-	//ai_charge,	0,	NULL,//20
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	//ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	supertankRocket,//27
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	supertankRocket,//30
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	supertankRocket,//33
-	ai_charge,	0,	supertank_rerocket,//GHz
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,//40
-	//ai_move,	0,	NULL,
-	//ai_move,	0,	NULL,
-	//ai_move,	0,	NULL,
-	//ai_move,	0,	NULL,
-	//ai_move,	0,	NULL,
-	//ai_move,	0,	NULL
+	//ai_charge,	0,	NULL},//20
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	//ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	supertankRocket},//27
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	supertankRocket},//30
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	supertankRocket},//33
+	{ai_charge,	0,	supertank_rerocket},//GHz
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},//40
+	//{ai_move,	0,	NULL},
+	//{ai_move,	0,	NULL},
+	//{ai_move,	0,	NULL},
+	//{ai_move,	0,	NULL},
+	//{ai_move,	0,	NULL},
+	//{ai_move,	0,	NULL}
 };
 mmove_t supertank_move_attack2 = {FRAME_attak2_6, FRAME_attak2_21, supertank_frames_attack2, supertank_run};
 
 mframe_t supertank_frames_attack1[]=
 {
-	ai_charge,	0,	supertankMachineGun,
-	ai_charge,	0,	supertankMachineGun,
-	ai_charge,	0,	supertankMachineGun,
-	ai_charge,	0,	supertankMachineGun,
-	ai_charge,	0,	supertankMachineGun,
-	ai_charge,	0,	supertankMachineGun,
+	{ai_charge,	0,	supertankMachineGun},
+	{ai_charge,	0,	supertankMachineGun},
+	{ai_charge,	0,	supertankMachineGun},
+	{ai_charge,	0,	supertankMachineGun},
+	{ai_charge,	0,	supertankMachineGun},
+	{ai_charge,	0,	supertankMachineGun},
 
 };
 mmove_t supertank_move_attack1 = {FRAME_attak1_1, FRAME_attak1_6, supertank_frames_attack1, supertank_reattack1};
 
 mframe_t supertank_frames_end_attack1[]=
 {
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL,
-	ai_move,	0,	NULL
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL},
+	{ai_move,	0,	NULL}
 };
 mmove_t supertank_move_end_attack1 = {FRAME_attak1_7, FRAME_attak1_20, supertank_frames_end_attack1, supertank_run};
 /*
@@ -401,12 +394,12 @@ void supertank_reattack4(edict_t *self);
 
 mframe_t supertank_frames_attack4[]=
 {
-	ai_charge,	0,	supertankMirv,//74
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	supertankMirv,//79
-	ai_charge,	0,	NULL,
-	ai_charge,	0,	NULL,
+	{ai_charge,	0,	supertankMirv},//74
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	supertankMirv},//79
+	{ai_charge,	0,	NULL},
+	{ai_charge,	0,	NULL},
 
 };
 mmove_t supertank_move_attack4 = {FRAME_attak4_1, FRAME_attak4_6, supertank_frames_attack4, supertank_reattack4};

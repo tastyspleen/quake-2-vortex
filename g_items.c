@@ -6,14 +6,14 @@ void		Use_Weapon (edict_t *ent, gitem_t *inv);
 void		Use_Weapon2 (edict_t *ent, gitem_t *inv);
 void		Drop_Weapon (edict_t *ent, gitem_t *inv);
 
-void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
+static void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 //K03 End
 gitem_armor_t jacketarmor_info	= { 25, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t combatarmor_info	= { 50, 200, .80, .60, ARMOR_BODY};//K03
 gitem_armor_t bodyarmor_info	= {100, 200, .80, .60, ARMOR_BODY};
 
-static int	jacket_armor_index;
-static int	combat_armor_index;
+int	jacket_armor_index;
+int	combat_armor_index;
 int resistance_index;
 int	strength_index;
 int regeneration_index;
@@ -111,33 +111,47 @@ gitem_t	*FindItem (char *pickup_name)
 
 //======================================================================
 
-void DoRespawn (edict_t *ent)
+void DoRespawn(edict_t* ent)
 {
-	if (ent->team)
+	edict_t* master;
+	unsigned count;
+	unsigned choice;
+
+	if (ent == NULL)
 	{
-		edict_t	*master;
-		int	count;
-		int choice;
-
-		master = ent->teammaster;
-
-		for (count = 0, ent = master; ent; ent = ent->chain, count++)
-			;
-
-		choice = rand() % count;
-
-		for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
-			;
+		gi.dprintf("NULL ent passed to %s\n", __func__);
+		return;
 	}
 
-	ent->svflags &= ~SVF_NOCLIENT;
-	ent->solid = SOLID_TRIGGER;
-	gi.linkentity (ent);
+	if (ent->team)
+	{
+		master = ent->teammaster;
+		if (master == NULL)
+			return;
 
-	if(ent->classname[0] == 'R') return;
+		count = 0;
+		for (ent = master; ent; ent = ent->chain)
+			count++;
 
-	// send an effect
-	ent->s.event = EV_ITEM_RESPAWN;
+		assert(count != 0);
+		choice = rand() % count;
+
+		count = 0;
+		for (ent = master; count < choice; ent = ent->chain)
+			count++;
+	}
+
+	if (ent)
+	{
+		ent->svflags &= ~SVF_NOCLIENT;
+		ent->solid = SOLID_TRIGGER;
+		gi.linkentity(ent);
+
+		if (ent->classname[0] == 'R') return;
+
+		// send an effect
+		ent->s.event = EV_ITEM_RESPAWN;
+	}
 }
 
 void SetRespawn (edict_t *ent, float delay)
@@ -488,9 +502,8 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 
 qboolean Pickup_Key (edict_t *ent, edict_t *other)
 {
-#ifdef PRINT_DEBUGINFO
-gi.dprintf("%s is picking up a %s in Pickup_Key()\n", ent->client->pers.netname, other->classname);
-#endif
+	if (debuginfo->value == 2)
+		gi.dprintf("%s is picking up a %s in Pickup_Key()\n", ent->client->pers.netname, other->classname);
 
 	if (ent->count > 0)
 		other->client->pers.inventory[ITEM_INDEX(ent->item)] += ent->count;
@@ -587,6 +600,9 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 	int count;
 	float temp=1.0;
 
+	if (other == NULL || ent == NULL)
+		return false;
+	
 	//3.0 cursed players can't pick up health
 	if (que_findtype(other->curses, NULL, CURSE) != NULL)
 		return false;
@@ -881,7 +897,10 @@ void Teleport_them(edict_t *ent)
 				spot = G_Find (spot, FOFS(classname), "info_player_start");
 			}
 			if (!spot)
-				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+			{
+				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
+				return;
+			}
 		}
 	}
 
@@ -972,7 +991,7 @@ qboolean CanTball (edict_t *ent, qboolean print)
 	{
 		if (print)
 			gi.cprintf(ent, PRINT_HIGH, "You can't use tballs for another %2.1f seconds\n", 
-				(ent->client->tball_delay - level.time));
+				((double)ent->client->tball_delay - (double)level.time));
 		return false;
 	}
 
@@ -1075,8 +1094,8 @@ void fire_tball (edict_t *self, vec3_t start, vec3_t aimdir, int speed, float ti
 	grenade = G_Spawn();
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+	VectorMA (grenade->velocity, 200.0f + crandom() * 10.0f, up, grenade->velocity);
+	VectorMA (grenade->velocity, crandom() * 10.0f, right, grenade->velocity);
 	VectorSet (grenade->avelocity, 300, 300, 300);
 	grenade->movetype = MOVETYPE_BOUNCE;
 	grenade->clipmask = MASK_SHOT;
@@ -1211,7 +1230,8 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	//respawn set
 	if (ent->flags & FL_RESPAWN)
 		ent->flags &= ~FL_RESPAWN;
-	else if(ent->classname[6] != 'F') G_FreeEdict (ent);
+	else if(ent->classname[6] != 'F')
+		G_FreeEdict (ent);
 // GHz START
 	// the player may have picked up something useful for the monster
 	// make sure the player still has a monster to pilot, since picking up
@@ -1621,7 +1641,7 @@ void PrecacheItem (gitem_t *it)
 		if (len >= MAX_QPATH || len < 5)
 			gi.error ("PrecacheItem: %s has bad precache string", it->classname);
 		memcpy (data, start, len);
-		data[len] = 0;
+		data[len - 1] = 0;
 		if (*s)
 			s++;
 

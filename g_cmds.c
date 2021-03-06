@@ -1,12 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
 
-//Function prototypes required for this .c file:
-void Grenade_Explode (edict_t *ent);
-void Cmd_CorpseExplode(edict_t *ent);
-void Cmd_HellSpawn_f (edict_t *ent);
-void Cmd_Caltrops_f (edict_t *ent);
-//End prototypes
 
 void Cmd_DetPipes_f (edict_t *ent)
 {
@@ -95,7 +89,7 @@ void Cmd_SuperSpeed_f (edict_t *ent, int toggle)
 	}
 
 	if( (ent->client->weapon_mode) && ent->client->pers.weapon
-		&& (Q_strcasecmp(ent->client->pers.weapon->pickup_name, "chaingun") == 0))
+		&& (Q_stricmp(ent->client->pers.weapon->pickup_name, "chaingun") == 0))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Holding the assult cannon prevents you from using superspeed.\n");
 		return;
@@ -137,14 +131,13 @@ void Cmd_Lockon_f (edict_t *ent, int toggle)
 	}
 }
 
-void cmd_Sentry (edict_t *ent);
 void Cmd_Thrust_f (edict_t *ent)
 {
     char    *string;
 
     string=gi.args();
 
-    if (Q_strcasecmp ( string, "on") == 0)
+    if (Q_stricmp ( string, "on") == 0)
     {
             ent->client->thrusting=1;
             ent->client->next_thrust_sound=0;
@@ -181,7 +174,7 @@ void FL_think (edict_t *self)
 
 		// special circumstance for flipped sentry
 		if (self->owner->owner && self->owner->owner->style == SENTRY_FLIPPED)
-			start[2] -= abs(self->owner->mins[2]);
+			start[2] -= fabsf(self->owner->mins[2]);
 		else
 			start[2] += self->owner->maxs[2];
 		VectorMA(start, (self->owner->maxs[0] + 16), forward, start);
@@ -257,14 +250,14 @@ char *ClientTeam (edict_t *ent)
 
 int NotHostile (edict_t *ent1, edict_t *ent2)
 {
+	// sanity check
+	if (!ent1 || !ent2)
+		return 0;
+
 	edict_t *e1 = G_GetClient(ent1);
 	edict_t *e2 = G_GetClient(ent2);
 
 	if (ctf->value || ptr->value || domination->value || invasion->value)
-		return 0;
-
-	// sanity check
-	if (!ent1 || !ent2)
 		return 0;
 
 	// both entities are players or owned by players
@@ -293,6 +286,9 @@ int OnSameTeam (edict_t *ent1, edict_t *ent2)
 	qboolean	ent1_boss=false;
 	qboolean	ent2_boss=false;
 	edict_t		*e1, *e2;
+
+	if (G_IsSpectator(ent1) || G_IsSpectator(ent2))
+		return 0;
 
 	ent1_boss = IsBossTeam(ent1);//IsABoss(ent1);
 	ent2_boss = IsBossTeam(ent2);//IsABoss(ent2);
@@ -506,12 +502,12 @@ void Cmd_Give_f (edict_t *ent)
 		return;
 
 	name = gi.args();
-	if (Q_strcasecmp(name, "all") == 0)
+	if (Q_stricmp(name, "all") == 0)
 		give_all = true;
 	else
 		give_all = false;
 
-	if (give_all || Q_strcasecmp(gi.argv(1), "health") == 0)
+	if (give_all || Q_stricmp(gi.argv(1), "health") == 0)
 	{
 		if (gi.argc() == 3)
 			ent->health = atoi(gi.argv(2));
@@ -521,7 +517,7 @@ void Cmd_Give_f (edict_t *ent)
 			return;
 	}
 
-	if (give_all || Q_strcasecmp(name, "weapons") == 0)
+	if (give_all || Q_stricmp(name, "weapons") == 0)
 	{
 		for (i=0 ; i<game.num_items ; i++)
 		{
@@ -536,7 +532,7 @@ void Cmd_Give_f (edict_t *ent)
 			return;
 	}
 
-	if (give_all || Q_strcasecmp(name, "ammo") == 0)
+	if (give_all || Q_stricmp(name, "ammo") == 0)
 	{
 		for (i=0 ; i<game.num_items ; i++)
 		{
@@ -551,7 +547,7 @@ void Cmd_Give_f (edict_t *ent)
 			return;
 	}
 
-	if (give_all || Q_strcasecmp(name, "armor") == 0)
+	if (give_all || Q_stricmp(name, "armor") == 0)
 	{
 		gitem_armor_t	*info;
 
@@ -569,10 +565,9 @@ void Cmd_Give_f (edict_t *ent)
 			return;
 	}
     
-	if (Q_strcasecmp(gi.argv(1), "powercubes") == 0)
+	if (Q_stricmp(gi.argv(1), "powercubes") == 0)
 	{
 		gitem_t	*item;
-		int index;
 
 		item = Fdi_POWERCUBE;
 		if (item)
@@ -583,7 +578,7 @@ void Cmd_Give_f (edict_t *ent)
 	}
 
 	/*
-	if (give_all || Q_strcasecmp(name, "Power Shield") == 0)
+	if (give_all || Q_stricmp(name, "Power Shield") == 0)
 	{
 		it = FindItem("Power Shield");
 		it_ent = G_Spawn();
@@ -774,24 +769,24 @@ qboolean Cmd_UseMorphWeapons_f (edict_t *ent, char *s)
 		// some weapons are only available with morph mastery upgraded
 		if (morph_mastery)
 		{
-			if (Q_strcasecmp(s, "blaster") == 0)
+			if (Q_stricmp(s, "blaster") == 0)
 			{
 				ent->client->weapon_mode = 3;
 				return true;
 			}
-			else if (Q_strcasecmp(s, "machinegun") == 0)
+			else if (Q_stricmp(s, "machinegun") == 0)
 			{
 				ent->client->weapon_mode = 2;
 				return true;
 			}
 		}
 
-		if (Q_strcasecmp(s, "punch") == 0)
+		if (Q_stricmp(s, "punch") == 0)
 		{
 			ent->client->weapon_mode = 1;
 			return true;
 		}
-		else if (Q_strcasecmp(s, "rocket launcher") == 0)
+		else if (Q_stricmp(s, "rocket launcher") == 0)
 		{
 			ent->client->weapon_mode = 0;
 			return true;
@@ -801,19 +796,19 @@ qboolean Cmd_UseMorphWeapons_f (edict_t *ent, char *s)
 	{
 		if (morph_mastery)
 		{
-			if (Q_strcasecmp(s, "blaster") == 0)
+			if (Q_stricmp(s, "blaster") == 0)
 			{
 				ent->client->weapon_mode = 2;
 				return true;
 			}
 		}
 
-		if (Q_strcasecmp(s, "hyperblaster") == 0)
+		if (Q_stricmp(s, "hyperblaster") == 0)
 		{
 			ent->client->weapon_mode = 0;
 			return true;
 		}
-		else if (Q_strcasecmp(s, "healing") == 0)
+		else if (Q_stricmp(s, "healing") == 0)
 		{
 			ent->client->weapon_mode = 1;
 			return true;
@@ -821,17 +816,17 @@ qboolean Cmd_UseMorphWeapons_f (edict_t *ent, char *s)
 	}
 	else if (morph->mtype == MORPH_BERSERK)
 	{
-		if (Q_strcasecmp(s, "punch") == 0)
+		if (Q_stricmp(s, "punch") == 0)
 		{
 			ent->client->weapon_mode = 0;
 			return true;
 		}
-		else if (Q_strcasecmp(s, "slash") == 0)
+		else if (Q_stricmp(s, "slash") == 0)
 		{
 			ent->client->weapon_mode = 1;
 			return true;
 		}
-		else if (Q_strcasecmp(s, "crush") == 0)
+		else if (Q_stricmp(s, "crush") == 0)
 		{
 			ent->client->weapon_mode = 2;
 			return true;
@@ -874,21 +869,21 @@ void Cmd_Use_f (edict_t *ent)
 	}
 
 	if ((ent->myskills.class_num == CLASS_KNIGHT) && 
-		((Q_strcasecmp(s, "20mm cannon") == 0) || (Q_strcasecmp(s, "grenades") == 0)) )
+		((Q_stricmp(s, "20mm cannon") == 0) || (Q_stricmp(s, "grenades") == 0)) )
 		return;
 
 	//3.0 Check for consumable items
-	if (Q_strcasecmp(s, "potion") == 0)
+	if (Q_stricmp(s, "potion") == 0)
 	{
 		cmd_Drink(ent, ITEM_POTION, 0);
 		return;
 	}
-	else if (Q_strcasecmp(s, "holywater") == 0)
+	else if (Q_stricmp(s, "holywater") == 0)
 	{
 		cmd_Drink(ent, ITEM_ANTIDOTE, 0);
 		return;
 	}
-	else if ((Q_strcasecmp(s, "gravityboots") == 0) || (Q_strcasecmp(s, "antigravityboots") == 0))
+	else if ((Q_stricmp(s, "gravityboots") == 0) || (Q_stricmp(s, "antigravityboots") == 0))
 	{
 		cmd_mjump(ent);
 		return;
@@ -940,7 +935,6 @@ int NumPowercubes (edict_t *ent)
 	return i;
 }
 
-void tech_dropall (edict_t *ent);
 /*
 ==================
 Cmd_Drop_f
@@ -954,32 +948,33 @@ void Cmd_Drop_f (edict_t *ent)
 	int			index, count;
 	gitem_t		*it;
 	char		*s;
-#ifdef PRINT_DEBUGINFO
-gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
-#endif
+
+	if(debuginfo->value == 2)
+		gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
+
 	//K03 Begin
 	if (ent->client->resp.spectator)
 		return;
 	//K03 End
 
-	if (Q_strcasecmp(gi.argv(1), "tech") == 0)
+	if (Q_stricmp(gi.argv(1), "tech") == 0)
 	{
 		tech_dropall(ent);//4.2 drop all techs
 		return;
 	}
 
-	if (domination->value && (Q_strcasecmp(gi.argv(1), "flag") == 0))
+	if (domination->value && (Q_stricmp(gi.argv(1), "flag") == 0))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
 		return;
 	}
 	if (ctf->value && ctf_enable_balanced_fc->value 
-		&& (Q_strcasecmp(gi.argv(2), "flag") == 0))
+		&& (Q_stricmp(gi.argv(2), "flag") == 0))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Only lamers try to drop the flag!\n");
 		return;
 	}
-	if ((Q_strcasecmp(gi.argv(1), "power") == 0) && (Q_strcasecmp(gi.argv(2), "cube") == 0)) 
+	if ((Q_stricmp(gi.argv(1), "power") == 0) && (Q_stricmp(gi.argv(2), "cube") == 0)) 
 	{
 		if (NumPowercubes(ent) >= 5)
 		{
@@ -1014,7 +1009,7 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 	it = FindItem (s);
 
 	//3.0 Check for potions
-	if (Q_strcasecmp(s, "potions") == 0)
+	if (Q_stricmp(s, "potions") == 0)
 	{
 		//clear all potions
 		int i;
@@ -1026,7 +1021,7 @@ gi.dprintf("%s just called Cmd_Drop_f()\n", ent->client->pers.netname);
 		gi.cprintf(ent, PRINT_HIGH, "You have discarded all of your potions.\n");
 		return;
 	}
-	else if (Q_strcasecmp(s, "holywater") == 0)
+	else if (Q_stricmp(s, "holywater") == 0)
 	{
 		//clear all antidotes
 		int i;
@@ -1323,12 +1318,13 @@ void Cmd_InvDrop_f (edict_t *ent)
 	}
 	it->drop (ent, it);
 }
+
+void dom_spawnflag(void);
 /*
 =================
 Cmd_Kill_f
 =================
 */
-void dom_spawnflag (void);
 void Cmd_Kill_f (edict_t *ent)
 {
 //ZOID
@@ -1516,13 +1512,6 @@ void Cmd_Wave_f (edict_t *ent)
 	}
 }
 
-void masterpw_handler (edict_t *ent, int option);
-void OpenMasterPasswordMenu (edict_t *ent);
-void ShowAllyMenu_handler (edict_t *ent, int option);
-void classmenu_handler (edict_t *ent, int option);
-void myinfo_handler (edict_t *ent, int option);
-void V_PrintSayPrefix (edict_t *speaker, edict_t *listener, char *text);
-
 void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 {
 	int		i, j, k;
@@ -1530,7 +1519,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	char	*p;
 	char	text[2048];
 	gclient_t *cl;
-	char	*s=NULL;//GHz
+	//char	*s=NULL;//GHz
 	//ARCHER START
 	qboolean ThisPlayerMuted = false;
 	//ARCHER END
@@ -1770,11 +1759,6 @@ void ResetPlayer (edict_t *ent)
 	return;
 }
 
-char *LoPrint(char *text);
-char *HiPrint(char *text);
-//edict_t *FindPlayerByName(const char *name);	//4.0 Already declared in g_local.h
-void check_for_levelup(edict_t *ent);
-
 void Cmd_MakeAdmin(edict_t *ent)
 {
 	char *cmd1;
@@ -1953,7 +1937,7 @@ void cmd_PlayerMute(edict_t *ent, char *playername, int time)
 			continue;
 
 		//If player's netname matches the argumet
-		if (Q_strcasecmp(other->client->pers.netname , playername ) == 0)
+		if (Q_stricmp(other->client->pers.netname , playername ) == 0)
 		{
 			if (other->myskills.administrator)
 			{
@@ -2154,7 +2138,7 @@ void cmd_whois(edict_t *ent, char *playername)
 	{
 		temp = g_edicts + i;
 		if (!temp || !temp->inuse || !temp->client) continue;
-		if(Q_strcasecmp(temp->myskills.player_name, playername) == 0)
+		if(Q_stricmp(temp->myskills.player_name, playername) == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "%s belongs to %s.\n", playername, temp->myskills.owner);
 			return;
@@ -2343,20 +2327,20 @@ void Cmd_AdminCmd (edict_t *ent)
 	else if (Q_stricmp(cmd1, "srune") == 0)
 	{
 		int index = atoi(cmd3);
-		int type;
+		int type = ITEM_NONE;
 
 		if (ent->myskills.administrator < 10)
 			return;
 
-		if (Q_strcasecmp(cmd2, "weapon") == 0)
+		if (Q_stricmp(cmd2, "weapon") == 0)
 			type = ITEM_WEAPON;
-		else if (Q_strcasecmp(cmd2, "ability") == 0)
+		else if (Q_stricmp(cmd2, "ability") == 0)
 			type = ITEM_ABILITY;
-		else if (Q_strcasecmp(cmd2, "combo") == 0)
+		else if (Q_stricmp(cmd2, "combo") == 0)
 			type = ITEM_COMBO;
-		else if (Q_strcasecmp(cmd2, "class") == 0)
+		else if (Q_stricmp(cmd2, "class") == 0)
 			type = ITEM_CLASSRUNE;
-		else if (Q_strcasecmp(cmd2, "unique") == 0)
+		else if (Q_stricmp(cmd2, "unique") == 0)
 			type = ITEM_UNIQUE;
 
 		if (index < 0)	adminSpawnRune(ent, type, 0);
@@ -2421,11 +2405,6 @@ void Cmd_GetFloorPos_f (edict_t *ent, int add)
 
 	
 void Cmd_BombPlayer(edict_t *ent, float skill_mult, float cost_mult);
-Cmd_Thorns(edict_t *ent);
-//void Cmd_HolyShock(edict_t *ent);
-int ClassNum(edict_t *ent, int team);
-void Cmd_VampireMode (edict_t *ent);
-qboolean vrx_CheckForFlag (void);
 qboolean ToggleSecondary (edict_t *ent, gitem_t *item, qboolean printmsg);
 /*
 =================
@@ -2528,7 +2507,7 @@ void GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, floa
 }
 */
 
-qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, float *cost_mult, float *skill_mult)
+qboolean GetOverloadValues(edict_t* ent, int talentLevel, int cubes, int cost, float* cost_mult, float* skill_mult)
 {
 	// maximum skill/cost multiplier
 	float max_multiplier = 1 + 0.2 * talentLevel;
@@ -2538,7 +2517,7 @@ qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, 
 
 	if (*cost_mult < 1.2 || *cost_mult > max_multiplier)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n", 
+		gi.cprintf(ent, PRINT_HIGH, "Overload valid cost range: %d - %d power cubes.\n",
 			floattoint(1.2 * cost), floattoint(max_multiplier * cost));
 		return false;
 	}
@@ -2547,9 +2526,9 @@ qboolean GetOverloadValues (edict_t *ent, int talentLevel, int cubes, int cost, 
 	return true;
 }
 
-void Cmd_Overload_f (edict_t *ent)
+void Cmd_Overload_f(edict_t* ent)
 {
-	char	*cmd = gi.argv(2);
+	char* cmd = gi.argv(2);
 	int		talentLevel, cubes = atoi(gi.argv(1));
 	float	skill_mult, cost_mult;
 
@@ -2568,42 +2547,42 @@ void Cmd_Overload_f (edict_t *ent)
 	}
 	else if (Q_stricmp(cmd, "fireball") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, FIREBALL_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, FIREBALL_COST, &cost_mult, &skill_mult))
 			Cmd_Fireball_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "icebolt") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, ICEBOLT_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, ICEBOLT_COST, &cost_mult, &skill_mult))
 			Cmd_IceBolt_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "meteor") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, METEOR_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, METEOR_COST, &cost_mult, &skill_mult))
 			Cmd_Meteor_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "nova") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, NOVA_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, NOVA_COST, &cost_mult, &skill_mult))
 			Cmd_Nova_f(ent, 0, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "frostnova") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, NOVA_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, NOVA_COST, &cost_mult, &skill_mult))
 			Cmd_FrostNova_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "chainlightning") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, CLIGHTNING_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, CLIGHTNING_COST, &cost_mult, &skill_mult))
 			Cmd_ChainLightning_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "lightningstorm") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, LIGHTNING_COST, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, LIGHTNING_COST, &cost_mult, &skill_mult))
 			Cmd_LightningStorm_f(ent, skill_mult, cost_mult);
 	}
 	else if (Q_stricmp(cmd, "spell_bomb") == 0 || Q_stricmp(cmd, "bombspell") == 0)
 	{
-		if (GetOverloadValues(ent, talentLevel, cubes, COST_FOR_BOMB, &cost_mult, &skill_mult));
+		if (GetOverloadValues(ent, talentLevel, cubes, COST_FOR_BOMB, &cost_mult, &skill_mult))
 			Cmd_BombPlayer(ent, skill_mult, cost_mult);
 	}
 	else
@@ -2654,11 +2633,11 @@ void Cmd_WritePos_f (edict_t *ent)
 	VectorCopy(ent->s.origin, pos);
 	pos[2] = ent->absmin[2];
 
-	Com_sprintf(filename, sizeof(filename), "%s\\maps\\%s.txt", game_path->string, level.mapname);
+	Com_sprintf(filename, sizeof(filename), "%s/maps/%s.txt", game_path->string, level.mapname);
 
 	if ((fptr = fopen(filename, "a")) != NULL)
 	{
-		if (!Q_strcasecmp(gi.argv(1), "defenderspawn"))
+		if (!Q_stricmp(gi.argv(1), "defenderspawn"))
 		{
 			pos[2] += 8;
 
@@ -2674,7 +2653,7 @@ void Cmd_WritePos_f (edict_t *ent)
 
 			gi.cprintf(ent, PRINT_HIGH, "Added defenderspawn to file.\n");
 		}
-		else if (!Q_strcasecmp(gi.argv(1), "monsterspawn"))
+		else if (!Q_stricmp(gi.argv(1), "monsterspawn"))
 		{
 			pos[2] += 8;
 
@@ -2688,7 +2667,7 @@ void Cmd_WritePos_f (edict_t *ent)
 
 			gi.cprintf(ent, PRINT_HIGH, "Added monsterspawn to file.\n");
 		}
-		else if (!Q_strcasecmp(gi.argv(1), "playerspawn"))
+		else if (!Q_stricmp(gi.argv(1), "playerspawn"))
 		{
 			pos[2] += 25;
 
@@ -2817,11 +2796,11 @@ void ClientCommand (edict_t *ent)
         hook_fire (ent);
     else if (Q_stricmp (cmd, "unhook") == 0)
 		hook_reset(ent->client->hook);
-	else if ((Q_strcasecmp(cmd, "spell_stealammo") == 0) || (Q_strcasecmp(cmd, "ammosteal") == 0))
+	else if ((Q_stricmp(cmd, "spell_stealammo") == 0) || (Q_stricmp(cmd, "ammosteal") == 0))
 		Cmd_AmmoStealer_f(ent);
-	else if ((Q_strcasecmp(cmd, "aura_salvation") == 0) || (Q_strcasecmp(cmd, "salvation") == 0))
+	else if ((Q_stricmp(cmd, "aura_salvation") == 0) || (Q_stricmp(cmd, "salvation") == 0))
 		Cmd_Salvation(ent);
-	else if ((Q_strcasecmp(cmd, "spell_boost") == 0) || (Q_strcasecmp(cmd, "boost") == 0))
+	else if ((Q_stricmp(cmd, "spell_boost") == 0) || (Q_stricmp(cmd, "boost") == 0))
 		Cmd_BoostPlayer(ent);
     else if (Q_stricmp (cmd, "sentry") == 0)
 		cmd_SentryGun(ent);
@@ -2835,7 +2814,7 @@ void ClientCommand (edict_t *ent)
 		Cmd_DetPipes_f (ent);
 	else if (Q_stricmp (cmd, "monsters") == 0)
 		gi.cprintf(ent, PRINT_HIGH, "Monsters: %d/%d\n", ent->num_monsters, MAX_MONSTERS);
-	else if ((Q_strcasecmp(cmd, "spell_corpseexplode") == 0) || (Q_strcasecmp(cmd, "detonatebody") == 0))
+	else if ((Q_stricmp(cmd, "spell_corpseexplode") == 0) || (Q_stricmp(cmd, "detonatebody") == 0))
 	    Cmd_CorpseExplode (ent);
 	else if (Q_stricmp (cmd, "sspeed") == 0)
 		Cmd_SuperSpeed_f (ent, 1);
@@ -2852,11 +2831,11 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "laser") == 0)
 		Cmd_BuildLaser(ent);
 		//PlaceLaser(ent);
-	else if ((Q_strcasecmp(cmd, "spell_bomb") == 0) || (Q_strcasecmp(cmd, "bombspell") == 0))
+	else if ((Q_stricmp(cmd, "spell_bomb") == 0) || (Q_stricmp(cmd, "bombspell") == 0))
 		Cmd_BombPlayer(ent, 1.0, 1.0);
-	//else if ((Q_strcasecmp(cmd, "aura_shock") == 0) || (Q_strcasecmp(cmd, "holyshock") == 0))
+	//else if ((Q_stricmp(cmd, "aura_shock") == 0) || (Q_stricmp(cmd, "holyshock") == 0))
 	//	Cmd_HolyShock(ent);
-	else if ((Q_strcasecmp(cmd, "aura_holyfreeze") == 0) || (Q_strcasecmp(cmd, "holyfreeze") == 0))
+	else if ((Q_stricmp(cmd, "aura_holyfreeze") == 0) || (Q_stricmp(cmd, "holyfreeze") == 0))
 		Cmd_HolyFreeze(ent);
 	else if (Q_stricmp(cmd, "yell") == 0)
 		Cmd_Yell (ent, atoi(gi.argv(1)));
@@ -2907,12 +2886,12 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "trade") == 0)
 	{
 		char *opt = gi.argv(1);
-		if (Q_strcasecmp(opt, "on") == 0)
+		if (Q_stricmp(opt, "on") == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Trading is enabled.\nPlayers may now trade with you.\n");
 			ent->client->trade_off = false;
 		}
-		else if (Q_strcasecmp(opt, "off") == 0)
+		else if (Q_stricmp(opt, "off") == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Trading is disabled.\nPlayers are now unable to trade with you.\n");
 			ent->client->trade_off = true;
@@ -3130,7 +3109,7 @@ void ClientCommand (edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, "**************************\n**You are on the %s team**\n**************************\n   Team members:\n", TeamName(ent));
 		for(i = 0; i < game.maxclients; ++i)
 		{
-			edict_t *e = g_edicts + i;
+			e = g_edicts + i;
 			if (!e->client || !e->inuse)
 				continue;
 			if (e->client->resp.spectator || e->client->pers.spectator || (e->teamnum != ent->teamnum))
@@ -3158,22 +3137,22 @@ void ClientCommand (edict_t *ent)
 		else gi.cprintf(ent, PRINT_HIGH, "Ability number %d = %s\n", index, GetAbilityString(index));
 	}
 	//3.0 curse commands
-	else if (Q_strcasecmp(cmd, "curse") == 0)
+	else if (Q_stricmp(cmd, "curse") == 0)
 		Cmd_Curse(ent);
-	else if (Q_strcasecmp(cmd, "amnesia") == 0)
+	else if (Q_stricmp(cmd, "amnesia") == 0)
 		Cmd_Amnesia(ent);
-	else if (Q_strcasecmp(cmd, "weaken") == 0)
+	else if (Q_stricmp(cmd, "weaken") == 0)
 		Cmd_Weaken(ent);
-	else if (Q_strcasecmp(cmd, "lifedrain") == 0)
+	else if (Q_stricmp(cmd, "lifedrain") == 0)
 		Cmd_LifeDrain(ent);
-	else if (Q_strcasecmp(cmd, "ampdamage") == 0)
+	else if (Q_stricmp(cmd, "ampdamage") == 0)
 		Cmd_AmpDamage(ent);
-	else if (Q_strcasecmp(cmd, "lowerresist") == 0)
+	else if (Q_stricmp(cmd, "lowerresist") == 0)
 		Cmd_LowerResist(ent);
 	//3.0 bless commands
-	else if (Q_strcasecmp(cmd, "bless") == 0)
+	else if (Q_stricmp(cmd, "bless") == 0)
 		Cmd_Bless(ent);
-	else if (Q_strcasecmp(cmd, "heal") == 0)
+	else if (Q_stricmp(cmd, "heal") == 0)
 		Cmd_Healing(ent);
 	else if (Q_stricmp (cmd, "cacodemon") == 0)
 		Cmd_PlayerToCacodemon_f(ent);
@@ -3265,7 +3244,7 @@ void ClientCommand (edict_t *ent)
 	//4.1 (Totems)
 	else if (Q_stricmp (cmd, "totem") == 0)
 	{
-		if(Q_strcasecmp(gi.argv(1), "remove") == 0)
+		if(Q_stricmp(gi.argv(1), "remove") == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Totems removed.\n");
 			if(ent->totem2)		RemoveTotem(ent->totem2);
@@ -3278,7 +3257,7 @@ void ClientCommand (edict_t *ent)
 		SpawnTotem(ent, WATER_TOTEM);
 	else if (Q_stricmp (cmd, "airtotem") == 0)
 	{
-		if(Q_strcasecmp(gi.argv(1), "protect") == 0)
+		if(Q_stricmp(gi.argv(1), "protect") == 0)
 		{
 			edict_t *totem=NULL;
 			

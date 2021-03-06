@@ -72,34 +72,34 @@ void myparasite_search (edict_t *self)
 
 mframe_t myparasite_frames_start_fidget [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t myparasite_move_start_fidget = {FRAME_stand18, FRAME_stand21, myparasite_frames_start_fidget, myparasite_do_fidget};
 
-mframe_t myparasite_frames_fidget [] =
-{	
-	drone_ai_stand, 0, myparasite_scratch,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_scratch,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+mframe_t myparasite_frames_fidget[] =
+{
+	{drone_ai_stand, 0, myparasite_scratch},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_scratch},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t myparasite_move_fidget = {FRAME_stand22, FRAME_stand27, myparasite_frames_fidget, myparasite_refidget};
 
 mframe_t myparasite_frames_end_fidget [] =
 {
-	drone_ai_stand, 0, myparasite_scratch,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL
+	{drone_ai_stand, 0, myparasite_scratch},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL}
 };
 mmove_t myparasite_move_end_fidget = {FRAME_stand28, FRAME_stand35, myparasite_frames_end_fidget, myparasite_stand};
 
@@ -129,23 +129,23 @@ void myparasite_idle (edict_t *self)
 
 mframe_t myparasite_frames_stand [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, myparasite_tap
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, myparasite_tap}
 };
 mmove_t	myparasite_move_stand = {FRAME_stand01, FRAME_stand17, myparasite_frames_stand, myparasite_stand};
 
@@ -156,31 +156,31 @@ void myparasite_stand (edict_t *self)
 
 mframe_t parasite_frames_walk [] =
 {
-	drone_ai_walk, 30, NULL,
-	drone_ai_walk, 30, NULL,
-	drone_ai_walk, 22, NULL,
-	drone_ai_walk, 19, NULL,
-	drone_ai_walk, 24, NULL,
-	drone_ai_walk, 28, NULL,
-	drone_ai_walk, 25, NULL
+	{drone_ai_walk, 30, NULL},
+	{drone_ai_walk, 30, NULL},
+	{drone_ai_walk, 22, NULL},
+	{drone_ai_walk, 19, NULL},
+	{drone_ai_walk, 24, NULL},
+	{drone_ai_walk, 28, NULL},
+	{drone_ai_walk, 25, NULL}
 };
 mmove_t parasite_move_walk = {FRAME_run03, FRAME_run09, parasite_frames_walk, parasite_walk};
 
 mframe_t parasite_frames_start_walk [] =
 {
-	drone_ai_walk, 0,	NULL,
-	drone_ai_walk, 30, parasite_walk
+	{drone_ai_walk, 0,	NULL},
+	{drone_ai_walk, 30, parasite_walk}
 };
 mmove_t parasite_move_start_walk = {FRAME_run01, FRAME_run02, parasite_frames_start_walk, NULL};
 
 mframe_t parasite_frames_stop_walk [] =
 {	
-	drone_ai_walk, 20, NULL,
-	drone_ai_walk, 20,	NULL,
-	drone_ai_walk, 12, NULL,
-	drone_ai_walk, 10, NULL,
-	drone_ai_walk, 0,  NULL,
-	drone_ai_walk, 0,  NULL
+	{drone_ai_walk, 20, NULL},
+	{drone_ai_walk, 20,	NULL},
+	{drone_ai_walk, 12, NULL},
+	{drone_ai_walk, 10, NULL},
+	{drone_ai_walk, 0,  NULL},
+	{drone_ai_walk, 0,  NULL}
 };
 mmove_t parasite_move_stop_walk = {FRAME_run10, FRAME_run15, parasite_frames_stop_walk, NULL};
 
@@ -198,20 +198,20 @@ void parasite_walk (edict_t *self)
 
 mframe_t myparasite_frames_run [] =
 {
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL,
-	drone_ai_run, 35, NULL
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL},
+	{drone_ai_run, 35, NULL}
 };
 mmove_t myparasite_move_run = {FRAME_run03, FRAME_run09, myparasite_frames_run, NULL};
 
 mframe_t myparasite_frames_start_run [] =
 {
-	drone_ai_run, 30,	NULL,
-	drone_ai_run, 30, NULL,
+	{drone_ai_run, 30,	NULL},
+	{drone_ai_run, 30, NULL},
 };
 mmove_t myparasite_move_start_run = {FRAME_run01, FRAME_run02, myparasite_frames_start_run, myparasite_run};
 
@@ -320,36 +320,36 @@ void myparasite_drain_attack (edict_t *self)
 
 mframe_t myparasite_frames_drain [] =
 {
-	ai_charge, 0,	myparasite_launch,
-	ai_charge, 0,	myparasite_drain_attack,
-	ai_charge, 0,	myparasite_drain_attack,			// Target hits
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,  myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_drain_attack,			// drain
-	ai_charge, 0,  myparasite_drain_attack,			// drain
-	ai_charge, 0,	myparasite_reel_in				// let go
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
+	{ai_charge, 0,	myparasite_launch},
+	{ai_charge, 0,	myparasite_drain_attack},
+	{ai_charge, 0,	myparasite_drain_attack},			// Target hits
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,  myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_drain_attack},			// drain
+	{ai_charge, 0,  myparasite_drain_attack},			// drain
+	{ai_charge, 0,	myparasite_reel_in}				// let go
+	//ai_charge, 0,	NULL},
+	//ai_charge, 0,	NULL},
+	//ai_charge, 0,	NULL},
 	//ai_charge, 0,	NULL
 };
 mmove_t myparasite_move_drain = {FRAME_drain01, FRAME_drain14, myparasite_frames_drain, myparasite_run};
 
 mframe_t myparasite_frames_runandattack [] =
 {
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack,
-	drone_ai_run, 30, myparasite_drain_attack
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack},
+	{drone_ai_run, 30, myparasite_drain_attack}
 };
 mmove_t myparasite_move_runandattack = {FRAME_run03, FRAME_run09, myparasite_frames_runandattack, myparasite_continue};
 
@@ -361,38 +361,38 @@ void myparasite_continue (edict_t *self)
 
 mframe_t myparasite_frames_break [] =
 {
-	ai_charge, 0,	NULL,
-	ai_charge, -3,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, 2,	NULL,
-	ai_charge, -3,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, 3,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, -18,	NULL,
-	ai_charge, 3,	NULL,
-	ai_charge, 9,	NULL,
-	ai_charge, 6,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, -18,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 8,	NULL,
-	ai_charge, 9,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, -18,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,		// airborne
-	ai_charge, 0,	NULL,		// airborne
-	ai_charge, 0,	NULL,		// slides
-	ai_charge, 0,	NULL,		// slides
-	ai_charge, 0,	NULL,		// slides
-	ai_charge, 0,	NULL,		// slides
-	ai_charge, 4,	NULL,
-	ai_charge, 11,	NULL,		
-	ai_charge, -2,	NULL,
-	ai_charge, -5,	NULL,
-	ai_charge, 1,	NULL
+	{ai_charge, 0,	NULL},
+	{ai_charge, -3,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, 2,	NULL},
+	{ai_charge, -3,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, 3,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, -18,	NULL},
+	{ai_charge, 3,	NULL},
+	{ai_charge, 9,	NULL},
+	{ai_charge, 6,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, -18,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 8,	NULL},
+	{ai_charge, 9,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, -18,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},		// airborne
+	{ai_charge, 0,	NULL},		// airborne
+	{ai_charge, 0,	NULL},		// slides
+	{ai_charge, 0,	NULL},		// slides
+	{ai_charge, 0,	NULL},		// slides
+	{ai_charge, 0,	NULL},		// slides
+	{ai_charge, 4,	NULL},
+	{ai_charge, 11,	NULL},		
+	{ai_charge, -2,	NULL},
+	{ai_charge, -5,	NULL},
+	{ai_charge, 1,	NULL}
 };
 mmove_t myparasite_move_break = {FRAME_break01, FRAME_break32, myparasite_frames_break, myparasite_start_run};
 
@@ -446,13 +446,13 @@ void myparasite_dead (edict_t *self)
 
 mframe_t myparasite_frames_death [] =
 {
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL,
-	ai_move, 0,	 NULL
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL},
+	{ai_move, 0,	 NULL}
 };
 mmove_t myparasite_move_death = {FRAME_death101, FRAME_death107, myparasite_frames_death, myparasite_dead};
 

@@ -30,10 +30,16 @@ int PVM_TotalMonsters (edict_t *monster_owner);
 //************ g_misc.c ************
 
 //************ g_utils.c ************
+char* G_GetTruncatedIP(edict_t* player);
 char *CryptString (char *text, qboolean decrypt);
 qboolean G_ClearPath (edict_t *ignore1, edict_t *ignore2, int mask, vec3_t spot1, vec3_t spot2);
 int G_GetHypotenuse (vec3_t v);
 //************ g_utils.c ************
+
+//********* flying_skull.c *********
+void Cmd_HellSpawn_f(edict_t* ent);
+//********* flying_skull.c *********
+
 
 //************ misc_stuff.c ************
 qboolean V_AssignClassSkin (edict_t *ent, char *s);
@@ -51,6 +57,9 @@ void proxy_remove (edict_t *self, qboolean print);
 qboolean ConvertOwner (edict_t *ent, edict_t *other, float duration, qboolean print);
 qboolean RestorePreviousOwner (edict_t *ent);
 void ProjectileLockon (edict_t *proj);
+void fire_fireball(edict_t* self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
+void Cmd_CorpseExplode(edict_t* ent);
+void Cmd_Caltrops_f(edict_t* ent);
 //************ magic.c ************
 
 //************ auras.c ************
@@ -69,6 +78,7 @@ void tech_dropall (edict_t *ent);
 void setClassAbilities (edict_t *ent);
 void setGeneralAbilities(edict_t *ent);
 void disableAbilities (edict_t *ent);
+int TotalPlayersInGame(void);
 //************ p_menu.c ***********
 
 //********** v_file_IO.c **********
@@ -140,8 +150,8 @@ char *GetArmoryItemString (int purchase_number);
 void PrintCommands(edict_t *ent);
 int CountRuneMods(item_t *rune);
 void V_ResetAbilityDelays(edict_t *ent);
-void SaveArmory();
-void LoadArmory();
+void SaveArmory(void);
+void LoadArmory(void);
 qboolean V_GiveAmmoClip(edict_t *ent, float qty, int ammotype);
 int V_GetRespawnAmmoType(edict_t *ent);
 void ChangeClass (char *playername, int newclass, int msgtype);
@@ -155,6 +165,8 @@ void V_ChangeMap(v_maplist_t *maplist, int mapindex, int gamemode);
 int FindBestMap(int mode);
 v_maplist_t *GetMapList(int mode);
 int V_AttemptModeChange(qboolean endlevel);
+void RunVotes(void);
+void KillMyVote(edict_t* ent);
 //************ vote.c *************
 
 //*********** weapons.c ***********
@@ -181,10 +193,6 @@ int getTalentLevel(edict_t *ent, int talentID);
 void newPlayer(edict_t *ent);
 int canJoinGame(edict_t *ent);
 //************ player.c ************
-
-//************ gds.c ************
-int GDS_OpenConfigFile(edict_t *ent);
-//************ gds.c ************
 
 //************ invasion.c ************
 edict_t *INV_SelectPlayerSpawnPoint (edict_t *ent);

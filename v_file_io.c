@@ -3,7 +3,7 @@
 
 qboolean SavePlayer(edict_t *ent);	//Called by savePlayer(). Don't call this directly.
 
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 #include <process.h>
 
 /*
@@ -59,7 +59,7 @@ void __cdecl SavePlayerThread(void *arg)
 //Creates an OpenPlayerThread() for loading a player (GDS)
 void createOpenPlayerThread(edict_t *ent)
 {
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 	ent->isLoading = true;
 	ent->hThread = _beginthread(OpenPlayerThread, 0, ent);
 
@@ -75,7 +75,7 @@ void createOpenPlayerThread(edict_t *ent)
 //Creates an SavePlayerThread() for saving a player (GDS)
 void createSavePlayerThread(edict_t *ent)
 {
-#if defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32)
 	ent->isSaving = true;
 	ent->hThread = _beginthread(SavePlayerThread, 0, ent);
 
@@ -315,7 +315,8 @@ qboolean ReadPlayer_v1(FILE * fRead, edict_t *player)
 	//End CTF
 
 	//standard iD inventory
-	fread(player->myskills.inventory, sizeof(int), MAX_ITEMS, fRead);
+	if (fread(player->myskills.inventory, sizeof(int), MAX_ITEMS, fRead))
+		gi.dprintf("%s loaded inventory.\n", __func__);
 
 	//Apply runes
 	V_ResetAllStats(player);
@@ -716,11 +717,7 @@ qboolean SavePlayer(edict_t *ent)
 		gi.dprintf("savePlayer called to save: %s\n", ent->client->pers.netname);
 
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#else
-		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#endif
+		Com_sprintf(path, sizeof path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
 	//Open file for saving
 	if ((fwrite = fopen(path, "wb")) == NULL)
@@ -780,11 +777,7 @@ qboolean openPlayer(edict_t *ent)
 	memset(&ent->myskills,0,sizeof(skills_t));
 
 	//determine path
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#else
-		sprintf(path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
-	#endif
+		Com_sprintf(path, sizeof path, "%s/%s.vrx", save_path->string, V_FormatFileName(ent->client->pers.netname));
 
 	//Open file for loading
 	if ((fread = fopen(path, "rb")) == NULL)
@@ -803,7 +796,7 @@ qboolean openPlayer(edict_t *ent)
 	ReadString(version, fread);
 
 	//check for correct version number
-	if (Q_strcasecmp(version + 19, "v1.0") == 0)	//"Vortex Player File " is 19 chars long, start comparison at the end
+	if (Q_stricmp(version + 19, "v1.0") == 0)	//"Vortex Player File " is 19 chars long, start comparison at the end
 	{
 		//begin reading player, if there was an error, return false :)
 		if (ReadPlayer_v1(fread, ent) == false)

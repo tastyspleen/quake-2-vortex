@@ -1,3 +1,4 @@
+#pragma once
 #define D_PHYSICAL	1
 #define D_MAGICAL	2
 #define D_BULLET	4

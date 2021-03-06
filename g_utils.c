@@ -72,7 +72,7 @@ edict_t *findradius (edict_t *from, vec3_t org, float rad)
 		if (from->solid == SOLID_NOT)
 			continue;
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
 		if (VectorLength(eorg) > rad)
 			continue;
 		return from;
@@ -101,35 +101,38 @@ edict_t *findclosestradius (edict_t *prev_ed, vec3_t org, float rad)
 
 	if (prev_ed) {
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
+			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j]) * 0.5f);
 		prev_rad = VectorLength(eorg);
 	} else
 		prev_rad = rad + 1;
 	found_rad = 0;
 
-	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
+	from = g_edicts;
+	if (from != NULL)
 	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		vlen = VectorLength(eorg);
-		if (vlen > rad) // found edict is outside scanning radius
-			continue;
-		if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
-			continue; // thus this edict must have been returned in an earlier call
-		if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
-			continue; // from the center of scan, so if the current edict is "in front of" 
-		if (from == prev_ed) // the previously returned one, it must have been returned
-			prev_found = true; // in an earlier call
-		if ((!found) || (vlen <= found_rad)) {
-			found = from;
-			found_rad = vlen;
+		for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
+		{
+			if (!from->inuse)
+				continue;
+			if (from->solid == SOLID_NOT)
+				continue;
+			for (j = 0; j < 3; j++)
+				eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
+			vlen = VectorLength(eorg);
+			if (vlen > rad) // found edict is outside scanning radius
+				continue;
+			if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
+				continue; // thus this edict must have been returned in an earlier call
+			if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
+				continue; // from the center of scan, so if the current edict is "in front of" 
+			if (from == prev_ed) // the previously returned one, it must have been returned
+				prev_found = true; // in an earlier call
+			if ((!found) || (vlen <= found_rad)) {
+				found = from;
+				found_rad = vlen;
+			}
 		}
 	}
-
 	return found;
 }
 
@@ -145,33 +148,36 @@ edict_t *findclosestradius1 (edict_t *prev_ed, vec3_t org, float rad)
 
 	if (prev_ed) {
 		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j])*0.5);
+			eorg[j] = org[j] - (prev_ed->s.origin[j] + (prev_ed->mins[j] + prev_ed->maxs[j]) * 0.5f);
 		prev_rad = VectorLength(eorg);
 	} else
 		prev_rad = rad + 1;
 	found_rad = 0;
 
-	for (from = g_edicts ; from < &g_edicts[globals.num_edicts]; from++)
+	from = g_edicts;
+	if (from != NULL)
 	{
-		if (!from->inuse)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		vlen = VectorLength(eorg);
-		if (vlen > rad) // found edict is outside scanning radius
-			continue;
-		if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
-			continue; // thus this edict must have been returned in an earlier call
-		if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
-			continue; // from the center of scan, so if the current edict is "in front of" 
-		if (from == prev_ed) // the previously returned one, it must have been returned
-			prev_found = true; // in an earlier call
-		if ((!found) || (vlen <= found_rad)) {
-			found = from;
-			found_rad = vlen;
+		for (from = g_edicts; from < &g_edicts[globals.num_edicts]; from++)
+		{
+			if (!from->inuse)
+				continue;
+			for (j = 0; j < 3; j++)
+				eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
+			vlen = VectorLength(eorg);
+			if (vlen > rad) // found edict is outside scanning radius
+				continue;
+			if ((vlen < prev_rad) && (prev_ed))  // found edict is closer than the previously returned edict
+				continue; // thus this edict must have been returned in an earlier call
+			if ((vlen == prev_rad) && (!prev_found)) // several edicts may be at the same range
+				continue; // from the center of scan, so if the current edict is "in front of" 
+			if (from == prev_ed) // the previously returned one, it must have been returned
+				prev_found = true; // in an earlier call
+			if ((!found) || (vlen <= found_rad)) {
+				found = from;
+				found_rad = vlen;
+			}
 		}
 	}
-
 	return found;
 }
 
@@ -286,7 +292,7 @@ edict_t *FindPlayerByName(char *name)
 		//	continue;
 		if (!player || !player->inuse)
 			continue;
-		if (Q_strcasecmp(name, player->client->pers.netname) != 0)
+		if (Q_stricmp(name, player->client->pers.netname) != 0)
 			continue;
 		if (!G_IsSpectator(player))
 			found = player;
@@ -326,7 +332,7 @@ edict_t *FindPlayer(char *s)
 		}
 		
 		// does the name match?
-		if (!Q_strcasecmp(s, player->client->pers.netname))
+		if (!Q_stricmp(s, player->client->pers.netname))
 			return player;
 	}
 
@@ -596,7 +602,7 @@ void vectoangles (vec3_t value1, vec3_t angles)
 		if (yaw < 0)
 			yaw += 360;
 
-		forward = sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
+		forward = sqrtf(value1[0]*value1[0] + value1[1]*value1[1]);
 		pitch = (float) (atan2(value1[2], forward) * 180 / M_PI);//K03
 		if (pitch < 0)
 			pitch += 360;
@@ -652,7 +658,7 @@ edict_t *G_Spawn (void)
 	{
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
+		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5f ) )
 		{
 			G_InitEdict (e);
 			return e;
@@ -962,13 +968,13 @@ qboolean G_CanUseAbilities (edict_t *ent, int ability_lvl, int pc_cost)
 	if (ent->client->respawn_time > level.time)
 	{
 		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
-			ent->client->respawn_time-level.time);
+			(double)ent->client->respawn_time - (double)level.time);
 		return false;
 	}
 	if (ent->client->ability_delay > level.time) 
 	{
 		gi.cprintf (ent, PRINT_HIGH, "You can't use abilities for another %2.1f seconds.\n", 
-			ent->client->ability_delay-level.time);
+			(double)ent->client->ability_delay - (double)level.time);
 		return false;
 	}
 	if (pc_cost && (ent->client->pers.inventory[power_cube_index] < pc_cost))
@@ -1056,7 +1062,7 @@ int Get_KindWeapon (gitem_t	*it)
 
 edict_t *G_GetClient(edict_t *ent)
 {
-	if (!ent->inuse)
+	if (!ent || !ent->inuse)
 		return NULL;
 
 	// do client check first to avoid returning non-client
@@ -1074,7 +1080,7 @@ edict_t *G_GetClient(edict_t *ent)
 
 edict_t *G_GetSummoner (edict_t *ent)
 {
-	if (!ent->inuse)
+	if (!ent || !ent->inuse)
 		return NULL;
 
 	// do client check first to avoid returning non-client
@@ -1356,7 +1362,7 @@ qboolean visible1 (edict_t *ent1, edict_t *ent2)
 {
 	vec3_t	from;
 	edict_t *ignore;
-	trace_t	tr;
+	trace_t	tr = { 0 };
 
 	// dont go thru BSP or forcewall
 	ignore = ent1;
@@ -1437,9 +1443,9 @@ qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizo
 
 	if (horizontal_degrees)
 	{
-		delta = abs(old_angles[YAW]-new_angles[YAW]);
+		delta = fabsf(old_angles[YAW] - new_angles[YAW]);
 		if (delta > 180)
-			delta = 360-delta;
+			delta = 360 - delta;
 		//gi.dprintf("delta %d horizontal\n", delta);
 		if (delta > horizontal_degrees)
 			return false;
@@ -1448,11 +1454,11 @@ qboolean nearfov (edict_t *ent, edict_t *other, int vertical_degrees, int horizo
 	if (vertical_degrees)
 	{
 		if (ent->client)
-			delta = abs(old_angles[PITCH]-new_angles[PITCH]);
+			delta = fabsf(old_angles[PITCH] - new_angles[PITCH]);
 		else
-			delta = abs(ent->s.angles[PITCH]-forward[PITCH]);
+			delta = fabsf(ent->s.angles[PITCH] - forward[PITCH]);
 		if (delta > 180)
-			delta = 360-delta;
+			delta = 360 - delta;
 		//gi.dprintf("delta %d vertical\n", delta);
 		if (delta > vertical_degrees)
 			return false;
@@ -1660,7 +1666,7 @@ int G_GetNumSummonable (edict_t *ent, char *classname)
 // to get the hypotenuse across the entire horizontal bounding box
 int G_GetHypotenuse (vec3_t v)
 {
-	return floattoint(sqrt(((v[0]*v[0]) + (v[1]*v[1]))));
+	return floattoint(sqrtf(((v[0]*v[0]) + (v[1]*v[1]))));
 }
 
 qboolean G_GetSpawnLocation (edict_t *ent, float range, vec3_t mins, vec3_t maxs, vec3_t start)
@@ -1867,6 +1873,12 @@ void G_DrawBoundingBox (edict_t *ent)
 
 edict_t *G_FindEntityByMtype (int mtype, edict_t *from)
 {
+	if (!from)
+	{
+		gi.dprintf("NULL entity pointer passed to %s", __func__);
+		return NULL; /* received null, give null */
+	}
+
 	if (from)
 		from++;
 	else
@@ -1883,5 +1895,103 @@ edict_t *G_FindEntityByMtype (int mtype, edict_t *from)
 
 float Get2dDistance (vec3_t v1, vec3_t v2)
 {
-	return (sqrt((v2[0]-v1[0])*(v2[0]-v1[0])+(v2[1]-v1[1])*(v2[1]-v1[1])));
+	return (sqrtf((v2[0]-v1[0])*(v2[0]-v1[0])+(v2[1]-v1[1])*(v2[1]-v1[1])));
 }
+
+const char* Date()
+{
+	static char buf[100];
+	time_t now;
+	struct tm* ltime;
+
+	now = time(NULL);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%x", ltime);
+	return buf;
+}
+
+const char* Time()
+{
+	static char buf[100];
+	time_t now;
+	struct tm* ltime;
+
+	now = time(NULL);
+	ltime = localtime(&now);
+	strftime(buf, 100, "%X", ltime);
+	return buf;
+}
+
+//QW//
+/**
+ Replace characters in destination string.
+ Parameter 'add' is added to each character
+ found in source and result is placed in dest.
+ Parameters 'start' and 'end' specify character range to replace.
+ Source text must be a valid C string.
+ */
+ //QwazyWabbit// A pointer version to eliminate undefined behavior.
+ // Cover both line endings in case Windows file ends up on *nix server.
+void convert_string(char* src, char start, char end, char add, char* dest)
+{
+	while ((*dest = *src) != 0)
+	{
+		if ((*dest >= start) && (*dest <= end) && (*dest != '\n') && (*dest != '\r'))
+			*dest += add;
+		src++; dest++;
+	}
+}
+
+/**
+ Set msb in specified string characters, copying them to destination.
+ Text must be a valid C string.
+ Source and destination can be the same.
+ If dest == NULL the action occurs in-place.
+ */
+void highlight_text(char* src, char* dest)
+{
+	if (dest == NULL)
+		dest = src;
+	convert_string(src, 0, (byte)0x7f, (byte)0x80, dest); // white -> green
+}
+
+/**
+ Clear msb in specified string characters, copying them to destination.
+ Text must be a valid C string.
+ Source and destination can be the same.
+ If dest == NULL the action occurs in-place.
+ */
+void white_text(char* src, char* dest)
+{
+	if (dest == NULL)
+		dest = src;
+	convert_string(src, (byte)0x80, (byte)0xff, -128, dest); // green -> white
+}
+
+/**
+ Make text uppercase.
+ Text must be a valid C string.
+ Source and destination can be the same.
+ If dest == NULL the action occurs in-place.
+ */
+void toupper_text(char* src, char* dest)
+{
+	if (dest == NULL)
+		dest = src;
+	convert_string(src, 'a', 'z', ('A' - 'a'), dest); // a -> A
+}
+
+/**
+ Make text lowercase.
+ Text must be a valid C string.
+ Source and destination can be the same string.
+ If dest == NULL the action occurs in-place.
+ */
+void tolower_text(char* src, char* dest)
+{
+	if (dest == NULL)
+		dest = src;
+	convert_string(src, 'A', 'Z', ('a' - 'A'), dest); // A -> a
+}
+
+

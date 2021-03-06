@@ -52,9 +52,9 @@
 #define WEAKEN_SLOW_BASE		0
 #define WEAKEN_SLOW_BONUS		0.1
 /*
-//************************************************************
-//			Iron Maiden (Curse)
-//************************************************************
+ ************************************************************
+ *			Iron Maiden (Curse)
+ ************************************************************
 #define IRON_MAIDEN_DELAY			2
 #define IRON_MAIDEN_DURATION_BASE	2
 #define IRON_MAIDEN_DURATION_BONUS	0.5
@@ -123,7 +123,7 @@
 
 void Cmd_AmpDamage(edict_t *ent);
 void Cmd_Weaken(edict_t *ent);
-void Cmd_Slave(edict_t *ent);
+//void Cmd_Slave(edict_t *ent);
 void Cmd_Amnesia(edict_t *ent);
 void Cmd_Curse(edict_t *ent);
 void Cmd_Bless(edict_t *ent);
@@ -135,4 +135,7 @@ void Cmd_LifeDrain(edict_t *ent);
 void LifeDrain (edict_t *ent);
 void Bleed (edict_t *curse);
 void Cmd_LowerResist (edict_t *ent);
+qboolean curse_add(edict_t* target, edict_t* caster, int type, int curse_level, float duration);//4.4
+void CurseMessage(edict_t* caster, edict_t* target, int type, float duration, qboolean isCurse);//4.4
+
 #endif

@@ -208,7 +208,7 @@ votes_t *FindVote(edict_t *ent)
 			return &votes[i];
 		}
 		
-		if (Q_strcasecmp(votes[i].name, ent->client->pers.netname) == 0)
+		if (Q_stricmp(votes[i].name, ent->client->pers.netname) == 0)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Your vote has been changed.\n");
 			return &votes[i];
@@ -258,7 +258,7 @@ qboolean AddVote(edict_t *ent, int mode, int mapnum)
 			case MAPMODE_PVP:	gi.bprintf(PRINT_HIGH, "%s voted for Player Vs. Player (PvP).\n", ent->myskills.player_name);	break;
 			case MAPMODE_PVM:	gi.bprintf(PRINT_HIGH, "%s voted for Player Vs. Monster (PvM).\n", ent->myskills.player_name);	break;
 			case MAPMODE_DOM:	gi.bprintf(PRINT_HIGH, "%s voted for Domination.\n", ent->myskills.player_name);			break;
-			case MAPMODE_CTF:	gi.bprintf(PRINT_HIGH, "%s voted for Capture The Flag (CTF).\n", ent->myskills.player_name);					break;
+			case MAPMODE_CTF:	gi.bprintf(PRINT_HIGH, "%s voted for Capture The Flag (CTF).\n", ent->myskills.player_name);	break;
 			case MAPMODE_FFA:	gi.bprintf(PRINT_HIGH, "%s voted for Free For All (FFA).\n", ent->myskills.player_name);	break;
 			case MAPMODE_INV:	gi.bprintf(PRINT_HIGH, "%s voted for Invasion (INV).\n", ent->myskills.player_name);
 		}
@@ -487,7 +487,7 @@ int V_AttemptModeChange(qboolean endlevel)
 #ifndef OLD_VOTE_SYSTEM // Paril
 
 
-void RunVotes ()
+void RunVotes(void)
 {
 	if (voteTimeLeft == -1)
 		return;
@@ -582,7 +582,7 @@ void ShowVoteMapMenu_handler(edict_t *ent, int option)
 			ExitLevel();
 			return;
 		}
-		else if (!strcmp(maplist->maps[mapnum-1].name, level.mapname))
+		else if (!Q_stricmp(maplist->maps[mapnum-1].name, level.mapname))
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Can't vote for current map!\n");
 			return;
@@ -899,4 +899,3 @@ void ShowVoteModeMenu(edict_t *ent)
 	showmenu(ent);
 #endif
 }
-

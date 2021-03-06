@@ -197,7 +197,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
      int i, j, k; 
      int sorted[MAX_CLIENTS];
      int sortedscores[MAX_CLIENTS]; 
-     int score, total, highscore=0; 
+     int score, total; 
      int y;
 	 //float accuracy;
 	 int time_left=999, frag_left=999;
@@ -511,7 +511,7 @@ void PlayerID_SetStats (edict_t *player, edict_t *target, qboolean chasecam)
 
 	if (target->client)
 	{
-		sprintf(name, target->client->pers.netname);
+		Com_sprintf(name, sizeof name, "%s", target->client->pers.netname);
 		armor = target->client->pers.inventory[body_armor_index];
 		ammo = target->client->pers.inventory[target->client->ammo_index];
 		lvl = target->myskills.level;
@@ -617,7 +617,8 @@ void G_SetStats (edict_t *ent)
 {
 	gitem_t		*item;
 //	int			num;
-	int			index, cells;
+	int			index;
+	int			cells = 0;
 	int			power_armor_type = 0;
 
 //	int			time_left;//K03
@@ -1118,4 +1119,3 @@ void G_SetSpectatorStats (edict_t *ent)
 	else
 		cl->ps.stats[STAT_CHASE] = 0;*/
 }
-

@@ -147,7 +147,7 @@ void Spirit_AttackCorpse(edict_t *self)
 			if (abilitylevel > 0)
 			{
 				int ammotype;
-				int talentLevel;
+				int talent_level;
 				float ammo_mult = YIN_AMMO_BASE + (YIN_AMMO_MULT * (float)abilitylevel);
 
 				switch(caster->myskills.respawn_weapon)
@@ -181,9 +181,9 @@ void Spirit_AttackCorpse(edict_t *self)
 
 				//Talent: Balance Spirit
 				//Reduce effectiveness if this is a balance spirit
-				talentLevel = getTalentLevel(self->activator, TALENT_BALANCESPIRIT);
-				if((self->mtype == M_BALANCESPIRIT) && (talentLevel > 0))
-					ammo_mult *= 0.75 + 0.07 * talentLevel;	//75% + 7% per upgrade point
+				talent_level = getTalentLevel(self->activator, TALENT_BALANCESPIRIT);
+				if((self->mtype == M_BALANCESPIRIT) && (talent_level > 0))
+					ammo_mult *= 0.75 + 0.07 * talent_level;	//75% + 7% per upgrade point
 
 				V_GiveAmmoClip(caster, ammo_mult, ammotype);
 			}

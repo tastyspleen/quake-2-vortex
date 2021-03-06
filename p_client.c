@@ -1,23 +1,15 @@
 #include "g_local.h"
 #include "m_player.h"
-
-//Multithreading needs windows.h
-#if defined(_WIN32) || defined(WIN32)
-#include <windows.h>
-#endif
+#include "boss.h"
 
 int		cumsindex;
 
 //Function prototypes required for this .c file:
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void SP_misc_teleporter_dest (edict_t *ent);
 void ParasiteAttack (edict_t *ent);
 void EatCorpses (edict_t *ent);
 void PlagueCloudSpawn (edict_t *ent);
-void boss_update (edict_t *ent, usercmd_t *ucmd, int type);
 void RunCacodemonFrames (edict_t *ent, usercmd_t *ucmd);
 //void RunTankFrames (edict_t *ent, usercmd_t *ucmd);
-void GDS_CheckPlayer (edict_t *ent);
 void brain_fire_beam (edict_t *self);
 
 //
@@ -49,9 +41,9 @@ static void SP_FixCoopSpots (edict_t *self)
 		VectorSubtract(self->s.origin, spot->s.origin, d);
 		if (VectorLength(d) < 384)
 		{
-			if ((!self->targetname) || stricmp(self->targetname, spot->targetname) != 0)
+			if ((!self->targetname) || Q_stricmp(self->targetname, spot->targetname) != 0)
 			{
-//				gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
+				//gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
 				self->targetname = spot->targetname;
 			}
 			return;
@@ -67,7 +59,7 @@ static void SP_CreateCoopSpots (edict_t *self)
 {
 	edict_t	*spot;
 
-	if(stricmp(level.mapname, "security") == 0)
+	if(Q_stricmp(level.mapname, "security") == 0)
 	{
 		spot = G_Spawn();
 		spot->classname = "info_player_coop";
@@ -103,9 +95,7 @@ The normal starting point for a level.
 */
 void SP_info_player_start(edict_t *self)
 {
-	if (!coop->value)
-		return;
-	if(stricmp(level.mapname, "security") == 0)
+	if (coop->value && Q_stricmp(level.mapname, "security") == 0)
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_CreateCoopSpots;
@@ -123,6 +113,7 @@ void SP_info_player_deathmatch(edict_t *self)
 		G_FreeEdict (self);
 		return;
 	}
+
 	SP_misc_teleporter_dest (self);
 }
 
@@ -138,20 +129,20 @@ void SP_info_player_coop(edict_t *self)
 		return;
 	}
 
-	if((stricmp(level.mapname, "jail2") == 0)   ||
-	   (stricmp(level.mapname, "jail4") == 0)   ||
-	   (stricmp(level.mapname, "mine1") == 0)   ||
-	   (stricmp(level.mapname, "mine2") == 0)   ||
-	   (stricmp(level.mapname, "mine3") == 0)   ||
-	   (stricmp(level.mapname, "mine4") == 0)   ||
-	   (stricmp(level.mapname, "lab") == 0)     ||
-	   (stricmp(level.mapname, "boss1") == 0)   ||
-	   (stricmp(level.mapname, "fact3") == 0)   ||
-	   (stricmp(level.mapname, "biggun") == 0)  ||
-	   (stricmp(level.mapname, "space") == 0)   ||
-	   (stricmp(level.mapname, "command") == 0) ||
-	   (stricmp(level.mapname, "power2") == 0) ||
-	   (stricmp(level.mapname, "strike") == 0))
+	if((Q_stricmp(level.mapname, "jail2") == 0)   ||
+	   (Q_stricmp(level.mapname, "jail4") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine1") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine2") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine3") == 0)   ||
+	   (Q_stricmp(level.mapname, "mine4") == 0)   ||
+	   (Q_stricmp(level.mapname, "lab") == 0)     ||
+	   (Q_stricmp(level.mapname, "boss1") == 0)   ||
+	   (Q_stricmp(level.mapname, "fact3") == 0)   ||
+	   (Q_stricmp(level.mapname, "biggun") == 0)  ||
+	   (Q_stricmp(level.mapname, "space") == 0)   ||
+	   (Q_stricmp(level.mapname, "command") == 0) ||
+	   (Q_stricmp(level.mapname, "power2") == 0) ||
+	   (Q_stricmp(level.mapname, "strike") == 0))
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_FixCoopSpots;
@@ -235,112 +226,112 @@ qboolean MonsterObits (edict_t *player, edict_t *monster)
 }
 
 //K03 Begin
-qboolean Monster_Obits (edict_t *victim, edict_t *attacker)
+qboolean Monster_Obits(edict_t* victim, edict_t* attacker)
 {
-    char *message1="";
-    char *message2="";
+	char* message1 = "";
+	char* message2 = "";
 
-    // Make sure both attacker and victim still in game!
-    if (attacker == NULL || 
-		attacker->activator == NULL || 
+	// Make sure both attacker and victim still in game!
+	if (attacker == NULL ||
+		attacker->activator == NULL ||
 		attacker->activator->client == NULL ||
 		victim == NULL)
-        return false;
+		return false;
 
 	if (!victim->client)
 		return true;
 
-    message1="was killed by";
+	message1 = "was killed by";
 
-    // What type of monster was this?
-    switch (attacker->mtype)
-    {
-        case M_BERSERK:
-            message2="'s Berserker";
-            break;
-        case M_BOSS2:
-            message2="'s Boss";
-            break;
-        case M_SOLDIERSS:
-            message2="'s Machinegun Soldier";
-            break;
-        case M_JORG:
-            message2="'s Jorg";
-            break;
-        case M_BRAIN:
-            message2="'s Brain";
-            break;
-        case M_CHICK:
-            message2="'s Chick";
-            break;
-        case M_FLIPPER:
-            message2="'s Shark";
-            break;
-        case M_FLOATER:
-            break;
-        case M_FLYER:
-            message2="'s Flyer";
-            break;
-        case M_INSANE:
-            message2="'s Insane"; // how the hell does this work? -(nobody)
-            break;
-        case M_GLADIATOR:
-            message2="'s Gladiator";
-            break;
-        case M_HOVER:
-            message2="'s Icarus";
-            break;
-        case M_INFANTRY:
-            message2="'s Infantry";
-            break;
-        case M_SOLDIERLT:
-            message2="'s Blaster Guard";
-            break;
-        case M_SOLDIER:
-            message2="'s Shark";
-            break;
-        case M_MEDIC:
-            message2="'s Medic";
-            break;
-        case M_MUTANT:
-            message2="'s Mutant";
-            break;
-        case M_PARASITE:
-            message2="'s Parasite";
-            break;
-        case M_TANK:
-            message2="'s Tank";
-            break;
-        case M_MAKRON:
-            message2="'s Makron";
-            break;
-        case M_GUNNER:
-            message2="'s Gunner";
-            break;
-        case M_SUPERTANK:
-            message2="'s Supertank";
-            break;
-		case M_YANGSPIRIT:
-		case M_YINSPIRIT:
-		case M_BALANCESPIRIT:
-			message1 = "was defeated by";
-			message2 = va("'s %s", attacker->classname);				
-			break;	//3.03 Spirit skill
-        default:
-			return false;
-    } // end switch
+	// What type of monster was this?
+	switch (attacker->mtype)
+	{
+	case M_BERSERK:
+		message2 = "'s Berserker";
+		break;
+	case M_BOSS2:
+		message2 = "'s Boss";
+		break;
+	case M_SOLDIERSS:
+		message2 = "'s Machinegun Soldier";
+		break;
+	case M_JORG:
+		message2 = "'s Jorg";
+		break;
+	case M_BRAIN:
+		message2 = "'s Brain";
+		break;
+	case M_CHICK:
+		message2 = "'s Chick";
+		break;
+	case M_FLIPPER:
+		message2 = "'s Shark";
+		break;
+	case M_FLOATER:
+		break;
+	case M_FLYER:
+		message2 = "'s Flyer";
+		break;
+	case M_INSANE:
+		message2 = "'s Insane"; // how the hell does this work? -(nobody)
+		break;
+	case M_GLADIATOR:
+		message2 = "'s Gladiator";
+		break;
+	case M_HOVER:
+		message2 = "'s Icarus";
+		break;
+	case M_INFANTRY:
+		message2 = "'s Infantry";
+		break;
+	case M_SOLDIERLT:
+		message2 = "'s Blaster Guard";
+		break;
+	case M_SOLDIER:
+		message2 = "'s Shark";
+		break;
+	case M_MEDIC:
+		message2 = "'s Medic";
+		break;
+	case M_MUTANT:
+		message2 = "'s Mutant";
+		break;
+	case M_PARASITE:
+		message2 = "'s Parasite";
+		break;
+	case M_TANK:
+		message2 = "'s Tank";
+		break;
+	case M_MAKRON:
+		message2 = "'s Makron";
+		break;
+	case M_GUNNER:
+		message2 = "'s Gunner";
+		break;
+	case M_SUPERTANK:
+		message2 = "'s Supertank";
+		break;
+	case M_YANGSPIRIT:
+	case M_YINSPIRIT:
+	case M_BALANCESPIRIT:
+		message1 = "was defeated by";
+		message2 = va("'s %s", attacker->classname);
+		break;	//3.03 Spirit skill
+	default:
+		return false;
+	} // end switch
 
-    // Print the obituary message..
+	// Print the obituary message..
 	if (victim->client && attacker && attacker->activator && attacker->activator->client) {
-		gi.bprintf(PRINT_MEDIUM,"%s %s %s%s\n", victim->client->pers.netname, message1, attacker->activator->client->pers.netname, message2);
-//		attacker->activator->client->resp.score++;
-//		attacker->activator->myskills.max_experience++;
-//		attacker->activator->myskills.streak++;
+		gi.bprintf(PRINT_MEDIUM, "%s %s %s%s\n", victim->client->pers.netname, message1, attacker->activator->client->pers.netname, message2);
+		//		attacker->activator->client->resp.score++;
+		//		attacker->activator->myskills.max_experience++;
+		//		attacker->activator->myskills.streak++;
 	}
 
 	//3.0 Monster killed the enemy
 	attacker->enemy = NULL;
-    return true;
+	return true;
 }
 //K03 End
 
@@ -352,11 +343,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	char		*message2;
 	qboolean	ff;
 
+	assert(attacker != NULL);
 	//K03 Begin
 	if (attacker && (attacker->creator) &&(!attacker->client) && (meansOfDeath == MOD_SENTRY || meansOfDeath == MOD_SENTRY_ROCKET))
 		attacker = attacker->creator;
 	// fire totem
-	if ((attacker->mtype == TOTEM_FIRE) && attacker->owner && attacker->owner->inuse)
+	if ((attacker && attacker->mtype == TOTEM_FIRE) && attacker->owner && attacker->owner->inuse)
 		attacker = attacker->owner;
 	// Is this a monster doing the killing??
 	//if (Monster_Obits(self, attacker))
@@ -368,7 +360,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	//K03 End
 
-	if (coop->value && attacker->client)
+	if (attacker && coop->value && attacker->client)
 		meansOfDeath |= MOD_FRIENDLY_FIRE;
 
 	if (deathmatch->value || coop->value)
@@ -442,8 +434,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				else
 					message = "hates himself";
 				break;
+			case MOD_ROCKET:
+				message = "ate a rocket";
+				break;
 			case MOD_BFG_BLAST:
 				message = "should have used a smaller gun";
+				break;
 			case MOD_CORPSEEXPLODE:
 				message = "hugs his corpse";
 				break;
@@ -498,6 +494,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				break;
 			default:
 				message = "becomes bored with life";
+				gi.bprintf(PRINT_MEDIUM, "mod: %i \n", mod);
 				break;
 			}
 		}
@@ -821,8 +818,6 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 }
 
 
-void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
-
 void TossClientWeapon (edict_t *self)
 {
 	gitem_t		*item;
@@ -830,21 +825,7 @@ void TossClientWeapon (edict_t *self)
 	qboolean	quad;
 	// RAFAEL
 	qboolean	quadfire;
-	float		dist;
-	vec3_t		v;
-	edict_t		*enemy = NULL;
 	float		spread;
-
-	if(self->enemy && self->enemy != self)
-	{
-		if(self->enemy->classname[0] == 'p')
-		{
-			
-			VectorSubtract(self->s.origin,self->enemy->s.origin,v);
-			dist = VectorLength(v);
-			if(dist < 200) enemy = self->enemy;
-		}
-	}
 
 	if (!deathmatch->value)
 		return;
@@ -945,11 +926,7 @@ player_die
 ==================
 */
 
-void turret_remove(edict_t *ent);
-void cmd_RemoveLaserDefense(edict_t *ent);
 void VortexDeathCleanup(edict_t *attacker, edict_t *targ);
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-void tech_dropall (edict_t *ent);
 
 void VortexGibSound (edict_t *self, int index)
 {
@@ -1496,7 +1473,10 @@ qboolean SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 				spot = G_Find (spot, FOFS(classname), "info_player_start");
 			}
 			if (!spot)
-				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+			{
+				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
+				return false; //QW// Never executed, passify compiler.
+			}
 		}
 	}
 
@@ -1677,7 +1657,7 @@ void respawn (edict_t *self)
 		self->mtype = 0;
 		self->svflags &= ~SVF_NOCLIENT;
 
-		if (self->myskills.respawns != self->client->pers.combat_changed)
+		if (self->myskills.respawns != (unsigned int)self->client->pers.combat_changed)
 			gi.cprintf(self, PRINT_HIGH, "Combat preferences updated.\n");
 		self->myskills.respawns = self->client->pers.combat_changed;//4.5 use changed combat preferences
 		
@@ -1709,7 +1689,7 @@ void spectator_respawn (edict_t *ent)
 	int i, numspec;
 
 	if (debuginfo->value > 1)
-		gi.dprintf("specatator_respawn()\n");
+		gi.dprintf("spectator_respawn()\n");
 	// if the user wants to become a spectator, make sure he doesn't
 	// exceed max_spectators
 
@@ -1878,8 +1858,6 @@ void PutClientInServer (edict_t *ent)
 		talentLevel = getTalentLevel(ent, TALENT_SIDEARMS);
 		if(talentLevel > 0)
 		{
-			int i;
-
 			//Give the player one additional respawn weapon for every point in the talent.
 			//This does not give them ammo.
 			for(i = 0; i < talentLevel+1; ++i)
@@ -2029,6 +2007,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 		gi.dprintf("ClientBeginDeathmatch()\n");
 
 	G_InitEdict (ent);
+	assert(ent != NULL);
 
 	InitClientResp (ent->client);
 
@@ -2205,13 +2184,13 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 
 	if (s[0])
 	{
-		Q_strncpy (ip, s, sizeof(ip)-1);
+		Q_strncpy (ip, s, sizeof(ip));
 
 		s = strchr (ip, ':');
 		if (s)
 			s[0] = '\0';
 
-		strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
+		Q_strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip));
 	}
 
 	// name changes not allowed
@@ -2220,7 +2199,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	if (strcmp(s, ent->client->pers.netname))
 		WriteToLogfile(ent, va("Changed name to %s.\n", s));
 	if (strlen( ent->client->pers.netname) < 1)
-		strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
+		Q_strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname));
 	Info_SetValueForKey(userinfo, "name", ent->client->pers.netname);
 
 	if (!ClientCanConnect(ent, userinfo))
@@ -2263,7 +2242,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 
 	// save off the userinfo in case we want to check something later
-	strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
+	Q_strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 }
 
 
@@ -2288,7 +2267,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		gi.dprintf("ClientConnect()\n");
 
 	value = Info_ValueForKey (userinfo, "name");
-	strncpy (ent->client->pers.netname, value, sizeof(ent->client->pers.netname)-1);
+	Q_strncpy (ent->client->pers.netname, value, sizeof(ent->client->pers.netname)-1);
 
 	// update current ip
 	value = Info_ValueForKey (userinfo, "ip");
@@ -2301,7 +2280,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		if (value)
 			value[0] = '\0';
 
-		strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
+		Q_strncpy(ent->client->pers.current_ip, ip, sizeof(ent->client->pers.current_ip)-1);
 	}
 
 	//Info_SetValueForKey(userinfo, "ip", value);
@@ -2322,8 +2301,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		int i, numspec;
 
 		if (*spectator_password->string && 
-			strcmp(spectator_password->string, "none") && 
-			strcmp(spectator_password->string, value)) {
+			Q_strcmp(spectator_password->string, "none") && 
+			Q_strcmp(spectator_password->string, value)) {
 			Info_SetValueForKey(userinfo, "rejmsg", "Spectator password required or incorrect.");
 			return false;
 		}
@@ -2340,8 +2319,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	} else {
 		// check for a password
 		value = Info_ValueForKey (userinfo, "password");
-		if (*password->string && strcmp(password->string, "none") && 
-			strcmp(password->string, value)) {
+		if (*password->string && Q_strcmp(password->string, "none") && 
+			Q_strcmp(password->string, value)) {
 			Info_SetValueForKey(userinfo, "rejmsg", "Password required or incorrect.");
 			return false;
 		}
@@ -2375,7 +2354,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ClientUserinfoChanged (ent, userinfo);
 //GHz START
 	value = Info_ValueForKey (userinfo, "ip");
-	if (game.maxclients > 1)
+	if (ent && game.maxclients > 1)
 	{
 		gi.dprintf ("%s@%s connected at %s on %s\n", ent->client->pers.netname, value, CURRENT_TIME, CURRENT_DATE);
 		WriteToLogfile(ent, "Connected to server.\n");
@@ -2383,6 +2362,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 //GHz END
 
 //	ent->client->disconnect_time = -1;
+	assert(ent != NULL);
 	ent->svflags = 0;// make sure we start with known default
 	//ent->num_lasers = 0;
 	ent->client->pers.connected = true;
@@ -2398,16 +2378,11 @@ Called when a player drops from the server.
 Will not be called between levels.
 ============
 */
-void KillMyVote (edict_t *ent);
-void soldier_die(edict_t *ent);
-void turret_remove(edict_t *ent);
 void ClientDisconnect (edict_t *ent)
 {
 	int		i;
-	edict_t	*scan = NULL;
 	edict_t *player;
-    vec3_t zvec={0,0,0};
-	int		playernum;
+ 	int		playernum;
 
 	if (debuginfo->value > 1)
 		gi.dprintf("ClientDisconnect()\n");
@@ -2625,13 +2600,11 @@ void RechargeAbilities (edict_t *ent)
 
 //K03 Begin
 void Vampire_Think(edict_t *self);
-void Parasite(edict_t *ent);
-void LockOnTarget (edict_t *player);
-void RotateVectorAroundEntity (edict_t *ent, int magnitude, int degrees, vec3_t output);
 void DeflectProjectiles (edict_t *self, float chance, qboolean in_front);
 void DrawNearbyGrid(edict_t *ent);
 void DrawChildLinks (edict_t *ent);
-//void DrawPath(void);
+
+
 void ClientThinkstuff(edict_t *ent)
 {
 	int			health_factor;//K03
@@ -2655,7 +2628,7 @@ void ClientThinkstuff(edict_t *ent)
 	if (ent->cocoon_factor > 0 && level.time > ent->cocoon_time - 5)
 	{
 		if (!(level.framenum % 10))
-			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", ent->cocoon_time - level.time);
+			gi.cprintf(ent, PRINT_HIGH, "Cocoon bonus wears off in %.0f second(s)\n", (double)ent->cocoon_time - (double)level.time);
 
 		if (level.time >= ent->cocoon_time)
 		{
@@ -2804,7 +2777,7 @@ void ClientThinkstuff(edict_t *ent)
 		{
 			int maxHP = MAX_HEALTH(ent);
 			int maxAP = MAX_ARMOR(ent);
-			int *armor = &ent->client->pers.inventory[body_armor_index];
+			armor = &ent->client->pers.inventory[body_armor_index];
 			float factor = FURY_INITIAL_REGEN + (FURY_ADDON_REGEN * ent->myskills.abilities[FURY].current_level);
 			
 			if (factor > FURY_MAX_REGEN)
@@ -2820,6 +2793,11 @@ void ClientThinkstuff(edict_t *ent)
 		}
 	//	else	ent->fury_time = 0.0;
 	}
+
+	//QW// Added these to passify VS2019. 
+	// Testing will reveal if there is a real error.
+	assert(ent != NULL);
+	assert(ent->client != NULL);
 
 	// regeneration tech
 	if (ent->client->pers.inventory[regeneration_index])
@@ -3070,11 +3048,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	pmove_t	pm;
 	float modifier;
 
-	static	edict_t	*old_ground;
-	static	qboolean	wasground;
-	int		fire_last = 18;
+	//int		fire_last = 18;		//QW// Removed this until I figure it out.
 	que_t	*curse=NULL;
-	int		viewheight;
+	int		viewheight = ent->viewheight;
 
 	impulse = ucmd->impulse;
 // GHz START
@@ -3089,20 +3065,20 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if (ent->client->resp.spectator != true)
 	{
 		// need this for sniper mode calculations
-		if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 0)
-		{
-			if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 9)
-				fire_last = 12;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
-				fire_last = 13;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
-				fire_last = 14;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
-				fire_last = 15;
-			else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
-				fire_last = 16;
-			else fire_last = 17;
-		}
+		//if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 0)
+		//{
+		//	if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 9)
+		//		fire_last = 12;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 8)
+		//		fire_last = 13;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 6)
+		//		fire_last = 14;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 4)
+		//		fire_last = 15;
+		//	else if (ent->myskills.weapons[WEAPON_RAILGUN].mods[1].current_level > 2)
+		//		fire_last = 16;
+		//	else fire_last = 17;
+		//}
 
 		// assault cannon slows you down
 		if(ent->client->pers.weapon && (ent->client->pers.weapon->weaponthink == Weapon_Chaingun) 
@@ -3382,7 +3358,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		if (/*ent->groundentity && !pm.groundentity &&*/ (pm.cmd.upmove >= 10) /*&& (pm.waterlevel == 0)*/)
 		{
-			if (((ent->mtype == MORPH_BRAIN || ent->mtype == MORPH_MUTANT) && pm.waterlevel > 0) || ent->groundentity && !pm.groundentity)
+			if (((ent->mtype == MORPH_BRAIN || ent->mtype == MORPH_MUTANT) && pm.waterlevel > 0) || (ent->groundentity && !pm.groundentity))
 			{
 				V_PlayerJump(ent);
 				ent->client->jump = true;
@@ -3558,8 +3534,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	//If this player isn't showing a menu any more, cancel the trade
 	if (ent->trade_with && !ent->client->menustorage.menu_active)
 	{
-		int i;
-
 		//alert both players
 		gi.cprintf(ent, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
 		gi.cprintf(ent->trade_with, PRINT_HIGH, "%s has stopped the trade.\n", ent->myskills.player_name);
@@ -3586,7 +3560,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	}
 	//3.0 end
 
-	boss_update(ent, ucmd, BOSS_TANK);
+	boss_update(ent, ucmd);
 	RunParasiteFrames(ent, ucmd);
 	RunCacodemonFrames(ent, ucmd);
 	//RunTankFrames(ent, ucmd);

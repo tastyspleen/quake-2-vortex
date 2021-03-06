@@ -1,19 +1,39 @@
+/*
+Copyright (C) 1997-2001 Id Software, Inc.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#ifndef Q_SHARED_H
+#define Q_SHARED_H
 
 // q_shared.h -- included first by ALL program modules
 
-#ifndef Q_SHARED
-#define Q_SHARED
-
 #ifdef _WIN32
-// unknown pragmas are SUPPOSED to be ignored, but....
-#pragma warning(disable : 4244)     // MIPS
-#pragma warning(disable : 4136)     // X86
-#pragma warning(disable : 4051)     // ALPHA
-
+#pragma warning(disable : 4244)	// C4244 conversion from 'type1' to 'type2', possible loss of data
+#pragma warning(disable : 4100)	// C4100 unreferenced formal parameter
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4305)		// truncation from const double to float
-
-#endif
+#if _MSC_VER > 1500
+#pragma warning(disable : 4706) // Assignment within conditional expression
+#pragma warning(disable : 4996)	// disable warnings from VS 2010 about deprecated CRT functions (_CRT_SECURE_NO_WARNINGS).
+#pragma warning(disable : 4459)	// declaration of 'var' hides global declaration.
+#endif /*_MSC_VER */
+#endif /* _WIN32 */
 
 //K03 Begin
 #ifndef __cplusplus
@@ -24,6 +44,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 #endif
 //K03 End
@@ -137,9 +158,6 @@ extern vec3_t vec3_origin;
 
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
-// microsoft's fabs seems to be ungodly slow...
-//float Q_fabs (float f);
-//#define	fabs(f) Q_fabs(f)
 #if !defined C_ONLY
 extern long Q_ftol( float f );
 #else
@@ -219,10 +237,17 @@ void Com_PageInMemory (byte *buffer, int size);
 
 //=============================================
 
-// portable case insensitive compare
-int Q_stricmp (char *s1, char *s2);
-int Q_strcasecmp (char *s1, char *s2);
-int Q_strncasecmp (char *s1, char *s2, int n);
+// Case insensitive string compare function
+int Q_stricmp (const char *s1, const char *s2);
+// Case sensitive string compare function
+int Q_strcmp(const char* s1, const char* s2);
+//A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
+void Q_strncpy(char* pszDest, const char* pszSrc, int nDestSize);
+
+/* White text and highlight text utilities */
+
+char* LoPrint(char* text);
+char* HiPrint(char* text);
 
 //=============================================
 
@@ -366,7 +391,7 @@ COLLISION DETECTION
 
 #define	SURF_LIGHT		0x1		// value will hold the light strength
 
-#define	SURF_SLICK		0x2		// effects game physics
+#define	SURF_SLICK		0x2		// affects game physics
 
 #define	SURF_SKY		0x4		// don't draw, but add to skybox
 #define	SURF_WARP		0x8		// turbulent water warp
@@ -548,6 +573,7 @@ typedef struct
 // that happen constantly on the given entity.
 // An entity that has effects will be sent to the client
 // even if it has a zero index model.
+#define EF_NONE				0x00000000		// duh.
 #define	EF_ROTATE			0x00000001		// rotate (bonus items)
 #define	EF_GIB				0x00000002		// leave a trail
 #define	EF_BLASTER			0x00000008		// redlight + trail
@@ -992,6 +1018,7 @@ typedef enum
 
 
 // player_state->stats[] indexes
+// These are the original 16 game stat messages
 #define STAT_HEALTH_ICON		0
 #define	STAT_HEALTH				1
 #define	STAT_AMMO_ICON			2
@@ -1008,6 +1035,9 @@ typedef enum
 #define	STAT_LAYOUTS			13
 #define	STAT_FRAGS				14
 #define	STAT_FLASHES			15		// cleared each frame, 1 = health, 2 = armor
+
+// state message extensions begin here
+
 #define STAT_CHASE				16
 
 //K03 Begin
@@ -1087,21 +1117,26 @@ typedef enum
 #define	CS_MAXCLIENTS		30
 #define	CS_MAPCHECKSUM		31		// for catching cheater maps
 
-#define	CS_MODELS			32
-#define	CS_SOUNDS			(CS_MODELS+MAX_MODELS)
-#define	CS_IMAGES			(CS_SOUNDS+MAX_SOUNDS)
-#define	CS_LIGHTS			(CS_IMAGES+MAX_IMAGES)
-#define	CS_ITEMS			(CS_LIGHTS+MAX_LIGHTSTYLES)
-#define	CS_PLAYERSKINS		(CS_ITEMS+MAX_ITEMS)
-#define CS_GENERAL			(CS_PLAYERSKINS+MAX_CLIENTS)
-#define	MAX_CONFIGSTRINGS	(CS_GENERAL+MAX_GENERAL)
+#define CS_MODELS           32
+#define CS_SOUNDS           (CS_MODELS + MAX_MODELS)
+#define CS_IMAGES           (CS_SOUNDS + MAX_SOUNDS)
+#define CS_LIGHTS           (CS_IMAGES + MAX_IMAGES)
+#define CS_ITEMS            (CS_LIGHTS + MAX_LIGHTSTYLES)
+#define CS_PLAYERSKINS      (CS_ITEMS + MAX_ITEMS)
+#define CS_GENERAL          (CS_PLAYERSKINS + MAX_CLIENTS)  //1568
+#define MAX_CONFIGSTRINGS   (CS_GENERAL + MAX_GENERAL)      //2080
 
+//QW// The 2080 magic number comes from q_shared.h of the original game.
+// No game mod can go over this 2080 limit.
+#if (MAX_CONFIGSTRINGS > 2080)
+	#error MAX_CONFIGSTRINGS > 2080
+#endif
 
 //==============================================
 
 
 // entity_state_t->event values
-// ertity events are for effects that take place reletive
+// entity events are for effects that take place relative
 // to an existing entities origin.  Very network efficient.
 // All muzzle flashes really should be converted to events...
 typedef enum

@@ -152,7 +152,6 @@ cvar_t *ctf_enable_balanced_fc;
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint);
 void ClientThink (edict_t *ent, usercmd_t *cmd);
 qboolean ClientConnect (edict_t *ent, char *userinfo);
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 void ClientDisconnect (edict_t *ent);
 void ClientBegin (edict_t *ent, qboolean loadgame);
 void ClientCommand (edict_t *ent);
@@ -193,6 +192,14 @@ void ShutdownGame (void)
 	gi.dprintf ("==== ShutdownGame ====\n");
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);
+
+#ifdef _WIN32
+	OutputDebugString("ShutdownGame() was called.\n");
+	OutputDebugString("Memory stats since startup.\n");
+	_CrtMemDumpStatistics(&startup1);
+	_CrtDumpMemoryLeaks();
+#endif
+
 }
 
 game_export_t *GetGameAPI (game_import_t *import)
@@ -316,7 +323,7 @@ void EndDMLevel (void)
 	int		i;
 	edict_t	*tempent;
 
-	clearallmenus();
+	ClearAllMenus();
 	InitJoinedQueue();
 
 	if (SPREE_WAR) // terminate any spree wars
@@ -394,10 +401,10 @@ void VortexEndLevel (void)
 
 	INV_AwardPlayers();
 
-	gi.dprintf("Vortex is shutting down...");
+	gi.dprintf("Vortex is shutting down...\n");
 	
 	CTF_ShutDown(); // 3.7 shut down CTF, remove flags and bases
-	clearallmenus();
+	ClearAllMenus();
 	InitJoinedQueue();
 	InitializeTeamNumbers(); // for allies
 
@@ -423,10 +430,8 @@ void VortexEndLevel (void)
 void EndDMLevel (void)
 {
 	edict_t *ent;
-	int found_map=0;
-	static const char *seps = " ,\n\r";
+//	static const char *seps = " ,\n\r";
 //GHz START
-	int modenum=0;
 	VortexEndLevel();
 //GHz END
 
@@ -552,7 +557,7 @@ void EndDMLevel (void)
 	//3.0 end voting (doomie)
 
 	//This should always be true now
-	if (level.nextmap)
+	if (level.nextmap[0])
 	{	// go to a specific map
 		//BeginIntermission (CreateTargetChangeLevel (level.nextmap) );
 		VortexBeginIntermission(level.nextmap);
@@ -599,16 +604,17 @@ void CheckNeedPass (void)
 	}
 }
 
+char* HiPrint(char* text);//K03
+
 /*
 =================
 CheckDMRules
 =================
 */
-char *HiPrint(char *text);//K03
 void CheckDMRules (void)
 {
-	int			i, check;//K03
-	float		totaltime=((timelimit->value*60) - level.time);//K03 added totaltime
+	int			i; // check;//K03
+//	float		totaltime=((timelimit->value*60) - level.time);//K03 added totaltime
 	gclient_t	*cl;
 
 	if (level.intermissiontime)
@@ -625,7 +631,7 @@ void CheckDMRules (void)
 	{
 		//K03 Begin
 		//Spawn monsters every 120 seconds
-		check= (int)(totaltime)%120;
+		//check= (int)(totaltime)%120;
 
 		if (voting->value && (level.time >= (timelimit->value - 3)*60) &&
 			(maplist.warning_given == false))
@@ -693,7 +699,7 @@ void ExitLevel (void)
 //GHz END
 	if(level.changemap)
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
-	else if (level.nextmap)
+	else if (level.nextmap[0])
 		Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.nextmap);
 	else 
 	{
@@ -726,24 +732,13 @@ G_RunFrame
 Advances the world by 0.1 seconds
 ================
 */
-void tech_spawnall (void);
-void thinkDisconnect(edict_t *ent);
-void G_InitEdict (edict_t *e);
-void check_for_levelup(edict_t *ent);//K03
-void RunVotes ();
-void G_RunFrame (void)
+void G_RunFrame(void)
 {
-	int		i;//j;
-	static int ofs;
-	static float next_fragadd = 0;
-	edict_t	*ent;
-
-	//vec3_t	v,vv;
-	qboolean haveflag;
-//	gitem_t	*item;
+	int		i;
+	edict_t* ent;
 
 	level.framenum++;
-	level.time = level.framenum*FRAMETIME;
+	level.time = level.framenum * FRAMETIME;
 
 	// choose a client for monsters to target this frame
 //	AI_SetSightClient ();
@@ -756,9 +751,9 @@ void G_RunFrame (void)
 		return;
 	}
 
-	if(spawncycle < level.time) 
+	if (spawncycle < level.time)
 		spawncycle = level.time + FRAMETIME * 10;
-	if(spawncycle < 130) 
+	if (spawncycle < 130)
 		spawncycle = 130;
 
 #ifndef OLD_VOTE_SYSTEM // Paril
@@ -768,9 +763,9 @@ void G_RunFrame (void)
 	// treat each object in turn
 	// even the world gets a chance to think
 	//
-	haveflag = false;
+	//haveflag = false;
 	ent = &g_edicts[0];
-	for (i=0 ; i<globals.num_edicts ; i++, ent++)
+	for (i = 0; i < globals.num_edicts; i++, ent++)
 	{
 		if (!ent->inuse)
 			continue;
@@ -780,35 +775,35 @@ void G_RunFrame (void)
 
 		level.current_entity = ent;
 
-		VectorCopy (ent->s.origin, ent->s.old_origin);
+		VectorCopy(ent->s.origin, ent->s.old_origin);
 
 		// if the ground entity moved, make sure we are still on it
 		if ((ent->groundentity) && (ent->groundentity->linkcount != ent->groundentity_linkcount))
 		{
 			ent->groundentity = NULL;
-			if ( !(ent->flags & (FL_SWIM|FL_FLY)) && (ent->svflags & SVF_MONSTER) )
+			if (!(ent->flags & (FL_SWIM | FL_FLY)) && (ent->svflags & SVF_MONSTER))
 			{
-				M_CheckGround (ent);
+				M_CheckGround(ent);
 			}
 		}
 
 		if (i > 0 && i <= maxclients->value && !(ent->svflags & SVF_MONSTER))
 		{
-			ClientBeginServerFrame (ent);
+			ClientBeginServerFrame(ent);
 			continue;
 		}
 
-		G_RunEntity (ent);
+		G_RunEntity(ent);
 	}
 
 	// see if it is time to end a deathmatch
-	CheckDMRules ();
+	CheckDMRules();
 
 	// see if needpass needs updated
-	CheckNeedPass ();
+	CheckNeedPass();
 
 	// build the playerstate_t structures for all players
-	ClientEndServerFrames ();
+	ClientEndServerFrames();
 
 	//GHz START
 	// auto-save files every 3 minutes
@@ -820,12 +815,13 @@ void G_RunFrame (void)
 				continue;
 			SaveCharacter(ent);
 		}
-		gi.dprintf("INFO: All players saved.\n");
+		if(debuginfo->value)
+			gi.dprintf("INFO: All players saved.\n");
 	}
-//GHz END
+	//GHz END
 
-    //3.0 Remove votes by players who left the server
-	//Every 5 minutes
+		//3.0 Remove votes by players who left the server
+		//Every 5 minutes
 #ifdef OLD_VOTE_SYSTEM // Paril
 	if (!(level.framenum % 3000))
 		CheckPlayerVotes();
@@ -833,58 +829,58 @@ void G_RunFrame (void)
 	//3.0 END 
 
 	if (level.time < pregame_time->value)
-		if (level.time == pregame_time->value-30) {
+		if (level.time == pregame_time->value - 30) {
 			gi.bprintf(PRINT_HIGH, "30 seconds left of pre-game\n");
-		
+
 			for (i = 0; i < maxclients->value; i++) {
 				ent = &g_edicts[i];
 				if (!ent->inuse)
 					continue;
 				if (!ent->client)
 					continue;
-			//	if (ent->client->disconnect_time > 0)
-					//continue;
+				//	if (ent->client->disconnect_time > 0)
+						//continue;
 
 				gi.cprintf(ent, PRINT_HIGH, "You will not be able to access the Armory in the game\n");
 			}
 		}
-		if (level.time == pregame_time->value-10)
-			gi.bprintf(PRINT_HIGH, "10 seconds left of pre-game\n");
-		if (level.time == pregame_time->value-5)
-			gi.bprintf(PRINT_HIGH, "5 seconds\n");
-		if (level.time == pregame_time->value-4)
-			gi.bprintf(PRINT_HIGH, "4\n");
-		if (level.time == pregame_time->value-3)
-			gi.bprintf(PRINT_HIGH, "3\n");
-		if (level.time == pregame_time->value-2)
-			gi.bprintf(PRINT_HIGH, "2\n");
-		if (level.time == pregame_time->value-1)
-			gi.bprintf(PRINT_HIGH, "1\n");
-		if (level.time == pregame_time->value) {
-			gi.bprintf(PRINT_HIGH, "Game commences!\n");
+	if (level.time == pregame_time->value - 10)
+		gi.bprintf(PRINT_HIGH, "10 seconds left of pre-game\n");
+	if (level.time == pregame_time->value - 5)
+		gi.bprintf(PRINT_HIGH, "5 seconds\n");
+	if (level.time == pregame_time->value - 4)
+		gi.bprintf(PRINT_HIGH, "4\n");
+	if (level.time == pregame_time->value - 3)
+		gi.bprintf(PRINT_HIGH, "3\n");
+	if (level.time == pregame_time->value - 2)
+		gi.bprintf(PRINT_HIGH, "2\n");
+	if (level.time == pregame_time->value - 1)
+		gi.bprintf(PRINT_HIGH, "1\n");
+	if (level.time == pregame_time->value) {
+		gi.bprintf(PRINT_HIGH, "Game commences!\n");
 
-			gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/fight.wav"), 1, ATTN_NONE, 0);
+		gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/fight.wav"), 1, ATTN_NONE, 0);
 
-			tech_spawnall();
+		tech_spawnall();
 
-			for (i = 0; i < maxclients->value; i++) {
-				ent = &g_edicts[i];
-				if (!ent->inuse)
-					continue;
-				if (!ent->client)
-					continue;
+		for (i = 0; i < maxclients->value; i++) {
+			ent = &g_edicts[i];
+			if (!ent->inuse)
+				continue;
+			if (!ent->client)
+				continue;
 
-				//r1: fixed illegal effects being set
-				ent->s.effects &= ~EF_COLOR_SHELL;
-				ent->s.renderfx &= ~RF_SHELL_RED;
+			//r1: fixed illegal effects being set
+			ent->s.effects &= ~EF_COLOR_SHELL;
+			ent->s.renderfx &= ~RF_SHELL_RED;
 
-				//RemoveAllCurses(ent);
-				//RemoveAllAuras(ent);
-				AuraRemove(ent, 0);
-				CurseRemove(ent, 0);
-				ent->Slower = level.time - 1;
-			}
+			//RemoveAllCurses(ent);
+			//RemoveAllAuras(ent);
+			AuraRemove(ent, 0);
+			CurseRemove(ent, 0);
+			ent->Slower = level.time - 1;
 		}
+	}
 
 	if (domination->value && (level.time == pregame_time->value))
 		dom_init();
@@ -896,6 +892,6 @@ void G_RunFrame (void)
 	PTRCheckJoinedQue();
 	INV_SpawnPlayers();
 
-	if ((pvm->value || ffa->value) && !(level.framenum%10))
+	if ((pvm->value || ffa->value) && !(level.framenum % 10))
 		CreateRandomPlayerBoss(false);
 }

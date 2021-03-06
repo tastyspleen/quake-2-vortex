@@ -492,8 +492,3 @@ void PlagueCloud (edict_t *ent, edict_t *target)
 	if (!que_addent(target->curses, plague, PLAGUE_DURATION))
 		G_FreeEdict(plague);
 }
-
-
-
-
-

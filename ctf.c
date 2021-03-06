@@ -619,7 +619,8 @@ void CTF_AwardTeam (edict_t *ent, int teamnum, int points, int credits)
 {
 	int		i, groupnum=0;
 	float	dist;
-	edict_t	*cl_ent, *base;
+	edict_t* cl_ent;
+	edict_t* base = NULL;
 
 	// determine whether or not points should be divided between
 	// defenders or attackers, or--if ent isn't specified--everyone
@@ -863,7 +864,7 @@ void CTF_InitSpawnPoints (int teamnum)
 void CTF_AwardFrag (edict_t *attacker, edict_t *target)
 {
 	int		points=0, credits=0;
-	int		enemy_teamnum;
+	int		enemy_teamnum = 0;
 	float	mult=1.0;
 	edict_t	*team_fc, *enemy_fc, *team_base, *enemy_base, *team_spawn, *enemy_spawn;
 
@@ -1062,7 +1063,8 @@ void CTF_AwardFlagCapture (edict_t *carrier, int teamnum)
 
 void flagbase_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	int	enemy_flag_index, enemy_teamnum;
+	int	enemy_flag_index = 0;
+	int	enemy_teamnum = 0;
 
 	//if (!G_EntExists(other))
 	//	return;
@@ -1255,39 +1257,38 @@ void CTF_SpawnFlagBase (int teamnum, vec3_t point)
 	}
 }
 
-qboolean CTF_GetFlagPosition (int teamnum, vec3_t pos)
+qboolean CTF_GetFlagPosition(int teamnum, vec3_t pos)
 {
 	char	path[512];
-	FILE	*fptr;
-	vec3_t	v;
+	FILE* fptr;
+	vec3_t	v = { 0 };
 
 	if (!pos)
 		return false;
 
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\Settings\\loc\\%s_%d.loc", game_path->string, level.mapname, teamnum);
-	#else
-		sprintf(path, "%s/Settings/%s_%d.loc", game_path->string, level.mapname, teamnum);
-	#endif
+	Com_sprintf(path, sizeof path, "%s/Settings/%s_%d.loc", game_path->string, level.mapname, teamnum);
 
 	// read flag position from file
 	if ((fptr = fopen(path, "r")) != NULL)
-     {
-		 fscanf(fptr, "%f,%f,%f", &v[0], &v[1], &v[2]);
-		 VectorCopy(v, pos);
-		 //gi.dprintf("%f %f %f\n", v[0], v[1], v[2]);
-		 fclose(fptr);
-         return true; 
-     }  
+	{
+		int count = fscanf(fptr, "%f,%f,%f", &v[0], &v[1], &v[2]);
+		if (count != 3)
+			gi.dprintf("%s: Error reading location coordinates in file %s\n", __func__, path);
+
+		VectorCopy(v, pos);
+		//gi.dprintf("%f %f %f\n", v[0], v[1], v[2]);
+		fclose(fptr);
+		return true;
+	}
 
 	return false;
 }
 
-void CTF_WriteFlagPosition (edict_t *ent)  
+void CTF_WriteFlagPosition(edict_t* ent)
 {
 	int		teamnum;
 	char	path[512];
-	FILE	*fptr;
+	FILE* fptr;
 
 	if (!ent->myskills.administrator)
 		return;
@@ -1297,23 +1298,19 @@ void CTF_WriteFlagPosition (edict_t *ent)
 	if (!teamnum)
 		return;
 
-	#if defined(_WIN32) || defined(WIN32)
-		sprintf(path, "%s\\Settings\\loc\\%s_%d.loc", game_path->string, level.mapname, teamnum);
-	#else
-		sprintf(path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
-	#endif 
+	Com_sprintf(path, sizeof path, "%s/Settings/%s_%s.loc", game_path->string, level.mapname, s1);
 
-     if ((fptr = fopen(path, "w")) != NULL) // write text to file
-     {  
-		 // write origin along with flag team
-		 fprintf(fptr, "%f,%f,%f\n", ent->s.origin[0],ent->s.origin[1], ent->s.origin[2]); 
-         fclose(fptr); 
+	if ((fptr = fopen(path, "w")) != NULL) // write text to file
+	{
+		// write origin along with flag team
+		fprintf(fptr, "%f,%f,%f\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		fclose(fptr);
 
-		 gi.cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n", 
-			 CTF_GetTeamString(teamnum), level.mapname);
-         return;  
-     }  
-     gi.dprintf("ERROR: Failed to write to server log.\n"); 
+		gi.cprintf(ent, PRINT_HIGH, "Set flag location for %s team on %s\n",
+			CTF_GetTeamString(teamnum), level.mapname);
+		return;
+	}
+	gi.dprintf("ERROR: Failed to write to server log: %s\n", path);
 }
 
 void CTF_RemovePlayerFlags (void)
@@ -1588,17 +1585,17 @@ void CTF_SpawnPlayersInBase (int teamnum)
 float CTF_DistanceFromBase(edict_t *ent, vec3_t start, int base_teamnum)
 {
 	edict_t *base;
-	vec3_t	org;
+	//vec3_t	org = { 0 };
 
 	if (!ctf->value || !base_teamnum)
 		return 8192;
 
-	if (ent && ent->inuse)
-		VectorCopy(ent->s.origin, org);
-	else if (start)
-		VectorCopy(start, org);
-	else
-		return 8192;
+	//if (ent && ent->inuse)
+	//	VectorCopy(ent->s.origin, org);
+	//else if (start)
+	//	VectorCopy(start, org);
+	//else
+	//	return 8192;
 
 	// return distance to flag base
 	if ((base = CTF_GetFlagBaseEnt(base_teamnum)) != NULL)
@@ -1611,8 +1608,7 @@ float CTF_DistanceFromBase(edict_t *ent, vec3_t start, int base_teamnum)
 
 void CTF_JoinMenuHandler (edict_t *ent, int option)
 {
-	int			num=0;
-	joined_t	*slot=NULL;
+	joined_t	*slot = NULL;
 
 	// exit menu
 	if (option == 3)

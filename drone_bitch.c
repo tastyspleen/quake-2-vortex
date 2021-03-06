@@ -17,9 +17,6 @@ void mychick_reslash(edict_t *self);
 void mychick_rerocket(edict_t *self);
 void mychick_attack1(edict_t *self);
 void mychick_continue (edict_t *self);
-void drone_ai_stand (edict_t *self, float dist);
-void drone_ai_run (edict_t *self, float dist);
-void drone_ai_walk (edict_t *self, float dist);
 
 static int	sound_missile_prelaunch;
 static int	sound_missile_launch;
@@ -47,36 +44,36 @@ void myChickMoan (edict_t *self)
 
 mframe_t mychick_frames_fidget [] =
 {
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  myChickMoan,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL,
-	drone_ai_stand, 0,  NULL
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  myChickMoan},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL},
+	{drone_ai_stand, 0,  NULL}
 };
 mmove_t mychick_move_fidget = {FRAME_stand201, FRAME_stand230, mychick_frames_fidget, mychick_stand};
 
@@ -90,36 +87,36 @@ void mychick_fidget (edict_t *self)
 
 mframe_t mychick_frames_stand [] =
 {
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, NULL,
-	drone_ai_stand, 0, mychick_fidget,
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, NULL},
+	{drone_ai_stand, 0, mychick_fidget},
 
 };
 mmove_t mychick_move_stand = {FRAME_stand101, FRAME_stand130, mychick_frames_stand, NULL};
@@ -131,16 +128,16 @@ void mychick_stand (edict_t *self)
 
 mframe_t chick_frames_walk [] =
 {
-	drone_ai_walk, 6,	 NULL,
-	drone_ai_walk, 8,  NULL,
-	drone_ai_walk, 13, NULL,
-	drone_ai_walk, 5,  NULL,
-	drone_ai_walk, 7,  NULL,
-	drone_ai_walk, 4,  NULL,
-	drone_ai_walk, 11, NULL,
-	drone_ai_walk, 5,  NULL,
-	drone_ai_walk, 9,  NULL,
-	drone_ai_walk, 7,  NULL
+	{drone_ai_walk, 6,  NULL},
+	{drone_ai_walk, 8,  NULL},
+	{drone_ai_walk, 13, NULL},
+	{drone_ai_walk, 5,  NULL},
+	{drone_ai_walk, 7,  NULL},
+	{drone_ai_walk, 4,  NULL},
+	{drone_ai_walk, 11, NULL},
+	{drone_ai_walk, 5,  NULL},
+	{drone_ai_walk, 9,  NULL},
+	{drone_ai_walk, 7,  NULL}
 };
 
 mmove_t chick_move_walk = {FRAME_walk11, FRAME_walk20, chick_frames_walk, NULL};
@@ -154,31 +151,31 @@ void chick_walk (edict_t *self)
 
 mframe_t mychick_frames_start_run [] =
 {
-	drone_ai_run, 1,  NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0,	 NULL,
-	drone_ai_run, -1, NULL, 
-	drone_ai_run, -1, NULL, 
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 1,  NULL,
-	drone_ai_run, 3,  NULL,
-	drone_ai_run, 6,	 NULL,
-	drone_ai_run, 3,	 NULL
+	{drone_ai_run, 1,  NULL},
+	{drone_ai_run, 0,  NULL},
+	{drone_ai_run, 0,  NULL},
+	{drone_ai_run, -1, NULL}, 
+	{drone_ai_run, -1, NULL}, 
+	{drone_ai_run, 0,  NULL},
+	{drone_ai_run, 1,  NULL},
+	{drone_ai_run, 3,  NULL},
+	{drone_ai_run, 6,  NULL},
+	{drone_ai_run, 3,  NULL}
 };
 mmove_t mychick_move_start_run = {FRAME_walk01, FRAME_walk10, mychick_frames_start_run, mychick_run};
 
 mframe_t mychick_frames_run [] =
 {
-	drone_ai_run, 25,	NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25, NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25,  NULL,
-	drone_ai_run, 25,  NULL
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL},
+	{drone_ai_run, 25, NULL}
 
 };
 mmove_t mychick_move_run = {FRAME_walk11, FRAME_walk20, mychick_frames_run, NULL};
@@ -207,46 +204,46 @@ void mychick_dead (edict_t *self)
 
 mframe_t mychick_frames_death2 [] =
 {
-	ai_move, -6, NULL,
-	ai_move, 0,  NULL,
-	ai_move, -1,  NULL,
-	ai_move, -5, NULL,
-	ai_move, 0, NULL,
-	ai_move, -1,  NULL,
-	ai_move, -2,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, 10, NULL,
-	ai_move, 2,  NULL,
-	ai_move, 3,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, 2, NULL,
-	ai_move, 0,  NULL,
-	ai_move, 3,  NULL,
-	ai_move, 3,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, -3,  NULL,
-	ai_move, -5, NULL,
-	ai_move, 4, NULL,
-	ai_move, 15, NULL,
-	ai_move, 14, NULL,
-	ai_move, 1, NULL
+	{ai_move, -6, NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, -1, NULL},
+	{ai_move, -5, NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, -1, NULL},
+	{ai_move, -2, NULL},
+	{ai_move, 1,  NULL},
+	{ai_move, 10, NULL},
+	{ai_move, 2,  NULL},
+	{ai_move, 3,  NULL},
+	{ai_move, 1,  NULL},
+	{ai_move, 2,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 3,  NULL},
+	{ai_move, 3,  NULL},
+	{ai_move, 1,  NULL},
+	{ai_move, -3, NULL},
+	{ai_move, -5, NULL},
+	{ai_move, 4,  NULL},
+	{ai_move, 15, NULL},
+	{ai_move, 14, NULL},
+	{ai_move, 1,  NULL}
 };
 mmove_t mychick_move_death2 = {FRAME_death201, FRAME_death223, mychick_frames_death2, mychick_dead};
 
 mframe_t mychick_frames_death1 [] =
 {
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, -7, NULL,
-	ai_move, 4,  NULL,
-	ai_move, 11, NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, -7, NULL},
+	{ai_move, 4,  NULL},
+	{ai_move, 11, NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL}
 	
 };
 mmove_t mychick_move_death1 = {FRAME_death101, FRAME_death112, mychick_frames_death1, mychick_dead};
@@ -324,11 +321,11 @@ void mychick_duck_up (edict_t *self)
 
 mframe_t mychick_frames_duck [] =
 {
-	ai_move, 0, mychick_duck_down,
-	ai_move, 0,  NULL,
-	ai_move, 0,  mychick_duck_up,
-	ai_move, 0, NULL,
-	ai_move, 0,  NULL
+	{ai_move, 0, mychick_duck_down},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  mychick_duck_up},
+	{ai_move, 0, NULL},
+	{ai_move, 0, NULL}
 };
 mmove_t mychick_move_duck = {FRAME_duck03, FRAME_duck07, mychick_frames_duck, mychick_run};
 
@@ -371,13 +368,13 @@ void mychick_jump_hold (edict_t *self)
 
 mframe_t mychick_frames_leap [] =
 {
-	ai_move, 0, mychick_jump_takeoff,
-	ai_move, 0, NULL,
-	ai_move, 0, mychick_jump_hold,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0, NULL,
-	ai_move, 0,  NULL
+	{ai_move, 0, mychick_jump_takeoff},
+	{ai_move, 0, NULL},
+	{ai_move, 0, mychick_jump_hold},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0, NULL},
+	{ai_move, 0,  NULL}
 };
 mmove_t mychick_move_leap = {FRAME_duck01, FRAME_duck07, mychick_frames_leap, mychick_run};
 
@@ -454,8 +451,6 @@ void myChickSlash (edict_t *self)
 	fire_hit (self, aim, (10 + (rand() %6)), 100);
 }
 
-void fire_fireball (edict_t *self, vec3_t start, vec3_t aimdir, int damage, float damage_radius, int speed, int flames, int flame_damage);
-
 void myChickFireball (edict_t *self)
 {
 	int slvl, damage, speed, flame_damage;
@@ -526,50 +521,50 @@ void myChickReload (edict_t *self)
 
 mframe_t mychick_frames_start_attack1 [] =
 {
-	ai_charge, 0,	mychick_PreAttack1,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 4,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, -3,  NULL,
-	ai_charge, 3,	NULL,
-	ai_charge, 5,	NULL,
-	ai_charge, 7,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	mychick_attack1
+	{ai_charge, 0,	mychick_PreAttack1},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 4,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, -3, NULL},
+	{ai_charge, 3,	NULL},
+	{ai_charge, 5,	NULL},
+	{ai_charge, 7,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	mychick_attack1}
 };
 mmove_t mychick_move_start_attack1 = {FRAME_attak101, FRAME_attak113, mychick_frames_start_attack1, NULL};
 
 
 mframe_t mychick_frames_attack1 [] =
 {
-	ai_charge, 0,	myChickRocket,//myChickRail,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 0,	myChickReload,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	NULL,
-	//ai_charge, 0,	mychick_rerocket
+	{ai_charge, 0,	myChickRocket},//myChickRail,
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 0,	myChickReload},
+	//{ai_charge, 0,	NULL},
+	//{ai_charge, 0,	NULL},
+	//{ai_charge, 0,	NULL},
+	//{ai_charge, 0,	NULL},
+	//{ai_charge, 0,	NULL},
+	//{ai_charge, 0,	mychick_rerocket}
 
 };
 mmove_t mychick_move_attack1 = {FRAME_attak114, FRAME_attak121, mychick_frames_attack1, mychick_rerocket};
 
 mframe_t mychick_frames_end_attack1 [] =
 {
-	ai_charge, -3,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, -6,	NULL,
-	ai_charge, -4,	NULL,
-	ai_charge, -2,  NULL
+	{ai_charge, -3,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, -6,	NULL},
+	{ai_charge, -4,	NULL},
+	{ai_charge, -2,  NULL}
 };
 mmove_t mychick_move_end_attack1 = {FRAME_attak128, FRAME_attak132, mychick_frames_end_attack1, mychick_run};
 
@@ -592,13 +587,13 @@ void mychick_rerocket(edict_t *self)
 //GHz START
 mframe_t mychick_frames_runandshoot [] =
 {
-	drone_ai_run, 20,	myChickRocket,
-	drone_ai_run, 20,	NULL,
-	drone_ai_run, 20,	NULL,
-	drone_ai_run, 20,	NULL,
-	drone_ai_run, 20,	NULL,
-	drone_ai_run, 20,	NULL,
-	drone_ai_run, 20,	NULL
+	{drone_ai_run, 20,	myChickRocket},
+	{drone_ai_run, 20,	NULL},
+	{drone_ai_run, 20,	NULL},
+	{drone_ai_run, 20,	NULL},
+	{drone_ai_run, 20,	NULL},
+	{drone_ai_run, 20,	NULL},
+	{drone_ai_run, 20,	NULL}
 };
 mmove_t mychick_move_runandshoot = {FRAME_attak120, FRAME_attak126, mychick_frames_runandshoot, mychick_continue};
 
@@ -630,35 +625,36 @@ void mychick_attack1(edict_t *self)
 
 mframe_t mychick_frames_slash [] =
 {
-	ai_charge, 1,	NULL,
-	ai_charge, 7,	myChickSlash,
-	ai_charge, -7,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, -1,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, 0,	NULL,
-	ai_charge, 1,	NULL,
-	ai_charge, -2,	mychick_reslash
+	{ai_charge, 1,	NULL},
+	{ai_charge, 7,	myChickSlash},
+	{ai_charge, -7,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, -1,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, 0,	NULL},
+	{ai_charge, 1,	NULL},
+	{ai_charge, -2,	mychick_reslash}
 };
 mmove_t mychick_move_slash = {FRAME_attak204, FRAME_attak212, mychick_frames_slash, NULL};
 
 mframe_t mychick_frames_end_slash [] =
 {
-	ai_charge, -6,	NULL,
-	ai_charge, -1,	NULL,
-	ai_charge, -6,	NULL,
-	ai_charge, 0,	NULL
+	{ai_charge, -6,	NULL},
+	{ai_charge, -1,	NULL},
+	{ai_charge, -6,	NULL},
+	{ai_charge, 0,	NULL}
 };
 mmove_t mychick_move_end_slash = {FRAME_attak213, FRAME_attak216, mychick_frames_end_slash, mychick_run};
 
 
-void mychick_reslash(edict_t *self)
+void mychick_reslash(edict_t* self)
 {
 	if (self->enemy->health > 0)
 	{
-		if (entdist (self, self->enemy) == 32)
+		if (entdist(self, self->enemy) == 32)
+		{
 			if (random() <= 0.9)
-			{				
+			{
 				self->monsterinfo.currentmove = &mychick_move_slash;
 				return;
 			}
@@ -667,6 +663,7 @@ void mychick_reslash(edict_t *self)
 				self->monsterinfo.currentmove = &mychick_move_end_slash;
 				return;
 			}
+		}
 	}
 	self->monsterinfo.currentmove = &mychick_move_end_slash;
 }
@@ -679,9 +676,9 @@ void mychick_slash(edict_t *self)
 
 mframe_t mychick_frames_start_slash [] =
 {	
-	ai_charge, 1,	NULL,
-	ai_charge, 8,	NULL,
-	ai_charge, 3,	NULL
+	{ai_charge, 1,	NULL},
+	{ai_charge, 8,	NULL},
+	{ai_charge, 3,	NULL}
 };
 mmove_t mychick_move_start_slash = {FRAME_attak201, FRAME_attak203, mychick_frames_start_slash, mychick_slash};
 
@@ -745,16 +742,16 @@ void mychick_sight(edict_t *self, edict_t *other)
 
 mframe_t mychick_frames_jump [] =
 {
-	drone_ai_run, 0,	NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0, NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0,  NULL,
-	drone_ai_run, 0,  NULL
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL},
+	{drone_ai_run, 0, NULL}
 
 };
 mmove_t mychick_move_jump = {FRAME_walk11, FRAME_walk20, mychick_frames_jump, NULL};

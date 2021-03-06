@@ -1,7 +1,6 @@
 #include "g_local.h"
+#include "boss.h"
 
-//Function Prototypes required for this .c file:
-void PlayerBossPoints (edict_t *attacker, edict_t *target);
 
 int mypower(int x, int y)
 {
@@ -11,31 +10,6 @@ int mypower(int x, int y)
 		return (x * mypower(x,y) );
 	}
 	return (1);
-}
-
-char *LoPrint(char *text)
-{
-	int i;
-
-	if (!text)
-		return NULL;
-	for (i=0; i<strlen(text) ; i++)
-		if ((byte)text[i] > 127)
-			text[i]=(byte)text[i]-128;
-
-	return text;
-}
-
-char *HiPrint(char *text)
-{
-	int i;
-
-	if (!text)
-		return NULL;
-	for (i=0; i<strlen(text) ; i++)
-		if ((byte)text[i] <= 127)
-			text[i]=(byte)text[i]+128;
-	return text;
 }
 
 // this needs to match UpdateFreeAbilities() in v_utils.c
@@ -91,7 +65,7 @@ void Add_credits(edict_t *ent, int targ_level)
 {
 	int level_diff		= 0;
 	int credit_points	= 0;
-	float temp			= 0.0;
+	float temp			= 0.0f;
 
 	if (!ent->client)
 		return;
@@ -193,7 +167,7 @@ void check_for_levelup (edict_t *ent)
 			int plateau_level = (int)ceil(log(plateau_points / start_nextlevel->value) / log(nextlevel_mult->value));
 
 			// calculate next level points based
-			points_needed = plateau_points + 5000*(ent->myskills.level-plateau_level);
+			points_needed = plateau_points + 5000 * ((double)ent->myskills.level - (double)plateau_level);
 		}
 
 		ent->myskills.next_level += points_needed;
@@ -333,10 +307,6 @@ void VortexSpreeAbilities (edict_t *attacker)
 	}	
 }
 
-#define PLAYTIME_MIN_MINUTES		999.0	// minutes played before penalty begins
-#define PLAYTIME_MAX_MINUTES		999.0	// minutes played before max penalty is reached
-#define PLAYTIME_MAX_PENALTY		2.0		// reduce experience in half
-
 int V_AddFinalExp (edict_t *player, int exp)
 {
 	float	mod, playtime_minutes;
@@ -369,9 +339,6 @@ int V_AddFinalExp (edict_t *player, int exp)
 
 	return exp;
 }
-
-#define EXP_SHARED_FACTOR				0.5
-#define PLAYER_MONSTER_MIN_PLAYERS		4
 
 void AddMonsterExp (edict_t *player, edict_t *monster)
 {
@@ -478,13 +445,11 @@ void AddMonsterExp (edict_t *player, edict_t *monster)
 	//gi.dprintf("AddMonsterExp(), %d exp, %d control_cost %d level\n", exp_points, control_cost, monster->monsterinfo.level);
 }
 
-void VortexAddExp(edict_t *attacker, edict_t *targ);
-int PVM_TotalMonsters (edict_t *monster_owner);
 void VortexAddMonsterExp(edict_t *attacker, edict_t *monster)
 {
-	int exp_points		= 0;
-	int monsters		= 0;
-	float level_diff	= 0;
+	//int exp_points		= 0;
+	//int monsters		= 0;
+	//float level_diff	= 0;
 	//char *message;
 	//int i;
 	//edict_t *player;
@@ -666,7 +631,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 			message = HiPrint(va("%s got a 2fer.", attacker->client->pers.netname));
 			gi.bprintf(PRINT_HIGH, "%s\n", message);
 			message = LoPrint(message);
-			bonus += 1 - ((attacker->lastkill - level.time) + 0.1);
+			bonus += 1 - ((attacker->lastkill - level.time) + 0.1f);
 			attacker->myskills.num_2fers++;
 		}
 
@@ -736,7 +701,7 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 		exp_points = V_AddFinalExp(attacker, max_points);
 
 	gi.cprintf(attacker, PRINT_HIGH, "You dealt %.0f damage (%.0f%c) to %s (level %d), gaining %d experience and %d credits\n", 
-		damage, (dmgmod * 100), '%', name, clevel, exp_points, credits);
+		damage, ((double)dmgmod * 100), '%', name, clevel, exp_points, credits);
 
 	return exp_points;
 }
@@ -744,7 +709,13 @@ int PVP_AwardKill (edict_t *attacker, edict_t *targ, edict_t *target)
 void VortexAddExp(edict_t *attacker, edict_t *targ)
 {
 	int			i, exp_points;
-	edict_t		*target, *player = NULL;
+	edict_t*	target;
+	edict_t*	player = NULL;
+
+	//if (!targ || !attacker)
+	//{
+	//	gi.dprintf("NULL pointer argument when calling %s\n", __func__);
+	//}
 
 	// this is a player-monster boss
 	if (IsABoss(attacker))
@@ -808,7 +779,8 @@ void VortexAddExp(edict_t *attacker, edict_t *targ)
 	if ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))
 	{
 		exp_points = PVP_AwardKill(attacker, targ, target);
-		Add_ctfteam_exp(attacker, (int)(0.5*exp_points));
+		if (attacker)
+			Add_ctfteam_exp(attacker, (int)(0.5*exp_points));
 		return;
 	}
 }

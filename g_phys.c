@@ -79,6 +79,17 @@ void showDebugInfo (edict_t *ent)
 		gi.dprintf("Ent was spawned by: %s\n", e->client->pers.netname);
 }
 
+static void
+restartServer(void)
+{
+	char command[80];
+
+	strcpy(command, "gamemap ");
+	strcat(command, "q2dm1");	/* choose a known good map */
+	gi.AddCommandString(command);
+	return;
+}
+
 /*
 =============
 SV_RunThink
@@ -86,32 +97,47 @@ SV_RunThink
 Runs thinking code for this frame if necessary
 =============
 */
-qboolean SV_RunThink (edict_t *ent)
+static qboolean
+SV_RunThink(edict_t* ent)
 {
 	float	thinktime;
 
 	thinktime = ent->nextthink;
 	if (thinktime <= 0)
 		return true;
-	if (thinktime > level.time+0.001)
+	if (thinktime > level.time + 0.001)
 		return true;
-	//gi.dprintf("SV_RunThink()\n");
-	//GHz START
-	// stupid q2, this should NEVER happen!
-	if (!ent || (ent->inuse != 1))
-	{
-		gi.dprintf("WARNING: SV_RunThink() parsing a freed entity!\n");
-		return true;
-	}
-	//GHz END
-	ent->nextthink = 0;
-	if (!ent->think)
-	{
-		showDebugInfo(ent);
-		gi.error ("NULL ent->think");
-	}
-	ent->think (ent);
 
+	ent->nextthink = 0;
+
+	//QW// report if we're asked to think about bad ents
+	if (!ent->think || !ent->inuse || !strcmp(ent->classname, "freed"))
+	{
+		if (ent->classname && ent->model)
+			gi.dprintf("%s NULL ent->think (classname %s, model %s mapname %s)\n",
+				__func__, ent->classname, ent->model, level.mapname);
+		else if (ent->classname)
+			gi.dprintf("%s NULL ent->think (classname %s mapname %s)\n",
+				__func__, ent->classname, level.mapname);
+		else
+			gi.dprintf("NULL ent->think (mapname %s)\n",
+				__func__, level.mapname);
+		return false;
+	}
+
+	if (strcmp(ent->classname, "freed") == 0)
+	{
+		//restart server instead of crashing it !
+		if (strstr("target_changelevel", ent->classname))
+		{
+			gi.dprintf("ERROR: Bad map! Server would have crashed.\n");
+			restartServer();
+			return false;
+		}
+		return false;
+	}
+
+	ent->think(ent);
 	return false;
 }
 
@@ -903,54 +929,54 @@ void SV_AddRotationalFriction (edict_t *ent)
 }
 
 void P_FallingDamage (edict_t *ent);
-void SV_Physics_Step (edict_t *ent)
+void SV_Physics_Step(edict_t* ent)
 {
 	qboolean	wasonground;
-	qboolean	hitsound = false;
-	float		*vel;
+	//qboolean	hitsound = false;
+	float* vel;
 	float		speed, newspeed, control;
 	float		friction;
-	edict_t		*groundentity;
+	edict_t* groundentity;
 	int			mask;
-//	vec3_t		dir;
+	//	vec3_t		dir;
 
 
-	// airborn monsters should always check for ground
-//	if (!ent->groundentity)
-		M_CheckGround (ent);
+		// airborn monsters should always check for ground
+	//	if (!ent->groundentity)
+	M_CheckGround(ent);
 
 	groundentity = ent->groundentity;
 
-	SV_CheckVelocity (ent);
+	SV_CheckVelocity(ent);
 
 	if (groundentity)
 		wasonground = true;
 	else
 		wasonground = false;
-		
-//	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
-//		SV_AddRotationalFriction (ent);
 
-	// add gravity except:
-	//   flying monsters
-	//   swimming monsters who are in the water
-	if (! wasonground)
+	//	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
+	//		SV_AddRotationalFriction (ent);
+
+		// add gravity except:
+		//   flying monsters
+		//   swimming monsters who are in the water
+	if (!wasonground)
 		if (!(ent->flags & FL_FLY))
 			if (!((ent->flags & FL_SWIM) && (ent->waterlevel > 2)))
 			{
-				if (ent->velocity[2] < sv_gravity->value*-0.1)
-					hitsound = true;
+				if (ent->velocity[2] < sv_gravity->value * -0.1f)
+					/* hitsound = true */;
 				if (ent->waterlevel == 0)
-					SV_AddGravity (ent);
+					SV_AddGravity(ent);
 			}
 
 	// friction for flying monsters that have been given vertical velocity
 	if ((ent->flags & FL_FLY) && (ent->velocity[2] != 0))
 	{
-//gi.bprintf(PRINT_HIGH,"FLY!\n");
+		//gi.bprintf(PRINT_HIGH,"FLY!\n");
 		speed = fabs(ent->velocity[2]);
 		control = speed < sv_stopspeed ? sv_stopspeed : speed;
-		friction = sv_friction/3;
+		friction = sv_friction / 3;
 		newspeed = speed - (FRAMETIME * control * friction);
 		if (newspeed < 0)
 			newspeed = 0;
@@ -961,14 +987,14 @@ void SV_Physics_Step (edict_t *ent)
 	// friction for flying monsters that have been given vertical velocity
 	if ((ent->flags & FL_SWIM) && (ent->velocity[2] != 0))
 	{
-//gi.bprintf(PRINT_HIGH,"SWIM!\n");
+		//gi.bprintf(PRINT_HIGH,"SWIM!\n");
 		//K03 Begin
 		float water_friction;
 		//K03 End
-		speed = fabs(ent->velocity[2]);
+		speed = fabsf(ent->velocity[2]);
 		control = speed < sv_stopspeed ? sv_stopspeed : speed;
 		//K03 Begin
-		water_friction=(FRAMETIME * control * sv_waterfriction * ent->waterlevel);
+		water_friction = (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
 		//newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
 		if ((ent->myskills.abilities[SUPER_SPEED].current_level < 1) || (ent->myskills.abilities[SUPER_SPEED].disable))
 			newspeed = speed;
@@ -985,24 +1011,24 @@ void SV_Physics_Step (edict_t *ent)
 	{
 		// apply friction
 		// let dead monsters who aren't completely onground slide
-		if ((wasonground) || (ent->flags & (FL_SWIM|FL_FLY)))
+		if ((wasonground) || (ent->flags & (FL_SWIM | FL_FLY)))
 			if (!(ent->health <= 0.0 && !M_CheckBottom(ent)))
 			{
 				//K03 Begin
 				float water_friction;
 				//K03 End
 				vel = ent->velocity;
-				speed = sqrt(vel[0]*vel[0] +vel[1]*vel[1]);
+				speed = sqrtf(vel[0] * vel[0] + vel[1] * vel[1]);
 				if (speed)
 				{
 					friction = sv_friction;
 
 					control = speed < sv_stopspeed ? sv_stopspeed : speed;
-					newspeed = speed - FRAMETIME*control*friction;
+					newspeed = speed - FRAMETIME * control * friction;
 					//K03 Begin
-					water_friction=FRAMETIME*control*friction;
+					water_friction = FRAMETIME * control * friction;
 					//newspeed = speed - FRAMETIME*control*friction;
-					if ( ((ent->myskills.abilities[SUPER_SPEED].current_level < 1) || (ent->myskills.abilities[SUPER_SPEED].disable))
+					if (((ent->myskills.abilities[SUPER_SPEED].current_level < 1) || (ent->myskills.abilities[SUPER_SPEED].disable))
 						&& !(ent->flags & FL_SWIM))
 						newspeed = speed;
 					else
@@ -1020,22 +1046,22 @@ void SV_Physics_Step (edict_t *ent)
 
 		if (ent->svflags & SVF_MONSTER)
 		{
-			if(!deathmatch->value) mask = MASK_MONSTERSOLID;
+			if (!deathmatch->value) mask = MASK_MONSTERSOLID;
 			else mask = MASK_BOTSOLIDX;//MASK_PLAYERSOLID;
 		}
 		else
 			mask = MASK_SOLID;
 		//FIXME: warning - SV_FlyMove() can cause an entity to be freed
-		SV_FlyMove (ent, FRAMETIME, mask);
+		SV_FlyMove(ent, FRAMETIME, mask);
 
-		gi.linkentity (ent);
-//		G_TouchTriggers (ent);
+		gi.linkentity(ent);
+		//G_TouchTriggers (ent);
 	}
 	else
 		V_TouchSolids(ent);
 
-// regular thinking
-	SV_RunThink (ent); 
+	// regular thinking
+	SV_RunThink(ent);
 }
 
 //============================================================================
